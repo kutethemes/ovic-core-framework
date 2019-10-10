@@ -17,6 +17,7 @@ All     : php artisan vendor:publish --provider="Ovic\Framework\FrameworkService
 Assets  : php artisan vendor:publish --tag=ovic-assets --force
 Views   : php artisan vendor:publish --tag=ovic-views --force
 Config  : php artisan vendor:publish --tag=ovic-config --force
+Lang    : php artisan vendor:publish --tag=ovic-lang --force
 ```
 
 **Tip: don't forget to run `composer dump-autoload` afterwards.**

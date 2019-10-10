@@ -26,8 +26,12 @@ class FrameworkServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+		/* Load Language */
+		$this->loadTranslationsFrom( __DIR__ . '/../resources/lang', 'ovic' );
+
 		/* Load View */
-		$this->loadViewsFrom( __DIR__ . '/../resources/views', 'framework' );
+		$this->loadViewsFrom( __DIR__ . '/../resources/views', 'ovic' );
+
 		/* Publishes */
 		$this->publishes(
 			[
@@ -46,6 +50,12 @@ class FrameworkServiceProvider extends ServiceProvider
 				__DIR__ . '/../config/config.php' => config_path( 'ovic.php' ),
 			],
 			'ovic-config'
+		);
+		$this->publishes(
+			[
+				__DIR__ . '/../resources/lang' => resource_path( 'lang/ovic-core/framework' ),
+			],
+			'ovic-lang'
 		);
 	}
 }
