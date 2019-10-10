@@ -15,6 +15,12 @@ class FrameworkController extends Controller
 	{
 		$current_time = ( $timezone ) ? Carbon::now( str_replace( '-', '/', $timezone ) ) : Carbon::now();
 
+		if ( view()->exists( 'home' ) ) {
+			return view( 'home',
+				compact( 'current_time' )
+			);
+		}
+
 		return view( 'framework::home',
 			compact( 'current_time' )
 		);
