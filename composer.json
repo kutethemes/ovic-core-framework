@@ -18,7 +18,6 @@
     ],
     "autoload": {
         "psr-4": {
-            "nwidart/laravel-modules": "^6.0",
             "ovic-core/framework": "src/"
         },
         "files": [
