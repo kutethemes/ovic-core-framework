@@ -1,5 +1,5 @@
 {
-    "name": "ovic/framework",
+    "name": "ovic-core/framework",
     "description": "The framework for developing ovic",
     "keywords": [
         "css",
@@ -26,9 +26,7 @@
         ]
     },
     "require": {
-        "php": ">= 5.6",
-        "nwidart/laravel-modules": "^6.0",
-        "ovic-core/framework": "dev-master"
+        "php": ">= 5.6"
     },
     "extra": {
         "laravel": {
