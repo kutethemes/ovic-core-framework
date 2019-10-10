@@ -33,7 +33,7 @@ class FrameworkServiceProvider extends ServiceProvider
 			[
 				__DIR__ . '/../public/'              => public_path(),
 				__DIR__ . '/../resources/views/'     => resource_path( 'views' ),
-				__DIR__ . '/../config/framework.php' => config_path( 'framework.php' ),
+				__DIR__ . '/../config/ovic-core.php' => config_path( 'ovic-core.php' ),
 			]
 		);
 	}
