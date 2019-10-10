@@ -39,6 +39,11 @@
             ]
         }
     },
+    "scripts": {
+        "post-update-cmd": [
+            "@php artisan vendor:publish --provider=\"Ovic\\Framework\\FrameworkServiceProvider\""
+        ]
+    },
     "repositories": [
         {
             "type": "git",
