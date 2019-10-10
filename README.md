@@ -16,23 +16,6 @@ Optionally, publish the package's configuration file by running:
 php artisan vendor:publish --provider="Ovic\Framework\FrameworkServiceProvider"
 ```
 
-### Autoloading
-
-By default the module classes are not loaded automatically. You can autoload your modules using `psr-4`. For example:
-
-``` json
-{
-  "autoload": {
-    "psr-4": {
-      "Ovic\\Framework\\": "src/"
-    },
-    "files": [
-        "src/helpers.php"
-    ]
-  }
-}
-```
-
 **Tip: don't forget to run `composer dump-autoload` afterwards.**
 
 ## Documentation
