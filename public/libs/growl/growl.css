@@ -1,0 +1,181 @@
+/* jQuery Growl
+ * Copyright 2015 Kevin Sylvestre
+ * 1.3.5
+ * custom by KuteTheme
+ */
+
+#growls-default{
+    position: fixed;
+    top: 15px;
+    left: auto;
+    right: 15px;
+    z-index: 100001;
+    max-width: calc(100% - 30px);
+}
+.growl{
+    position: relative;
+    width: 300px;
+    padding: 10px;
+    color: #fff;
+    border-radius: 0;
+    -webkit-transition: all 0.4s ease-in-out;
+    -moz-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 0 15px rgba(0,0,0,.5);
+    overflow: hidden;
+}
+.growl.growl-incoming{
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.growl.growl-outgoing{
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.growl.growl-default{
+    background: #7f8c8d;
+}
+.growl.growl-error{
+    background: #C0392B;
+}
+.growl.growl-notice{
+    background: #2ECC71;
+}
+.growl.growl-warning{
+    background: #F39C12;
+}
+.growl .growl-close{
+    position: absolute;
+    top: 0;
+    left: auto;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    font-size: 0;
+    line-height: 0;
+    background-color: #000;
+    cursor: pointer;
+}
+.growl .growl-close::before,
+.growl .growl-close::after{
+    position: absolute;
+    content: '';
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 12px;
+    height: 2px;
+    background-color: #fff;
+    border-radius: 90px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+.growl .growl-close:not(:hover)::before{
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.growl .growl-close:not(:hover)::after{
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+.growl .growl-title{
+    display: block;
+    width: auto;
+    font-size: 15px;
+    line-height: 20px;
+    background-color: rgba(0,0,0,0.5);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    padding: 5px 40px 5px 10px;
+    margin: -10px -10px 10px;
+}
+.growl .growl-message{
+    font-size: 0;
+    line-height: 0;
+}
+.growl .growl-message > *{
+    display: inline-block !important;
+    vertical-align: top;
+}
+.growl .growl-message figure{
+    overflow: hidden;
+    width: 80px;
+    height: 80px;
+}
+.growl .growl-message figure img{
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+.growl .growl-content{
+    width: calc(100% - 80px);
+    font-size: 13px;
+    line-height: 20px;
+    padding: 0 0 0 10px;
+    margin: -2px 0 0;
+}
+.growl .growl-content span{
+    display: block;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 600;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.growl .growl-content a{
+    position: absolute;
+    bottom: 10px;
+    left: auto;
+    right: 10px;
+    text-decoration: underline;
+    color: inherit;
+}
+.growl .growl-content a:hover{
+    color: inherit;
+    opacity: 0.7;
+}
+.growl .growl-message > *:first-child:last-child{
+    width: 100%;
+    padding: 0;
+}
+.growl ul.error{
+    list-style-type: none;
+    padding: 20px;
+    margin: 0;
+}
+.growl ul.error li{
+    font-size: 15px;
+    padding-left: 10px;
+}
+body.rtl #growls-default{
+    left: 15px;
+    right: auto;
+}
+body.rtl .growl-close{
+    left: 0;
+    right: auto;
+}
+body.rtl .growl-title{
+    padding: 5px 10px 5px 40px;
+}
+body.rtl .growl .growl-content{
+    padding: 0 10px 0 0;
+}
+body.rtl .growl .growl-content a{
+    left: 10px;
+    right: auto;
+}

@@ -1,0 +1,51 @@
+{
+    "name": "ovic/framework",
+    "description": "The framework for developing ovic",
+    "keywords": [
+        "css",
+        "js",
+        "ovic",
+        "laravel",
+        "framework"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ovic Team",
+            "email": "tf.kutethemes@gmail.com",
+            "homepage": "https://kutethemes.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "nwidart/laravel-modules": "^6.0",
+            "ovic-core/framework": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "require": {
+        "php": ">= 5.6",
+        "nwidart/laravel-modules": "^6.0",
+        "ovic-core/framework": "dev-master"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ovic\\Framework\\FrameworkServiceProvider"
+            ]
+        }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/kutethemes/ovic-laravel"
+        }
+    ],
+    "support": {
+        "issues": "https://kutethemes.com/supports/"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
