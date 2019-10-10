@@ -8,13 +8,11 @@
         "laravel",
         "framework"
     ],
-    "version": "1.0.0",
     "license": "MIT",
     "authors": [
         {
             "name": "Ovic Team",
-            "email": "tf.kutethemes@gmail.com",
-            "homepage": "https://kutethemes.com"
+            "email": "https://kutethemes.com"
         }
     ],
     "autoload": {
