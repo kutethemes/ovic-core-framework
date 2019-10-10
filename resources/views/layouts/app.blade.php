@@ -11,7 +11,6 @@
 
     <!-- Styles -->
     <link href="{{ ovic_style('app') }}" rel="stylesheet">
-    <link href="{{ ovic_style('bootstrap') }}" rel="stylesheet">
 
     @yield('head')
 
@@ -20,20 +19,18 @@
 <div id="app">
 
     <!-- Header -->
-    @include('ovic::layouts.header')
+@include('ovic::layouts.header')
 
-    <!-- Content -->
-    @yield('content')
+<!-- Content -->
+@yield('content')
 
-    <!-- Footer -->
+<!-- Footer -->
     @include('ovic::layouts.footer')
 
 </div>
 
 <!-- Scripts -->
 <script src="{{ ovic_script('app') }}" defer></script>
-<script src="{{ ovic_script('bundle') }}" defer></script>
-<script src="{{ ovic_script('bootstrap') }}" defer></script>
 
 @yield('footer')
 
