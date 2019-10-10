@@ -18,7 +18,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "OvicFramework\\": "src/"
+            "Ovic\\Framework\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -30,6 +30,9 @@
     "extra": {
         "laravel": {
             "providers": [
+                "Ovic\\Framework\\FrameworkServiceProvider"
+            ],
+            "dont-discover": [
                 "Ovic\\Framework\\FrameworkServiceProvider"
             ]
         }
