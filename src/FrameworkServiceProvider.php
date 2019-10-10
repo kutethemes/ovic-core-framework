@@ -31,10 +31,18 @@ class FrameworkServiceProvider extends ServiceProvider
 		/* Publishes */
 		$this->publishes(
 			[
-				__DIR__ . '/../public/'              => public_path(),
-				__DIR__ . '/../resources/views/'     => resource_path( 'views' ),
-				__DIR__ . '/../config/ovic-core.php' => config_path( 'ovic-core.php' ),
-			]
+				__DIR__ . '/../public/' => public_path(),
+			], 'ovic-assets'
+		);
+		$this->publishes(
+			[
+				__DIR__ . '/../resources/views/' => resource_path( 'views' ),
+			], 'ovic-views'
+		);
+		$this->publishes(
+			[
+				__DIR__ . '/../config/config.php' => config_path( 'ovic.php' ),
+			], 'ovic-config'
 		);
 	}
 }
