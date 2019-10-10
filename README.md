@@ -5,7 +5,7 @@
 To install through Composer, by run the following command:
 
 ``` bash
-composer require nwidart/laravel-modules
+composer require composer require ovic-core/framework
 ```
 
 The package will automatically register a service provider and alias.
