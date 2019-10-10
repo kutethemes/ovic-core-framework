@@ -32,7 +32,7 @@ class FrameworkServiceProvider extends ServiceProvider
 		$this->publishes(
 			[
 				__DIR__ . '/../public/'              => public_path(),
-				__DIR__ . '/../resources/views/'     => resource_path( 'views/' ),
+				__DIR__ . '/../resources/views/'     => resource_path( 'views' ),
 				__DIR__ . '/../config/framework.php' => config_path( 'framework.php' ),
 			]
 		);
