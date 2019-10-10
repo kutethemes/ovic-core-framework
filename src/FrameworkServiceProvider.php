@@ -13,9 +13,7 @@ class FrameworkServiceProvider extends ServiceProvider
 	protected $defer = false;
 
 	/**
-	 * Register services.
-	 *
-	 * @return void
+	 * Register all modules.
 	 */
 	public function register()
 	{
@@ -24,9 +22,7 @@ class FrameworkServiceProvider extends ServiceProvider
 	}
 
 	/**
-	 * Bootstrap services.
-	 *
-	 * @return void
+	 * Booting the package.
 	 */
 	public function boot()
 	{
