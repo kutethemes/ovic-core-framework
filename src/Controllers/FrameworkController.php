@@ -14,14 +14,9 @@ class FrameworkController extends Controller
 	public function index( $timezone = NULL )
 	{
 		$current_time = ( $timezone ) ? Carbon::now( str_replace( '-', '/', $timezone ) ) : Carbon::now();
+		$view         = ovic_blade( 'home' );
 
-		if ( view()->exists( 'home' ) ) {
-			return view( 'home',
-				compact( 'current_time' )
-			);
-		}
-
-		return view( 'framework::home',
+		return view( $view,
 			compact( 'current_time' )
 		);
 	}

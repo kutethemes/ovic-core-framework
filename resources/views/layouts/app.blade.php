@@ -7,17 +7,11 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <title>@yield('title')</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ ovic_style('app') }}" rel="stylesheet">
+    <link href="{{ ovic_style('bootstrap') }}" rel="stylesheet">
 
     @yield('head')
 
@@ -26,15 +20,20 @@
 <div id="app">
 
     <!-- Header -->
-    @include('layouts.header')
+    @include('ovic::layouts.header')
 
     <!-- Content -->
     @yield('content')
 
     <!-- Footer -->
-    @include('layouts.footer')
+    @include('ovic::layouts.footer')
 
 </div>
+
+<!-- Scripts -->
+<script src="{{ ovic_script('app') }}" defer></script>
+<script src="{{ ovic_script('bundle') }}" defer></script>
+<script src="{{ ovic_script('bootstrap') }}" defer></script>
 
 @yield('footer')
 

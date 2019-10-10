@@ -1,40 +1,45 @@
-<title>Laravel Timezones</title>
+@extends('ovic::layouts.app')
 
-<link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+@section('title', 'Laravel Timezones')
 
-<style>
-    html, body {
-        height: 100%;
-    }
+@section('head')
+    <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
 
-    body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        display: table;
-        font-weight: 100;
-        font-family: 'Lato';
-    }
+    <style>
+        html, body {
+            height: 100%;
+        }
 
-    .container {
-        text-align: center;
-        display: table-cell;
-        vertical-align: middle;
-    }
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            display: table;
+            font-weight: 100;
+            font-family: 'Lato';
+        }
 
-    .content {
-        text-align: center;
-        display: inline-block;
-    }
+        .container {
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+        }
 
-    .title {
-        font-size: 96px;
-    }
-</style>
+        .content {
+            text-align: center;
+            display: inline-block;
+        }
 
+        .title {
+            font-size: 96px;
+        }
+    </style>
+@endsection
 
-<div class="container">
-    <div class="content">
-        <div class="title">{{ $current_time }}</div>
+@section('content')
+    <div class="container">
+        <div class="content">
+            <div class="title">{{ $current_time }}</div>
+        </div>
     </div>
-</div>
+@endsection
