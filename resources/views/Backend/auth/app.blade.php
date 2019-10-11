@@ -23,7 +23,8 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Ubuntu:400" rel="stylesheet">
-    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+
+    @yield('head')
 
     <!-- Styles -->
     <style>

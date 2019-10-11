@@ -2,6 +2,10 @@
 
 @section('title','Đăng nhập')
 
+@section('head')
+    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+@endsection
+
 @section('content')
 
     <div class="top">
@@ -73,19 +77,19 @@
 
                 @if (Route::has('password.request'))
                     <div class="bottom">
-                                        <span class="helper-text m-b-10">
-                                            <i class="fa fa-lock"></i>
-                                            <a class="btn btn-link" href="{{ route('password.request') }}">
-                                                {{ __('Bạn quên mật khẩu?') }}
-                                            </a>
-                                        </span>
+                        <span class="helper-text m-b-10">
+                            <i class="fa fa-lock"></i>
+                            <a class="btn btn-link" href="{{ route('password.request') }}">
+                                {{ __('Bạn quên mật khẩu?') }}
+                            </a>
+                        </span>
                     </div>
                 @endif
 
                 @if ( Route::has('register') )
                     <div class="bottom">
-                                        <span>{{ __('Bạn chưa có tài khoản?') }} <a
-                                                    href="{{ route('register') }}">{{ __('Đăng ký miễn phí') }}</a></span>
+                        <span>{{ __('Bạn chưa có tài khoản?') }} <a
+                                    href="{{ route('register') }}">{{ __('Đăng ký miễn phí') }}</a></span>
                     </div>
                 @endif
             </form>
