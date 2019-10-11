@@ -1,6 +1,6 @@
 @extends('auth.app')
 
-@section('title','Cài đặt lại mật khẩu')
+@section('title','Khôi phục lại mật khẩu')
 
 @section('content')
 
@@ -12,7 +12,7 @@
     <div class="card">
         <div class="body">
             <div class="header">
-                <p class="dev">{{ __('Cài đặt lại mật khẩu') }}</p>
+                <p class="dev">{{ __('Khôi phục lại mật khẩu') }}</p>
             </div>
 
             @if (session('status'))
