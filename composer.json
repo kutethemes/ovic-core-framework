@@ -39,10 +39,12 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "php artisan vendor:publish --tag=ovic-assets"
+            "php artisan vendor:publish --tag=ovic-assets",
+            "php artisan vendor:publish --tag=ovic-config"
         ],
         "post-update-cmd": [
-            "php artisan vendor:publish --tag=ovic-assets"
+            "php artisan vendor:publish --tag=ovic-assets",
+            "php artisan vendor:publish --tag=ovic-config"
         ]
     },
     "repositories": [

@@ -17,10 +17,12 @@ Route::get( 'home/',
 
 Route::get( 'dashboard/',
 	function () {
-		if ( !view()->exists( 'home' ) ) {
-			return view( 'ovic::BackendLayouts.dashboard' );
+		$view = 'BackendLayouts.dashboard.app';
+
+		if ( !view()->exists( $view ) ) {
+			return view( "ovic::{$view}" );
 		}
 
-		return view( 'BackendLayouts.dashboard' );
+		return view( $view );
 	}
 );

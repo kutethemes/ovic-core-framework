@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -10,33 +12,52 @@
     <title>@yield('title')</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
-
     @yield('head')
 
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
+
 </head>
-<body>
-<div id="app">
 
-    <!-- Header -->
-    @include('ovic::Oviclayouts.header')
+<body class="fixed-sidebar no-skin-config full-height-layout">
 
-    <!-- Content -->
-    @yield('content')
+<div id="wrapper">
 
-    <!-- Footer -->
-    @include('ovic::Oviclayouts.footer')
+    @include('ovic::BackendLayouts.header')
+
+    <div id="page-wrapper" class="gray-bg">
+
+        @include('ovic::BackendLayouts.nav-bar')
+
+        <div class="fh-breadcrumb">
+
+            <div class="full-height">
+
+                @yield('content')
+
+            </div>
+
+        </div>
+
+        @include('ovic::BackendLayouts.footer')
+
+    </div>
+
+    @include('ovic::BackendLayouts.right-sidebar')
 
 </div>
 
 <!-- Mainly scripts -->
 <script src="{{ asset('js/jquery-3.1.1.min.js') }}" defer></script>
 <script src="{{ asset('js/popper.min.js') }}" defer></script>
-<script src="{{ asset('js/bootstrap.min.js') }}" defer></script>
+<script src="{{ asset('js/bootstrap.js') }}" defer></script>
 <script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}" defer></script>
 <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}" defer></script>
+<!-- Custom and plugin javascript -->
+<script src="{{ asset('js/inspinia.js') }}"></script>
+<script src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
 
 @yield('footer')
 
