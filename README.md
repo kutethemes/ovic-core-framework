@@ -16,7 +16,6 @@ Optionally, publish the package's configuration file by running:
 All     : php artisan vendor:publish --provider="Ovic\Framework\FrameworkServiceProvider"
 Assets  : php artisan vendor:publish --tag=ovic-assets --force
 Views   : php artisan vendor:publish --tag=ovic-views --force
-Config  : php artisan vendor:publish --tag=ovic-config --force
 Lang    : php artisan vendor:publish --tag=ovic-lang --force
 ```
 
