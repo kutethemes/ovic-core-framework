@@ -26,15 +26,36 @@ class FrameworkServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+		/* Load Language */
+		$this->loadTranslationsFrom( __DIR__ . '/../resources/lang', 'ovic' );
+
 		/* Load View */
-		$this->loadViewsFrom( __DIR__ . '/../resources/views', 'framework' );
+		$this->loadViewsFrom( __DIR__ . '/../resources/views', 'ovic' );
+
 		/* Publishes */
 		$this->publishes(
 			[
-				__DIR__ . '/../public/'              => public_path(),
-				__DIR__ . '/../resources/views/'     => resource_path( 'views' ),
-				__DIR__ . '/../config/framework.php' => config_path( 'framework.php' ),
-			]
+				__DIR__ . '/../public/' => public_path(),
+			],
+			'ovic-assets'
+		);
+		$this->publishes(
+			[
+				__DIR__ . '/../resources/views/' => resource_path( 'views' ),
+			],
+			'ovic-views'
+		);
+		$this->publishes(
+			[
+				__DIR__ . '/../config/config.php' => config_path( 'ovic.php' ),
+			],
+			'ovic-config'
+		);
+		$this->publishes(
+			[
+				__DIR__ . '/../resources/lang' => resource_path( 'lang/ovic-core/framework' ),
+			],
+			'ovic-lang'
 		);
 	}
 }

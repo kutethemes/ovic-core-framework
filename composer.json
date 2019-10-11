@@ -8,13 +8,11 @@
         "laravel",
         "framework"
     ],
-    "version": "1.0.0",
     "license": "MIT",
     "authors": [
         {
             "name": "Ovic Team",
-            "email": "tf.kutethemes@gmail.com",
-            "homepage": "https://kutethemes.com"
+            "email": "tf.kutethemes@gmail.com"
         }
     ],
     "autoload": {
@@ -38,6 +36,12 @@
                 "Ovic\\Framework\\FrameworkServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=ovic-assets",
+            "@php artisan vendor:publish --tag=ovic-config"
+        ]
     },
     "repositories": [
         {
