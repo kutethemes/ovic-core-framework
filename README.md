@@ -13,6 +13,9 @@ The package will automatically register a service provider and alias.
 Optionally, publish the package's configuration file by running:
 
 ``` bash
+Require lib ( nodejs* ): 
+    + npm install
+    + npm run dev
 All     : php artisan vendor:publish --provider="Ovic\Framework\FrameworkServiceProvider"
 Assets  : php artisan vendor:publish --tag=ovic-assets
 Views   : php artisan vendor:publish --tag=ovic-views
