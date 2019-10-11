@@ -10,6 +10,7 @@
 ?>
 <!-- Right Sidebar -->
 <div id="right-sidebar">
+
     <div class="sidebar-container">
 
         <ul class="nav nav-tabs navs-3">
@@ -25,7 +26,6 @@
         </ul>
 
         <div class="tab-content">
-
 
             <div id="tab-1" class="tab-pane active">
 
@@ -388,6 +388,5 @@
         </div>
 
     </div>
-
 
 </div>
