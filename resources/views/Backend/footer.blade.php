@@ -2,8 +2,8 @@
 /**
  * The footer for our theme
  *
- * @package Laravel
- * @subpackage Laravel
+ * @package Ovic
+ * @subpackage Framework
  *
  * @version 1.0
  */
@@ -11,6 +11,6 @@
 <!-- Footer -->
 <div class="footer">
     <div>
-        <strong>Copyright</strong> Đại học Thái Nguyên © 2015-2018
+        Trung tâm phần mềm © 2015-2019
     </div>
 </div>

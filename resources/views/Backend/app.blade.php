@@ -2,8 +2,8 @@
 /**
  * The template for our theme
  *
- * @package Laravel
- * @subpackage Laravel
+ * @package Ovic
+ * @subpackage Framework
  *
  * @version 1.0
  */
@@ -64,7 +64,6 @@
 <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}" defer></script>
 <!-- Custom and plugin javascript -->
 <script src="{{ asset('js/inspinia.js') }}" defer></script>
-<script src="{{ asset('js/plugins/pace/pace.min.js') }}" defer></script>
 
 @yield('footer')
 

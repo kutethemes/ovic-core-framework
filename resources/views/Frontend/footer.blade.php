@@ -2,8 +2,8 @@
 /**
  * The footer for our theme
  *
- * @package Laravel
- * @subpackage Laravel
+ * @package Ovic
+ * @subpackage Framework
  *
  * @version 1.0
  */

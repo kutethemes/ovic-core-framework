@@ -51,5 +51,11 @@ class FrameworkServiceProvider extends ServiceProvider
 			],
 			'ovic-lang'
 		);
+		$this->publishes(
+			[
+				__DIR__ . '/../resources/views/backend/auth' => resource_path( 'views/auth' ),
+			],
+			'ovic-account'
+		);
 	}
 }
