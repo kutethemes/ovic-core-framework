@@ -1,4 +1,13 @@
-<!doctype html>
+<?php
+/**
+ * The template for our theme
+ *
+ * @package Laravel
+ * @subpackage Laravel
+ *
+ * @version 1.0
+ */
+?><!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -25,11 +34,11 @@
 
 <div id="wrapper">
 
-    @include('ovic::BackendLayouts.header')
+    @include( ovic_blade('BackendLayouts.header') )
 
     <div id="page-wrapper" class="gray-bg">
 
-        @include('ovic::BackendLayouts.nav-bar')
+        @include( ovic_blade('BackendLayouts.nav-bar') )
 
         <div class="fh-breadcrumb">
 
@@ -41,11 +50,11 @@
 
         </div>
 
-        @include('ovic::BackendLayouts.footer')
+        @include( ovic_blade('BackendLayouts.footer') )
 
     </div>
 
-    @include('ovic::BackendLayouts.right-sidebar')
+    @include( ovic_blade('BackendLayouts.right-sidebar') )
 
 </div>
 

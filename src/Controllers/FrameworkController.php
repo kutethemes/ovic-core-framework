@@ -10,10 +10,6 @@ class FrameworkController extends Controller
 	 */
 	public function index()
 	{
-		if ( !view()->exists( 'home' ) ) {
-			return view( 'ovic::home' );
-		}
-
-		return view( 'home' );
+		return null;
 	}
 }

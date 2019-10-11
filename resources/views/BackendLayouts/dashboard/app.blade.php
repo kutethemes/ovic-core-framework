@@ -1,3 +1,3 @@
-@extends('ovic::BackendLayouts.app')
+@extends( ovic_blade('BackendLayouts.app') )
 
 @section('title', 'Dashboard')

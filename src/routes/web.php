@@ -11,18 +11,10 @@
 |
 */
 
-Route::get( 'home/',
-	'ovic\framework\FrameworkController@index'
-);
-
 Route::get( 'dashboard/',
 	function () {
-		$view = 'BackendLayouts.dashboard.app';
-
-		if ( !view()->exists( $view ) ) {
-			return view( "ovic::{$view}" );
-		}
-
-		return view( $view );
+		return view(
+			ovic_blade( 'BackendLayouts.dashboard.app' )
+		);
 	}
 );
