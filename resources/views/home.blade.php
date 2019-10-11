@@ -1,4 +1,4 @@
-@extends('ovic::layouts.app')
+@extends('ovic::Oviclayouts.app')
 
 @section('title', 'Laravel Timezones')
 
