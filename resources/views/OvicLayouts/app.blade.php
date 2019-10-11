@@ -19,12 +19,12 @@
 <div id="app">
 
     <!-- Header -->
-@include('ovic::layouts.header')
+    @include('ovic::layouts.header')
 
-<!-- Content -->
-@yield('content')
+    <!-- Content -->
+    @yield('content')
 
-<!-- Footer -->
+    <!-- Footer -->
     @include('ovic::layouts.footer')
 
 </div>
