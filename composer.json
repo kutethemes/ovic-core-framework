@@ -25,6 +25,7 @@
     },
     "require": {
         "php": ">= 5.6",
+        "ovic-core/user": "*",
         "nwidart/laravel-modules": "^6.0"
     },
     "extra": {
