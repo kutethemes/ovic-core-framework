@@ -47,12 +47,6 @@ class FrameworkServiceProvider extends ServiceProvider
 		);
 		$this->publishes(
 			[
-				__DIR__ . '/../config/config.php' => config_path( 'ovic.php' ),
-			],
-			'ovic-config'
-		);
-		$this->publishes(
-			[
 				__DIR__ . '/../resources/lang' => resource_path( 'lang/ovic-core/framework' ),
 			],
 			'ovic-lang'
