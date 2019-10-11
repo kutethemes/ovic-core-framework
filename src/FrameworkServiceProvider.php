@@ -35,7 +35,7 @@ class FrameworkServiceProvider extends ServiceProvider
 		/* Publishes */
 		$this->publishes(
 			[
-				__DIR__ . '/../public/' => public_path(),
+				__DIR__ . '/../assets/' => public_path(),
 			],
 			'ovic-assets'
 		);
