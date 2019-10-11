@@ -18,15 +18,14 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title')</title>
+    <title>@yield('title','Laravel Ovic')</title>
 
     <!-- Styles -->
-    @yield('head')
-
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/animate.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
+
+    @yield('head')
 
 </head>
 
@@ -36,17 +35,9 @@
 
     @include( ovic_blade('Frontend.header') )
 
-    <div id="page-wrapper">
+    @yield('content')
 
-        @include( ovic_blade('Frontend.nav-bar') )
-
-        @yield('content')
-
-        @include( ovic_blade('Frontend.footer') )
-
-    </div>
-
-    @include( ovic_blade('Frontend.right-sidebar') )
+    @include( ovic_blade('Frontend.footer') )
 
 </div>
 
