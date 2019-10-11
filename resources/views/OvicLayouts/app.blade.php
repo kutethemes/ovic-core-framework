@@ -12,6 +12,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
 
     @yield('head')
 
@@ -30,8 +31,12 @@
 
 </div>
 
-<!-- Scripts -->
-<script src="{{ asset('css/bootstrap.min.js') }}" defer></script>
+<!-- Mainly scripts -->
+<script src="{{ asset('js/jquery-3.1.1.min.js') }}" defer></script>
+<script src="{{ asset('js/popper.min.js') }}" defer></script>
+<script src="{{ asset('js/bootstrap.min.js') }}" defer></script>
+<script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}" defer></script>
+<script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}" defer></script>
 
 @yield('footer')
 
