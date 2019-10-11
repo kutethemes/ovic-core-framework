@@ -2,22 +2,18 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 
 class FrameworkController extends Controller
 {
 	/**
-	 * @param $timezone
-	 *
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function index( $timezone = NULL )
+	public function index()
 	{
-		$current_time = ( $timezone ) ? Carbon::now( str_replace( '-', '/', $timezone ) ) : Carbon::now();
-		$view         = ovic_blade( 'home' );
+		if ( !view()->exists( 'home' ) ) {
+			return view( 'ovic::home' );
+		}
 
-		return view( $view,
-			compact( 'current_time' )
-		);
+		return view( 'home' );
 	}
 }

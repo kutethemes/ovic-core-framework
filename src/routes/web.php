@@ -14,3 +14,13 @@
 Route::get( 'home/',
 	'ovic\framework\FrameworkController@index'
 );
+
+Route::get( 'dashboard/',
+	function () {
+		if ( !view()->exists( 'home' ) ) {
+			return view( 'ovic::BackendLayouts.dashboard' );
+		}
+
+		return view( 'BackendLayouts.dashboard' );
+	}
+);
