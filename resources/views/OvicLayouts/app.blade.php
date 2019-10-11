@@ -10,7 +10,8 @@
     <title>@yield('title')</title>
 
     <!-- Styles -->
-    <link href="{{ ovic_style('app') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
     @yield('head')
 
@@ -19,18 +20,18 @@
 <div id="app">
 
     <!-- Header -->
-    @include('ovic::layouts.header')
+    @include('ovic::Oviclayouts.header')
 
     <!-- Content -->
     @yield('content')
 
     <!-- Footer -->
-    @include('ovic::layouts.footer')
+    @include('ovic::Oviclayouts.footer')
 
 </div>
 
 <!-- Scripts -->
-<script src="{{ ovic_script('app') }}" defer></script>
+<script src="{{ asset('css/bootstrap.min.js') }}" defer></script>
 
 @yield('footer')
 

@@ -1,6 +1,6 @@
 @extends('ovic::Oviclayouts.app')
 
-@section('title', 'Laravel Timezones')
+@section('title', 'Laravel Ovic')
 
 @section('head')
     <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
@@ -39,7 +39,7 @@
 @section('content')
     <div class="container">
         <div class="content">
-            <div class="title">{{ $current_time }}</div>
+            <div class="title">Welcome To Ovic</div>
         </div>
     </div>
 @endsection
