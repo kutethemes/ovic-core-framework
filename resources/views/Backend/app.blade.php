@@ -23,7 +23,7 @@
     <!-- Styles -->
     @yield('head')
 
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/animate.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
@@ -59,9 +59,7 @@
 </div>
 
 <!-- Mainly scripts -->
-<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
-<script src="{{ asset('js/popper.min.js') }}" defer></script>
-<script src="{{ asset('js/bootstrap.js') }}" defer></script>
+<script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}" defer></script>
 <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}" defer></script>
 <!-- Custom and plugin javascript -->
