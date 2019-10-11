@@ -50,14 +50,14 @@
 </div>
 
 <!-- Mainly scripts -->
-<script src="{{ asset('js/jquery-3.1.1.min.js') }}" defer></script>
+<script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
 <script src="{{ asset('js/popper.min.js') }}" defer></script>
 <script src="{{ asset('js/bootstrap.js') }}" defer></script>
 <script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}" defer></script>
 <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}" defer></script>
 <!-- Custom and plugin javascript -->
-<script src="{{ asset('js/inspinia.js') }}"></script>
-<script src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
+<script src="{{ asset('js/inspinia.js') }}" defer></script>
+<script src="{{ asset('js/plugins/pace/pace.min.js') }}" defer></script>
 
 @yield('footer')
 
