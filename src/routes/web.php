@@ -14,7 +14,7 @@
 Route::get( 'dashboard/',
 	function () {
 		return view(
-			ovic_blade( 'BackendLayouts.dashboard.app' )
+			ovic_blade( 'Backend.dashboard.app' )
 		);
 	}
 );

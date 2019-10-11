@@ -30,31 +30,23 @@
 
 </head>
 
-<body class="fixed-sidebar no-skin-config full-height-layout">
+<body>
 
 <div id="wrapper">
 
-    @include( ovic_blade('BackendLayouts.header') )
+    @include( ovic_blade('Frontend.header') )
 
-    <div id="page-wrapper" class="gray-bg">
+    <div id="page-wrapper">
 
-        @include( ovic_blade('BackendLayouts.nav-bar') )
+        @include( ovic_blade('Frontend.nav-bar') )
 
-        <div class="fh-breadcrumb">
+        @yield('content')
 
-            <div class="full-height">
-
-                @yield('content')
-
-            </div>
-
-        </div>
-
-        @include( ovic_blade('BackendLayouts.footer') )
+        @include( ovic_blade('Frontend.footer') )
 
     </div>
 
-    @include( ovic_blade('BackendLayouts.right-sidebar') )
+    @include( ovic_blade('Frontend.right-sidebar') )
 
 </div>
 
@@ -62,11 +54,6 @@
 <script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
 <script src="{{ asset('js/popper.min.js') }}" defer></script>
 <script src="{{ asset('js/bootstrap.js') }}" defer></script>
-<script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}" defer></script>
-<script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}" defer></script>
-<!-- Custom and plugin javascript -->
-<script src="{{ asset('js/inspinia.js') }}" defer></script>
-<script src="{{ asset('js/plugins/pace/pace.min.js') }}" defer></script>
 
 @yield('footer')
 

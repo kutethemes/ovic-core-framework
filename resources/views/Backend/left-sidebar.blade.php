@@ -1,6 +1,6 @@
 <?php
 /**
- * The header for our theme
+ * The left sidebar for our theme
  *
  * @package Laravel
  * @subpackage Laravel
@@ -8,7 +8,7 @@
  * @version 1.0
  */
 ?>
-<!-- Header -->
+<!-- Left Sidebar -->
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
         <ul class="nav metismenu" id="side-menu">
