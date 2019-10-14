@@ -2,10 +2,6 @@
 
 @section('title','Đăng nhập')
 
-@section('head')
-    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
-@endsection
-
 @section('content')
 
     <div class="top">
@@ -78,7 +74,7 @@
                 @if (Route::has('password.request'))
                     <div class="bottom">
                         <span class="helper-text m-b-10">
-                            <i class="fa fa-lock"></i>
+                            &#128274;
                             <a class="btn btn-link" href="{{ route('password.request') }}">
                                 {{ __('Bạn quên mật khẩu?') }}
                             </a>
