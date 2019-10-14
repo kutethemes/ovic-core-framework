@@ -10,15 +10,11 @@
 |
 */
 
-Route::group( [ 'middleware' => [ 'web' ] ],
+Route::group( [ 'middleware' => [ 'web', 'auth' ] ],
 	function () {
 		Route::get( '/dashboard',
 			function () {
-				if ( \Illuminate\Support\Facades\Auth::check() ) {
-					return view( ovic_blade( 'Backend.dashboard.app' ) );
-				} else {
-					return view( 'auth.login' );
-				}
+				return view( ovic_blade( 'Backend.dashboard.app' ) );
 			}
 		);
 	}
