@@ -120,7 +120,7 @@
             <li>
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                     <i class="fa fa-user-circle-o"></i>
-                    Account
+                    Hi, {{ Auth::user()->name }}
                 </a>
                 <ul class="dropdown-menu animated fadeInRight m-t-xs">
                     <li><a class="dropdown-item" href="profile.html">Profile</a></li>
