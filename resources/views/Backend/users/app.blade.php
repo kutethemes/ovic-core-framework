@@ -15,7 +15,7 @@
 @section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-9">
-            <h2>File Manager</h2>
+            <h2>Users Manager</h2>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="{{ url('/') }}">Home</a>
