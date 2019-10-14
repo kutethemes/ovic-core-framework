@@ -19,6 +19,9 @@
     <script src="{{ asset('js/plugins/dropzone/dropzone.js') }}"></script>
     <script>
         Dropzone.options.dropzoneForm = {
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
             paramName: "file", // The name that will be used to transfer the file
             maxFilesize: 5, // MB
             uploadMultiple: true,
@@ -33,6 +36,20 @@
                 });
                 return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
             },
+            thumbnailWidth: '198',
+            thumbnailHeight: '100',
+            previewsContainer: '.dropzone-previews',
+            previewTemplate: '<div class="file-box dz-preview dz-file-preview">\n' +
+                '<div class="image dz-details">\n' +
+                '  <img data-dz-thumbnail />\n' +
+                '</div>\n' +
+                '<div class="file-name dz-filename">' +
+                '  <span data-dz-name></span>' +
+                '  <div class="dz-size" data-dz-size></div>' +
+                '</div>' +
+                '  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>\n' +
+                '  <div class="dz-error-message"><span data-dz-errormessage></span></div>\n' +
+                '</div>',
             dictDefaultMessage: "<strong>Kéo thả files vào đây để upload lên máy chủ. </strong></br>  (Hoặc click chuột để chọn files upload.)"
         };
     </script>
@@ -40,7 +57,7 @@
 
 @section('title', 'Media File')
 
-@section('breadcrumb')
+@section('content')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-9">
             <h2>File Manager</h2>
@@ -57,9 +74,6 @@
             </ol>
         </div>
     </div>
-@endsection
-
-@section('content')
     <div class="wrapper wrapper-content">
         <div class="row">
             <div class="col-lg-3">
@@ -95,7 +109,7 @@
             </div>
             <div class="col-lg-9 animated fadeInRight">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 dropzone-previews">
                         <div class="file-box">
                             <div class="file">
                                 <a href="#">
@@ -445,4 +459,3 @@
         </div>
     </div>
 @endsection
-

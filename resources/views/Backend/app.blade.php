@@ -40,13 +40,7 @@
 
         @include( ovic_blade('Backend.nav-bar') )
 
-        @yield('breadcrumb')
-
-        <div class="content-wrapper">
-
-            @yield('content')
-
-        </div>
+        @yield('content')
 
         @include( ovic_blade('Backend.footer') )
 

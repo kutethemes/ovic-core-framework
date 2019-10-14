@@ -36,12 +36,12 @@
                 </a>
                 <ul class="nav nav-second-level collapse">
                     <li>
-                        <a href="#">
+                        <a href="{{ url('/users') }}">
                             <i class="fa fa-users"></i>
                             <span class="nav-label">Users</span>
                         </a>
                         <a href="{{ url('/media') }}">
-                            <i class="fa fa-picture-o"></i>
+                            <i class="fa fa-folder-open"></i>
                             <span class="nav-label">Media</span>
                         </a>
                     </li>
