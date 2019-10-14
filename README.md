@@ -8,6 +8,12 @@ To install through Composer, by run the following command:
 composer require ovic-core/framework
 ```
 
+To update through Composer, by run the following command:
+
+``` bash
+composer update ovic-core/framework
+```
+
 The package will automatically register a service provider and alias.
 
 Optionally, publish the package's configuration file by running:
