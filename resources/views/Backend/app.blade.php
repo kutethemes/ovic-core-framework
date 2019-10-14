@@ -30,7 +30,7 @@
 
 </head>
 
-<body class="fixed-sidebar no-skin-config full-height-layout">
+<body class="fixed-sidebar no-skin-config">
 
 <div id="wrapper">
 
@@ -40,13 +40,11 @@
 
         @include( ovic_blade('Backend.nav-bar') )
 
-        <div class="fh-breadcrumb">
+        @yield('breadcrumb')
 
-            <div class="full-height">
+        <div class="content-wrapper">
 
-                @yield('content')
-
-            </div>
+            @yield('content')
 
         </div>
 
@@ -60,10 +58,10 @@
 
 <!-- Mainly scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}" defer></script>
-<script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}" defer></script>
+<script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+<script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
 <!-- Custom and plugin javascript -->
-<script src="{{ asset('js/inspinia.js') }}" defer></script>
+<script src="{{ asset('js/inspinia.js') }}"></script>
 
 @yield('footer')
 

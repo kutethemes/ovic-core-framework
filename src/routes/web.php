@@ -17,5 +17,10 @@ Route::group( [ 'middleware' => [ 'web', 'auth' ] ],
 				return view( ovic_blade( 'Backend.dashboard.app' ) );
 			}
 		);
+		Route::get( '/media',
+			function () {
+				return view( ovic_blade( 'Backend.media.app' ) );
+			}
+		);
 	}
 );

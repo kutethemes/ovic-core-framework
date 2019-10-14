@@ -22,22 +22,29 @@
                     {{ config('app.name','Ovic') }}
                 </div>
             </li>
-            <li class="active">
+            <li>
                 <a href="#">
                     <i class="fa fa-tachometer"></i>
                     <span class="nav-label">Dashboard</span>
                 </a>
             </li>
-            <li>
+            <li class="active">
                 <a href="#">
-                    <i class="fa fa-users"></i>
-                    <span class="nav-label">Users</span>
+                    <i class="fa fa-cogs"></i>
+                    <span class="nav-label">System</span>
                     <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level collapse">
-                    <li><a href="#">All Users</a></li>
-                    <li><a href="#">Add New</a></li>
-                    <li><a href="#">Your Profile</a></li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-users"></i>
+                            <span class="nav-label">Users</span>
+                        </a>
+                        <a href="{{ url('/media') }}">
+                            <i class="fa fa-picture-o"></i>
+                            <span class="nav-label">Media</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>
