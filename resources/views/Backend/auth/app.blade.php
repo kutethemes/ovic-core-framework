@@ -186,6 +186,13 @@
         .m-b-10 {
             margin-bottom: 10px;
         }
+        .invalid-feedback {
+            display: block;
+            padding-bottom: 10px;
+            font-style: italic;
+            font-weight: 300;
+            color: red;
+        }
     </style>
 
 </head>
