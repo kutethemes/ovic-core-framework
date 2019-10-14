@@ -18,7 +18,7 @@
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
+                <span class="m-r-sm text-muted welcome-message">Welcome to {{ config('app.name','Ovic') }} Admin.</span>
             </li>
             <li class="dropdown">
                 <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -117,12 +117,26 @@
                     </li>
                 </ul>
             </li>
-
-
             <li>
-                <a href="login.html">
-                    <i class="fa fa-sign-out"></i> Log out
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                    <i class="fa fa-user-circle-o"></i>
+                    Account
                 </a>
+                <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                    <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+                    <li><a class="dropdown-item" href="contacts.html">Contacts</a></li>
+                    <li><a class="dropdown-item" href="mailbox.html">Mailbox</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
+                </ul>
             </li>
         </ul>
     </nav>
