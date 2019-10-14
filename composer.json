@@ -32,19 +32,11 @@
         "laravel": {
             "providers": [
                 "Ovic\\Framework\\FrameworkServiceProvider"
-            ],
-            "dont-discover": [
-                "Ovic\\Framework\\FrameworkServiceProvider"
             ]
+        },
+        "branch-alias": {
+          "dev-master": "6.0-dev"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "php artisan vendor:publish --tag=ovic-assets"
-        ],
-        "post-update-cmd": [
-            "php artisan vendor:publish --tag=ovic-assets"
-        ]
     },
     "repositories": [
         {
