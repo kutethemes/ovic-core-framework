@@ -24,6 +24,12 @@
             </li>
             <li class="active">
                 <a href="#">
+                    <i class="fa fa-tachometer"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
                     <i class="fa fa-users"></i>
                     <span class="nav-label">Users</span>
                     <span class="fa arrow"></span>
