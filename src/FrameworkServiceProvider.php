@@ -55,7 +55,7 @@ class FrameworkServiceProvider extends ServiceProvider
 			[
 				__DIR__ . '/../resources/views/backend/auth' => resource_path( 'views/auth' ),
 			],
-			'ovic-account'
+			'ovic-auth'
 		);
 	}
 }
