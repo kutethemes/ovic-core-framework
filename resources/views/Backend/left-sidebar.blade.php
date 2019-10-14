@@ -40,6 +40,8 @@
                             <i class="fa fa-users"></i>
                             <span class="nav-label">Users</span>
                         </a>
+                    </li>
+                    <li>
                         <a href="{{ url('/media') }}">
                             <i class="fa fa-folder-open"></i>
                             <span class="nav-label">Media</span>
