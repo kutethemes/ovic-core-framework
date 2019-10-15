@@ -17,14 +17,16 @@ Route::group( [ 'middleware' => [ 'web', 'auth' ] ],
 				return view( ovic_blade( 'Backend.dashboard.app' ) );
 			}
 		)->name( 'dashboard' );
+
 		Route::get( '/media',
 			function () {
 				return view( ovic_blade( 'Backend.media.app' ) );
 			}
 		)->name( 'media' );
+
 		Route::get( '/users',
 			function () {
-				return view( ovic_blade( 'Backend.users.app' ), [ 'target' => 'users' ] );
+				return view( ovic_blade( 'Backend.users.app' ) );
 			}
 		)->name( 'users' );
 	}
