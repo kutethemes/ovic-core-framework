@@ -20,12 +20,18 @@
             "App\\": "app/",
             "Ovic\\Framework\\": "src/"
         },
+        "classmap": [
+            "database/migrations",
+            "database/factories",
+            "src/Models"
+        ],
         "files": [
             "src/helpers.php"
         ]
     },
     "require": {
         "php": ">= 5.6",
+        "doctrine/dbal": "*",
         "ovic-core/user": "*",
         "nwidart/laravel-modules": "^6.0"
     },
@@ -36,7 +42,7 @@
             ]
         },
         "branch-alias": {
-          "dev-master": "6.0-dev"
+          "dev-master": "1.0.0"
         }
     },
     "repositories": [

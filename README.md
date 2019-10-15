@@ -14,6 +14,12 @@ To update through Composer, by run the following command:
 composer update ovic-core/framework
 ```
 
+To create migrate, by run the following command:
+
+``` bash
+php artisan migrate --path=\vendor\ovic-core\framework\database
+```
+
 The package will automatically register a service provider and alias.
 
 Optionally, publish the package's configuration file by running:

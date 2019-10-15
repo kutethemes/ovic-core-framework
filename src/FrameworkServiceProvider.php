@@ -1,6 +1,7 @@
 <?php
 namespace Ovic\Framework;
 
+use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
@@ -15,11 +16,22 @@ class FrameworkServiceProvider extends ServiceProvider
 	protected $defer = false;
 
 	/**
+	 * Register factories.
+	 *
+	 * @param string $path
+	 *
+	 * @return void
+	 */
+	protected function loadFactoriesFrom( $path )
+	{
+		$this->app->make( EloquentFactory::class )->load( $path );
+	}
+
+	/**
 	 * Register all modules.
 	 */
 	public function register()
 	{
-		$this->loadRoutesFrom( __DIR__ . '/routes/web.php' );
 	}
 
 	/**
@@ -48,6 +60,15 @@ class FrameworkServiceProvider extends ServiceProvider
 				}
 			}
 		);
+
+		/* Load Factories */
+		$this->loadFactoriesFrom( __DIR__ . '/../database/factories' );
+
+		/* Load Migrations */
+		$this->loadMigrationsFrom( __DIR__ . '/../database/migrations' );
+
+		/* Load Routes */
+		$this->loadRoutesFrom( __DIR__ . '/routes/web.php' );
 
 		/* Load Language */
 		$this->loadTranslationsFrom( __DIR__ . '/../resources/lang', 'ovic' );
