@@ -7,6 +7,7 @@
  *
  * @version 1.0
  */
+$name = Route::currentRouteName();
 ?>
 <!-- Left Sidebar -->
 <nav class="navbar-default navbar-static-side" role="navigation">
@@ -22,7 +23,7 @@
                     {{ config('app.name','Ovic') }}
                 </div>
             </li>
-            <li>
+            <li @if ( $name == 'dashboard' ) class="active" @endif>
                 <a href="#">
                     <i class="fa fa-tachometer"></i>
                     <span class="nav-label">Dashboard</span>
@@ -35,13 +36,13 @@
                     <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level collapse">
-                    <li>
+                    <li @if ( $name == 'users' ) class="active" @endif>
                         <a href="{{ url('/users') }}">
                             <i class="fa fa-users"></i>
                             <span class="nav-label">Users</span>
                         </a>
                     </li>
-                    <li>
+                    <li @if ( $name == 'media' ) class="active" @endif>
                         <a href="{{ url('/media') }}">
                             <i class="fa fa-folder-open"></i>
                             <span class="nav-label">Media</span>
