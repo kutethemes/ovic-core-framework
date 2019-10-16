@@ -40,7 +40,7 @@ class FrameworkServiceProvider extends ServiceProvider
 	public function boot( Request $request )
 	{
 		/* compose all the views */
-		view()->composer( 'ovic::backend.dashboard.app',
+		view()->composer( '*',
 			function ( $view ) {
 				$currentUser = array(
 					'id'    => '',

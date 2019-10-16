@@ -42,5 +42,8 @@ Route::group( [ 'middleware' => [ 'web', 'auth' ] ],
 
 		Route::get( '/remove-post', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
 		Route::post( '/remove-post', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
+
+		Route::get( '/upload', 'Ovic\Framework\UploadFileController@upload' )->name( 'upload_file' );
+		Route::post( '/upload', 'Ovic\Framework\UploadFileController@upload' )->name( 'upload_file' );
 	}
 );

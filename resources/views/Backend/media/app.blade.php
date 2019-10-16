@@ -22,34 +22,15 @@
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
+            acceptedFiles: 'zip,rar,audio/*,video/*,image/*,.doc,.docx,application/pdf',
             paramName: "file", // The name that will be used to transfer the file
-            maxFilesize: 5, // MB
-            uploadMultiple: true,
+            maxFilesize: 16, // MB
             addRemoveLinks: true,
-            removedfile: function (file) {
-                var _ref, name = file.name;
-                $.ajax({
-                    type: 'POST',
-                    url: 'delete.php',
-                    data: "id=" + name,
-                    dataType: 'html'
-                });
-                return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
-            },
+            uploadMultiple: false,
             thumbnailWidth: '198',
             thumbnailHeight: '100',
-            previewsContainer: '.dropzone-previews',
-            previewTemplate: '<div class="file-box dz-preview dz-file-preview">\n' +
-                '<div class="image dz-details">\n' +
-                '  <img data-dz-thumbnail />\n' +
-                '</div>\n' +
-                '<div class="file-name dz-filename">' +
-                '  <span data-dz-name></span>' +
-                '  <div class="dz-size" data-dz-size></div>' +
-                '</div>' +
-                '  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>\n' +
-                '  <div class="dz-error-message"><span data-dz-errormessage></span></div>\n' +
-                '</div>',
+            dictRemoveFile: 'Xóa file',
+            dictFileTooBig: 'File lớn hơn 16MB',
             dictDefaultMessage: "<strong>Kéo thả files vào đây để upload lên máy chủ. </strong></br>  (Hoặc click chuột để chọn files upload.)"
         };
     </script>
@@ -86,8 +67,7 @@
                             <a href="#" class="file-control">Audio</a>
                             <a href="#" class="file-control">Images</a>
                             <div class="hr-line-dashed"></div>
-                            <form action="#" class="dropzone" id="dropzoneForm" method="post"
-                                  enctype="multipart/form-data">
+                            <form action="{{ route('upload_file') }}" class="dropzone" id="dropzoneForm" method="post">
                                 <div class="fallback">
                                     <input name="file" type="file" multiple/>
                                 </div>

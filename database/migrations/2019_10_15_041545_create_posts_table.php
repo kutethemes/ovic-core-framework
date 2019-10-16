@@ -16,11 +16,13 @@ class CreatePostsTable extends Migration
 		Schema::create( 'posts',
 			function ( Blueprint $table ) {
 				$table->bigIncrements( 'id' );
-				$table->string( 'title' );
-				$table->string( 'name' );
-				$table->string( 'post_type' );
-				$table->string( 'status', '10' ); // publish/draft/opened/closed/private
+				$table->text( 'title' );
+				$table->text( 'name' );
+				$table->text( 'post_type' )->default( '' );
+				$table->text( 'status' )->default( 'publish' ); // publish/draft/opened/closed/private
 				$table->text( 'content' )->default( '' );
+				$table->bigInteger( 'user_id' )->default( 0 );
+				$table->bigInteger( 'owner_id' )->default( 0 );
 				$table->timestamps();
 			}
 		);

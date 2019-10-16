@@ -17,7 +17,7 @@ class CreatePostmetaTable extends Migration
 			function ( Blueprint $table ) {
 				$table->bigIncrements( 'meta_id' );
 				$table->bigInteger( 'post_id' );
-				$table->string( 'meta_key' );
+				$table->text( 'meta_key' );
 				$table->text( 'meta_value' );
 				$table->timestamps();
 			}

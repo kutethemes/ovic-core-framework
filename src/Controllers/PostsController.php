@@ -20,7 +20,7 @@ class PostsController extends Controller
 				[
 					'status'  => 'warning',
 					'message' => 'required Title, Post Type',
-				]
+				], 400
 			);
 		}
 
@@ -31,7 +31,7 @@ class PostsController extends Controller
 				[
 					'status'  => 'warning',
 					'message' => 'The post is exits.',
-				]
+				], 400
 			);
 		}
 
@@ -76,7 +76,7 @@ class PostsController extends Controller
 				[
 					'status'  => 'warning',
 					'message' => 'required Post ID',
-				]
+				], 400
 			);
 		}
 
@@ -85,7 +85,7 @@ class PostsController extends Controller
 				[
 					'status'  => 'warning',
 					'message' => 'The post is do not exits.',
-				]
+				], 400
 			);
 		}
 
@@ -141,7 +141,7 @@ class PostsController extends Controller
 				[
 					'status'  => 'warning',
 					'message' => 'required Post ID',
-				]
+				], 400
 			);
 		}
 
@@ -150,7 +150,7 @@ class PostsController extends Controller
 				[
 					'status'  => 'warning',
 					'message' => 'The post is do not exits.',
-				]
+				], 400
 			);
 		}
 
