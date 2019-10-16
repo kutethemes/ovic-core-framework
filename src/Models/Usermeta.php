@@ -19,7 +19,21 @@ class Usermeta extends Eloquent
 	 */
 	protected $primaryKey = 'umeta_id';
 
-	public static function user_meta( $user_id, $meta_key )
+	public static function get_meta( $post_id )
+	{
+		$meta_data = [];
+		$postmeta  = Usermeta::where( 'user_id', $post_id )->get();
+		$postmeta  = json_decode( $postmeta->toJson(), true );
+		if ( !empty( $postmeta ) ) {
+			foreach ( $postmeta as $meta ) {
+				$meta_data[$meta['meta_key']] = maybe_unserialize( $meta['meta_value'] );
+			}
+		}
+
+		return $meta_data;
+	}
+
+	public static function get_user_meta( $user_id, $meta_key )
 	{
 		$user_id = abs( intval( $user_id ) );
 		if ( !$user_id ) {
@@ -29,8 +43,31 @@ class Usermeta extends Eloquent
 			return false;
 		}
 
-		return Usermeta::where( 'post_id', $user_id )
+		$meta_value = Usermeta::where( 'user_id', $user_id )
 			->where( 'meta_key', $meta_key )
 			->value( 'meta_value' );
+
+		return maybe_unserialize( $meta_value );
+	}
+
+	public static function update_user_meta( $user_id, $meta_key, $meta_value )
+	{
+		$user_id = abs( intval( $user_id ) );
+		if ( !$user_id ) {
+			return false;
+		}
+		if ( !$meta_key ) {
+			return false;
+		}
+
+		Postmeta::where( 'meta_key', $meta_key )
+			->where( 'user_id', $user_id )
+			->update(
+				[
+					'meta_value' => maybe_serialize( $meta_value ),
+				]
+			);
+
+		return true;
 	}
 }

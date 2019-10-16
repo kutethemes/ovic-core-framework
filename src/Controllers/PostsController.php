@@ -39,9 +39,9 @@ class PostsController extends Controller
 
 		$post->name      = $name;
 		$post->title     = $request->title;
-		$post->post_type = $request->post_type;
+		$post->post_type = maybe_serialize( $request->post_type );
 		$post->content   = !empty( $request->desc ) ? $request->desc : '';
-		$post->status    = !empty( $request->status ) ? $request->status : 'publish';
+		$post->status    = !empty( $request->status ) ? maybe_serialize( $request->status ) : 'publish';
 
 		$post->save();
 
@@ -50,8 +50,8 @@ class PostsController extends Controller
 		if ( !empty( $request->meta ) && !empty( $request->meta['meta_key'] ) ) {
 			$meta             = new Postmeta();
 			$meta->post_id    = $post_id;
-			$meta->meta_key   = $request->meta['meta_key'];
-			$meta->meta_value = !empty( $request->meta['meta_value'] ) ? $request->meta['meta_value'] : '';
+			$meta->meta_key   = maybe_serialize( $request->meta['meta_key'] );
+			$meta->meta_value = !empty( $request->meta['meta_value'] ) ? maybe_serialize( $request->meta['meta_value'] ) : '';
 
 			$meta->save();
 		}
@@ -101,17 +101,23 @@ class PostsController extends Controller
 			]
 		);
 
-		Post::where( 'id', $request->id )->update( $input );
+		if ( !empty( $input ) ) {
+			foreach ( $input as $key => $value ) {
+				$input[$key] = maybe_serialize( $value );
+			}
 
-		if ( !empty( $request->meta ) ) {
-			foreach ( $request->meta as $meta_key => $meta_value ) {
-				Postmeta::where( 'meta_key', $meta_key )
-					->where( 'post_id', $request->id )
-					->update(
-						[
-							'meta_value' => !empty( $meta_value ) ? $meta_value : '',
-						]
-					);
+			Post::where( 'id', $request->id )->update( $input );
+
+			if ( !empty( $request->meta ) ) {
+				foreach ( $request->meta as $meta_key => $meta_value ) {
+					Postmeta::where( 'meta_key', $meta_key )
+						->where( 'post_id', $request->id )
+						->update(
+							[
+								'meta_value' => !empty( $meta_value ) ? maybe_serialize( $meta_value ) : '',
+							]
+						);
+				}
 			}
 		}
 
@@ -149,6 +155,7 @@ class PostsController extends Controller
 		}
 
 		Post::find( $request->id )->delete();
+		Postmeta::where( 'post_id', $request->id )->delete();
 
 		return response()->json(
 			[

@@ -29,4 +29,25 @@ class Post extends Eloquent
 
 		return true;
 	}
+
+	/*
+	 * @param: $post is name/slug/id
+	 * */
+	public static function get_post( $post, $include_meta = true )
+	{
+		$column = 'id';
+		if ( !abs( intval( $post ) ) ) {
+			$column = 'name';
+		}
+		$post = Post::where( $column, '=', $post )->first();
+		$post = json_decode( $post->toJson(), true );
+		if ( $include_meta ) {
+			$post_meta = Postmeta::get_meta( $post['id'] );
+			if ( !empty( $post_meta ) ) {
+				$post['metas'] = $post_meta;
+			}
+		}
+
+		return $post;
+	}
 }

@@ -36,9 +36,11 @@ Route::group( [ 'middleware' => [ 'web', 'auth' ] ],
 		/* Post Route */
 		Route::get( '/new-post', 'Ovic\Framework\PostsController@create' )->name( 'new_post' );
 		Route::post( '/new-post', 'Ovic\Framework\PostsController@create' )->name( 'new_post' );
+
 		Route::get( '/update-post', 'Ovic\Framework\PostsController@update' )->name( 'update_post' );
 		Route::post( '/update-post', 'Ovic\Framework\PostsController@update' )->name( 'update_post' );
-		Route::get( '/remove-post/', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
-		Route::post( '/remove-post/', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
+
+		Route::get( '/remove-post', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
+		Route::post( '/remove-post', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
 	}
 );

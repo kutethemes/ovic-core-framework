@@ -16,6 +16,154 @@ function ovic_blade( $view = null )
 }
 
 /**
+ * Unserialize value only if it was serialized.
+ *
+ * @param string $original Maybe unserialized original, if is needed.
+ *
+ * @return mixed Unserialized data can be any type.
+ * @since 2.0.0
+ *
+ */
+function maybe_unserialize( $original )
+{
+	if ( is_serialized( $original ) ) { // don't attempt to unserialize data that wasn't serialized going in
+		return @unserialize( $original );
+	}
+
+	return $original;
+}
+
+/**
+ * Check value to find if it was serialized.
+ *
+ * If $data is not an string, then returned value will always be false.
+ * Serialized data is always a string.
+ *
+ * @param string $data Value to check to see if was serialized.
+ * @param bool   $strict Optional. Whether to be strict about the end of the string. Default true.
+ *
+ * @return bool False if not serialized and true if it was.
+ * @since 2.0.5
+ *
+ */
+function is_serialized( $data, $strict = true )
+{
+	// if it isn't a string, it isn't serialized.
+	if ( !is_string( $data ) ) {
+		return false;
+	}
+	$data = trim( $data );
+	if ( 'N;' == $data ) {
+		return true;
+	}
+	if ( strlen( $data ) < 4 ) {
+		return false;
+	}
+	if ( ':' !== $data[1] ) {
+		return false;
+	}
+	if ( $strict ) {
+		$lastc = substr( $data, -1 );
+		if ( ';' !== $lastc && '}' !== $lastc ) {
+			return false;
+		}
+	} else {
+		$semicolon = strpos( $data, ';' );
+		$brace     = strpos( $data, '}' );
+		// Either ; or } must exist.
+		if ( false === $semicolon && false === $brace ) {
+			return false;
+		}
+		// But neither must be in the first X characters.
+		if ( false !== $semicolon && $semicolon < 3 ) {
+			return false;
+		}
+		if ( false !== $brace && $brace < 4 ) {
+			return false;
+		}
+	}
+	$token = $data[0];
+	switch ( $token ) {
+		case 's':
+			if ( $strict ) {
+				if ( '"' !== substr( $data, -2, 1 ) ) {
+					return false;
+				}
+			} elseif ( false === strpos( $data, '"' ) ) {
+				return false;
+			}
+		// or else fall through
+		case 'a':
+		case 'O':
+			return (bool)preg_match( "/^{$token}:[0-9]+:/s", $data );
+		case 'b':
+		case 'i':
+		case 'd':
+			$end = $strict ? '$' : '';
+
+			return (bool)preg_match( "/^{$token}:[0-9.E-]+;$end/", $data );
+	}
+
+	return false;
+}
+
+/**
+ * Check whether serialized data is of string type.
+ *
+ * @param string $data Serialized data.
+ *
+ * @return bool False if not a serialized string, true if it is.
+ * @since 2.0.5
+ *
+ */
+function is_serialized_string( $data )
+{
+	// if it isn't a string, it isn't a serialized string.
+	if ( !is_string( $data ) ) {
+		return false;
+	}
+	$data = trim( $data );
+	if ( strlen( $data ) < 4 ) {
+		return false;
+	} elseif ( ':' !== $data[1] ) {
+		return false;
+	} elseif ( ';' !== substr( $data, -1 ) ) {
+		return false;
+	} elseif ( $data[0] !== 's' ) {
+		return false;
+	} elseif ( '"' !== substr( $data, -2, 1 ) ) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+/**
+ * Serialize data, if needed.
+ *
+ * @param string|array|object $data Data that might be serialized.
+ *
+ * @return mixed A scalar data
+ * @since 2.0.5
+ *
+ */
+function maybe_serialize( $data )
+{
+	if ( is_array( $data ) || is_object( $data ) ) {
+		return serialize( $data );
+	}
+
+	// Double serialization is required for backward compatibility.
+	// See https://core.trac.wordpress.org/ticket/12930
+	// Also the world will end. See WP 3.6.1.
+	if ( is_serialized( $data, false ) ) {
+		return serialize( $data );
+	}
+
+	return $data;
+}
+
+/**
  * Parses a string into variables to be stored in an array.
  *
  * Uses {@link https://secure.php.net/parse_str parse_str()} and stripslashes if
@@ -64,36 +212,4 @@ function ovic_parse_args( $args, $defaults = '' )
 	}
 
 	return $r;
-}
-
-/**
- * Retrieves a post meta field for the given post ID.
- *
- * @param int    $post_id Post ID.
- * @param string $key Optional. The meta key to retrieve. By default, returns
- *                        data for all keys. Default empty.
- *
- * @return mixed Will be an array if $single is false. Will be value of the meta
- *               field if $single is true.
- * @since 1.0.0
- *
- */
-function ovic_post_meta( $post_id, $meta_key )
-{
-	return \Ovic\Framework\Postmeta::post_meta( $post_id, $meta_key );
-}
-
-/**
- * Retrieve user meta field for a user.
- *
- * @param int    $user_id User ID.
- * @param string $key Optional. The meta key to retrieve. By default, returns data for all keys.
- *
- * @return mixed Will be an array if $single is false. Will be value of meta data field if $single is true.
- * @since 1.0.0
- *
- */
-function ovic_user_meta( $user_id, $meta_key )
-{
-	return \Ovic\Framework\Usermeta::user_meta( $user_id, $meta_key );
 }
