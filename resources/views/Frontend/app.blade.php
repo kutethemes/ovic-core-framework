@@ -31,7 +31,7 @@
 
 <body>
 
-<div id="wrapper">
+<div id="app">
 
     @include( ovic_blade('Frontend.header') )
 
