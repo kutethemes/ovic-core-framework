@@ -31,7 +31,6 @@
     },
     "require": {
         "php": ">= 5.6",
-        "nesbot/carbon": "*",
         "doctrine/dbal": "*",
         "ovic-core/user": "*",
         "nwidart/laravel-modules": "^6.0"

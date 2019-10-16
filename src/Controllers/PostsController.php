@@ -4,7 +4,6 @@ namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class PostsController extends Controller
 {
@@ -24,46 +23,11 @@ class PostsController extends Controller
 			);
 		}
 
-		$name = !empty( $request->name ) ? $request->name : Str::slug( $request->title );
+		$request = $request->toArray();
 
-		if ( Post::is_exits( $name ) ) {
-			return response()->json(
-				[
-					'status'  => 'warning',
-					'message' => 'The post is exits.',
-				], 400
-			);
-		}
+		$created = Post::add_post( $request );
 
-		$post = new Post();
-
-		$post->name      = $name;
-		$post->title     = $request->title;
-		$post->post_type = maybe_serialize( $request->post_type );
-		$post->content   = !empty( $request->desc ) ? $request->desc : '';
-		$post->user_id   = !empty( $request->user_id ) ? $request->user_id : 0;
-		$post->owner_id  = !empty( $request->owner_id ) ? $request->owner_id : 0;
-		$post->status    = !empty( $request->status ) ? maybe_serialize( $request->status ) : 'publish';
-
-		$post->save();
-
-		$post_id = $post->getAttributeValue( 'id' );
-
-		if ( !empty( $request->meta ) && !empty( $request->meta['meta_key'] ) ) {
-			$meta             = new Postmeta();
-			$meta->post_id    = $post_id;
-			$meta->meta_key   = maybe_serialize( $request->meta['meta_key'] );
-			$meta->meta_value = !empty( $request->meta['meta_value'] ) ? maybe_serialize( $request->meta['meta_value'] ) : '';
-
-			$meta->save();
-		}
-
-		return response()->json(
-			[
-				'status'  => 'success',
-				'message' => 'The post is created.',
-			]
-		);
+		return response()->json( $created, $created['code'] );
 	}
 
 	/**
@@ -82,53 +46,11 @@ class PostsController extends Controller
 			);
 		}
 
-		if ( !Post::is_exits( $request->id ) ) {
-			return response()->json(
-				[
-					'status'  => 'warning',
-					'message' => 'The post is do not exits.',
-				], 400
-			);
-		}
+		$request = $request->toArray();
 
-		$input = $request->only(
-			[
-				'title',
-				'name',
-				'content',
-				'status',
-				'post_type',
-				'created_at',
-				'updated_at',
-			]
-		);
+		$updated = Post::update_post( $request );
 
-		if ( !empty( $input ) ) {
-			foreach ( $input as $key => $value ) {
-				$input[$key] = maybe_serialize( $value );
-			}
-
-			Post::where( 'id', $request->id )->update( $input );
-
-			if ( !empty( $request->meta ) ) {
-				foreach ( $request->meta as $meta_key => $meta_value ) {
-					Postmeta::where( 'meta_key', $meta_key )
-						->where( 'post_id', $request->id )
-						->update(
-							[
-								'meta_value' => !empty( $meta_value ) ? maybe_serialize( $meta_value ) : '',
-							]
-						);
-				}
-			}
-		}
-
-		return response()->json(
-			[
-				'status'  => 'success',
-				'message' => 'The post is updated.',
-			]
-		);
+		return response()->json( $updated, $updated['code'] );
 	}
 
 	/**
@@ -156,12 +78,11 @@ class PostsController extends Controller
 			);
 		}
 
-		Post::find( $request->id )->delete();
 		Postmeta::where( 'post_id', $request->id )->delete();
 
 		return response()->json(
 			[
-				'status'  => 'success',
+				'status'  => Post::destroy( $request->id ),
 				'message' => 'The post is removed.',
 			]
 		);
