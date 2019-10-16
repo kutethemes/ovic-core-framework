@@ -41,6 +41,8 @@ class PostsController extends Controller
 		$post->title     = $request->title;
 		$post->post_type = maybe_serialize( $request->post_type );
 		$post->content   = !empty( $request->desc ) ? $request->desc : '';
+		$post->user_id   = !empty( $request->user_id ) ? $request->user_id : 0;
+		$post->owner_id  = !empty( $request->owner_id ) ? $request->owner_id : 0;
 		$post->status    = !empty( $request->status ) ? maybe_serialize( $request->status ) : 'publish';
 
 		$post->save();
