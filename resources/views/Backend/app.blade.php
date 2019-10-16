@@ -32,7 +32,7 @@
 
 <body class="fixed-sidebar no-skin-config">
 
-<div id="wrapper">
+<div id="app">
 
     @include( ovic_blade('Backend.left-sidebar') )
 
