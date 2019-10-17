@@ -1,13 +1,13 @@
-<?php
-/**
- * The template for our theme
- *
- * @package Ovic
- * @subpackage Framework
- *
- * @version 1.0
- */
-?><!doctype html>
+@php
+    /**
+     * The template for our theme
+     *
+     * @package Ovic
+     * @subpackage Framework
+     *
+     * @version 1.0
+     */
+@endphp<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>

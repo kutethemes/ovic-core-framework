@@ -1,13 +1,14 @@
-<?php
-/**
- * The media file for our theme
- *
- * @package Ovic
- * @subpackage Framework
- *
- * @version 1.0
- */
-?>
+@php
+    /**
+     * The media file for our theme
+     *
+     * @package Ovic
+     * @subpackage Framework
+     *
+     * @version 1.0
+     */
+@endphp
+
 @extends( ovic_blade('Backend.app') )
 
 @section('title', 'Users')

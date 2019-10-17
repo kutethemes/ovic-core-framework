@@ -43,7 +43,17 @@ Route::group( [ 'middleware' => [ 'web', 'auth' ] ],
 		Route::get( '/remove-post', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
 		Route::post( '/remove-post', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
 
+		/* Post File */
 		Route::get( '/upload', 'Ovic\Framework\UploadFileController@upload' )->name( 'upload_file' );
 		Route::post( '/upload', 'Ovic\Framework\UploadFileController@upload' )->name( 'upload_file' );
+
+		Route::get( '/remove-file', 'Ovic\Framework\UploadFileController@remove' )->name( 'remove_file' );
+		Route::post( '/remove-file', 'Ovic\Framework\UploadFileController@remove' )->name( 'remove_file' );
+
+		Route::get( '/file-filter', 'Ovic\Framework\UploadFileController@filter' )->name( 'file_filter' );
+		Route::post( '/file-filter', 'Ovic\Framework\UploadFileController@filter' )->name( 'file_filter' );
+
+		Route::get( 'images/{year}/{month}/{filename}', 'Ovic\Framework\ImageController@store' )->name( 'get_file' );
+		Route::post( 'images/{year}/{month}/{filename}', 'Ovic\Framework\ImageController@store' )->name( 'get_file' );
 	}
 );

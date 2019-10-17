@@ -1,13 +1,14 @@
-<?php
-/**
- * The nav bar for our theme
- *
- * @package Ovic
- * @subpackage Framework
- *
- * @version 1.0
- */
-?>
+@php
+    /**
+     * The nav bar for our theme
+     *
+     * @package Ovic
+     * @subpackage Framework
+     *
+     * @version 1.0
+     */
+@endphp
+
 <div class="row border-bottom">
     <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">

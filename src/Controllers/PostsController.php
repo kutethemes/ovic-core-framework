@@ -17,7 +17,7 @@ class PostsController extends Controller
 		if ( !$request->has( [ 'title', 'post_type' ] ) ) {
 			return response()->json(
 				[
-					'status'  => 'warning',
+					'status'  => 'error',
 					'message' => 'required Title, Post Type',
 				], 400
 			);
@@ -40,7 +40,7 @@ class PostsController extends Controller
 		if ( !$request->has( [ 'id' ] ) ) {
 			return response()->json(
 				[
-					'status'  => 'warning',
+					'status'  => 'error',
 					'message' => 'required Post ID',
 				], 400
 			);
@@ -63,28 +63,14 @@ class PostsController extends Controller
 		if ( !$request->has( [ 'id' ] ) ) {
 			return response()->json(
 				[
-					'status'  => 'warning',
+					'status'  => 'error',
 					'message' => 'required Post ID',
 				], 400
 			);
 		}
 
-		if ( !Post::is_exits( $request->id ) ) {
-			return response()->json(
-				[
-					'status'  => 'warning',
-					'message' => 'The post is do not exits.',
-				], 400
-			);
-		}
+		$removed = Post::remove_post( $request->id );
 
-		Postmeta::where( 'post_id', $request->id )->delete();
-
-		return response()->json(
-			[
-				'status'  => Post::destroy( $request->id ),
-				'message' => 'The post is removed.',
-			]
-		);
+		return response()->json( $removed, $removed['code'] );
 	}
 }

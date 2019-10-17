@@ -1,13 +1,14 @@
-<?php
-/**
- * The mailbox notice for our theme
- *
- * @package Ovic
- * @subpackage Framework
- *
- * @version 1.0
- */
-?>
+@php
+    /**
+     * The mailbox notice for our theme
+     *
+     * @package Ovic
+     * @subpackage Framework
+     *
+     * @version 1.0
+     */
+@endphp
+
 <li class="dropdown">
     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
         <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>

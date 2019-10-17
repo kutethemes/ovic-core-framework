@@ -9,6 +9,60 @@ use Illuminate\Support\Facades\Storage;
 
 class UploadFileController extends Controller
 {
+	private $folder = 'uploads/';
+
+	/**
+	 * filter images through XHR Request.
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function filter( Request $request )
+	{
+		$request = $request->toArray();
+		if ( !empty( $request['data'] ) ) {
+			switch ( $request['data'] ) {
+				case 'search';
+					$args = [
+						[ "post_type", "=", "attachment" ],
+						[ "status", "=", "publish" ],
+					];
+
+					if ( !empty( $request['s'] ) ) {
+						$args[] = [ "title", "like", "%{$request['s']}%" ];
+					}
+
+					$attachments = \Ovic\Framework\Post::get_images( $args );
+
+					$html = '';
+
+					foreach ( $attachments as $attachment ) {
+						$html .= view( ovic_blade( 'Backend.media.item' ), compact( 'attachment' ) )->toHtml();
+					}
+
+					return response()->json(
+						[
+							'status'  => 'success',
+							'message' => 'Đã tìm được ' . count( $attachments ) . ' kết quả.',
+							'html'    => $html,
+						]
+					);
+					break;
+
+				case 'file_type':
+					break;
+			}
+		}
+
+		return response()->json(
+			[
+				'status'  => 'error',
+				'message' => 'Không rõ kiểu lọc.',
+			], 400
+		);
+	}
+
 	/**
 	 * Saving images uploaded through XHR Request.
 	 *
@@ -21,7 +75,7 @@ class UploadFileController extends Controller
 		if ( !$request->hasFile( 'file' ) ) {
 			return response()->json(
 				[
-					'status'  => 'warning',
+					'status'  => 'error',
 					'message' => 'The File do not exits.',
 				], 400
 			);
@@ -39,7 +93,7 @@ class UploadFileController extends Controller
 		$FileTitle = str_replace( ".{$extension}", "", $FileName );
 
 		$FilePath = Storage::putFileAs(
-			"/uploads/{$now->year}/{$now->month}",
+			"{$this->folder}{$now->year}/{$now->month}",
 			$file,
 			$FileName
 		);
@@ -52,10 +106,10 @@ class UploadFileController extends Controller
 				'meta'      => [
 					'_attachment_meta' => [
 						'alt'       => '',
-						'size'      => $FileSize,
+						'size'      => size_format( $FileSize ),
 						'mimetype'  => $MimeType,
 						'extension' => $extension,
-						'path'      => $FilePath,
+						'path'      => str_replace( $this->folder, '', $FilePath ),
 					],
 				],
 				'user_id'   => Auth::user()->id,
@@ -63,29 +117,34 @@ class UploadFileController extends Controller
 			]
 		);
 
-		$file_url = url( Storage::url( "app/{$FilePath}" ) );
+		if ( $created['code'] == 400 ) {
+			Storage::delete( $FilePath );
 
-		if ( strstr( $MimeType, "video/" ) ) {
-			$FileType = '<div class="icon"><i class="img-fluid fa fa-film"></i></div>';
-		} else if ( strstr( $MimeType, "image/" ) ) {
-			$FileType = '<div class="image"><img alt="image" class="img-fluid" src="' . $file_url . '"></i></div>';
-		} else if ( strstr( $MimeType, "audio/" ) ) {
-			$FileType = '<div class="icon"><i class="fa fa-music"></i></div>';
-		} else if ( strstr( $MimeType, "xls" ) ) {
-			$FileType = '<div class="icon"><i class="fa fa-bar-chart-o"></i></div>';
-		} else {
-			$FileType = '<div class="icon"><i class="fa fa-file"></i></div>';
+			return response()->json(
+				[
+					'status'  => 'error',
+					'message' => 'The File can not save.',
+				], 400
+			);
 		}
+
+		$attachment = \Ovic\Framework\Post::get_images(
+			[
+				[ 'id', '=', $created['post_id'] ],
+				[ 'post_type', '=', 'attachment' ],
+				[ 'status', '=', 'publish' ],
+			]
+		);
+		$attachment = array_shift( $attachment );
 
 		return response()->json(
 			[
-				'message'  => 'Image saved Successfully',
-				'name'     => $FileName,
-				'size'     => $FileSize,
-				'type'     => $FileType,
-				'post_id'  => $created['post_id'],
-				'url'      => $file_url,
-				'datetime' => $now->toDateTimeString(),
+				'status'  => 'success',
+				'message' => 'Image saved Successfully',
+				'html'    => view(
+					ovic_blade( 'Backend.media.item' ),
+					compact( 'attachment' )
+				)->toHtml(),
 			]
 		);
 	}
@@ -95,8 +154,23 @@ class UploadFileController extends Controller
 	 *
 	 * @param Request $request
 	 */
-	public function destroy( Request $request )
+	public function remove( Request $request )
 	{
-		return response()->json( [ 'message' => 'File successfully delete' ] );
+		if ( !$request->has( 'id' ) ) {
+			return response()->json(
+				[
+					'status'  => 'error',
+					'message' => 'The do not have ID.',
+				], 400
+			);
+		}
+
+		$attachment = Postmeta::get_post_meta( $request->id, '_attachment_meta' );
+
+		Storage::delete( "{$this->folder}{$attachment['path']}" );
+
+		$removed = Post::remove_post( $request->id );
+
+		return response()->json( $removed, $removed['code'] );
 	}
 }

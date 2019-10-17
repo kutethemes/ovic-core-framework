@@ -19,11 +19,19 @@ class Postmeta extends Eloquent
 	 */
 	protected $primaryKey = 'meta_id';
 
+	/**
+	 * Get the post that owns the comment.
+	 */
+	public function post()
+	{
+		return $this->belongsTo( Post::class );
+	}
+
 	public static function get_meta( $post_id )
 	{
 		$meta_data = [];
-		$postmeta  = Postmeta::where( 'post_id', $post_id )->get();
-		$postmeta  = json_decode( $postmeta->toJson(), true );
+		$postmeta  = Postmeta::where( 'post_id', $post_id )->get()->toJson();
+		$postmeta  = json_decode( $postmeta, true );
 		if ( !empty( $postmeta ) ) {
 			foreach ( $postmeta as $meta ) {
 				$meta_data[$meta['meta_key']] = maybe_unserialize( $meta['meta_value'] );

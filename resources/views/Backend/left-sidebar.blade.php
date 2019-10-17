@@ -1,14 +1,14 @@
-<?php
-/**
- * The left sidebar for our theme
- *
- * @package Ovic
- * @subpackage Framework
- *
- * @version 1.0
- */
-$name = Route::currentRouteName();
-?>
+@php
+    /**
+     * The left sidebar for our theme
+     *
+     * @package Ovic
+     * @subpackage Framework
+     *
+     * @version 1.0
+     */
+    $name = Route::currentRouteName();
+@endphp
 <!-- Left Sidebar -->
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">

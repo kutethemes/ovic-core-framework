@@ -1,13 +1,13 @@
-<?php
-/**
- * The account for our theme
- *
- * @package Ovic
- * @subpackage Framework
- *
- * @version 1.0
- */
-?><!doctype html>
+@php
+    /**
+     * The account for our theme
+     *
+     * @package Ovic
+     * @subpackage Framework
+     *
+     * @version 1.0
+     */
+@endphp<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -24,9 +24,9 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Ubuntu:400" rel="stylesheet">
 
-    @yield('head')
+@yield('head')
 
-    <!-- Styles -->
+<!-- Styles -->
     <style>
         * {
             -webkit-box-sizing: border-box;

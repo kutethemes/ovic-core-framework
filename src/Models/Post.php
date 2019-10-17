@@ -14,6 +14,14 @@ class Post extends Eloquent
 	 */
 	protected $table = 'posts';
 
+	/**
+	 * Get the user that owns the phone.
+	 */
+	public function meta()
+	{
+		return $this->hasMany( Postmeta::class );
+	}
+
 	/*
 	 * @param: $post is name/slug/id
 	 * */
@@ -50,7 +58,7 @@ class Post extends Eloquent
 		if ( !Post::is_exits( $post_id ) ) {
 			return [
 				'code'    => 400,
-				'status'  => 'warning',
+				'status'  => 'error',
 				'message' => 'The post is do not exits.',
 			];
 		}
@@ -92,7 +100,7 @@ class Post extends Eloquent
 			return [
 				'code'    => 400,
 				'post_id' => 0,
-				'status'  => 'warning',
+				'status'  => 'error',
 				'message' => 'The post is exits.',
 			];
 		}
@@ -130,24 +138,69 @@ class Post extends Eloquent
 		];
 	}
 
-	/*
-	 * @param: $post is name/slug/id
-	 * */
-	public static function get_post( $post, $include_meta = true )
+	public static function remove_post( $post_id )
 	{
-		$column = 'id';
-		if ( !abs( intval( $post ) ) ) {
-			$column = 'name';
+		if ( !Post::is_exits( $post_id ) ) {
+			return [
+				'code'    => 400,
+				'status'  => 'error',
+				'message' => 'The post is do not exits.',
+			];
 		}
-		$post = Post::where( $column, '=', $post )->first();
-		$post = json_decode( $post->toJson(), true );
-		if ( $include_meta ) {
-			$post_meta = Postmeta::get_meta( $post['id'] );
-			if ( !empty( $post_meta ) ) {
-				$post['meta'] = $post_meta;
+
+		Postmeta::where( 'post_id', $post_id )->delete();
+
+		return [
+			'code'    => 200,
+			'status'  => 'success',
+			'count'   => Post::destroy( $post_id ),
+			'message' => 'The post is removed.',
+		];
+	}
+
+	public static function get_images( $args )
+	{
+		$attachments = \Ovic\Framework\Post::where( $args )
+			->with(
+				[
+					'meta' => function ( $query ) {
+						$query->where( [
+								[ 'meta_key', '=', '_attachment_meta' ],
+							]
+						);
+					},
+				]
+			)
+			->get()->toJson();
+
+		$attachments = json_decode( $attachments, true );
+
+		if ( !empty( $attachments ) ) {
+			foreach ( $attachments as $key => $attachment ) {
+				$attachment['url'] = '';
+
+				if ( !empty( $attachment['meta'] ) ) {
+					$attachment['meta'] = maybe_unserialize( $attachment['meta'][0]['meta_value'] );
+					if ( !empty( $attachment['meta']['path'] ) ) {
+						$attachment['url'] = route( 'get_file', explode( '/', $attachment['meta']['path'] ) );
+					}
+				}
+				$attachments[$key] = $attachment;
 			}
 		}
 
-		return $post;
+		return $attachments;
+	}
+
+	/*
+	 * @param: $args is array - https://laravel.com/docs/6.x/queries#where-clauses
+	 * */
+	public static function get_posts( $args )
+	{
+		$posts = Post::where( $args )
+			->with( 'meta' )
+			->get()->toJson();
+
+		return json_decode( $posts, true );
 	}
 }

@@ -1,13 +1,14 @@
-<?php
-/**
- * The notifications for our theme
- *
- * @package Ovic
- * @subpackage Framework
- *
- * @version 1.0
- */
-?>
+@php
+    /**
+     * The notifications for our theme
+     *
+     * @package Ovic
+     * @subpackage Framework
+     *
+     * @version 1.0
+     */
+@endphp
+
 <li class="dropdown">
     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
         <i class="fa fa-bell"></i> <span class="label label-primary">8</span>
