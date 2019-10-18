@@ -45,6 +45,75 @@
             border: none;
             margin: 0;
         }
+        .file-box a {
+            line-height: 1;
+        }
+        .list-style .icon,
+        .list-style .image {
+            display: none;
+        }
+        .list-style .btn-del-file {
+            right: 5px;
+            left: auto;
+            top: auto;
+            bottom: -5px;
+        }
+        .switch {
+            float: right;
+        }
+        form.dropzone {
+            margin-bottom: 15px;
+        }
+        .switch .onoffswitch-inner::before {
+            content: "LIST";
+        }
+        .switch .onoffswitch-inner::after {
+            content: "GRID";
+        }
+        .sub-dir {
+            padding-left: 20px;
+        }
+        .folder-list .sub-dir li {
+            display: inline-block;
+            border: none;
+        }
+        .folder-list li {
+            border: none !important;
+            position: relative;
+        }
+        .folder-list li i.fa {
+            color: #bbb;
+            font-size: 10px;
+        }
+        .folder-list > li::after {
+            content: "";
+            position: absolute;
+            width: 1px;
+            background-color: #bbb;
+            height: 100%;
+            left: 4px;
+            top: 0;
+        }
+        .folder-list > li::before {
+            content: "";
+            background-color: #bbb;
+            width: 18px;
+            height: 1px;
+            position: absolute;
+            left: 0;
+            top: 16px;
+        }
+        .folder-list li .sub-dir a {
+            padding: 5px;
+        }
+        .folder-list a.active {
+            color: #1ab394;
+        }
+        .folder-list .sub-dir a.active {
+            color: #fff;
+            background-color: #1ab394;
+            border-color: #1ab394
+        }
     </style>
 @endsection
 
@@ -163,6 +232,7 @@
             $('input[name="dir"]').val('').trigger('change');
             $('input[name="sort"]').val('all').trigger('change');
             $('button[value="all"]').addClass('active').siblings().removeClass('active');
+            $('.folder-list').find('a').removeClass('active');
         });
         $(document).on('click', '.file-control', function () {
             $('input[name="sort"]')
@@ -172,14 +242,20 @@
             $(this).addClass('active').siblings().removeClass('active');
         });
         $(document).on('click', '.dir-filter', function () {
+            let parent = $(this).closest('.folder-list');
             $('input[name="dir"]')
                 .val(
                     $(this).data('dir')
                 ).trigger('change');
 
             $(this).closest('form').trigger('submit');
+            parent.find('a').removeClass('active');
+            $(this).addClass('active');
 
             return false;
+        });
+        $(document).on('click', '.onoffswitch-label', function () {
+            $('#dropzone-previews').toggleClass('list-style');
         });
     </script>
 @endsection
@@ -216,13 +292,22 @@
             <div class="col-lg-3">
                 <div class="ibox ">
                     <div class="ibox-content">
+                        <div class="switch">
+                            <div class="onoffswitch">
+                                <input type="checkbox" checked="" class="onoffswitch-checkbox" id="example1">
+                                <label class="onoffswitch-label" for="example1">
+                                    <span class="onoffswitch-inner"></span>
+                                    <span class="onoffswitch-switch"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
                         <form action="{{ route('upload_file') }}" class="dropzone" id="dropzoneForm" method="post"
                               enctype="multipart/form-data">
                             <div class="fallback">
                                 <input name="file" type="file" multiple/>
                             </div>
                         </form>
-                        <div class="hr-line-dashed"></div>
                         <form method="post" class="file-manager filter-control">
                             <input type="hidden" name="dir" value=""/>
                             <input type="hidden" name="sort" value="all"/>
@@ -270,18 +355,20 @@
                                     @foreach ( $directories as $year => $month )
                                         <li>
                                             <a href="#" data-dir="{{ $year }}" class="dir-filter">
-                                                <i class="fa fa-folder"></i>
+                                                <i class="fa fa-circle"></i>
                                                 Năm {{ $year }}
                                             </a>
                                             @php
                                                 $month  = array_unique( array_values( $month ) );
                                             @endphp
-                                            <ul>
+                                            <ul class="sub-dir">
                                                 @foreach ( $month as $mon )
-                                                    <a href="#" data-dir="{{ $mon }}" class="dir-filter children">
-                                                        <i class="fa fa-folder"></i>
-                                                        Tháng {{ str_replace( [$year,'/'],['',''],$mon ) }}
-                                                    </a>
+                                                    <li>
+                                                        <a href="#" data-dir="{{ $mon }}"
+                                                           class="dir-filter btn btn-white btn-bitbucket">
+                                                            {{ str_replace( [$year,'/'],['',''],$mon ) }}
+                                                        </a>
+                                                    </li>
                                                 @endforeach
                                             </ul>
                                         </li>
