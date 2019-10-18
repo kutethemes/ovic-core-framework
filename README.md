@@ -20,6 +20,13 @@ To create migrate, by run the following command:
 php artisan migrate --path=\vendor\ovic-core\framework\database
 ```
 
+To install nodejs, bootstrap, by run the following command ( need nodejs: https://nodejs.org/):
+
+``` bash
+npm install
+npm install bootstrap
+```
+
 The package will automatically register a service provider and alias.
 
 Optionally, publish the package's configuration file by running:
