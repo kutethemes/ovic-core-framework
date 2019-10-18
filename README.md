@@ -14,13 +14,20 @@ To update through Composer, by run the following command:
 composer update ovic-core/framework
 ```
 
+To create Auth, by run the following command:
+
+``` bash
+php artisan ui vue --auth
+```
+
 To create migrate, by run the following command:
 
 ``` bash
-php artisan migrate --path=\vendor\ovic-core\framework\database
+All         : php artisan migrate
+Only vendor : php artisan migrate --path=\vendor\ovic-core\framework\database
 ```
 
-To install nodejs, bootstrap, by run the following command ( need nodejs: https://nodejs.org/):
+To install nodejs, bootstrap, by run the following command ( require nodejs: https://nodejs.org/):
 
 ``` bash
 npm install
