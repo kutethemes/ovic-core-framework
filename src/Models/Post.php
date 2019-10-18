@@ -158,49 +158,37 @@ class Post extends Eloquent
 		];
 	}
 
-	public static function get_images( $args )
-	{
-		$attachments = \Ovic\Framework\Post::where( $args )
-			->with(
-				[
-					'meta' => function ( $query ) {
-						$query->where( [
-								[ 'meta_key', '=', '_attachment_meta' ],
-							]
-						);
-					},
-				]
-			)
-			->get()->toJson();
-
-		$attachments = json_decode( $attachments, true );
-
-		if ( !empty( $attachments ) ) {
-			foreach ( $attachments as $key => $attachment ) {
-				$attachment['url'] = '';
-
-				if ( !empty( $attachment['meta'] ) ) {
-					$attachment['meta'] = maybe_unserialize( $attachment['meta'][0]['meta_value'] );
-					if ( !empty( $attachment['meta']['path'] ) ) {
-						$attachment['url'] = route( 'get_file', explode( '/', $attachment['meta']['path'] ) );
-					}
-				}
-				$attachments[$key] = $attachment;
-			}
-		}
-
-		return $attachments;
-	}
-
 	/*
 	 * @param: $args is array - https://laravel.com/docs/6.x/queries#where-clauses
 	 * */
 	public static function get_posts( $args )
 	{
-		$posts = Post::where( $args )
-			->with( 'meta' )
-			->get()->toJson();
+		$meta = [ 'meta' ];
+		if ( !empty( $args['meta'] ) ) {
+			$meta = [
+				'meta' => function ( $query ) use ( $args ) {
+					$query->where( $args['meta'] );
+				},
+			];
+			unset( $args['meta'] );
+		}
+		$posts = \Ovic\Framework\Post::where( $args )
+			->with( $meta )->get()->toArray();
 
-		return json_decode( $posts, true );
+		if ( !empty( $posts ) ) {
+			foreach ( $posts as $key => $post ) {
+				if ( !empty( $post['meta'] ) ) {
+					$post['meta'] = collect( $post['meta'] )->mapWithKeys(
+						function ( $item, $key ) {
+							return [ $item['meta_key'] => maybe_unserialize( $item['meta_value'] ) ];
+						}
+					)->toArray();
+				}
+
+				$posts[$key] = $post;
+			}
+		}
+
+		return $posts;
 	}
 }

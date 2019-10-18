@@ -30,8 +30,7 @@ class Postmeta extends Eloquent
 	public static function get_meta( $post_id )
 	{
 		$meta_data = [];
-		$postmeta  = Postmeta::where( 'post_id', $post_id )->get()->toJson();
-		$postmeta  = json_decode( $postmeta, true );
+		$postmeta  = Postmeta::where( 'post_id', $post_id )->get()->toArray();
 		if ( !empty( $postmeta ) ) {
 			foreach ( $postmeta as $meta ) {
 				$meta_data[$meta['meta_key']] = maybe_unserialize( $meta['meta_value'] );

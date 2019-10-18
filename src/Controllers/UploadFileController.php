@@ -21,38 +21,75 @@ class UploadFileController extends Controller
 	public function filter( Request $request )
 	{
 		$request = $request->toArray();
-		if ( !empty( $request['data'] ) ) {
-			switch ( $request['data'] ) {
-				case 'search';
-					$args = [
-						[ "post_type", "=", "attachment" ],
-						[ "status", "=", "publish" ],
-					];
 
-					if ( !empty( $request['s'] ) ) {
-						$args[] = [ "title", "like", "%{$request['s']}%" ];
-					}
+		if ( !empty( $request['_form'] ) ) {
+			$args = [
+				[ "post_type", "=", "attachment" ],
+				[ "status", "=", "publish" ],
+			];
 
-					$attachments = \Ovic\Framework\Post::get_images( $args );
-
-					$html = '';
-
-					foreach ( $attachments as $attachment ) {
-						$html .= view( ovic_blade( 'Backend.media.item' ), compact( 'attachment' ) )->toHtml();
-					}
-
-					return response()->json(
-						[
-							'status'  => 'success',
-							'message' => 'Đã tìm được ' . count( $attachments ) . ' kết quả.',
-							'html'    => $html,
-						]
-					);
-					break;
-
-				case 'file_type':
-					break;
+			if ( !empty( $request['_form']['s'] ) ) {
+				$args[] = [ "title", "like", "%{$request['_form']['s']}%" ];
 			}
+
+			if ( !empty( $request['_form']['dir'] ) ) {
+				$args[] = [ "name", "like", "%{$request['_form']['dir']}%" ];
+			}
+
+			$attachments = \Ovic\Framework\Post::get_posts( $args );
+
+			foreach ( $attachments as $key => $attachment ) {
+				$mimetype  = $attachment['meta']['_attachment_metadata']['mimetype'];
+				$extension = $attachment['meta']['_attachment_metadata']['extension'];
+
+				switch ( $request['_form']['sort'] ) {
+					case 'im':
+						if ( !strstr( $mimetype, "image/" ) ) {
+							unset( $attachments[$key] );
+						}
+						break;
+
+					case 'vi':
+						if ( !strstr( $mimetype, "video/" ) ) {
+							unset( $attachments[$key] );
+						}
+						break;
+
+					case 'au':
+						if ( !strstr( $mimetype, "audio/" ) ) {
+							unset( $attachments[$key] );
+						}
+						break;
+
+					case 'doc':
+						$ext_allow = [ 'doc', 'docx', 'xls', 'xlsx', 'pdf' ];
+						if ( !in_array( $extension, $ext_allow ) ) {
+							unset( $attachments[$key] );
+						}
+						break;
+
+					case 'ar':
+						$ext_allow = [ 'rar', 'zip' ];
+						if ( !in_array( $extension, $ext_allow ) ) {
+							unset( $attachments[$key] );
+						}
+						break;
+				}
+			}
+
+			$html = '';
+
+			foreach ( $attachments as $attachment ) {
+				$html .= view( ovic_blade( 'Backend.media.item' ), compact( 'attachment' ) )->toHtml();
+			}
+
+			return response()->json(
+				[
+					'status'  => 'success',
+					'message' => 'Đã tìm được ' . count( $attachments ) . ' kết quả.',
+					'html'    => $html,
+				]
+			);
 		}
 
 		return response()->json(
@@ -89,8 +126,7 @@ class UploadFileController extends Controller
 		$FileSize     = $file->getSize();
 		$OriginalName = $file->getClientOriginalName();
 
-		$FileName  = str_replace( ".{$extension}", "-{$now->getTimestamp()}.{$extension}", $OriginalName );
-		$FileTitle = str_replace( ".{$extension}", "", $FileName );
+		$FileName = str_replace( ".{$extension}", "-{$now->getTimestamp()}.{$extension}", $OriginalName );
 
 		$FilePath = Storage::putFileAs(
 			"{$this->folder}{$now->year}/{$now->month}",
@@ -100,16 +136,15 @@ class UploadFileController extends Controller
 
 		$created = \Ovic\Framework\Post::add_post(
 			[
-				'title'     => $FileTitle,
-				'name'      => $FileName,
+				'title'     => $FileName,
+				'name'      => "{$now->year}/{$now->month}/{$FileName}",
 				'post_type' => 'attachment',
 				'meta'      => [
-					'_attachment_meta' => [
+					'_attachment_metadata' => [
 						'alt'       => '',
 						'size'      => size_format( $FileSize ),
 						'mimetype'  => $MimeType,
 						'extension' => $extension,
-						'path'      => str_replace( $this->folder, '', $FilePath ),
 					],
 				],
 				'user_id'   => Auth::user()->id,
@@ -128,7 +163,7 @@ class UploadFileController extends Controller
 			);
 		}
 
-		$attachment = \Ovic\Framework\Post::get_images(
+		$attachment = \Ovic\Framework\Post::get_posts(
 			[
 				[ 'id', '=', $created['post_id'] ],
 				[ 'post_type', '=', 'attachment' ],
@@ -165,9 +200,10 @@ class UploadFileController extends Controller
 			);
 		}
 
-		$attachment = Postmeta::get_post_meta( $request->id, '_attachment_meta' );
+		$path = Post::find( $request->id )->toArray()['name'];
+		$path = str_replace( '//', '/', "{$this->folder}{$path}" );
 
-		Storage::delete( "{$this->folder}{$attachment['path']}" );
+		Storage::delete( $path );
 
 		$removed = Post::remove_post( $request->id );
 

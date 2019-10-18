@@ -40,6 +40,11 @@
             overflow: hidden;
             display: block;
         }
+        .control-filter .file-control {
+            background: none;
+            border: none;
+            margin: 0;
+        }
     </style>
 @endsection
 
@@ -51,6 +56,21 @@
     <!-- dropzone -->
     <script src="{{ asset('js/plugins/dropzone/dropzone.js') }}"></script>
     <script>
+        var serializeObject = function (form) {
+            var o = {};
+            var a = form.serializeArray();
+            $.each(a, function () {
+                if ( o[ this.name ] ) {
+                    if ( !o[ this.name ].push ) {
+                        o[ this.name ] = [ o[ this.name ] ];
+                    }
+                    o[ this.name ].push(this.value || '');
+                } else {
+                    o[ this.name ] = this.value || '';
+                }
+            });
+            return o;
+        };
         /* Tạo file */
         Dropzone.options.dropzoneForm = {
             url: "{{ route('upload_file') }}",
@@ -120,14 +140,13 @@
             });
         });
         /* Tìm kiếm */
-        $(document).on('submit', '.search-control', function () {
+        $(document).on('submit', '.filter-control', function () {
             $.ajax({
                 url: "{{ route('file_filter') }}",
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    data: 'search',
-                    s: $(this).find('input[name="s"]').val(),
+                    _form: serializeObject($(this)),
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (response) {
@@ -139,6 +158,29 @@
             });
             return false;
         });
+        $(document).on('click', '.reset-filter', function () {
+            $('input[name="s"]').val('').trigger('change');
+            $('input[name="dir"]').val('').trigger('change');
+            $('input[name="sort"]').val('all').trigger('change');
+            $('button[value="all"]').addClass('active').siblings().removeClass('active');
+        });
+        $(document).on('click', '.file-control', function () {
+            $('input[name="sort"]')
+                .val(
+                    $(this).val()
+                ).trigger('change');
+            $(this).addClass('active').siblings().removeClass('active');
+        });
+        $(document).on('click', '.dir-filter', function () {
+            $('input[name="dir"]')
+                .val(
+                    $(this).data('dir')
+                ).trigger('change');
+
+            $(this).closest('form').trigger('submit');
+
+            return false;
+        });
     </script>
 @endsection
 
@@ -146,7 +188,7 @@
 
 @section('content')
     @php
-        $attachments = \Ovic\Framework\Post::get_images(
+        $attachments = \Ovic\Framework\Post::get_posts(
             [
                 [ 'post_type', '=', 'attachment' ],
                 [ 'status', '=', 'publish' ],
@@ -174,46 +216,82 @@
             <div class="col-lg-3">
                 <div class="ibox ">
                     <div class="ibox-content">
-                        <div class="file-manager">
-                            <form method="post" class="input-group search-control">
+                        <form action="{{ route('upload_file') }}" class="dropzone" id="dropzoneForm" method="post"
+                              enctype="multipart/form-data">
+                            <div class="fallback">
+                                <input name="file" type="file" multiple/>
+                            </div>
+                        </form>
+                        <div class="hr-line-dashed"></div>
+                        <form method="post" class="file-manager filter-control">
+                            <input type="hidden" name="dir" value=""/>
+                            <input type="hidden" name="sort" value="all"/>
+
+                            <div class="input-group">
                                 <input type="text" name="s" class="form-control"/>
                                 <span class="input-group-append">
                                     <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                                 </span>
-                            </form>
+                            </div>
                             <div class="hr-line-dashed"></div>
                             <h5>Show:</h5>
                             <div class="control-filter">
-                                <a href="#" class="file-control active">All</a>
-                                <a href="#" class="file-control">Documents</a>
-                                <a href="#" class="file-control">Audio</a>
-                                <a href="#" class="file-control">Images</a>
-                                <a href="#" class="file-control">Archive</a>
+                                <button type="submit" value="all" class="file-control active">All</button>
+                                <button type="submit" value="doc" class="file-control">Documents</button>
+                                <button type="submit" value="au" class="file-control">Audio</button>
+                                <button type="submit" value="vi" class="file-control">Video</button>
+                                <button type="submit" value="im" class="file-control">Images</button>
+                                <button type="submit" value="ar" class="file-control">Archive</button>
                             </div>
-                            <div class="hr-line-dashed"></div>
-                            <form action="{{ route('upload_file') }}" class="dropzone" id="dropzoneForm" method="post"
-                                  enctype="multipart/form-data">
-                                <div class="fallback">
-                                    <input name="file" type="file" multiple/>
-                                </div>
-                            </form>
                             <div class="hr-line-dashed"></div>
                             <h5>Folders</h5>
                             <ul class="folder-list" style="padding: 0">
-                                @php
-                                    $directories = \Illuminate\Support\Facades\Storage::allDirectories( 'uploads' );
-                                @endphp
-                                @foreach ( $directories as $directory )
-                                    <li>
-                                        <a href="">
-                                            <i class="fa fa-folder"></i>
-                                            {{ str_replace( 'uploads', '', $directory ) }}
-                                        </a>
-                                    </li>
-                                @endforeach
+
+                                @if( !empty( $attachments ) )
+                                    @php
+                                        $year           = '';
+                                        $directories    = [];
+                                    @endphp
+
+                                    @foreach ( $attachments as $attachment )
+                                        @php
+                                            $dir_year   = explode('/',$attachment['name']);
+                                            $dir_year   = array_shift($dir_year);
+                                            $dir        = str_replace( $attachment['title'],'',$attachment['name'] );
+
+                                            $directories[$dir_year][] = $dir;
+                                        @endphp
+                                    @endforeach
+
+                                    @php
+                                        asort( $directories );
+                                    @endphp
+
+                                    @foreach ( $directories as $year => $month )
+                                        <li>
+                                            <a href="#" data-dir="{{ $year }}" class="dir-filter">
+                                                <i class="fa fa-folder"></i>
+                                                Năm {{ $year }}
+                                            </a>
+                                            @php
+                                                $month  = array_unique( array_values( $month ) );
+                                            @endphp
+                                            <ul>
+                                                @foreach ( $month as $mon )
+                                                    <a href="#" data-dir="{{ $mon }}" class="dir-filter children">
+                                                        <i class="fa fa-folder"></i>
+                                                        Tháng {{ str_replace( [$year,'/'],['',''],$mon ) }}
+                                                    </a>
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    @endforeach
+                                @endif
+
                             </ul>
                             <div class="clearfix"></div>
-                        </div>
+                            <button type="submit" class="btn btn-outline btn-info reset-filter">Reset filter</button>
+                        </form>
                     </div>
                 </div>
             </div>
