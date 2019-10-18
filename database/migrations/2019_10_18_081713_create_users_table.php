@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
 					$table->text( 'role_ids' )->after('name');
 					$table->text( 'donvi_ids' )->after('name');
 					$table->text( 'donvi_id' )->after('name');
-					$table->text( 'status' )->after('name');
+					$table->tinyInteger( 'status' )->after('name');
 				}
 			);
 		} else {
@@ -30,7 +30,7 @@ class CreateUsersTable extends Migration
 					$table->text( 'role_ids' );
 					$table->text( 'donvi_ids' );
 					$table->text( 'donvi_id' );
-					$table->text( 'status' );
+					$table->tinyInteger( 'status' );
 					$table->string( 'email' )->unique();
 					$table->timestamp( 'email_verified_at' )->nullable();
 					$table->string( 'password' );
