@@ -78,11 +78,22 @@ class FrameworkServiceProvider extends ServiceProvider
 
 		/* Publishes */
 		$this->publishes_assets();
+		$this->publishes_views();
 		$this->publishes_lang();
 		$this->publishes_auth();
 	}
 
 	public function publishes_assets()
+	{
+		$this->publishes(
+			[
+				__DIR__ . '/../assets/' => public_path(),
+			],
+			'ovic-assets'
+		);
+	}
+
+	public function publishes_views()
 	{
 		$this->publishes(
 			[

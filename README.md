@@ -40,11 +40,11 @@ The package will automatically register a service provider and alias.
 Optionally, publish the package's configuration file by running:
 
 ``` bash
-All     : php artisan vendor:publish --provider="Ovic\Framework\FrameworkServiceProvider"
-Assets  : php artisan vendor:publish --tag=ovic-assets
-Views   : php artisan vendor:publish --tag=ovic-views
-Lang    : php artisan vendor:publish --tag=ovic-lang
-Auth    : php artisan vendor:publish --tag=ovic-auth
+All     : php artisan vendor:publish --provider="Ovic\Framework\FrameworkServiceProvider" --force
+Assets  : php artisan vendor:publish --tag=ovic-assets --force
+Views   : php artisan vendor:publish --tag=ovic-views --force
+Lang    : php artisan vendor:publish --tag=ovic-lang --force
+Auth    : php artisan vendor:publish --tag=ovic-auth --force
 ```
 
 **Tip: don't forget to run `composer dump-autoload` afterwards.**
