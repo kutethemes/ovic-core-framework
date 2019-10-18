@@ -31,6 +31,7 @@
     },
     "require": {
         "php": ">= 5.6",
+        "laravel/ui": "*",
         "laravel/valet": "*",
         "doctrine/dbal": "*",
         "ovic-core/user": "*",
@@ -43,7 +44,7 @@
             ]
         },
         "branch-alias": {
-          "dev-master": "6.0-dev"
+            "dev-master": "6.0-dev"
         }
     },
     "repositories": [
@@ -52,6 +53,11 @@
             "url": "https://github.com/kutethemes/ovic-core-framework"
         }
     ],
+    "scripts": {
+        "post-package-install": [
+            "@php artisan ui vue --auth"
+        ]
+    },
     "support": {
         "issues": "https://kutethemes.com/supports/"
     },
