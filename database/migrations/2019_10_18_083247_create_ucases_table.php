@@ -20,12 +20,12 @@ class CreateUcasesTable extends Migration
 				$table->string( 'router', 100 );
 				$table->string( 'controller', 255 );
 				$table->text( 'custom_link' );
-				$table->integer( 'parent_id', 11 );
+				$table->integer( 'parent_id' )->unsigned();
 				$table->string( 'icon', 100 );
 				$table->text( 'description' );
-				$table->tinyInteger( 'ordering', 4 );
+				$table->tinyInteger( 'ordering' )->unsigned();
 				$table->string( 'position', 15 );
-				$table->tinyInteger( 'status', 4 );
+				$table->tinyInteger( 'status' )->unsigned();
 				$table->timestamps();
 			}
 		);

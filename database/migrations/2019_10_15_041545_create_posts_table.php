@@ -20,7 +20,7 @@ class CreatePostsTable extends Migration
 				$table->text( 'name' );
 				$table->string( 'post_type', 20 );
 				$table->string( 'status', 20 ); // publish/draft/opened/closed/private
-				$table->text( 'content' )->default( '' );
+				$table->text( 'content' );
 				$table->text( 'user_id' );
 				$table->text( 'owner_id' );
 				$table->timestamps();

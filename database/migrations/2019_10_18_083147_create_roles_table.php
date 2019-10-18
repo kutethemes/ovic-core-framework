@@ -19,8 +19,8 @@ class CreateRolesTable extends Migration
 				$table->string( 'name', 150 );
 				$table->text( 'description' );
 				$table->text( 'usecase_ids' );
-				$table->integer( 'ordering', 11 );
-				$table->tinyInteger( 'status', 4 );
+				$table->integer( 'ordering' )->unsigned();
+				$table->tinyInteger( 'status' )->unsigned();
 				$table->timestamps();
 			}
 		);
