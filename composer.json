@@ -31,7 +31,6 @@
     },
     "require": {
         "php": ">= 5.6",
-        "laravel/valet": "*",
         "doctrine/dbal": "*",
         "ovic-core/user": "*",
         "laravel/ui": "^1.1",
