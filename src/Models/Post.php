@@ -173,7 +173,9 @@ class Post extends Eloquent
 			unset( $args['meta'] );
 		}
 		$posts = \Ovic\Framework\Post::where( $args )
-			->with( $meta )->get()->toArray();
+			->with( $meta )
+			->latest()
+			->get()->toArray();
 
 		if ( !empty( $posts ) ) {
 			foreach ( $posts as $key => $post ) {

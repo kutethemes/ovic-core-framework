@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostsTable extends Migration
+class CreateRolesTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -13,16 +13,14 @@ class CreatePostsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create( 'posts',
+		Schema::create( 'roles',
 			function ( Blueprint $table ) {
 				$table->bigIncrements( 'id' );
-				$table->text( 'title' );
-				$table->text( 'name' );
-				$table->string( 'post_type', 20 );
-				$table->string( 'status', 20 ); // publish/draft/opened/closed/private
-				$table->text( 'content' )->default( '' );
-				$table->text( 'user_id' );
-				$table->text( 'owner_id' );
+				$table->string( 'name', 150 );
+				$table->text( 'description' );
+				$table->text( 'usecase_ids' );
+				$table->integer( 'ordering', 11 );
+				$table->tinyInteger( 'status', 4 );
 				$table->timestamps();
 			}
 		);
@@ -35,6 +33,6 @@ class CreatePostsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists( 'posts' );
+		Schema::dropIfExists( 'roles' );
 	}
 }
