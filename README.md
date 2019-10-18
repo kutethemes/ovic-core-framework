@@ -25,6 +25,7 @@ To install nodejs, bootstrap, by run the following command ( need nodejs: https:
 ``` bash
 npm install
 npm install bootstrap
+npm run dev
 ```
 
 The package will automatically register a service provider and alias.
