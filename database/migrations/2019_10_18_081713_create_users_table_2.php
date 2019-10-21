@@ -19,7 +19,7 @@ class CreateUsersTable2 extends Migration
 					$table->text( 'role_ids' )->after( 'name' )->nullable();
 					$table->text( 'donvi_ids' )->after( 'role_ids' )->nullable();
 					$table->text( 'donvi_id' )->after( 'donvi_ids' )->nullable();
-					$table->tinyInteger( 'status' )->after( 'donvi_id' )->unsigned()->nullable();
+					$table->tinyInteger( 'status' )->after( 'donvi_id' )->unsigned()->default( 1 );
 				}
 			);
 		} else {
@@ -30,7 +30,7 @@ class CreateUsersTable2 extends Migration
 					$table->text( 'role_ids' )->nullable();
 					$table->text( 'donvi_ids' )->nullable();
 					$table->text( 'donvi_id' )->nullable();
-					$table->tinyInteger( 'status' )->unsigned()->nullable();
+					$table->tinyInteger( 'status' )->unsigned()->default( 1 );
 					$table->string( 'email' )->unique();
 					$table->timestamp( 'email_verified_at' )->nullable();
 					$table->string( 'password' );
