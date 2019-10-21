@@ -8,23 +8,10 @@ To install through Composer, by run the following command:
 composer require ovic-core/framework
 ```
 
-To update through Composer, by run the following command:
-
-``` bash
-composer update ovic-core/framework
-```
-
 To create Auth, by run the following command:
 
 ``` bash
 php artisan ui vue --auth
-```
-
-To create migrate, by run the following command:
-
-``` bash
-All         : php artisan migrate
-Only vendor : php artisan migrate --path=\vendor\ovic-core\framework\database
 ```
 
 To install nodejs, bootstrap, by run the following command ( require nodejs: https://nodejs.org/):
@@ -33,6 +20,13 @@ To install nodejs, bootstrap, by run the following command ( require nodejs: htt
 npm install
 npm install bootstrap
 npm run dev
+```
+
+To create migrate, by run the following command:
+
+``` bash
+All         : php artisan migrate
+Only vendor : php artisan migrate --path=\vendor\ovic-core\framework\database
 ```
 
 The package will automatically register a service provider and alias.
@@ -45,6 +39,14 @@ Assets  : php artisan vendor:publish --tag=ovic-assets --force
 Views   : php artisan vendor:publish --tag=ovic-views --force
 Lang    : php artisan vendor:publish --tag=ovic-lang --force
 Auth    : php artisan vendor:publish --tag=ovic-auth --force
+```
+
+## Config
+
+To update through Composer, by run the following command:
+
+``` bash
+composer update ovic-core/framework
 ```
 
 **Tip: don't forget to run `composer dump-autoload` afterwards.**
