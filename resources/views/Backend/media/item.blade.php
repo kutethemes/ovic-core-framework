@@ -22,7 +22,10 @@
         <a href="#" class="btn-del-file" title="Xóa file">
             <i class="fa fa-trash-o" aria-hidden="true"></i>
         </a>
-        <a href="{{ $url }}" target="_blank">
+        <span class="btn btn-info btn-circle">
+            <i class="fa fa-check"></i>
+        </span>
+        <a href="upload/{{ $attachment['id'] }}" target="_blank">
             <span class="corner"></span>
             @if ( strstr( $mimetype, "video/" ) )
                 <div class="icon">

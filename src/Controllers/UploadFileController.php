@@ -12,7 +12,19 @@ class UploadFileController extends Controller
 	private $folder = 'uploads/';
 
 	/**
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware( 'auth' );
+	}
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
 	 */
 	public function index()
 	{
@@ -20,9 +32,17 @@ class UploadFileController extends Controller
 	}
 
 	/**
-	 * filter images through XHR Request.
+	 * Show the form for creating a new resource.
 	 *
-	 * @param \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		//
+	}
+
+	/**
+	 * Show the form for creating a new resource.
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
@@ -104,24 +124,26 @@ class UploadFileController extends Controller
 			[
 				'status'  => 'error',
 				'message' => 'Không rõ kiểu lọc.',
+				'html'    => '',
 			], 400
 		);
 	}
 
 	/**
-	 * Saving images uploaded through XHR Request.
+	 * Store a newly created resource in storage.
 	 *
 	 * @param \Illuminate\Http\Request $request
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function upload( Request $request )
+	public function store( Request $request )
 	{
 		if ( !$request->hasFile( 'file' ) ) {
 			return response()->json(
 				[
 					'status'  => 'error',
 					'message' => 'The File do not exits.',
+					'html'    => '',
 				], 400
 			);
 		}
@@ -167,53 +189,82 @@ class UploadFileController extends Controller
 				[
 					'status'  => 'error',
 					'message' => 'The File can not save.',
+					'html'    => '',
 				], 400
 			);
 		}
-
-		$attachment = \Ovic\Framework\Post::get_posts(
-			[
-				[ 'id', '=', $created['post_id'] ],
-				[ 'post_type', '=', 'attachment' ],
-				[ 'status', '=', 'publish' ],
-			]
-		);
-		$attachment = array_shift( $attachment );
 
 		return response()->json(
 			[
 				'status'  => 'success',
 				'message' => 'Image saved Successfully',
-				'html'    => view(
-					ovic_blade( 'Backend.media.item' ),
-					compact( 'attachment' )
-				)->toHtml(),
+				'html'    => $this->show( $created['post_id'] )->toHtml(),
 			]
 		);
 	}
 
 	/**
-	 * Remove the images from the storage.
+	 * Display the specified resource.
 	 *
-	 * @param Request $request
+	 * @param int $id
+	 *
+	 * @return \Illuminate\Http\Response
 	 */
-	public function remove( Request $request )
+	public function show( $id )
 	{
-		if ( !$request->has( 'id' ) ) {
-			return response()->json(
-				[
-					'status'  => 'error',
-					'message' => 'The do not have ID.',
-				], 400
-			);
-		}
+		$attachment = Post::get_posts(
+			[
+				[ 'id', '=', $id ],
+				[ 'post_type', '=', 'attachment' ],
+				[ 'status', '=', 'publish' ],
+			]
+		);
 
-		$path = Post::find( $request->id )->toArray()['name'];
+		$attachment = array_shift( $attachment );
+
+		return view( ovic_blade( 'Backend.media.item' ), compact( 'attachment' ) );
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param int $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit( $id )
+	{
+		//
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @param int                      $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update( Request $request, $id )
+	{
+		//
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param int $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy( $id )
+	{
+		$path = Post::find( $id )->toArray()['name'];
 		$path = str_replace( '//', '/', "{$this->folder}{$path}" );
 
 		Storage::delete( $path );
 
-		$removed = Post::remove_post( $request->id );
+		$removed = Post::remove_post( $id );
 
 		return response()->json( $removed, $removed['code'] );
 	}

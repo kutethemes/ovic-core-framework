@@ -6,7 +6,17 @@ use App\Http\Controllers\Controller;
 
 class ImagesController extends Controller
 {
-	public function store( $year, $month, $filename )
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware( 'auth' );
+	}
+
+	public function index( $year, $month, $filename )
 	{
 		$path = storage_path( "app/uploads/{$year}/{$month}/{$filename}" );
 

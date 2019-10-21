@@ -24,7 +24,7 @@
                 </div>
             </li>
             <li @if ( $name == 'dashboard' ) class="active" @endif>
-                <a href="#">
+                <a href="{{ url('/dashboard') }}">
                     <i class="fa fa-tachometer"></i>
                     <span class="nav-label">Dashboard</span>
                 </a>
@@ -36,14 +36,14 @@
                     <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level collapse">
-                    <li @if ( $name == 'users' ) class="active" @endif>
+                    <li @if ( $name == 'users.index' ) class="active" @endif>
                         <a href="{{ url('/users') }}">
                             <i class="fa fa-users"></i>
                             <span class="nav-label">Users</span>
                         </a>
                     </li>
-                    <li @if ( $name == 'media' ) class="active" @endif>
-                        <a href="{{ url('/media') }}">
+                    <li @if ( $name == 'upload.index' ) class="active" @endif>
+                        <a href="{{ url('/upload') }}">
                             <i class="fa fa-folder-open"></i>
                             <span class="nav-label">Media</span>
                         </a>

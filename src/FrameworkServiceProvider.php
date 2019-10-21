@@ -39,28 +39,6 @@ class FrameworkServiceProvider extends ServiceProvider
 	 */
 	public function boot( Request $request )
 	{
-		/* compose all the views */
-		view()->composer( '*',
-			function ( $view ) {
-				$currentUser = array(
-					'id'    => '',
-					'name'  => '',
-					'email' => '',
-				);
-				if ( Auth::check() ) {
-					$user        = Auth::user();
-					$currentUser = array(
-						'id'    => $user->id,
-						'name'  => $user->name,
-						'email' => $user->email,
-					);
-					$view->with( 'currentUser', $currentUser );
-				} else {
-					$view->with( 'currentUser', $currentUser );
-				}
-			}
-		);
-
 		/* Load Factories */
 		$this->loadFactoriesFrom( __DIR__ . '/../database/factories' );
 

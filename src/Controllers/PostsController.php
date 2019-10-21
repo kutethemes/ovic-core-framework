@@ -8,11 +8,43 @@ use Illuminate\Http\Request;
 class PostsController extends Controller
 {
 	/**
-	 * Create file for the posts.
+	 * Create a new controller instance.
 	 *
-	 * @param Request $request
+	 * @return void
 	 */
-	public function create( Request $request )
+	public function __construct()
+	{
+		$this->middleware( 'auth' );
+	}
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index()
+	{
+		//
+	}
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create()
+	{
+		//
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function store( Request $request )
 	{
 		if ( !$request->has( [ 'title', 'post_type' ] ) ) {
 			return response()->json(
@@ -31,45 +63,56 @@ class PostsController extends Controller
 	}
 
 	/**
-	 * Update file for the posts.
+	 * Display the specified resource.
 	 *
-	 * @param Request $request
+	 * @param int $id
+	 *
+	 * @return \Illuminate\Http\Response
 	 */
-	public function update( Request $request )
+	public function show( $id )
 	{
-		if ( !$request->has( [ 'id' ] ) ) {
-			return response()->json(
-				[
-					'status'  => 'error',
-					'message' => 'required Post ID',
-				], 400
-			);
-		}
+		//
+	}
 
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param int $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit( $id )
+	{
+		//
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @param int                      $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function update( Request $request, $id )
+	{
 		$request = $request->toArray();
 
-		$updated = Post::update_post( $request );
+		$updated = Post::update_post( $request, $id );
 
 		return response()->json( $updated, $updated['code'] );
 	}
 
 	/**
-	 * Remove file for the posts.
+	 * Remove the specified resource from storage.
 	 *
-	 * @param Request $request
+	 * @param int $id
+	 *
+	 * @return \Illuminate\Http\Response
 	 */
-	public function remove( Request $request )
+	public function destroy( $id )
 	{
-		if ( !$request->has( [ 'id' ] ) ) {
-			return response()->json(
-				[
-					'status'  => 'error',
-					'message' => 'required Post ID',
-				], 400
-			);
-		}
-
-		$removed = Post::remove_post( $request->id );
+		$removed = Post::remove_post( $id );
 
 		return response()->json( $removed, $removed['code'] );
 	}

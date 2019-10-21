@@ -39,10 +39,10 @@ class Post extends Eloquent
 		return true;
 	}
 
-	public static function update_post( $request )
+	public static function update_post( $request, $id )
 	{
-		$data    = [];
-		$input   = [
+		$data  = [];
+		$input = [
 			'name',
 			'title',
 			'content',
@@ -53,9 +53,8 @@ class Post extends Eloquent
 			'created_at',
 			'updated_at',
 		];
-		$post_id = $request['id'];
 
-		if ( !Post::is_exits( $post_id ) ) {
+		if ( !Post::is_exits( $id ) ) {
 			return [
 				'code'    => 400,
 				'status'  => 'error',
@@ -70,12 +69,12 @@ class Post extends Eloquent
 				}
 			}
 
-			Post::where( 'id', $post_id )->update( $data );
+			Post::where( 'id', $id )->update( $data );
 
 			if ( !empty( $request['meta'] ) ) {
 				foreach ( $request['meta'] as $meta_key => $meta_value ) {
 					Postmeta::where( 'meta_key', $meta_key )
-						->where( 'post_id', $post_id )
+						->where( 'post_id', $id )
 						->update(
 							[
 								'meta_value' => maybe_serialize( $meta_value ),

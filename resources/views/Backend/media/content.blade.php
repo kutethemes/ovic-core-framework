@@ -9,13 +9,16 @@
      */
 @endphp
 
-@section('head')
+@section('head_2')
     <!-- dropzone -->
     <link href="{{ asset('css/plugins/dropzone/dropzone.css') }}" rel="stylesheet">
     <!-- Toastr style -->
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     <!-- Sweet Alert -->
     <link href="{{ asset('css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+    <!-- jsTree -->
+    <link href="{{ asset('css/plugins/jsTree/style.min.css') }}" rel="stylesheet">
+
     <style>
         .file .image {
             text-align: center;
@@ -68,63 +71,31 @@
         .switch .onoffswitch-inner::after {
             content: "GRID";
         }
-        .sub-dir {
-            padding-left: 20px;
+        .file-box .btn-circle {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            width: 25px;
+            height: 25px;
+            padding: 3px 0;
+            display: none;
         }
-        .folder-list .sub-dir li {
+        .file-box.active .btn-circle {
             display: inline-block;
-            border: none;
-        }
-        .folder-list li {
-            border: none !important;
-            position: relative;
-        }
-        .folder-list li i.fa {
-            color: #bbb;
-            font-size: 10px;
-        }
-        .folder-list > li::after {
-            content: "";
-            position: absolute;
-            width: 1px;
-            background-color: #bbb;
-            height: 100%;
-            left: 4px;
-            top: 0;
-        }
-        .folder-list > li::before {
-            content: "";
-            background-color: #bbb;
-            width: 18px;
-            height: 1px;
-            position: absolute;
-            left: 0;
-            top: 16px;
-        }
-        .folder-list li .sub-dir a {
-            padding: 5px;
-        }
-        .folder-list a.active {
-            color: #1ab394;
-        }
-        .folder-list .sub-dir a.active {
-            color: #fff;
-            background-color: #1ab394;
-            border-color: #1ab394
-        }
-        .btn.btn-primary {
-            border-radius: 0;
         }
     </style>
 @endsection
 
-@section('footer')
+@section('footer_2')
     <!-- Sweet alert -->
     <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
     <!-- Toastr script -->
     <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
     <!-- dropzone -->
     <script src="{{ asset('js/plugins/dropzone/dropzone.js') }}"></script>
+    <!-- jsTree -->
+    <script src="{{ asset('js/plugins/jsTree/jstree.min.js') }}"></script>
+
     <script>
         var serializeObject = function (form) {
             var o = {};
@@ -143,16 +114,14 @@
         };
         /* Tạo file */
         Dropzone.options.dropzoneForm = {
-            url: "{{ route('upload_file') }}",
+            url: "upload",
             headers: {
                 'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
             acceptedFiles: '.zip,.rar,audio/*,video/*,image/*,.doc,.docx,.xls,.xlsx,application/pdf',
             paramName: "file", // The name that will be used to transfer the file
             maxFilesize: 16, // MB
-            addRemoveLinks: true,
             uploadMultiple: false,
-            dictRemoveFile: 'Xóa file',
             dictFileTooBig: 'File lớn hơn 16MB',
             init: function () {
                 this.on("complete", function (file) {
@@ -188,11 +157,10 @@
             }, function (isConfirm) {
                 if ( isConfirm ) {
                     $.ajax({
-                        url: "{{ route('remove_file') }}",
-                        type: 'POST',
+                        url: "upload/" + id,
+                        type: 'DELETE',
                         dataType: 'json',
                         data: {
-                            id: id,
                             _token: "{{ csrf_token() }}"
                         },
                         success: function (response) {
@@ -209,11 +177,11 @@
                 }
             });
         });
-        /* Tìm kiếm */
+        /* Lọc */
         $(document).on('submit', '.filter-control', function () {
             $.ajax({
                 url: "{{ route('file_filter') }}",
-                type: 'POST',
+                type: 'GET',
                 dataType: 'json',
                 data: {
                     _form: serializeObject($(this)),
@@ -228,13 +196,15 @@
             });
             return false;
         });
+        /* Reset */
         $(document).on('click', '.reset-filter', function () {
             $('input[name="s"]').val('').trigger('change');
             $('input[name="dir"]').val('').trigger('change');
             $('input[name="sort"]').val('all').trigger('change');
             $('button[value="all"]').addClass('active').siblings().removeClass('active');
-            $('.folder-list').find('a').removeClass('active');
+            $('#jstree1').find('a').removeClass('jstree-clicked');
         });
+        /* Lọc kiểu file */
         $(document).on('click', '.file-control', function () {
             $('input[name="sort"]')
                 .val(
@@ -242,6 +212,7 @@
                 ).trigger('change');
             $(this).addClass('active').siblings().removeClass('active');
         });
+        /* Lọc theo ngày */
         $(document).on('click', '.dir-filter', function () {
             let parent = $(this).closest('.folder-list');
             $('input[name="dir"]')
@@ -250,85 +221,82 @@
                 ).trigger('change');
 
             $(this).closest('form').trigger('submit');
-            parent.find('a').removeClass('active');
-            $(this).addClass('active');
 
             return false;
         });
+        /* Sắp xếp */
         $(document).on('click', '.onoffswitch-label', function () {
             $('#dropzone-previews').toggleClass('list-style');
+        });
+        $('#jstree1').jstree({
+            'core': {
+                'check_callback': true
+            },
+            'plugins': [ 'types', 'dnd' ],
+            'types': {
+                'default': {
+                    'icon': 'fa fa-folder'
+                },
+                'html': {
+                    'icon': 'fa fa-file-code-o'
+                },
+            }
         });
     </script>
 @endsection
 
-@section('content')
-    @php
-        $attachments = \Ovic\Framework\Post::get_posts(
-            [
-                [ 'post_type', '=', 'attachment' ],
-                [ 'status', '=', 'publish' ],
-            ]
-        );
-    @endphp
-    <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-9">
-            <h2>File Manager</h2>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{{ url('/') }}">Home</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ url('/dashboard') }}">Dashboard</a>
-                </li>
-                <li class="breadcrumb-item active">
-                    <strong>File Manager</strong>
-                </li>
-            </ol>
-        </div>
-    </div>
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="ibox ">
-                    <div class="ibox-content">
-                        <div class="switch">
-                            <div class="onoffswitch">
-                                <input type="checkbox" checked="" class="onoffswitch-checkbox" id="example1">
-                                <label class="onoffswitch-label" for="example1">
-                                    <span class="onoffswitch-inner"></span>
-                                    <span class="onoffswitch-switch"></span>
-                                </label>
-                            </div>
+@php
+    $attachments = \Ovic\Framework\Post::get_posts(
+        [
+            [ 'post_type', '=', 'attachment' ],
+            [ 'status', '=', 'publish' ],
+        ]
+    );
+@endphp
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="ibox ">
+                <div class="ibox-content">
+                    <div class="switch">
+                        <div class="onoffswitch">
+                            <input type="checkbox" checked="" class="onoffswitch-checkbox" id="example1">
+                            <label class="onoffswitch-label" for="example1">
+                                <span class="onoffswitch-inner"></span>
+                                <span class="onoffswitch-switch"></span>
+                            </label>
                         </div>
-                        <div class="clearfix"></div>
-                        <form action="{{ route('upload_file') }}" class="dropzone" id="dropzoneForm" method="post"
-                              enctype="multipart/form-data">
-                            <div class="fallback">
-                                <input name="file" type="file" multiple/>
-                            </div>
-                        </form>
-                        <form method="post" class="file-manager filter-control">
-                            <input type="hidden" name="dir" value=""/>
-                            <input type="hidden" name="sort" value="all"/>
+                    </div>
+                    <div class="clearfix"></div>
+                    <form action="upload" class="dropzone" id="dropzoneForm" method="POST"
+                          enctype="multipart/form-data">
+                        <div class="fallback">
+                            <input name="file" type="file" multiple/>
+                        </div>
+                    </form>
+                    <form method="post" class="file-manager filter-control">
+                        <input type="hidden" name="dir" value=""/>
+                        <input type="hidden" name="sort" value="all"/>
 
-                            <div class="input-group">
-                                <input type="text" name="s" class="form-control"/>
-                                <span class="input-group-append">
+                        <div class="input-group">
+                            <input type="text" name="s" class="form-control"/>
+                            <span class="input-group-append">
                                     <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                                 </span>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <h5>Show:</h5>
-                            <div class="control-filter">
-                                <button type="submit" value="all" class="file-control active">All</button>
-                                <button type="submit" value="doc" class="file-control">Documents</button>
-                                <button type="submit" value="au" class="file-control">Audio</button>
-                                <button type="submit" value="vi" class="file-control">Video</button>
-                                <button type="submit" value="im" class="file-control">Images</button>
-                                <button type="submit" value="ar" class="file-control">Archive</button>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <h5>Folders</h5>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <h5>Show:</h5>
+                        <div class="control-filter">
+                            <button type="submit" value="all" class="file-control active">All</button>
+                            <button type="submit" value="doc" class="file-control">Documents</button>
+                            <button type="submit" value="au" class="file-control">Audio</button>
+                            <button type="submit" value="vi" class="file-control">Video</button>
+                            <button type="submit" value="im" class="file-control">Images</button>
+                            <button type="submit" value="ar" class="file-control">Archive</button>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <h5>Folders</h5>
+                        <div id="jstree1">
                             <ul class="folder-list" style="padding: 0">
 
                                 @if( !empty( $attachments ) )
@@ -352,9 +320,8 @@
                                     @endphp
 
                                     @foreach ( $directories as $year => $month )
-                                        <li>
+                                        <li data-jstree='"type":"html"}'>
                                             <a href="#" data-dir="{{ $year }}" class="dir-filter">
-                                                <i class="fa fa-circle"></i>
                                                 Năm {{ $year }}
                                             </a>
                                             @php
@@ -362,9 +329,9 @@
                                             @endphp
                                             <ul class="sub-dir">
                                                 @foreach ( $month as $mon )
-                                                    <li>
+                                                    <li data-jstree='"type":"html"}'>
                                                         <a href="#" data-dir="{{ $mon }}"
-                                                           class="dir-filter btn btn-white btn-bitbucket">
+                                                           class="dir-filter">
                                                             {{ str_replace( [$year,'/'],['',''],$mon ) }}
                                                         </a>
                                                     </li>
@@ -375,21 +342,22 @@
                                 @endif
 
                             </ul>
-                            <div class="clearfix"></div>
-                            <button type="submit" class="btn btn-outline btn-info reset-filter">Reset filter</button>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="clearfix"></div>
+                        <button type="submit" class="btn btn-outline btn-info reset-filter">Reset filter</button>
+                    </form>
                 </div>
             </div>
-            <div class="col-lg-9 animated fadeInRight">
-                <div class="row">
-                    <div id="dropzone-previews" class="col-lg-12">
-                        @if( !empty( $attachments ) )
-                            @each( ovic_blade('Backend.media.item') , $attachments, 'attachment')
-                        @endif
-                    </div>
+        </div>
+        <div class="col-lg-9 animated fadeInRight">
+            <div class="row">
+                <div id="dropzone-previews" class="col-lg-12">
+                    @if( !empty( $attachments ) )
+                        @each( ovic_blade('Backend.media.item') , $attachments, 'attachment')
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-@endsection
+</div>

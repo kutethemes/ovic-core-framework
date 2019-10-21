@@ -22,6 +22,7 @@
 
     <!-- Styles -->
     @yield('head')
+    @yield('head_2')
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
@@ -56,8 +57,10 @@
 <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
 <!-- Custom and plugin javascript -->
 <script src="{{ asset('js/inspinia.js') }}"></script>
+<script src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
 
 @yield('footer')
+@yield('footer_2')
 
 </body>
 </html>
