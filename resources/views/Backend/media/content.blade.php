@@ -1,3 +1,13 @@
+@php
+    /**
+     * The content file for our theme
+     *
+     * @package Ovic
+     * @subpackage Framework
+     *
+     * @version 1.0
+     */
+@endphp
 
 @section('head')
     <!-- dropzone -->
@@ -102,7 +112,7 @@
             background-color: #1ab394;
             border-color: #1ab394
         }
-        .btn btn-primary {
+        .btn.btn-primary {
             border-radius: 0;
         }
     </style>

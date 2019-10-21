@@ -11,6 +11,6 @@
 
 @extends( ovic_blade('Backend.app') )
 
-@section('title', 'Media File')
+@section( 'title', 'Media File' )
 
-@include(ovic_blade('Backend.media.content'))
+@include( ovic_blade('Backend.media.content') )

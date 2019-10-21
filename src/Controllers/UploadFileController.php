@@ -12,6 +12,14 @@ class UploadFileController extends Controller
 	private $folder = 'uploads/';
 
 	/**
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	public function index()
+	{
+		return view( ovic_blade( 'Backend.media.app' ) );
+	}
+
+	/**
 	 * filter images through XHR Request.
 	 *
 	 * @param \Illuminate\Http\Request $request

@@ -10,50 +10,50 @@
 |
 */
 
-Route::group( [ 'middleware' => [ 'web', 'auth' ] ],
+Route::group(
+	[ 'middleware' => [ 'web', 'auth' ] ],
 	function () {
 		/* Dashboard template */
-		Route::get( '/dashboard',
-			function () {
-				return view( ovic_blade( 'Backend.dashboard.app' ) );
-			}
-		)->name( 'dashboard' );
+		Route::get( '/dashboard', 'Ovic\Framework\DashboardController@index' )->name( 'dashboard' );
 
 		/* Media template */
-		Route::get( '/media',
-			function () {
-				return view( ovic_blade( 'Backend.media.app' ) );
-			}
-		)->name( 'media' );
+		Route::get( '/media', 'Ovic\Framework\UploadFileController@index' )->name( 'media' );
 
 		/* User template */
-		Route::get( '/users',
-			function () {
-				return view( ovic_blade( 'Backend.users.app' ) );
-			}
-		)->name( 'users' );
+		Route::get( '/users', 'Ovic\Framework\UsersController@index' )->name( 'users' );
 
 		/* Post Route */
-		Route::get( '/new-post', 'Ovic\Framework\PostsController@create' )->name( 'new_post' );
-		Route::post( '/new-post', 'Ovic\Framework\PostsController@create' )->name( 'new_post' );
+		Route::match( [ 'get', 'post' ], '/new-post',
+			'Ovic\Framework\PostsController@create'
+		)->name( 'new_post' );
 
-		Route::get( '/update-post', 'Ovic\Framework\PostsController@update' )->name( 'update_post' );
-		Route::post( '/update-post', 'Ovic\Framework\PostsController@update' )->name( 'update_post' );
+		Route::match( [ 'get', 'post' ], '/update-post',
+			'Ovic\Framework\PostsController@update'
+		)->name( 'update_post' );
 
-		Route::get( '/remove-post', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
-		Route::post( '/remove-post', 'Ovic\Framework\PostsController@remove' )->name( 'remove_post' );
+		Route::match( [ 'get', 'post' ], '/remove-post',
+			'Ovic\Framework\PostsController@remove'
+		)->name( 'remove_post' );
 
-		/* Post File */
-		Route::get( '/upload', 'Ovic\Framework\UploadFileController@upload' )->name( 'upload_file' );
-		Route::post( '/upload', 'Ovic\Framework\UploadFileController@upload' )->name( 'upload_file' );
+		/* Upload File */
+		Route::match( [ 'get', 'post' ], '/upload',
+			'Ovic\Framework\UploadFileController@upload'
+		)->name( 'upload_file' );
 
-		Route::get( '/remove-file', 'Ovic\Framework\UploadFileController@remove' )->name( 'remove_file' );
-		Route::post( '/remove-file', 'Ovic\Framework\UploadFileController@remove' )->name( 'remove_file' );
+		Route::match( [ 'get', 'post' ], '/remove-file',
+			'Ovic\Framework\UploadFileController@remove'
+		)->name( 'remove_file' );
 
-		Route::get( '/file-filter', 'Ovic\Framework\UploadFileController@filter' )->name( 'file_filter' );
-		Route::post( '/file-filter', 'Ovic\Framework\UploadFileController@filter' )->name( 'file_filter' );
+		Route::match( [ 'get', 'post' ], '/file-filter',
+			'Ovic\Framework\UploadFileController@filter'
+		)->name( 'file_filter' );
 
-		Route::get( 'images/{year}/{month}/{filename}', 'Ovic\Framework\ImageController@store' )->name( 'get_file' );
-		Route::post( 'images/{year}/{month}/{filename}', 'Ovic\Framework\ImageController@store' )->name( 'get_file' );
+		/* Images */
+		Route::match( [ 'get', 'post' ], 'images/{year}/{month}/{filename}',
+			'Ovic\Framework\ImagesController@store'
+		)->name( 'get_file' );
+
+		/* Clear Cache */
+		Route::get( '/clear-cache', 'Ovic\Framework\DashboardController@clear_cache' )->name( 'clear_cache' );
 	}
 );
