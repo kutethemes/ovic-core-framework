@@ -108,6 +108,9 @@
             if ( button.hasClass('add-new') ) {
 
                 form.trigger('reset');
+                form.find('input[name="id"]').val('');
+                form.find('input[name="avatar"]').val('');
+                form.find('.avatar img').attr('src', 'img/a_none.jpg');
                 form.find('.field-password input').removeAttr('disabled').attr('name', 'password');
                 form.find('.chosen-select').val('').trigger('chosen:updated');
                 form.find('.field-password-confirmation').css('display', 'flex').find('input').attr('name', 'password_confirmation');
