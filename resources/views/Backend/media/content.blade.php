@@ -9,7 +9,7 @@
      */
 @endphp
 
-@section('head_2')
+@push('styles')
     <!-- dropzone -->
     <link href="{{ asset('css/plugins/dropzone/dropzone.css') }}" rel="stylesheet">
     <!-- Toastr style -->
@@ -84,9 +84,9 @@
             display: inline-block;
         }
     </style>
-@endsection
+@endpush
 
-@section('footer_2')
+@push('scripts')
     <!-- Sweet alert -->
     <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
     <!-- Toastr script -->
@@ -97,21 +97,23 @@
     <script src="{{ asset('js/plugins/jsTree/jstree.min.js') }}"></script>
 
     <script>
-        var serializeObject = function (form) {
-            var o = {};
-            var a = form.serializeArray();
-            $.each(a, function () {
-                if ( o[ this.name ] ) {
-                    if ( !o[ this.name ].push ) {
-                        o[ this.name ] = [ o[ this.name ] ];
+        if ( !$.fn.serializeObject ) {
+            $.fn.serializeObject = function () {
+                var o = {};
+                var a = this.serializeArray();
+                $.each(a, function () {
+                    if ( o[ this.name ] ) {
+                        if ( !o[ this.name ].push ) {
+                            o[ this.name ] = [ o[ this.name ] ];
+                        }
+                        o[ this.name ].push(this.value || '');
+                    } else {
+                        o[ this.name ] = this.value || '';
                     }
-                    o[ this.name ].push(this.value || '');
-                } else {
-                    o[ this.name ] = this.value || '';
-                }
-            });
-            return o;
-        };
+                });
+                return o;
+            };
+        }
         /* Tạo file */
         Dropzone.options.dropzoneForm = {
             url: "upload",
@@ -147,8 +149,8 @@
             let parent = $(this).closest('.file-box');
             let id     = parent.data('id');
             swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this imaginary file!",
+                title: "Bạn có chắc muốn xóa?",
+                text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -160,8 +162,8 @@
                         url: "upload/" + id,
                         type: 'DELETE',
                         dataType: 'json',
-                        data: {
-                            _token: "{{ csrf_token() }}"
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
                         },
                         success: function (response) {
                             parent.remove();
@@ -180,12 +182,14 @@
         /* Lọc */
         $(document).on('submit', '.filter-control', function () {
             $.ajax({
-                url: "{{ route('file_filter') }}",
+                url: "upload/filter",
                 type: 'GET',
                 dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
                 data: {
-                    _form: serializeObject($(this)),
-                    _token: "{{ csrf_token() }}"
+                    _form: $(this).serializeObject()
                 },
                 success: function (response) {
 
@@ -243,7 +247,7 @@
             }
         });
     </script>
-@endsection
+@endpush
 
 @php
     $attachments = \Ovic\Framework\Post::get_posts(
@@ -253,6 +257,7 @@
         ]
     );
 @endphp
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-3">
@@ -354,7 +359,7 @@
             <div class="row">
                 <div id="dropzone-previews" class="col-lg-12">
                     @if( !empty( $attachments ) )
-                        @each( ovic_blade('Backend.media.item') , $attachments, 'attachment')
+                        @each( ovic_blade('Backend.media.image') , $attachments, 'attachment')
                     @endif
                 </div>
             </div>

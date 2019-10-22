@@ -14,26 +14,23 @@ Route::group(
 	[ 'middleware' => [ 'web', 'auth' ] ],
 	function () {
 		/* Dashboard template */
-		Route::get( '/dashboard', 'Ovic\Framework\DashboardController@index' )->name( 'dashboard' );
+		Route::get( 'dashboard', 'Ovic\Framework\DashboardController@index' )->name( 'dashboard' );
 
 		/* User template */
-		Route::resource( '/users', 'Ovic\Framework\UsersController' );
+		Route::post( 'users/list', 'Ovic\Framework\UsersController@users' )->name( 'users.list' );
+		Route::resource( 'users', 'Ovic\Framework\UsersController' );
 
 		/* Post Route */
-		Route::resource( '/post', 'Ovic\Framework\PostsController' );
+		Route::resource( 'post', 'Ovic\Framework\PostsController' );
 
 		/* Upload Route */
-		Route::resource( '/upload', 'Ovic\Framework\UploadFileController' );
-
-		/* Upload Filter */
-		Route::match( [ 'get', 'post' ], '/filter', 'Ovic\Framework\UploadFileController@filter'
-		)->name( 'file_filter' );
+		Route::get( 'upload/filter', 'Ovic\Framework\UploadFileController@filter' )->name( 'upload.filter' );
+		Route::resource( 'upload', 'Ovic\Framework\UploadFileController' );
 
 		/* Images */
-		Route::match( [ 'get', 'post' ], 'images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index'
-		)->name( 'get_file' );
+		Route::get( 'images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index' )->name( 'get_file' );
 
 		/* Clear Cache */
-		Route::get( '/clear-cache', 'Ovic\Framework\DashboardController@clear_cache' )->name( 'clear_cache' );
+		Route::get( 'clear-cache', 'Ovic\Framework\DashboardController@clear_cache' )->name( 'clear_cache' );
 	}
 );

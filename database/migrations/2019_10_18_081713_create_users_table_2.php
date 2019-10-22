@@ -16,7 +16,8 @@ class CreateUsersTable2 extends Migration
 		if ( Schema::hasTable( 'users' ) && !Schema::hasColumn( 'users', 'role_ids' ) ) {
 			Schema::table( 'users',
 				function ( Blueprint $table ) {
-					$table->text( 'role_ids' )->after( 'name' )->nullable();
+					$table->integer( 'avatar' )->after( 'name' )->unsigned()->default( 0 );
+					$table->text( 'role_ids' )->after( 'avatar' )->nullable();
 					$table->text( 'donvi_ids' )->after( 'role_ids' )->nullable();
 					$table->text( 'donvi_id' )->after( 'donvi_ids' )->nullable();
 					$table->tinyInteger( 'status' )->after( 'donvi_id' )->unsigned()->default( 1 );
@@ -27,6 +28,7 @@ class CreateUsersTable2 extends Migration
 				function ( Blueprint $table ) {
 					$table->bigIncrements( 'id' );
 					$table->string( 'name' );
+					$table->integer( 'avatar' )->after( 'name' )->unsigned()->default( 0 );
 					$table->text( 'role_ids' )->nullable();
 					$table->text( 'donvi_ids' )->nullable();
 					$table->text( 'donvi_id' )->nullable();

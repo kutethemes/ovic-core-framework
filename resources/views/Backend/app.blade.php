@@ -15,15 +15,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
+    {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title')</title>
 
-    <!-- Styles -->
-    @yield('head')
-    @yield('head_2')
-
+    {{-- Blade styles --}}
+    @stack('styles')
+    {{-- Main style --}}
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/animate.min.css') }}" rel="stylesheet">
@@ -51,16 +50,15 @@
 
 </div>
 
-<!-- Mainly scripts -->
+{{-- Mainly scripts --}}
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
 <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
-<!-- Custom and plugin javascript -->
+{{-- Custom and plugin javascript --}}
 <script src="{{ asset('js/inspinia.js') }}"></script>
 <script src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
-
-@yield('footer')
-@yield('footer_2')
+{{-- Blade scripts --}}
+@stack('scripts')
 
 </body>
 </html>

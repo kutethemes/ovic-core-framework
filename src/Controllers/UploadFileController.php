@@ -108,7 +108,7 @@ class UploadFileController extends Controller
 			$html = '';
 
 			foreach ( $attachments as $attachment ) {
-				$html .= view( ovic_blade( 'Backend.media.item' ), compact( 'attachment' ) )->toHtml();
+				$html .= view( ovic_blade( 'Backend.media.image' ), compact( 'attachment' ) )->toHtml();
 			}
 
 			return response()->json(
@@ -222,7 +222,7 @@ class UploadFileController extends Controller
 
 		$attachment = array_shift( $attachment );
 
-		return view( ovic_blade( 'Backend.media.item' ), compact( 'attachment' ) );
+		return view( ovic_blade( 'Backend.media.image' ), compact( 'attachment' ) );
 	}
 
 	/**
