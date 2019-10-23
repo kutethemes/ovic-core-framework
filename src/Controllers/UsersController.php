@@ -63,14 +63,14 @@ class UsersController extends Controller
 		$start  = $request->input( 'start' );
 		$sort   = $request->input( 'sorting' );
 		$search = $request->input( 'search.value' );
-		$status = $request->input( 'columns.4.search.value' );
+		$status = $request->input( 'columns.1.search.value' );
 		/*
 		$order = $columns[$request->input( 'order.0.column' )];
 		$dir   = $request->input( 'order.0.dir' );
 		*/
 
 		$sorting = [
-			[ 'id', '!=', 0 ],
+			[ 'id', '>', 0 ],
 		];
 
 		if ( $status != '' ) {
@@ -80,8 +80,6 @@ class UsersController extends Controller
 		} elseif ( $sort != '' && !empty( $search ) ) {
 			$sorting = [
 				[ 'status', '=', $sort ],
-				[ 'name', 'LIKE', "%{$search}%" ],
-				[ 'email', 'LIKE', "%{$search}%" ],
 			];
 		}
 
@@ -145,7 +143,7 @@ class UsersController extends Controller
 				$options .= "{$status_html}";
 				$options .= "</a>";
 
-				$options .= "<a href='#' title='Sửa' class='btn dim btn-primary edit'>";
+				$options .= "<a href='#' title='Sửa user' class='btn dim btn-primary edit'>";
 				$options .= "<span class='fa fa-pencil-square-o'></span>";
 				$options .= "</a>";
 
@@ -182,9 +180,14 @@ class UsersController extends Controller
 	{
 		$validator = Validator::make( $request->all(),
 			[
-				'name'     => [ 'required', 'string', 'max:255' ],
-				'email'    => [ 'required', 'string', 'email', 'max:255', 'unique:users' ],
-				'password' => [ 'required', 'string', 'min:8', 'confirmed' ],
+				'name'        => [ 'required', 'string', 'max:255' ],
+				'email'       => [ 'required', 'string', 'email', 'max:255', 'unique:users' ],
+				'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
+				'avatar'      => [ 'numeric' ],
+				'donvi_id'    => [ 'numeric' ],
+				'status'      => [ 'numeric', 'min:0', 'max:2' ],
+				'donvi_ids.*' => [ 'string', 'integer' ],
+				'role_ids.*'  => [ 'string', 'integer' ],
 			]
 		);
 
@@ -229,7 +232,9 @@ class UsersController extends Controller
 	 */
 	public function show( $id )
 	{
-		//
+		$user = \Auth::user();
+
+		return view( ovic_blade( 'Backend.users.show' ), compact( 'user' ) );
 	}
 
 	/**
@@ -254,13 +259,21 @@ class UsersController extends Controller
 	 */
 	public function update( Request $request, $id )
 	{
-		$validator = Validator::make( $request->all(),
-			[
-				'name'     => [ 'required', 'string', 'max:255' ],
-				'email'    => [ 'required', 'string', 'email', 'max:255', 'unique:users,email,' . $id ],
-				'password' => [ 'string', 'min:8' ],
-			]
-		);
+		$rules = [
+			'password'    => [ 'string', 'min:8' ],
+			'avatar'      => [ 'numeric' ],
+			'donvi_id'    => [ 'numeric' ],
+			'status'      => [ 'numeric', 'min:0', 'max:2' ],
+			'donvi_ids.*' => [ 'string', 'integer' ],
+			'role_ids.*'  => [ 'string', 'integer' ],
+		];
+		if ( $request->has( 'name' ) ) {
+			$rules['name'] = [ 'required', 'string', 'max:255' ];
+		}
+		if ( $request->has( 'name' ) ) {
+			$rules['email'] = [ 'required', 'string', 'email', 'max:255', 'unique:users,email,' . $id ];
+		}
+		$validator = Validator::make( $request->all(), $rules );
 
 		if ( $validator->passes() ) {
 			$data = $request->toArray();
@@ -284,7 +297,7 @@ class UsersController extends Controller
 			return response()->json(
 				[
 					'status'  => 200,
-					'message' => 'Update thành công.',
+					'message' => 'Update user thành công.',
 				]
 			);
 		}

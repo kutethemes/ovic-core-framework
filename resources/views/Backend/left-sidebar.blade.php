@@ -42,6 +42,12 @@
                             <span class="nav-label">Users</span>
                         </a>
                     </li>
+                    <li @if ( $name == 'roles.index' ) class="active" @endif>
+                        <a href="{{ url('/roles') }}">
+                            <i class="fa fa-user-plus"></i>
+                            <span class="nav-label">Roles</span>
+                        </a>
+                    </li>
                     <li @if ( $name == 'upload.index' ) class="active" @endif>
                         <a href="{{ url('/upload') }}">
                             <i class="fa fa-folder-open"></i>

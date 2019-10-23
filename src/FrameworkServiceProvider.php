@@ -3,7 +3,6 @@ namespace Ovic\Framework;
 
 use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class FrameworkServiceProvider extends ServiceProvider

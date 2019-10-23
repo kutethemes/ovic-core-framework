@@ -13,12 +13,16 @@
 Route::group(
 	[ 'middleware' => [ 'web', 'auth' ] ],
 	function () {
-		/* Dashboard template */
+		/* Dashboard Route */
 		Route::get( 'dashboard', 'Ovic\Framework\DashboardController@index' )->name( 'dashboard' );
 
-		/* User template */
+		/* User Route */
 		Route::post( 'users/list', 'Ovic\Framework\UsersController@users' )->name( 'users.list' );
 		Route::resource( 'users', 'Ovic\Framework\UsersController' );
+
+		/* Roles Route */
+		Route::post( 'roles/list', 'Ovic\Framework\RolesController@roles' )->name( 'roles.list' );
+		Route::resource( 'roles', 'Ovic\Framework\RolesController' );
 
 		/* Post Route */
 		Route::resource( 'post', 'Ovic\Framework\PostsController' );

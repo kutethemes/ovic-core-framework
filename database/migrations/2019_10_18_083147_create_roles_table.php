@@ -17,10 +17,11 @@ class CreateRolesTable extends Migration
 			function ( Blueprint $table ) {
 				$table->bigIncrements( 'id' );
 				$table->string( 'name', 150 );
+				$table->string( 'title', 150 );
 				$table->text( 'description' );
-				$table->text( 'usecase_ids' );
-				$table->integer( 'ordering' )->unsigned();
-				$table->tinyInteger( 'status' )->unsigned();
+				$table->text( 'usecase_ids' )->nullable();
+				$table->integer( 'ordering' )->unsigned()->default( 100 );
+				$table->tinyInteger( 'status' )->unsigned()->nullable();
 				$table->timestamps();
 			}
 		);

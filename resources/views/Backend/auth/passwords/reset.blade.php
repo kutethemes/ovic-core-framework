@@ -1,8 +1,8 @@
-@extends('auth.app')
+@extends( 'auth.app' )
 
-@section('title','Cài đặt lại mật khẩu')
+@section( 'title','Cài đặt lại mật khẩu' )
 
-@section('content')
+@section( 'content' )
 
     <div class="top">
         <a href="/">

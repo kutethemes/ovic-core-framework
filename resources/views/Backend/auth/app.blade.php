@@ -18,13 +18,13 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title')</title>
+    <title>@yield( 'title' )</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Ubuntu:400" rel="stylesheet">
 
-    @yield('style')
+    @yield( 'style' )
 
     <style>
         * {
@@ -204,7 +204,7 @@
         <div class="vertical-align-middle auth-main">
             <div class="auth-box">
 
-                @yield('content')
+                @yield( 'content' )
 
             </div>
         </div>

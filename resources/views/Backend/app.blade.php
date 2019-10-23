@@ -18,10 +18,10 @@
     {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title')</title>
+    <title>@yield( 'title','Laravel Ovic' )</title>
 
     {{-- Blade styles --}}
-    @stack('styles')
+    @stack( 'styles' )
     {{-- Main style --}}
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
@@ -40,7 +40,7 @@
 
         @include( ovic_blade('Backend.nav-bar') )
 
-        @yield('content')
+        @yield( 'content' )
 
         @include( ovic_blade('Backend.footer') )
 
@@ -58,7 +58,7 @@
 <script src="{{ asset('js/inspinia.js') }}"></script>
 <script src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
 {{-- Blade scripts --}}
-@stack('scripts')
+@stack( 'scripts' )
 
 </body>
 </html>

@@ -1,8 +1,8 @@
-@extends('auth.app')
+@extends( 'auth.app' )
 
-@section('title','Xác nhận đăng kí')
+@section( 'title','Xác nhận đăng kí' )
 
-@section('content')
+@section( 'content' )
 
     <div class="header">
         <p class="dev">{{ __('Xác nhận email của bạn') }}</p>

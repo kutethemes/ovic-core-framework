@@ -9,7 +9,7 @@
      */
 @endphp
 
-@push('styles')
+@push( 'styles' )
     <!-- dropzone -->
     <link href="{{ asset('css/plugins/dropzone/dropzone.css') }}" rel="stylesheet">
     <!-- Toastr style -->
@@ -86,7 +86,7 @@
     </style>
 @endpush
 
-@push('scripts')
+@push( 'scripts' )
     <!-- Sweet alert -->
     <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
     <!-- Toastr script -->
@@ -118,7 +118,7 @@
         Dropzone.options.dropzoneForm = {
             url: "upload",
             headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             acceptedFiles: '.zip,.rar,audio/*,video/*,image/*,.doc,.docx,.xls,.xlsx,application/pdf',
             paramName: "file", // The name that will be used to transfer the file
@@ -163,7 +163,7 @@
                         type: 'DELETE',
                         dataType: 'json',
                         headers: {
-                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (response) {
                             parent.remove();
@@ -186,7 +186,7 @@
                 type: 'GET',
                 dataType: 'json',
                 headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
                     _form: $(this).serializeObject()

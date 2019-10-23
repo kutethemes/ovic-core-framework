@@ -9,11 +9,38 @@
      */
 @endphp
 
-@push('styles')
+@push( 'styles' )
     <!-- Chosen -->
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 
     <style>
+        div.modal-content {
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+        div.inmodal .modal-header {
+            padding: 10px;
+        }
+        .modal-footer {
+            background-color: #fff;
+        }
+        .modal.show .modal-dialog {
+            transform: none;
+            max-width: inherit;
+            margin: 0;
+        }
+        .file-box:hover::before {
+            content: "";
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 2;
+        }
+        .file-box {
+            position: relative;
+            z-index: 3;
+            cursor: pointer;
+        }
         .avatar {
             display: inline-block;
         }
@@ -33,7 +60,7 @@
             margin-bottom: 0;
         }
         div.client-detail {
-            height: 605px;
+            height: 575px;
         }
         .form-group.submit {
             margin-bottom: 0;
@@ -50,7 +77,7 @@
     </style>
 @endpush
 
-@push('scripts')
+@push( 'scripts' )
     <!-- Chosen -->
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
 
@@ -100,6 +127,12 @@
                 avatar.attr('src', src);
             }
         });
+        $(document).on('click', '#dropzone-previews .file-box', function () {
+            if ( $(this).find('img').length ) {
+                $(this).addClass('active').siblings().removeClass('active');
+            }
+            return false;
+        });
         $(document).on('click', '.wrapper-content .btn', function () {
 
             let button = $(this),
@@ -148,17 +181,15 @@
 
             } else if ( button.hasClass('lock') ) {
 
-                let input   = button.parent().find('input');
-                let user    = JSON.parse(input.val());
-                let message = 'Mở khóa thành công';
-                let txt     = 'Mở khóa user';
+                let input = button.parent().find('input');
+                let user  = JSON.parse(input.val());
+                let txt   = 'Mở khóa user';
 
                 if ( user.status === 0 ) {
                     user.status = 1;
                     txt         = 'Khoá user';
                 } else {
                     user.status = 0;
-                    message     = 'Khóa thành công';
                 }
 
                 $.ajax({
@@ -166,19 +197,40 @@
                     type: 'PUT',
                     dataType: 'json',
                     headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
                         status: user.status
                     },
                     success: function (response) {
 
-                        input.val(JSON.stringify(user));
+                        if ( response.status === 200 ) {
 
-                        toastr.success(message);
+                            input.val(JSON.stringify(user));
+                            button.attr('title', txt);
+                            button.find('span').toggleClass('fa-lock fa-unlock-alt');
 
-                        button.attr('title', txt);
-                        button.find('span').toggleClass('fa-lock fa-unlock-alt');
+                            swal({
+                                type: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                showConfirmButton: true
+                            });
+
+                        } else {
+                            let html = '';
+                            $.each(response.message, function (index, value) {
+                                html += "<p class='text-danger'>" + value + "</p>";
+                            });
+
+                            swal({
+                                html: true,
+                                type: 'error',
+                                title: '',
+                                text: html,
+                                showConfirmButton: true
+                            });
+                        }
                     },
                 });
 
@@ -189,7 +241,7 @@
                     dataType: 'json',
                     data: data,
                     headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
 
@@ -236,7 +288,7 @@
                             type: 'DELETE',
                             dataType: 'json',
                             headers: {
-                                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             success: function (response) {
                                 if ( response.status === 'success' ) {
@@ -261,7 +313,7 @@
                     dataType: 'json',
                     data: data,
                     headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
                         if ( response.status === 200 ) {
@@ -274,9 +326,7 @@
                                 text: response.message,
                                 showConfirmButton: true
                             });
-
                         } else {
-
                             let html = '';
                             $.each(response.message, function (index, value) {
                                 html += "<p class='text-danger'>" + value + "</p>";
@@ -289,7 +339,6 @@
                                 text: html,
                                 showConfirmButton: true
                             });
-
                         }
                     },
                 });
@@ -445,3 +494,20 @@
         </div>
     </div>
 </form>
+
+<div class="modal inmodal fade" id="modal-media" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thư viện</h4>
+            </div>
+            <div class="modal-body">
+                @include( ovic_blade('Backend.media.content') )
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Chọn ảnh</button>
+            </div>
+        </div>
+    </div>
+</div>

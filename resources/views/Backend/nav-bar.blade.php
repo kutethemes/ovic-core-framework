@@ -29,9 +29,12 @@
                     Hi, {{ Auth::user()->name }}
                 </a>
                 <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                    <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-                    <li><a class="dropdown-item" href="contacts.html">Contacts</a></li>
-                    <li><a class="dropdown-item" href="mailbox.html">Mailbox</a></li>
+                    <li>
+                        <a class="dropdown-item"
+                           href="{{ route('users.show', \Auth::user()->id ) }}">
+                            Profile
+                        </a>
+                    </li>
                     <li class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" href="{{ route('logout') }}"
