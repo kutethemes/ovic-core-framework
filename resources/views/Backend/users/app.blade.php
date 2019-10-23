@@ -48,9 +48,6 @@
         .btn-danger {
             float: left;
         }
-        #users-table thead th {
-            pointer-events: none;
-        }
         .head-group .button-group {
             float: right;
         }
@@ -65,6 +62,9 @@
         .client-options > * {
             margin: 0 5px;
         }
+        .dataTables_filter {
+            text-align: right;
+        }
     </style>
 @endpush
 
@@ -74,15 +74,23 @@
     <script src="{{ asset('js/plugins/dataTables/dataTables.bootstrap4.min.js') }}"></script>
 
     <script>
-        var table = $('#users-table').DataTable({
+        var Table = $('#table-users').DataTable({
             processing: false,
             serverSide: true,
             ajax: {
                 url: "users/list",
                 dataType: "json",
                 type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}"
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                data: function (d) {
+                    let value  = '',
+                        button = $('.btn-group.sorting .btn-primary');
+                    if ( button.length ) {
+                        value = button.val();
+                    }
+                    d.sorting = value;
                 },
                 error: function () {
                     swal({
@@ -93,7 +101,7 @@
                     });
                 },
             },
-            autoWidth: true,
+            sorting: false,
             columns: [
                 {
                     className: "client-avatar",
@@ -117,15 +125,34 @@
                 }
             ],
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Vietnamese.json"
+                "sProcessing": "Đang xử lý...",
+                "sLengthMenu": "Xem: _MENU_",
+                "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+                }
             }
         });
-        $(document).on('click', '.btn-group button', function () {
-            let button = $(this);
+        $(document).on('click', '.btn-group.sorting button', function () {
+            let button = $(this),
+                value  = button.val();
 
-            $('th.client-options').trigger('click');
-
+            if ( !button.hasClass('btn-primary') ) {
+                Table.column(4).search(value).draw();
+            } else {
+                Table.column(4).search('').draw();
+            }
             button.toggleClass('btn-primary btn-white');
+            $('.btn-group.sorting button').not(button).removeClass('btn-primary').addClass('btn-white');
         });
         $(document).on('click', '#dropzone-previews .file-box', function () {
             if ( $(this).find('img').length ) {
@@ -164,16 +191,22 @@
                                 Add new
                             </button>
                             <div class="button-group">
-                                <span class="font-bold">Xắp xếp theo:</span>
-                                <div class="btn-group">
-                                    <button class="btn btn-white" type="button">Kích hoạt</button>
-                                    <button class="btn btn-white" type="button">Kích hoạt ẩn</button>
-                                    <button class="btn btn-white" type="button">Không kích hoạt</button>
+                                <span class="font-bold">Lọc theo:</span>
+                                <div class="btn-group sorting">
+                                    <button class="btn btn-white" type="button" value="1">
+                                        Kích hoạt
+                                    </button>
+                                    <button class="btn btn-white" type="button" value="2">
+                                        Kích hoạt ẩn
+                                    </button>
+                                    <button class="btn btn-white" type="button" value="0">
+                                        Không kích hoạt
+                                    </button>
                                 </div>
                             </div>
                         </div>
                         <div class="clients-list">
-                            <table id="users-table" class="table table-striped table-hover" style="width:100%">
+                            <table id="table-users" class="table table-striped table-hover" style="width:100%">
                                 <thead>
                                 <tr>
                                     <th>Avatar</th>

@@ -59,54 +59,90 @@ class UsersController extends Controller
 
 		$totalFiltered = $totalData;
 
-		$limit = $request->input( 'length' );
-		$start = $request->input( 'start' );
+		$limit  = $request->input( 'length' );
+		$start  = $request->input( 'start' );
+		$sort   = $request->input( 'sorting' );
+		$search = $request->input( 'search.value' );
+		$status = $request->input( 'columns.4.search.value' );
+		/*
 		$order = $columns[$request->input( 'order.0.column' )];
 		$dir   = $request->input( 'order.0.dir' );
+		*/
 
-		if ( empty( $request->input( 'search.value' ) ) ) {
-			$users = User::offset( $start )
-				->limit( $limit )
-				->orderBy( $order, $dir )
-				->get();
-		} else {
-			$search = $request->input( 'search.value' );
+		$sorting = [
+			[ 'id', '!=', 0 ],
+		];
 
-			$users = User::where( 'id', 'LIKE', "%{$search}%" )
-				->orWhere( 'donvi', 'LIKE', "%{$search}%" )
-				->orWhere( 'status', 'LIKE', "%{$search}%" )
+		if ( $status != '' ) {
+			$sorting = [
+				[ 'status', '=', $status ],
+			];
+		} elseif ( $sort != '' && !empty( $search ) ) {
+			$sorting = [
+				[ 'status', '=', $sort ],
+				[ 'name', 'LIKE', "%{$search}%" ],
+				[ 'email', 'LIKE', "%{$search}%" ],
+			];
+		}
+
+		if ( empty( $search ) ) {
+			$users = User::where( $sorting )
 				->offset( $start )
 				->limit( $limit )
-				->orderBy( $order, $dir )
+				/* ->orderBy( $order, $dir ) */
+				->latest()
+				->get();
+		} else {
+			$users = User::where( $sorting )
+				->where(
+					function ( $query ) use ( $search ) {
+						$query->where( 'name', 'LIKE', "%{$search}%" )
+							->orWhere( 'email', 'LIKE', "%{$search}%" );
+					}
+				)
+				->offset( $start )
+				->limit( $limit )
+				/* ->orderBy( $order, $dir ) */
+				->latest()
 				->get();
 
-			$totalFiltered = User::where( 'id', 'LIKE', "%{$search}%" )
-				->orWhere( 'donvi', 'LIKE', "%{$search}%" )
-				->orWhere( 'status', 'LIKE', "%{$search}%" )
+			$totalFiltered = User::where( $sorting )
+				->where(
+					function ( $query ) use ( $search ) {
+						$query->where( 'name', 'LIKE', "%{$search}%" )
+							->orWhere( 'email', 'LIKE', "%{$search}%" );
+					}
+				)
 				->count();
 		}
 
 		$data = array();
+
 		if ( !empty( $users ) ) {
 			foreach ( $users as $user ) {
-				$avatar_url = "img/a_none.jpg";
-				$options    = "";
+				$avatar_url  = "img/a_none.jpg";
+				$options     = "";
+				$status_html = "";
+				$status_txt  = "Mở khóa user";
 
 				if ( !empty( $user->avatar ) && $user->avatar > 0 ) {
-					$path       = Post::find( $user->avatar )->value( 'name' );
+					$path       = Post::where( 'id', '=', $user->avatar )->value( 'name' );
 					$avatar_url = route( 'get_file', explode( '/', $path ) );
+				}
+
+				if ( $user->status == 0 ) {
+					$status_html .= "<span class='fa fa-lock'></span>";
+				} else {
+					$status_txt  = "Khoá user";
+					$status_html .= "<span class='fa fa-unlock-alt'></span>";
 				}
 
 				$user['avatar_url'] = $avatar_url;
 
 				$avatar = "<img alt='avatar' src='{$avatar_url}'>";
 
-				$options .= "<a href='#' title='Khóa' class='btn dim btn-warning lock'>";
-				if ( $user->status == 0 ) {
-					$options .= "<span class='fa fa-unlock-alt'></span>";
-				} else {
-					$options .= "<span class='fa fa-lock'></span>";
-				}
+				$options .= "<a href='#' title='{$status_txt}' class='btn dim btn-warning lock'>";
+				$options .= "{$status_html}";
 				$options .= "</a>";
 
 				$options .= "<a href='#' title='Sửa' class='btn dim btn-primary edit'>";
@@ -218,13 +254,45 @@ class UsersController extends Controller
 	 */
 	public function update( Request $request, $id )
 	{
-		$request = $request->toArray();
+		$validator = Validator::make( $request->all(),
+			[
+				'name'     => [ 'required', 'string', 'max:255' ],
+				'email'    => [ 'required', 'string', 'email', 'max:255', 'unique:users' ],
+				'password' => [ 'string', 'min:8' ],
+			]
+		);
 
-		User::where( 'id', $id )->update( $request );
+		if ( $validator->passes() ) {
+			$data = $request->toArray();
+
+			unset( $data['id'] );
+
+			if ( !empty( $data['password'] ) ) {
+				$data['password'] = Hash::make( $data['password'] );
+			}
+
+			if ( !empty( $data['donvi_ids'] ) ) {
+				$data['donvi_ids'] = maybe_serialize( $data['donvi_ids'] );
+			}
+
+			if ( !empty( $data['role_ids'] ) ) {
+				$data['role_ids'] = maybe_serialize( $data['role_ids'] );
+			}
+
+			User::where( 'id', $id )->update( $data );
+
+			return response()->json(
+				[
+					'status'  => 200,
+					'message' => 'Update thành công.',
+				]
+			);
+		}
 
 		return response()->json(
 			[
-				'message' => 'Update thành công.',
+				'status'  => 400,
+				'message' => $validator->errors()->all(),
 			]
 		);
 	}

@@ -39,6 +39,14 @@ class Post extends Eloquent
 		return true;
 	}
 
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @param int                      $id
+	 *
+	 * @return array
+	 */
 	public static function update_post( $request, $id )
 	{
 		$data  = [];
@@ -54,18 +62,10 @@ class Post extends Eloquent
 			'updated_at',
 		];
 
-		if ( !Post::is_exits( $id ) ) {
-			return [
-				'code'    => 400,
-				'status'  => 'error',
-				'message' => 'The post is do not exits.',
-			];
-		}
-
 		if ( !empty( $request ) ) {
 			foreach ( $request as $key => $value ) {
 				if ( in_array( $key, $input ) ) {
-					$data[$key] = maybe_serialize( $value );
+					$data[$key] = $value;
 				}
 			}
 

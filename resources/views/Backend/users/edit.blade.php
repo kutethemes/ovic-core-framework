@@ -103,7 +103,9 @@
         $(document).on('click', '.wrapper-content .btn', function () {
 
             let button = $(this),
-                form   = $('.edit-user');
+                form   = $('#edit-user'),
+                users  = $('#table-users'),
+                data   = form.serializeObject();
 
             if ( button.hasClass('add-new') ) {
 
@@ -120,13 +122,13 @@
             } else if ( button.hasClass('edit') ) {
 
                 let chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ],
-                    data   = button.parent().find('input').val();
+                    user   = button.parent().find('input').val();
 
-                data = JSON.parse(data);
+                user = JSON.parse(user);
 
-                form.find('.avatar img').attr('src', data.avatar_url);
+                form.find('.avatar img').attr('src', user.avatar_url);
 
-                $.each(data, function (index, value) {
+                $.each(user, function (index, value) {
                     if ( form.find('[name="' + index + '"]').length ) {
                         if ( chosen.indexOf(index) !== -1 ) {
                             form.find('[name="' + index + '"]').val(value).trigger('chosen:updated');
@@ -142,57 +144,58 @@
                 form.find('.form-group .add-user').addClass('d-none');
                 form.find('.field-password-confirmation').css('display', 'none');
                 form.find('.field-password .input-group-append').css('display', 'flex');
-                form.find('.form-group .save-user,.form-group .remove-user').removeClass('d-none');
+                form.find('.form-group .update-user,.form-group .remove-user').removeClass('d-none');
 
             } else if ( button.hasClass('lock') ) {
 
                 let input   = button.parent().find('input');
-                let data    = JSON.parse(input.val());
-                let message = '';
+                let user    = JSON.parse(input.val());
+                let message = 'Mở khóa thành công';
+                let txt     = 'Mở khóa user';
 
-                if ( data.status === 0 ) {
-                    data.status = 1;
-                    message     = 'Mở khóa thành công';
+                if ( user.status === 0 ) {
+                    user.status = 1;
+                    txt         = 'Khoá user';
                 } else {
-                    data.status = 0;
+                    user.status = 0;
                     message     = 'Khóa thành công';
                 }
 
                 $.ajax({
-                    url: "users/" + data.id,
+                    url: "users/" + user.id,
                     type: 'PUT',
                     dataType: 'json',
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
                     data: {
-                        status: data.status
+                        status: user.status
                     },
                     success: function (response) {
 
-                        input.val(JSON.stringify(data));
+                        input.val(JSON.stringify(user));
 
                         toastr.success(message);
 
+                        button.attr('title', txt);
                         button.find('span').toggleClass('fa-lock fa-unlock-alt');
                     },
                 });
 
             } else if ( button.hasClass('add-user') ) {
-                button.find('span').addClass('loadding');
                 $.ajax({
                     url: "users",
                     type: 'POST',
                     dataType: 'json',
+                    data: data,
                     headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
-                    data: button.closest('form').serializeObject(),
                     success: function (response) {
 
                         if ( response.status === 200 ) {
 
-                            table.ajax.reload(null, false);
+                            Table.ajax.reload(null, false);
 
                             swal({
                                 type: 'success',
@@ -201,10 +204,12 @@
                                 showConfirmButton: true
                             });
                         } else {
+
                             let html = '';
                             $.each(response.message, function (index, value) {
                                 html += "<p class='text-danger'>" + value + "</p>";
                             });
+
                             swal({
                                 html: true,
                                 type: 'error',
@@ -213,13 +218,11 @@
                                 showConfirmButton: true
                             });
                         }
-
-                        button.find('span').removeClass('loadding');
                     },
                 });
             } else if ( button.hasClass('remove-user') ) {
                 swal({
-                    title: "Bạn có chắc muốn xóa?",
+                    title: "Bạn có chắc muốn xóa \"" + data.name + "\"?",
                     text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
                     type: "warning",
                     showCancelButton: true,
@@ -228,9 +231,8 @@
                     closeOnConfirm: false
                 }, function (isConfirm) {
                     if ( isConfirm ) {
-                        let id = button.closest('form').find('input[name="id"]').val();
                         $.ajax({
-                            url: "users/" + id,
+                            url: "users/" + data.id,
                             type: 'DELETE',
                             dataType: 'json',
                             headers: {
@@ -238,7 +240,7 @@
                             },
                             success: function (response) {
                                 if ( response.status === 'success' ) {
-                                    $('#users-table input[name="user-' + id + '"]').closest('tr').remove();
+                                    users.find('input[name="user-' + data.id + '"]').closest('tr').remove();
                                 }
                                 swal({
                                     type: response.status,
@@ -252,6 +254,45 @@
                         });
                     }
                 });
+            } else if ( button.hasClass('update-user') ) {
+                $.ajax({
+                    url: "users/" + data.id,
+                    type: 'PUT',
+                    dataType: 'json',
+                    data: data,
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if ( response.status === 200 ) {
+
+                            Table.ajax.reload(null, false);
+
+                            swal({
+                                type: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                showConfirmButton: true
+                            });
+
+                        } else {
+
+                            let html = '';
+                            $.each(response.message, function (index, value) {
+                                html += "<p class='text-danger'>" + value + "</p>";
+                            });
+
+                            swal({
+                                html: true,
+                                type: 'error',
+                                title: '',
+                                text: html,
+                                showConfirmButton: true
+                            });
+
+                        }
+                    },
+                });
             }
 
             return false;
@@ -259,7 +300,7 @@
     </script>
 @endpush
 
-<form action="#" class="edit-user" method="post">
+<form action="#" id="edit-user" method="post">
     <input type="hidden" name="id" value="">
     <input type="hidden" name="avatar" value="">
 
@@ -393,14 +434,13 @@
                 <i class="fa fa-trash-o"></i>
                 Xóa
             </button>
-            <button class="btn btn-primary save-user d-none" type="button">
+            <button class="btn btn-primary update-user d-none" type="button">
                 <i class="fa fa-save"></i>
                 Save change
             </button>
             <button class="btn btn-primary add-user" type="button">
                 <i class="fa fa-upload"></i>
                 Add user
-                <span class="open-circle"></span>
             </button>
         </div>
     </div>
