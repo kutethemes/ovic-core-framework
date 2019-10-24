@@ -101,14 +101,10 @@
 
                             input.val(JSON.stringify(role));
                             button.attr('title', txt);
+                            button.toggleClass('btn-warning btn-danger');
                             button.find('span').toggleClass('fa-lock fa-unlock-alt');
 
-                            swal({
-                                type: 'success',
-                                title: 'Success!',
-                                text: response.message,
-                                showConfirmButton: true
-                            });
+                            toastr.success(response.message);
 
                         } else {
                             let html = '';
@@ -142,12 +138,8 @@
 
                             Table.ajax.reload(null, false);
 
-                            swal({
-                                type: 'success',
-                                title: 'Success!',
-                                text: 'Tạo role thành công.',
-                                showConfirmButton: true
-                            });
+                            toastr.success('Tạo role thành công.');
+
                         } else {
 
                             let html = '';
@@ -213,12 +205,8 @@
 
                             Table.ajax.reload(null, false);
 
-                            swal({
-                                type: 'success',
-                                title: 'Success!',
-                                text: response.message,
-                                showConfirmButton: true
-                            });
+                            toastr.success(response.message);
+
                         } else {
                             let html = '';
                             $.each(response.message, function (index, value) {
@@ -299,7 +287,7 @@
                 </label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <input type="number" name="ordering" class="form-control" min="0" value="100"/>
+                        <input type="number" name="ordering" class="form-control" min="0" value="99"/>
                     </div>
                 </div>
             </div>

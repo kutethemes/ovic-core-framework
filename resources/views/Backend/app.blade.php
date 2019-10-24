@@ -28,6 +28,21 @@
     <link href="{{ asset('css/animate.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
 
+    <style>
+        .nav > li > a {
+            font-weight: 400;
+            font-size: 12px;
+            padding: 12px 20px 12px 10px;
+        }
+        .nav-second-level li a {
+            padding: 6px 10px 6px 10px;
+            padding-left: 20px;
+        }
+        .nav > li.active {
+            border-left-width: 2px;
+        }
+    </style>
+
 </head>
 
 <body class="fixed-sidebar no-skin-config">
@@ -52,11 +67,11 @@
 
 {{-- Mainly scripts --}}
 <script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
-<script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+<script defer src="{{ asset('js/plugins/metisMenu/metisMenu.min.js') }}"></script>
+<script defer src="{{ asset('js/plugins/slimscroll/slimscroll.min.js') }}"></script>
 {{-- Custom and plugin javascript --}}
-<script src="{{ asset('js/inspinia.js') }}"></script>
-<script src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
+<script defer src="{{ asset('js/inspinia.min.js') }}"></script>
+<script defer src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
 {{-- Blade scripts --}}
 @stack( 'scripts' )
 

@@ -144,7 +144,7 @@
 
                 form.trigger('reset');
                 form.find('input[name="id"]').val('');
-                form.find('input[name="avatar"]').val('');
+                form.find('input[name="avatar"]').val('0');
                 form.find('.avatar img').attr('src', 'img/a_none.jpg');
                 form.find('.field-password input').removeAttr('disabled').attr('name', 'password');
                 form.find('.chosen-select').val('').trigger('chosen:updated');
@@ -164,6 +164,13 @@
                 $.each(user, function (index, value) {
                     if ( form.find('[name="' + index + '"]').length ) {
                         if ( chosen.indexOf(index) !== -1 ) {
+
+                            value = JSON.parse(value);
+
+                            if ( Array.isArray(value) ) {
+                                value = value.map(Number);
+                            }
+
                             form.find('[name="' + index + '"]').val(value).trigger('chosen:updated');
                         } else if ( index === 'password' ) {
                             form.find('[name="' + index + '"]').val(value).attr('disabled', 'disabled').removeAttr('name');
@@ -208,14 +215,10 @@
 
                             input.val(JSON.stringify(user));
                             button.attr('title', txt);
+                            button.toggleClass('btn-warning btn-danger');
                             button.find('span').toggleClass('fa-lock fa-unlock-alt');
 
-                            swal({
-                                type: 'success',
-                                title: 'Success!',
-                                text: response.message,
-                                showConfirmButton: true
-                            });
+                            toastr.success(response.message);
 
                         } else {
                             let html = '';
@@ -249,12 +252,7 @@
 
                             Table.ajax.reload(null, false);
 
-                            swal({
-                                type: 'success',
-                                title: 'Success!',
-                                text: 'Tạo user thành công.',
-                                showConfirmButton: true
-                            });
+                            toastr.success('Tạo user thành công.');
                         } else {
 
                             let html = '';
@@ -294,6 +292,7 @@
                                 if ( response.status === 'success' ) {
                                     users.find('input[name="user-' + data.id + '"]').closest('tr').remove();
                                 }
+
                                 swal({
                                     type: response.status,
                                     title: response.title,
@@ -320,12 +319,7 @@
 
                             Table.ajax.reload(null, false);
 
-                            swal({
-                                type: 'success',
-                                title: 'Success!',
-                                text: response.message,
-                                showConfirmButton: true
-                            });
+                            toastr.success(response.message);
                         } else {
                             let html = '';
                             $.each(response.message, function (index, value) {
@@ -351,7 +345,7 @@
 
 <form action="#" id="edit-user" method="post">
     <input type="hidden" name="id" value="">
-    <input type="hidden" name="avatar" value="">
+    <input type="hidden" name="avatar" value="0">
 
     <div class="row m-b-lg">
         <div class="col-lg-12 text-center">
@@ -428,51 +422,72 @@
             </div>
             <div class="hr-line-dashed"></div>
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">
-                    Đơn vị
-                </label>
-                <div class="col-sm-9">
-                    <select name="donvi_id" class="form-control chosen-select"
-                            data-placeholder="Chọn đơn vị">
-                        <option value="">Chọn đơn vị</option>
-                        <option value="1">Kích hoạt</option>
-                        <option value="2">Kích hoạt ẩn</option>
-                        <option value="0">Không kích hoạt</option>
-                    </select>
+            @if( Illuminate\Support\Facades\Schema::hasTable( 'donvi' ) )
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">
+                        Đơn vị
+                    </label>
+                    <div class="col-sm-9">
+                        <select name="donvi_id" class="form-control chosen-select"
+                                data-placeholder="Chọn đơn vị">
+                            <option value="0">Chọn đơn vị</option>
+                            @php
+                                $donvis = \Ovic\Framework\Donvi::all( [ 'id', 'tendonvi' ] )->toArray();
+                            @endphp
+                            @if( !empty( $donvis) )
+                                @foreach ( $donvis as $donvi )
+                                    <option value="{{ $donvi['id'] }}">{{ $donvi['tendonvi'] }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="hr-line-dashed"></div>
+                <div class="hr-line-dashed"></div>
+            @endif
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">
-                    Nhóm quyền
-                </label>
-                <div class="col-sm-9">
-                    <select name="role_ids" class="form-control chosen-select"
-                            multiple="multiple" data-placeholder="Chọn nhóm quyền">
-                        <option value="1">Kích hoạt</option>
-                        <option value="2">Kích hoạt ẩn</option>
-                        <option value="0">Không kích hoạt</option>
-                    </select>
+            @if( Illuminate\Support\Facades\Schema::hasTable( 'roles' ) )
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">
+                        Nhóm quyền
+                    </label>
+                    <div class="col-sm-9">
+                        <select name="role_ids" class="form-control chosen-select"
+                                multiple="multiple" data-placeholder="Chọn nhóm quyền">
+                            @php
+                                $roles = \Ovic\Framework\Roles::all( [ 'id', 'title' ] )->toArray();
+                            @endphp
+                            @if( !empty( $roles) )
+                                @foreach ( $roles as $role )
+                                    <option value="{{ $role['id'] }}">{{ $role['title'] }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="hr-line-dashed"></div>
+                <div class="hr-line-dashed"></div>
+            @endif
 
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">
-                    Phạm vi quản lý
-                </label>
-                <div class="col-sm-9">
-                    <select name="donvi_ids" class="form-control chosen-select"
-                            multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
-                        <option value="1">Kích hoạt</option>
-                        <option value="2">Kích hoạt ẩn</option>
-                        <option value="0">Không kích hoạt</option>
-                    </select>
+            @if( Illuminate\Support\Facades\Schema::hasTable( 'ucases' ) )
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">
+                        Phạm vi quản lý
+                    </label>
+                    <div class="col-sm-9">
+                        <select name="donvi_ids" class="form-control chosen-select"
+                                multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
+                            @php
+                                $ucases = \Ovic\Framework\Ucases::all( [ 'id', 'name' ] )->toArray();
+                            @endphp
+                            @if( !empty( $ucases ) )
+                                @foreach ( $ucases as $ucase )
+                                    <option value="{{ $ucase['id'] }}">{{ $ucase['name'] }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="hr-line-dashed"></div>
+                <div class="hr-line-dashed"></div>
+            @endif
 
         </div>
     </div>

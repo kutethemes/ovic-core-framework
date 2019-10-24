@@ -11,7 +11,7 @@
 
 @extends( ovic_blade('Backend.app') )
 
-@section( 'title', 'Users Manager' )
+@section( 'title', 'QUẢN LÝ NGƯỜI DÙNG' )
 
 @push( 'styles' )
     <style>
@@ -23,7 +23,7 @@
         }
         .client-name,
         .client-email {
-            width: 210px;
+            width: 230px;
         }
         .client-options {
             width: 110px;
@@ -32,43 +32,60 @@
         .client-options > * {
             margin: 0 5px;
         }
-        .dataTables_filter {
-            text-align: right;
+        .head-table > * {
+            text-align: center;
+        }
+        .dataTables_wrapper {
+            position: relative;
+        }
+        .dataTables_processing.card {
+            position: absolute;
+            border: none;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.6);
+        }
+        .sk-spinner-double-bounce.sk-spinner {
+            top: calc(50% - 20px);
+        }
+        @media (min-width: 1200px) {
+            .head-table > * {
+                display: inline-block;
+                width: 50%;
+                vertical-align: middle;
+            }
+            .dataTables_filter {
+                text-align: left;
+            }
+            .dataTables_info {
+                text-align: right;
+            }
+        }
+        @media (max-width: 1200px) {
+            .head-table {
+                margin-bottom: 20px;
+            }
         }
     </style>
 @endpush
 
 @section( 'content' )
 
-    <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-9">
-            <h2>@yield( 'page-title', 'Users' ) Manager</h2>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{{ url('/') }}">Home</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ url('/dashboard') }}">Dashboard</a>
-                </li>
-                <li class="breadcrumb-item active">
-                    <strong>@yield( 'page-title', 'Users' ) Manager</strong>
-                </li>
-            </ol>
-        </div>
-    </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-sm-8">
                 <div class="ibox">
                     <div class="ibox-content">
-                        @yield( 'page-list', \View::make( ovic_blade('Backend.users.list') ) )
+                        @yield( 'page-list', view( ovic_blade('Backend.users.list') ) )
                     </div>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="ibox selected">
                     <div class="ibox-content">
-                        @yield( 'page-edit', \View::make( ovic_blade('Backend.users.edit') ) )
+                        @yield( 'page-edit', view( ovic_blade('Backend.users.edit') ) )
                     </div>
                 </div>
             </div>

@@ -13,6 +13,35 @@
 Route::group(
 	[ 'middleware' => [ 'web', 'auth' ] ],
 	function () {
+		$data = [
+			'id'        => '',
+			'parent_id' => '',
+			'router'    => [
+				'title'       => '',
+				'icon'        => '',
+				'module'      => '',
+				'controller'  => '',
+				'custom_link' => '',
+				'description' => '',
+			],
+			'ordering'  => '',
+			'position'  => [
+				'top'    => 'Top',
+				'left'   => 'Left',
+				'right'  => 'Right',
+				'bottom' => 'Bottom',
+			],
+			'access'    => [
+				'1' => 'Backend',
+				'2' => 'Frontend',
+				'0' => 'Public',
+			],
+			'status'    => [
+				'1' => 'Active',
+				'2' => 'Inactive',
+				'0' => 'Hidden',
+			],
+		];
 		/* Dashboard Route */
 		Route::get( 'dashboard', 'Ovic\Framework\DashboardController@index' )->name( 'dashboard' );
 
@@ -23,6 +52,9 @@ Route::group(
 		/* Roles Route */
 		Route::post( 'roles/list', 'Ovic\Framework\RolesController@roles' )->name( 'roles.list' );
 		Route::resource( 'roles', 'Ovic\Framework\RolesController' );
+
+		/* Ucases Route */
+		Route::resource( 'ucases', 'Ovic\Framework\UcasesController' );
 
 		/* Post Route */
 		Route::resource( 'post', 'Ovic\Framework\PostsController' );

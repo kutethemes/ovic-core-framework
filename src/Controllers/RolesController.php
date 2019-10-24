@@ -35,7 +35,7 @@ class RolesController extends Controller
 	 */
 	public function roles( Request $request )
 	{
-		$totalData = Roles::where( 'id', '>', 0 )->count();
+		$totalData = Roles::count();
 
 		$totalFiltered = $totalData;
 
@@ -53,7 +53,8 @@ class RolesController extends Controller
 			$sorting = [
 				[ 'status', '=', $status ],
 			];
-		} elseif ( $sort != '' && !empty( $search ) ) {
+		}
+		elseif ( $sort != '' && !empty( $search ) ) {
 			$sorting = [
 				[ 'status', '=', $sort ],
 			];
@@ -65,7 +66,8 @@ class RolesController extends Controller
 				->limit( $limit )
 				->orderBy( 'ordering', 'asc' )
 				->get();
-		} else {
+		}
+		else {
 			$roles = Roles::where( $sorting )
 				->where(
 					function ( $query ) use ( $search ) {
@@ -94,20 +96,18 @@ class RolesController extends Controller
 
 		if ( !empty( $roles ) ) {
 			foreach ( $roles as $role ) {
-				$options     = "";
-				$status_html = "";
-				$status_txt  = "Mở khóa role";
+				$options = "";
 
 				if ( $role->status == 0 ) {
-					$status_html .= "<span class='fa fa-lock'></span>";
-				} else {
-					$status_txt  = "Khoá role";
-					$status_html .= "<span class='fa fa-unlock-alt'></span>";
+					$options .= "<a href='#' title='Mở khóa role' class='btn dim btn-danger lock'>";
+					$options .= "<span class='fa fa-lock'></span>";
+					$options .= "</a>";
 				}
-
-				$options .= "<a href='#' title='{$status_txt}' class='btn dim btn-warning lock'>";
-				$options .= "{$status_html}";
-				$options .= "</a>";
+				else {
+					$options .= "<a href='#' title='khóa role' class='btn dim btn-warning lock'>";
+					$options .= "<span class='fa fa-unlock-alt'></span>";
+					$options .= "</a>";
+				}
 
 				$options .= "<a href='#' title='Sửa role' class='btn dim btn-primary edit'>";
 				$options .= "<span class='fa fa-pencil-square-o'></span>";

@@ -11,11 +11,11 @@
 
 @push( 'styles' )
     <!-- dropzone -->
-    <link href="{{ asset('css/plugins/dropzone/dropzone.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/dropzone/dropzone.min.css') }}" rel="stylesheet">
     <!-- Toastr style -->
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     <!-- Sweet Alert -->
-    <link href="{{ asset('css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
     <!-- jsTree -->
     <link href="{{ asset('css/plugins/jsTree/style.min.css') }}" rel="stylesheet">
 
@@ -92,7 +92,7 @@
     <!-- Toastr script -->
     <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
     <!-- dropzone -->
-    <script src="{{ asset('js/plugins/dropzone/dropzone.js') }}"></script>
+    <script src="{{ asset('js/plugins/dropzone/dropzone.min.js') }}"></script>
     <!-- jsTree -->
     <script src="{{ asset('js/plugins/jsTree/jstree.min.js') }}"></script>
 
@@ -134,13 +134,7 @@
 
                 $('#dropzone-previews').prepend(response.html);
 
-                swal({
-                    type: response.status,
-                    title: response.status,
-                    text: response.message,
-                    showConfirmButton: false,
-                    timer: 1200
-                });
+                toastr[ response.status ](response.message);
             },
             dictDefaultMessage: "<strong>Kéo thả files vào đây để upload lên máy chủ. </strong></br>  (Hoặc click chuột để chọn files upload.)"
         };

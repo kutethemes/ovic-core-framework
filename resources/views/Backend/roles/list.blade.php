@@ -25,7 +25,9 @@
     <script>
         var Table = $('#table-roles').DataTable({
             processing: false,
+            lengthChange: false,
             serverSide: true,
+            dom: '<"head-table"fi>rt<"footer-table"p><"clear">',
             ajax: {
                 url: "roles/list",
                 dataType: "json",
@@ -50,38 +52,45 @@
                     });
                 },
             },
-            sorting: false,
             columns: [
                 {
                     className: "client-order",
-                    data: "ordering"
+                    data: "ordering",
+                    sortable: false
                 },
                 {
                     className: "client-name",
-                    data: "name"
+                    data: "name",
+                    sortable: false
                 },
                 {
                     className: "client-title",
-                    data: "title"
+                    data: "title",
+                    sortable: false
                 },
                 {
                     className: "client-desc",
-                    data: "description"
+                    data: "description",
+                    sortable: false
                 },
                 {
                     className: "client-options",
-                    data: "status"
+                    data: "status",
+                    sortable: false
                 }
             ],
             language: {
-                sProcessing: "Đang xử lý...",
+                sProcessing: "<div class=\"sk-spinner sk-spinner-double-bounce\">\n" +
+                    "                                <div class=\"sk-double-bounce1\"></div>\n" +
+                    "                                <div class=\"sk-double-bounce2\"></div>\n" +
+                    "                            </div>",
                 sLengthMenu: "Xem: _MENU_",
                 sZeroRecords: "Không tìm thấy roles",
                 sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
                 sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
                 sInfoFiltered: "(được lọc từ _MAX_ mục)",
                 sInfoPostFix: "",
-                sSearch: "Tìm:",
+                sSearch: "Tìm kiếm:",
                 sUrl: "",
                 oPaginate: {
                     sFirst: "Đầu",
@@ -103,6 +112,9 @@
                 button.toggleClass('btn-primary btn-white');
                 Table.column(1).search('').draw();
             }
+        });
+        $(window).on('resize', function () {
+            Table.columns.adjust();
         });
     </script>
 @endpush

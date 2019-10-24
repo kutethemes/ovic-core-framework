@@ -9,8 +9,6 @@ class OvicAuthenticate extends Middleware
 {
 	public function handle( $request, Closure $next, ...$guards )
 	{
-		echo '<pre>';
-		print_r($request);
-		echo '</pre>';
+		//
 	}
 }

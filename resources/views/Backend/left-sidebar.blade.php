@@ -8,6 +8,12 @@
      * @version 1.0
      */
     $name = Route::currentRouteName();
+    $system = [
+        'users.index',
+        'roles.index',
+        'ucases.index',
+        'upload.index',
+    ];
 @endphp
 <!-- Left Sidebar -->
 <nav class="navbar-default navbar-static-side" role="navigation">
@@ -29,29 +35,35 @@
                     <span class="nav-label">Dashboard</span>
                 </a>
             </li>
-            <li class="active">
+            <li @if ( in_array( $name, $system ) ) class="active" @endif>
                 <a href="#">
                     <i class="fa fa-cogs"></i>
-                    <span class="nav-label">System</span>
+                    <span class="nav-label">Hệ thống</span>
                     <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level collapse">
                     <li @if ( $name == 'users.index' ) class="active" @endif>
                         <a href="{{ url('/users') }}">
                             <i class="fa fa-users"></i>
-                            <span class="nav-label">Users</span>
+                            <span class="nav-label">Quản lý người dùng</span>
                         </a>
                     </li>
                     <li @if ( $name == 'roles.index' ) class="active" @endif>
                         <a href="{{ url('/roles') }}">
                             <i class="fa fa-user-plus"></i>
-                            <span class="nav-label">Roles</span>
+                            <span class="nav-label">Nhóm người dùng</span>
+                        </a>
+                    </li>
+                    <li @if ( $name == 'ucases.index' ) class="active" @endif>
+                        <a href="{{ url('/ucases') }}">
+                            <i class="fa fa-codepen"></i>
+                            <span class="nav-label">Quản lý chức năng</span>
                         </a>
                     </li>
                     <li @if ( $name == 'upload.index' ) class="active" @endif>
                         <a href="{{ url('/upload') }}">
                             <i class="fa fa-folder-open"></i>
-                            <span class="nav-label">Media</span>
+                            <span class="nav-label">Quản lý dữ liệu</span>
                         </a>
                     </li>
                 </ul>
