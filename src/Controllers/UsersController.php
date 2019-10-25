@@ -121,14 +121,16 @@ class UsersController extends Controller
 			foreach ( $users as $user ) {
 				$avatar_url = "img/a_none.jpg";
 				$options    = "";
-				$donvi      = "";
+				$donvi      = "Bảng đơn vị không tồn tại";
 
 				if ( !empty( $user->avatar ) && $user->avatar > 0 ) {
 					$path       = Post::where( 'id', '=', $user->avatar )->value( 'name' );
 					$avatar_url = route( 'get_file', explode( '/', $path ) );
 				}
 
-				//$donvi = Donvi::where( 'id', $user->donvi_id )->values( 'tendonvi' );
+				if ( Donvi::hasTable() ) {
+					$donvi = Donvi::where( 'id', $user->donvi_id )->value( 'tendonvi' );
+				}
 
 				$user['avatar_url'] = $avatar_url;
 

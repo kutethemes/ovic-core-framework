@@ -1,6 +1,6 @@
 @php
     /**
-     * The edit user for our theme
+     * The edit ucases for our theme
      *
      * @package Ovic
      * @subpackage Framework
@@ -14,21 +14,6 @@
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 
     <style>
-        .avatar {
-            display: inline-block;
-        }
-        .client-avatar img {
-            max-width: 28px;
-        }
-        .avatar img {
-            max-width: 96px;
-        }
-        img.img-thumbnail {
-            border-width: 3px;
-        }
-        .img-thumbnail:hover {
-            border-color: #23c6c8;
-        }
         label.float-right {
             margin-bottom: 0;
         }
@@ -42,10 +27,6 @@
         }
         div.chosen-container-multi .chosen-choices li.search-choice {
             margin: 5px 0 3px 5px;
-        }
-        .field-password .input-group-append,
-        .field-password-confirmation {
-            display: none;
         }
     </style>
 @endpush
@@ -77,16 +58,6 @@
             no_results_text: "Oops, nothing found!",
             disable_search_threshold: 5
         });
-        $(document).on('click', 'button.edit-field', function () {
-            let group = $(this).closest('.input-group');
-            let input = group.find('input');
-
-            if ( input.attr('disabled') === undefined ) {
-                input.attr('disabled', 'disabled').removeAttr('name');
-            } else {
-                input.removeAttr('disabled').attr('name', 'password');
-            }
-        });
         $(document).on('click', '#modal-media .btn-primary', function () {
             let file_box = $('#dropzone-previews .file-box.active');
 
@@ -103,8 +74,8 @@
         $(document).on('click', '.wrapper-content .btn', function () {
 
             let button = $(this),
-                form   = $('#edit-user'),
-                users  = $('#table-users'),
+                form   = $('#edit-ucase'),
+                ucases = $('#table-ucases'),
                 data   = form.serializeObject();
 
             if ( button.hasClass('add-new') ) {
@@ -113,22 +84,19 @@
                 form.find('input[name="id"]').val('');
                 form.find('input[name="avatar"]').val('0');
                 form.find('.avatar img').attr('src', 'img/a_none.jpg');
-                form.find('.field-password input').removeAttr('disabled').attr('name', 'password');
                 form.find('.chosen-select').val('').trigger('chosen:updated');
-                form.find('.field-password-confirmation').css('display', 'flex').find('input').attr('name', 'password_confirmation');
-                form.find('.field-password .input-group-append').css('display', 'none');
-                form.find('.form-group .add-user').removeClass('d-none').siblings().addClass('d-none');
+                form.find('.form-group .add-ucase').removeClass('d-none').siblings().addClass('d-none');
 
             } else if ( button.hasClass('edit') ) {
 
                 let chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ],
-                    user   = button.parent().find('input').val();
+                    ucase  = button.parent().find('input').val();
 
-                user = JSON.parse(user);
+                ucase = JSON.parse(ucase);
 
-                form.find('.avatar img').attr('src', user.avatar_url);
+                form.find('.avatar img').attr('src', ucase.avatar_url);
 
-                $.each(user, function (index, value) {
+                $.each(ucase, function (index, value) {
                     if ( form.find('[name="' + index + '"]').length ) {
                         if ( chosen.indexOf(index) !== -1 ) {
 
@@ -139,50 +107,45 @@
                             }
 
                             form.find('[name="' + index + '"]').val(value).trigger('chosen:updated');
-                        } else if ( index === 'password' ) {
-                            form.find('[name="' + index + '"]').val(value).attr('disabled', 'disabled').removeAttr('name');
-                            form.find('[name="password_confirmation"]').removeAttr('name');
                         } else {
                             form.find('[name="' + index + '"]').val(value);
                         }
                     }
                 });
 
-                form.find('.form-group .add-user').addClass('d-none');
-                form.find('.field-password-confirmation').css('display', 'none');
-                form.find('.field-password .input-group-append').css('display', 'flex');
-                form.find('.form-group .update-user,.form-group .remove-user').removeClass('d-none');
+                form.find('.form-group .add-ucase').addClass('d-none');
+                form.find('.form-group .update-ucase,.form-group .remove-ucase').removeClass('d-none');
 
             } else if ( button.hasClass('lock') ) {
 
                 let input   = button.parent().find('input');
-                let user    = JSON.parse(input.val());
-                let message = 'Khóa user thành công';
-                let txt     = 'Mở khóa user';
+                let ucase   = JSON.parse(input.val());
+                let message = 'Khóa chức năng thành công';
+                let txt     = 'Mở khóa chức năng';
 
-                if ( user.status === 0 ) {
-                    user.status = 1;
-                    txt         = 'Khoá user';
-                    message     = 'Mở khóa user thành công';
+                if ( ucase.status === 0 ) {
+                    ucase.status = 1;
+                    txt          = 'Khoá chức năng';
+                    message      = 'Mở khóa chức năng thành công';
                 } else {
-                    user.status = 0;
+                    ucase.status = 0;
                 }
 
                 $.ajax({
-                    url: "users/" + user.id,
+                    url: "ucases/" + ucase.id,
                     type: 'PUT',
                     dataType: 'json',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        status: user.status
+                        status: ucase.status
                     },
                     success: function (response) {
 
                         if ( response.status === 200 ) {
 
-                            input.val(JSON.stringify(user));
+                            input.val(JSON.stringify(ucase));
                             button.attr('title', txt);
                             button.toggleClass('btn-warning btn-danger');
                             button.find('span').toggleClass('fa-lock fa-unlock-alt');
@@ -206,9 +169,9 @@
                     },
                 });
 
-            } else if ( button.hasClass('add-user') ) {
+            } else if ( button.hasClass('add-ucase') ) {
                 $.ajax({
-                    url: "users",
+                    url: "ucases",
                     type: 'POST',
                     dataType: 'json',
                     data: data,
@@ -221,7 +184,7 @@
 
                             Table.ajax.reload(null, false);
 
-                            toastr.success('Tạo user thành công.');
+                            toastr.success('Tạo ucase thành công.');
                         } else {
 
                             let html = '';
@@ -239,7 +202,7 @@
                         }
                     },
                 });
-            } else if ( button.hasClass('remove-user') ) {
+            } else if ( button.hasClass('remove-ucase') ) {
                 swal({
                     title: "Bạn có chắc muốn xóa \"" + data.name + "\"?",
                     text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
@@ -251,7 +214,7 @@
                 }, function (isConfirm) {
                     if ( isConfirm ) {
                         $.ajax({
-                            url: "users/" + data.id,
+                            url: "ucases/" + data.id,
                             type: 'DELETE',
                             dataType: 'json',
                             headers: {
@@ -259,7 +222,7 @@
                             },
                             success: function (response) {
                                 if ( response.status === 'success' ) {
-                                    users.find('input[name="user-' + data.id + '"]').closest('tr').remove();
+                                    ucases.find('input[name="ucase-' + data.id + '"]').closest('tr').remove();
                                 }
 
                                 swal({
@@ -274,9 +237,9 @@
                         });
                     }
                 });
-            } else if ( button.hasClass('update-user') ) {
+            } else if ( button.hasClass('update-ucase') ) {
                 $.ajax({
-                    url: "users/" + data.id,
+                    url: "ucases/" + data.id,
                     type: 'PUT',
                     dataType: 'json',
                     data: data,
@@ -312,34 +275,26 @@
     </script>
 @endpush
 
-<form action="#" id="edit-user" method="post">
+<form action="#" id="edit-ucases" method="post">
     <input type="hidden" name="id" value="">
-    <input type="hidden" name="avatar" value="0">
 
-    <div class="row m-b-lg">
-        <div class="col-lg-12 text-center">
-            <a href="#" data-toggle="modal" data-target="#modal-media" class="avatar">
-                <img alt="avatar" class="rounded-circle img-thumbnail" src="img/a_none.jpg">
-            </a>
-        </div>
-    </div>
     <div class="client-detail">
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-                Name
+                Module Name
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="text" name="name" class="form-control" placeholder="Name"
+                    <input type="text" name="module" class="form-control" placeholder="Module Name"
                            required="" aria-required="true" maxlength="100">
                     <span class="input-group-append">
-                            <select name="status" class="btn btn-white dropdown-toggle">
-                                <option value="1">Kích hoạt</option>
-                                <option value="2">Kích hoạt ẩn</option>
-                                <option value="0">Không kích hoạt</option>
-                            </select>
-                        </span>
+                        <select name="status" class="btn btn-white dropdown-toggle">
+                            <option value="1">Kích hoạt</option>
+                            <option value="2">Kích hoạt ẩn</option>
+                            <option value="0">Không kích hoạt</option>
+                        </select>
+                    </span>
                 </div>
             </div>
         </div>
@@ -347,131 +302,131 @@
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-                Email
-            </label>
-            <div class="col-sm-9">
-                <input type="email" name="email" class="form-control"
-                       placeholder="Enter email"
-                       required="" aria-required="true">
-            </div>
-        </div>
-        <div class="hr-line-dashed"></div>
-
-        <div class="form-group field-password row">
-            <label class="col-sm-3 col-form-label">
-                Mật khẩu
+                Title
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="password" class="form-control"
-                           placeholder="Mật khẩu >= 8 ký tự"
-                           name="password" aria-required="true" aria-invalid="false"
-                           minlength="8">
-                    <span class="input-group-append">
-                            <button class="btn btn-info edit-field" type="button">
-                                <i class="fa fa-paste"></i> Edit
-                            </button>
-                        </span>
+                    <input type="text" name="title" class="form-control" placeholder="Tên hiển thị"
+                           required="" aria-required="true" maxlength="150">
                 </div>
             </div>
         </div>
         <div class="hr-line-dashed"></div>
 
-        <div class="form-group field-password-confirmation row">
+        <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-                Xác nhận
+                Quyền truy cập
             </label>
             <div class="col-sm-9">
-                <input type="password" class="form-control"
-                       placeholder="Mật khẩu >= 8 ký tự"
-                       name="password_confirmation" aria-required="true" aria-invalid="false"
-                       minlength="8">
+                <div class="input-group">
+                    <select name="access" class="btn btn-white dropdown-toggle">
+                        <option value="1">Backend</option>
+                        <option value="2">Frontend</option>
+                        <option value="0">Public</option>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="hr-line-dashed"></div>
 
-        @if( \Ovic\Framework\Donvi::hasTable() )
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">
-                    Đơn vị
-                </label>
-                <div class="col-sm-9">
-                    <select name="donvi_id" class="form-control chosen-select"
-                            data-placeholder="Chọn đơn vị">
-                        <option value="0">Chọn đơn vị</option>
-                        @php
-                            $donvis = \Ovic\Framework\Donvi::all( [ 'id', 'tendonvi' ] )->toArray();
-                        @endphp
-                        @if( !empty( $donvis) )
-                            @foreach ( $donvis as $donvi )
-                                <option value="{{ $donvi['id'] }}">{{ $donvi['tendonvi'] }}</option>
-                            @endforeach
-                        @endif
-                    </select>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">
+                Controller
+            </label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="text" name="controller" class="form-control" placeholder="Controller"
+                           required="" aria-required="true" maxlength="150">
                 </div>
             </div>
-            <div class="hr-line-dashed"></div>
-        @endif
+        </div>
+        <div class="hr-line-dashed"></div>
 
-        @if( \Ovic\Framework\Roles::hasTable() )
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">
-                    Nhóm quyền
-                </label>
-                <div class="col-sm-9">
-                    <select name="role_ids" class="form-control chosen-select"
-                            multiple="multiple" data-placeholder="Chọn nhóm quyền">
-                        @php
-                            $roles = \Ovic\Framework\Roles::all( [ 'id', 'title' ] )->toArray();
-                        @endphp
-                        @if( !empty( $roles) )
-                            @foreach ( $roles as $role )
-                                <option value="{{ $role['id'] }}">{{ $role['title'] }}</option>
-                            @endforeach
-                        @endif
-                    </select>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">
+                Custom Link
+            </label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="text" name="custom_link" class="form-control" placeholder="Custom Link"
+                           required="" aria-required="true" maxlength="150">
                 </div>
             </div>
-            <div class="hr-line-dashed"></div>
-        @endif
+        </div>
+        <div class="hr-line-dashed"></div>
 
-        @if( \Ovic\Framework\Ucases::hasTable() )
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">
-                    Phạm vi quản lý
-                </label>
-                <div class="col-sm-9">
-                    <select name="donvi_ids" class="form-control chosen-select"
-                            multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
-                        @php
-                            $ucases = \Ovic\Framework\Ucases::all( [ 'id', 'name' ] )->toArray();
-                        @endphp
-                        @if( !empty( $ucases ) )
-                            @foreach ( $ucases as $ucase )
-                                <option value="{{ $ucase['id'] }}">{{ $ucase['name'] }}</option>
-                            @endforeach
-                        @endif
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">
+                Descriptions
+            </label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <textarea type="text" name="description" class="form-control" placeholder="Mô tả">
+                    </textarea>
+                </div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">
+                Vị trí
+            </label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <select name="position" class="btn btn-white dropdown-toggle">
+                        <option value="top">Top</option>
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
+                        <option value="button">Bottom</option>
                     </select>
                 </div>
             </div>
-            <div class="hr-line-dashed"></div>
-        @endif
+        </div>
+        <div class="hr-line-dashed"></div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">
+                Icon
+            </label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    @include( ovic_blade('Components.icon.icon'), [
+                        'name'  =>'icon',
+                        'value' =>'',
+                    ] )
+                </div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">
+                Ordering
+            </label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="number" name="ordering" class="form-control" min="0" value="99"/>
+                </div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
 
     </div>
 
     <div class="form-group submit row">
         <div class="col-sm-12">
-            <button type="button" class="btn btn-danger remove-user d-none">
+            <button type="button" class="btn btn-danger remove-ucase d-none">
                 <i class="fa fa-trash-o"></i>
                 Xóa
             </button>
-            <button class="btn btn-primary update-user d-none" type="button">
+            <button class="btn btn-primary update-ucase d-none" type="button">
                 <i class="fa fa-save"></i>
                 Save change
             </button>
-            <button class="btn btn-primary add-user" type="button">
+            <button class="btn btn-primary add-ucase" type="button">
                 <i class="fa fa-upload"></i>
-                Add user
+                Thêm chức năng
             </button>
         </div>
     </div>

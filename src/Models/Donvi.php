@@ -13,4 +13,21 @@ class Donvi extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'donvi';
+
+	public static function hasTable()
+	{
+		if ( Schema::hasTable( 'donvi' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the post that owns the comment.
+	 */
+	public function users()
+	{
+		return $this->belongsTo( Users::class );
+	}
 }

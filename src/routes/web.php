@@ -67,6 +67,9 @@ Route::group(
 		/* Images */
 		Route::get( 'images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index' )->name( 'get_file' );
 
+		/* Icon */
+		Route::get( 'get-icons', 'Ovic\Framework\IconController@getIcon' )->name( 'get_icon' );
+
 		/* Clear Cache */
 		Route::get( 'clear-cache', 'Ovic\Framework\DashboardController@clear_cache' )->name( 'clear_cache' );
 	}

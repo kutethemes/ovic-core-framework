@@ -14,6 +14,9 @@
 @section( 'title', 'QUẢN LÝ NGƯỜI DÙNG' )
 
 @push( 'styles' )
+    <!-- Sweet Alert -->
+    <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
+
     <style>
         .ibox {
             background-color: #fff;
@@ -34,10 +37,9 @@
         }
         .client-options > * {
             float: left;
-        }
-        .client-options > * {
             margin: 0 5px;
         }
+        .client-avatar,
         .head-table > * {
             text-align: center;
         }
@@ -86,6 +88,11 @@
             }
         }
     </style>
+@endpush
+
+@push( 'scripts' )
+    <!-- Sweet alert -->
+    <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 @endpush
 
 @section( 'content' )

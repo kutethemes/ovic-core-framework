@@ -13,7 +13,7 @@ class Post extends Eloquent
 	 * @var string
 	 */
 	protected $table   = 'posts';
-	protected $appends = [ 'meta', 'count' ];
+	protected $appends = [ 'meta' ];
 
 	/**
 	 * Get the user that owns the phone.
@@ -30,11 +30,6 @@ class Post extends Eloquent
 				return [ $item['meta_key'] => maybe_unserialize( $item['meta_value'] ) ];
 			}
 		)->toArray();
-	}
-
-	public function getCountAttribute()
-	{
-		return $this->meta()->count();
 	}
 
 	/*

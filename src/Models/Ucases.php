@@ -13,4 +13,13 @@ class Ucases extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'ucases';
+
+	public static function hasTable()
+	{
+		if ( Schema::hasTable( 'ucases' ) ) {
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -13,4 +13,13 @@ class Roles extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'roles';
+
+	public static function hasTable()
+	{
+		if ( Schema::hasTable( 'roles' ) ) {
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -13,16 +13,6 @@
 
 @section( 'title', 'QUẢN LÝ NHÓM NGƯỜI DÙNG' )
 
-@push( 'styles' )
-    <!-- Sweet Alert -->
-    <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
-@endpush
-
-@push( 'scripts' )
-    <!-- Sweet alert -->
-    <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
-@endpush
-
 @section( 'page-list' )
 
     @include( ovic_blade('Backend.roles.list') )

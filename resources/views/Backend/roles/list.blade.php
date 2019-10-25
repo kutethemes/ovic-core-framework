@@ -13,6 +13,7 @@
     <style>
         .client-order {
             width: 30px;
+            text-align: center;
         }
     </style>
 @endpush
