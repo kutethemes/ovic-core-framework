@@ -17,21 +17,6 @@
 
 @section( 'content' )
 
-    <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-9">
-            <h2>{{ $user_name }} Profile</h2>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="{{ url('/') }}">Home</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ url('/dashboard') }}">Dashboard</a>
-                </li>
-                <li class="breadcrumb-item active">
-                    <strong>{{ $user_name }}</strong>
-                </li>
-            </ol>
-        </div>
-    </div>
+
 
 @endsection

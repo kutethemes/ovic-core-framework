@@ -15,6 +15,6 @@
 
 @section( 'content' )
 
-    @include( ovic_blade('Backend.media.content') )
+    @include( ovic_blade('Backend.media.data') )
 
 @endsection

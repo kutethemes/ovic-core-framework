@@ -52,8 +52,10 @@ class UploadFileController extends Controller
 
 		if ( !empty( $request['_form'] ) ) {
 			$args = [
-				[ "post_type", "=", "attachment" ],
-				[ "status", "=", "publish" ],
+				[ 'post_type', '=', 'attachment' ],
+				[ 'status', '=', 'publish' ],
+				'limit'  => $request['_form']['limit'],
+				'offset' => $request['_form']['offset'],
 			];
 
 			if ( !empty( $request['_form']['s'] ) ) {
@@ -111,11 +113,15 @@ class UploadFileController extends Controller
 				$html .= view( ovic_blade( 'Backend.media.image' ), compact( 'attachment' ) )->toHtml();
 			}
 
+			$count  = count( $attachments );
+			$status = $count > 0 ? 'success' : 'info';
+
 			return response()->json(
 				[
-					'status'  => 'success',
-					'message' => 'Đã tìm được ' . count( $attachments ) . ' kết quả.',
+					'status'  => $status,
+					'message' => 'Đã tìm được ' . $count . ' kết quả.',
 					'html'    => $html,
+					'count'   => $count,
 				]
 			);
 		}
@@ -253,13 +259,35 @@ class UploadFileController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 *
+	 * @param int $ids
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function remove( Request $request )
+	{
+		$ids = $request->input( 'ids' );
+		$ids = ( strpos( $ids, ',' ) === false ) ? (array)$ids : explode( ',', $ids );
+
+		foreach ( $ids as $id ) {
+			$this->destroy( $id );
+		}
+
+		return response()->json( [
+			'ids'     => $ids,
+			'message' => 'Xóa thành công.',
+		] );
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
 	 * @param int $id
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy( $id )
 	{
-		$path = Post::find( $id )->toArray()['name'];
+		$path = Post::where( 'id', $id )->value( 'name' );
 		$path = str_replace( '//', '/', "{$this->folder}{$path}" );
 
 		Storage::delete( $path );

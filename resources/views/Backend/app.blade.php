@@ -29,25 +29,48 @@
     <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
 
     <style>
-        .nav > li > a {
+        .navbar-default .nav > li > a {
             font-weight: 400;
             font-size: 12px;
             padding: 12px 20px 12px 10px;
         }
-        .nav-second-level li a {
+        .navbar-default .nav-second-level li a {
             padding: 6px 10px 6px 10px;
             padding-left: 20px;
         }
-        .nav > li.active {
+        .navbar-default .nav > li.active {
             border-left-width: 2px;
+        }
+        .navbar.navbar-static-top {
+            background-color: #fff;
+        }
+        body.full-height-layout #app {
+            height: 100%;
+        }
+        #app {
+            width: 100%;
+            overflow-x: hidden;
+            display: -ms-flex;
+            display: -webkit-flex;
+            display: flex;
+        }
+        .full-height-content {
+            height: calc(100% - 85px);
+            position: relative;
+        }
+        .normal-scroll-content {
+            overflow-x: hidden;
+            height: 100%;
         }
     </style>
 
 </head>
 
-<body class="fixed-sidebar no-skin-config">
+<body class="fixed-sidebar no-skin-config full-height-layout">
 
 <div id="app">
+
+    @yield( 'before-content' )
 
     @include( ovic_blade('Backend.left-sidebar') )
 
@@ -55,13 +78,19 @@
 
         @include( ovic_blade('Backend.nav-bar') )
 
-        @yield( 'content' )
+        <div class="row full-height-content wrapper wrapper-content animated fadeInUp">
+
+            @yield( 'content' )
+
+        </div>
 
         @include( ovic_blade('Backend.footer') )
 
     </div>
 
     @include( ovic_blade('Backend.right-sidebar') )
+
+    @yield( 'after-content' )
 
 </div>
 

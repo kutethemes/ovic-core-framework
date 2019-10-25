@@ -12,7 +12,8 @@ class Post extends Eloquent
 	 *
 	 * @var string
 	 */
-	protected $table = 'posts';
+	protected $table   = 'posts';
+	protected $appends = [ 'meta', 'count' ];
 
 	/**
 	 * Get the user that owns the phone.
@@ -20,6 +21,20 @@ class Post extends Eloquent
 	public function meta()
 	{
 		return $this->hasMany( Postmeta::class );
+	}
+
+	public function getMetaAttribute()
+	{
+		return $this->meta()->get()->collect()->mapWithKeys(
+			function ( $item, $key ) {
+				return [ $item['meta_key'] => maybe_unserialize( $item['meta_value'] ) ];
+			}
+		)->toArray();
+	}
+
+	public function getCountAttribute()
+	{
+		return $this->meta()->count();
 	}
 
 	/*
@@ -153,7 +168,7 @@ class Post extends Eloquent
 			'code'    => 200,
 			'status'  => 'success',
 			'count'   => Post::destroy( $post_id ),
-			'message' => 'The post is removed.',
+			'message' => 'Xóa thành công.',
 		];
 	}
 
@@ -162,33 +177,21 @@ class Post extends Eloquent
 	 * */
 	public static function get_posts( $args )
 	{
-		$meta = [ 'meta' ];
-		if ( !empty( $args['meta'] ) ) {
-			$meta = [
-				'meta' => function ( $query ) use ( $args ) {
-					$query->where( $args['meta'] );
-				},
-			];
-			unset( $args['meta'] );
+		$limit  = 18;
+		$offset = 0;
+		if ( isset( $args['limit'] ) ) {
+			$limit = $args['limit'];
+			unset( $args['limit'] );
+		}
+		if ( isset( $args['offset'] ) ) {
+			$offset = $args['offset'];
+			unset( $args['offset'] );
 		}
 		$posts = \Ovic\Framework\Post::where( $args )
-			->with( $meta )
 			->latest()
+			->offset( $offset )
+			->limit( $limit )
 			->get()->toArray();
-
-		if ( !empty( $posts ) ) {
-			foreach ( $posts as $key => $post ) {
-				if ( !empty( $post['meta'] ) ) {
-					$post['meta'] = collect( $post['meta'] )->mapWithKeys(
-						function ( $item, $key ) {
-							return [ $item['meta_key'] => maybe_unserialize( $item['meta_value'] ) ];
-						}
-					)->toArray();
-				}
-
-				$posts[$key] = $post;
-			}
-		}
 
 		return $posts;
 	}

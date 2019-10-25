@@ -17,14 +17,14 @@
     $extension  = $attachment['meta']['_attachment_metadata']['extension'];
 @endphp
 
-<div class="file-box" data-id="{{ $attachment['id'] }}">
+<div class="file-box image-{{ $attachment['id'] }}" data-id="{{ $attachment['id'] }}">
     <div class="file">
         <a href="#" class="btn-del-file" title="Xóa file">
             <i class="fa fa-trash-o" aria-hidden="true"></i>
         </a>
-        <span class="btn btn-info btn-circle">
+        <label class="btn btn-info btn-circle">
             <i class="fa fa-check"></i>
-        </span>
+        </label>
         <a href="upload/{{ $attachment['id'] }}" target="_blank">
             <span class="corner"></span>
             @if ( strstr( $mimetype, "video/" ) )

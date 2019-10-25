@@ -74,13 +74,15 @@
 
             } else if ( button.hasClass('lock') ) {
 
-                let input = button.parent().find('input');
-                let role  = JSON.parse(input.val());
-                let txt   = 'Mở khóa role';
+                let input   = button.parent().find('input');
+                let role    = JSON.parse(input.val());
+                let message = 'Khóa role thành công';
+                let txt     = 'Mở khóa role';
 
                 if ( role.status === 0 ) {
                     role.status = 1;
                     txt         = 'Khoá role';
+                    message     = 'Mở khóa role thành công';
                 } else {
                     role.status = 0;
                 }
@@ -104,7 +106,7 @@
                             button.toggleClass('btn-warning btn-danger');
                             button.find('span').toggleClass('fa-lock fa-unlock-alt');
 
-                            toastr.success(response.message);
+                            toastr.success(message);
 
                         } else {
                             let html = '';

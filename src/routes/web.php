@@ -60,7 +60,8 @@ Route::group(
 		Route::resource( 'post', 'Ovic\Framework\PostsController' );
 
 		/* Upload Route */
-		Route::get( 'upload/filter', 'Ovic\Framework\UploadFileController@filter' )->name( 'upload.filter' );
+		Route::post( 'upload/remove', 'Ovic\Framework\UploadFileController@remove' )->name( 'upload.remove' );
+		Route::post( 'upload/filter', 'Ovic\Framework\UploadFileController@filter' )->name( 'upload.filter' );
 		Route::resource( 'upload', 'Ovic\Framework\UploadFileController' );
 
 		/* Images */

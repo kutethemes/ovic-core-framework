@@ -15,6 +15,9 @@
 
 @push( 'styles' )
     <style>
+        .ibox {
+            background-color: #fff;
+        }
         .btn-danger {
             float: left;
         }
@@ -28,6 +31,9 @@
         .client-options {
             width: 110px;
             text-align: center;
+        }
+        .client-options > * {
+            float: left;
         }
         .client-options > * {
             margin: 0 5px;
@@ -45,10 +51,19 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(255,255,255,0.6);
+            background-color: rgba(255, 255, 255, 0.6);
         }
         .sk-spinner-double-bounce.sk-spinner {
             top: calc(50% - 20px);
+        }
+        .form-group.submit {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            z-index: 3;
+            padding: 15px;
         }
         @media (min-width: 1200px) {
             .head-table > * {
@@ -56,9 +71,11 @@
                 width: 50%;
                 vertical-align: middle;
             }
+
             .dataTables_filter {
                 text-align: left;
             }
+
             .dataTables_info {
                 text-align: right;
             }
@@ -73,24 +90,26 @@
 
 @section( 'content' )
 
-    <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        @yield( 'page-list', view( ovic_blade('Backend.users.list') ) )
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="ibox selected">
-                    <div class="ibox-content">
-                        @yield( 'page-edit', view( ovic_blade('Backend.users.edit') ) )
-                    </div>
-                </div>
+    <div class="col-sm-8 full-height">
+        <div class="ibox full-height-scroll">
+            <div class="ibox-content">
+                @yield( 'page-list', view( ovic_blade('Backend.users.list') ) )
             </div>
         </div>
     </div>
+    <div class="col-sm-4 full-height">
+        <div class="ibox selected full-height-scroll">
+            <div class="ibox-content">
+                @yield( 'page-edit', view( ovic_blade('Backend.users.edit') ) )
+            </div>
+        </div>
+    </div>
+
+@endsection
+
+@section( 'after-content' )
+
+    @include( ovic_blade('Backend.media.modal') )
 
 @endsection
 
