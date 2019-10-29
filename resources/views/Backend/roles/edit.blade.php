@@ -44,24 +44,15 @@
                 return o;
             };
         }
-        $(document).on('click', '.wrapper-content .btn', function () {
+        /* Edit */
+        $(document).on('click', '#table-roles tbody > tr', function () {
+            let row  = $(this),
+                form = $('#edit-role'),
+                role = Table.row(this).data();
 
-            let button = $(this),
-                form   = $('#edit-role'),
-                roles  = $('#table-roles'),
-                data   = form.serializeObject();
-
-            if ( button.hasClass('add-new') ) {
-
-                form.trigger('reset');
-                form.find('input[name="id"]').val('');
-                form.find('.form-group .add-role').removeClass('d-none').siblings().addClass('d-none');
-
-            } else if ( button.hasClass('edit') ) {
-
-                let role = button.parent().find('input').val();
-
-                role = JSON.parse(role);
+            if ( !row.hasClass('active') ) {
+                /* active */
+                row.addClass('active').siblings().removeClass('active');
 
                 $.each(role, function (index, value) {
                     if ( form.find('[name="' + index + '"]').length ) {
@@ -72,58 +63,78 @@
                 form.find('.form-group .add-role').addClass('d-none');
                 form.find('.form-group .update-role,.form-group .remove-role').removeClass('d-none');
 
-            } else if ( button.hasClass('lock') ) {
+            } else {
+                $('.wrapper-content .btn.add-new').trigger('click');
+            }
+        });
+        /* Active/Deactive */
+        $(document).on('click', '#table-roles .status', function () {
+            let button  = $(this),
+                tr      = button.closest('tr'),
+                role    = Table.row(tr).data(),
+                message = 'Tắt nhóm thành công';
 
-                let input   = button.parent().find('input');
-                let role    = JSON.parse(input.val());
-                let message = 'Khóa role thành công';
-                let txt     = 'Mở khóa role';
+            if ( role.status !== 1 ) {
+                role.status = 1;
+                message     = 'Kích hoạt nhóm thành công';
+            } else {
+                role.status = 0;
+            }
 
-                if ( role.status === 0 ) {
-                    role.status = 1;
-                    txt         = 'Khoá role';
-                    message     = 'Mở khóa role thành công';
-                } else {
-                    role.status = 0;
-                }
+            $.ajax({
+                url: "roles/" + role.id,
+                type: 'PUT',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    status: role.status,
+                    dataTable: true
+                },
+                success: function (response) {
 
-                $.ajax({
-                    url: "roles/" + role.id,
-                    type: 'PUT',
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        status: role.status
-                    },
-                    success: function (response) {
+                    if ( response.status === 200 ) {
 
-                        if ( response.status === 200 ) {
-
-                            input.val(JSON.stringify(role));
-                            button.attr('title', txt);
-                            button.toggleClass('btn-warning btn-danger');
-                            button.find('span').toggleClass('fa-lock fa-unlock-alt');
-
-                            toastr.success(message);
-
-                        } else {
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
+                        if ( Object.keys(response.data).length !== 0 ) {
+                            Table.row(tr).data(response.data);
                         }
-                    },
-                });
+
+                        toastr.success(message);
+
+                    } else {
+                        let html = '';
+                        $.each(response.message, function (index, value) {
+                            html += "<p class='text-danger'>" + value + "</p>";
+                        });
+
+                        swal({
+                            html: true,
+                            type: 'error',
+                            title: '',
+                            text: html,
+                            showConfirmButton: true
+                        });
+                    }
+                },
+            });
+
+            return false;
+        });
+        /* Button action */
+        $(document).on('click', '.wrapper-content .btn', function () {
+
+            let button = $(this),
+                form   = $('#edit-role'),
+                roles  = $('#table-roles'),
+                data   = form.serializeObject();
+
+            if ( button.hasClass('add-new') ) {
+
+                roles.find('tbody > tr').removeClass('active');
+                form.trigger('reset');
+                form.find('input[name="id"]').val('');
+                form.find('.form-group .add-role').removeClass('d-none').siblings().addClass('d-none');
 
             } else if ( button.hasClass('add-role') ) {
                 $.ajax({
@@ -140,7 +151,7 @@
 
                             Table.ajax.reload(null, false);
 
-                            toastr.success('Tạo role thành công.');
+                            toastr.success(response.message);
 
                         } else {
 
@@ -179,7 +190,7 @@
                             },
                             success: function (response) {
                                 if ( response.status === 'success' ) {
-                                    roles.find('input[name="role-' + data.id + '"]').closest('tr').remove();
+                                    Table.ajax.reload(null, false);
                                 }
                                 swal({
                                     type: response.status,
@@ -194,6 +205,10 @@
                     }
                 });
             } else if ( button.hasClass('update-role') ) {
+
+                let tr         = roles.find('.row-' + data.id);
+                data.dataTable = true;
+
                 $.ajax({
                     url: "roles/" + data.id,
                     type: 'PUT',
@@ -205,7 +220,9 @@
                     success: function (response) {
                         if ( response.status === 200 ) {
 
-                            Table.ajax.reload(null, false);
+                            if ( Object.keys(response.data).length !== 0 ) {
+                                Table.row(tr).data(response.data);
+                            }
 
                             toastr.success(response.message);
 

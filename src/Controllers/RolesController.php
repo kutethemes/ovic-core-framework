@@ -8,281 +8,276 @@ use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
 {
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index()
-	{
-		return view( ovic_blade( 'Backend.roles.app' ) );
-	}
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view(ovic_blade('Backend.roles.app'));
+    }
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
-	{
-		//
-	}
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
 
-	/**
-	 * Show the role list a resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function roles( Request $request )
-	{
-		$totalData = Roles::count();
+    /**
+     * Show the role list a resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function roles(Request $request)
+    {
+        $totalData = Roles::count();
 
-		$totalFiltered = $totalData;
+        $totalFiltered = $totalData;
 
-		$limit  = $request->input( 'length' );
-		$start  = $request->input( 'start' );
-		$sort   = $request->input( 'sorting' );
-		$search = $request->input( 'search.value' );
-		$status = $request->input( 'columns.1.search.value' );
+        $limit  = $request->input('length');
+        $start  = $request->input('start');
+        $sort   = $request->input('sorting');
+        $search = $request->input('search.value');
+        $status = $request->input('columns.1.search.value');
 
-		$sorting = [
-			[ 'id', '>', 0 ],
-		];
+        $sorting = [
+            ['id', '>', 0],
+        ];
 
-		if ( $status != '' ) {
-			$sorting = [
-				[ 'status', '=', $status ],
-			];
-		}
-		elseif ( $sort != '' && !empty( $search ) ) {
-			$sorting = [
-				[ 'status', '=', $sort ],
-			];
-		}
+        if ($status != '') {
+            $sorting = [
+                ['status', '=', $status],
+            ];
+        } elseif ($sort != '' && ! empty($search)) {
+            $sorting = [
+                ['status', '=', $sort],
+            ];
+        }
 
-		if ( empty( $search ) ) {
-			$roles = Roles::where( $sorting )
-				->offset( $start )
-				->limit( $limit )
-				->orderBy( 'ordering', 'asc' )
-				->get();
-		}
-		else {
-			$roles = Roles::where( $sorting )
-				->where(
-					function ( $query ) use ( $search ) {
-						$query->where( 'name', 'LIKE', "%{$search}%" )
-							->orWhere( 'title', 'LIKE', "%{$search}%" )
-							->orWhere( 'description', 'LIKE', "%{$search}%" );
-					}
-				)
-				->offset( $start )
-				->limit( $limit )
-				->orderBy( 'ordering', 'asc' )
-				->get();
+        if (empty($search)) {
+            $roles = Roles::where($sorting)
+                          ->offset($start)
+                          ->limit($limit)
+                          ->orderBy('ordering', 'asc')
+                          ->get()
+                          ->toArray()
+            ;
+        } else {
+            $roles = Roles::where($sorting)
+                          ->where(
+                              function ($query) use ($search) {
+                                  $query->where('name', 'LIKE', "%{$search}%")
+                                        ->orWhere('title', 'LIKE', "%{$search}%")
+                                        ->orWhere('description', 'LIKE', "%{$search}%")
+                                  ;
+                              }
+                          )
+                          ->offset($start)
+                          ->limit($limit)
+                          ->orderBy('ordering', 'asc')
+                          ->get()
+                          ->toArray()
+            ;
 
-			$totalFiltered = Roles::where( $sorting )
-				->where(
-					function ( $query ) use ( $search ) {
-						$query->where( 'name', 'LIKE', "%{$search}%" )
-							->orWhere( 'title', 'LIKE', "%{$search}%" )
-							->orWhere( 'description', 'LIKE', "%{$search}%" );
-					}
-				)
-				->count();
-		}
+            $totalFiltered = Roles::where($sorting)
+                                  ->where(
+                                      function ($query) use ($search) {
+                                          $query->where('name', 'LIKE', "%{$search}%")
+                                                ->orWhere('title', 'LIKE', "%{$search}%")
+                                                ->orWhere('description', 'LIKE', "%{$search}%")
+                                          ;
+                                      }
+                                  )
+                                  ->count()
+            ;
+        }
 
-		$data = array();
+        $data = [];
 
-		if ( !empty( $roles ) ) {
-			foreach ( $roles as $role ) {
-				$options = "";
+        if ( ! empty($roles)) {
+            foreach ($roles as $role) {
+                $data[] = $this->role_data($role);
+            }
+        }
 
-				if ( $role->status == 0 ) {
-					$options .= "<a href='#' title='Mở khóa role' class='btn dim btn-danger lock'>";
-					$options .= "<span class='fa fa-lock'></span>";
-					$options .= "</a>";
-				}
-				else {
-					$options .= "<a href='#' title='khóa role' class='btn dim btn-warning lock'>";
-					$options .= "<span class='fa fa-unlock-alt'></span>";
-					$options .= "</a>";
-				}
+        $json_data = [
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data,
+        ];
 
-				$options .= "<a href='#' title='Sửa role' class='btn dim btn-primary edit'>";
-				$options .= "<span class='fa fa-pencil-square-o'></span>";
-				$options .= "</a>";
+        return response()->json($json_data);
+    }
 
-				$options .= "<input type='hidden' name='role-{$role->id}' value='" . json_encode( $role ) . "'/>";
+    public function role_data($role)
+    {
+        $role['status'] = $role['status'] < 0 ? 0 : $role['status'];
 
-				$nestedData['name']        = $role->name;
-				$nestedData['title']       = $role->title;
-				$nestedData['description'] = $role->description;
-				$nestedData['ordering']    = $role->ordering;
-				$nestedData['status']      = $options;
+        return $role;
+    }
 
-				$data[] = $nestedData;
-			}
-		}
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(),
+            [
+                'name'        => ['required', 'string', 'max:150'],
+                'title'       => ['required', 'string', 'max:150'],
+                'description' => ['string'],
+                'ordering'    => ['numeric', 'min:0'],
+                'status'      => ['numeric', 'min:0', 'max:1'],
+            ]
+        );
 
-		$json_data = array(
-			"draw"            => intval( $request->input( 'draw' ) ),
-			"recordsTotal"    => intval( $totalData ),
-			"recordsFiltered" => intval( $totalFiltered ),
-			"data"            => $data,
-		);
+        if ($validator->passes()) {
+            $data = $request->toArray();
 
-		return response()->json( $json_data );
-	}
+            $role = new Roles();
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param \Illuminate\Http\Request $request
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store( Request $request )
-	{
-		$validator = Validator::make( $request->all(),
-			[
-				'name'        => [ 'required', 'string', 'max:150' ],
-				'title'       => [ 'required', 'string', 'max:150' ],
-				'description' => [ 'string' ],
-				'ordering'    => [ 'numeric', 'min:0' ],
-				'status'      => [ 'numeric', 'min:0', 'max:1' ],
-			]
-		);
+            $role->name        = $data['name'];
+            $role->title       = $data['title'];
+            $role->description = $data['description'];
+            $role->status      = $data['status'];
+            $role->ordering    = $data['ordering'];
 
-		if ( $validator->passes() ) {
-			$data = $request->toArray();
+            $role->save();
 
-			$role = new Roles();
+            return response()->json(
+                [
+                    'status'  => 200,
+                    'message' => 'Tạo nhóm thành công.',
+                ]
+            );
+        }
 
-			$role->name        = $data['name'];
-			$role->title       = $data['title'];
-			$role->description = $data['description'];
-			$role->status      = $data['status'];
-			$role->ordering    = $data['ordering'];
+        return response()->json(
+            [
+                'status'  => 400,
+                'message' => $validator->errors()->all(),
+            ]
+        );
+    }
 
-			$role->save();
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
 
-			return response()->json(
-				[
-					'status'  => 200,
-					'message' => $role,
-				]
-			);
-		}
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
 
-		return response()->json(
-			[
-				'status'  => 400,
-				'message' => $validator->errors()->all(),
-			]
-		);
-	}
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $dataTable = [];
+        $rules     = [
+            'description' => ['string'],
+            'ordering'    => ['numeric', 'min:0'],
+            'status'      => ['numeric', 'min:0', 'max:1'],
+        ];
+        if ($request->has('name')) {
+            $rules['name'] = ['required', 'string', 'max:150', 'unique:roles,name,'.$id];
+        }
+        if ($request->has('title')) {
+            $rules['title'] = ['required', 'string', 'max:150'];
+        }
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param int $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show( $id )
-	{
-		//
-	}
+        $validator = Validator::make($request->all(), $rules);
+        $data      = $request->except(['_token', 'id', 'dataTable']);
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param int $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit( $id )
-	{
-		//
-	}
+        if ($validator->passes()) {
+            /* update */
+            Roles::where('id', $id)->update($data);
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param \Illuminate\Http\Request $request
-	 * @param int                      $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update( Request $request, $id )
-	{
-		$rules = [
-			'description' => [ 'string' ],
-			'ordering'    => [ 'numeric', 'min:0' ],
-			'status'      => [ 'numeric', 'min:0', 'max:1' ],
-		];
-		if ( $request->has( 'name' ) ) {
-			$rules['name'] = [ 'required', 'string', 'max:150', 'unique:roles,name,' . $id ];
-		}
-		if ( $request->has( 'title' ) ) {
-			$rules['title'] = [ 'required', 'string', 'max:150' ];
-		}
+            if ($request->has('dataTable')) {
+                $role = Roles::where('id', $id)->get()->first();
 
-		$validator = Validator::make( $request->all(), $rules );
+                if ( ! empty($role)) {
+                    $dataTable = $this->role_data($role);
+                }
+            }
 
-		if ( $validator->passes() ) {
-			$data = $request->toArray();
+            return response()->json(
+                [
+                    'status'  => 200,
+                    'message' => 'Update nhóm thành công.',
+                    'data'    => $dataTable,
+                ]
+            );
+        }
 
-			unset( $data['id'] );
+        return response()->json(
+            [
+                'status'  => 400,
+                'message' => $validator->errors()->all(),
+            ]
+        );
+    }
 
-			Roles::where( 'id', $id )->update( $data );
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $delete = Roles::find($id);
 
-			return response()->json(
-				[
-					'status'  => 200,
-					'message' => 'Update role thành công.',
-				]
-			);
-		}
+        if ( ! empty($delete)) {
+            $delete->delete();
 
-		return response()->json(
-			[
-				'status'  => 400,
-				'message' => $validator->errors()->all(),
-			]
-		);
-	}
+            return response()->json(
+                [
+                    'status'  => 'success',
+                    'title'   => 'Deleted!',
+                    'message' => 'Xóa nhóm thành công.',
+                ]
+            );
+        }
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param int $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy( $id )
-	{
-		$delete = Roles::find( $id );
-
-		if ( !empty( $delete ) ) {
-			$delete->delete();
-
-			return response()->json(
-				[
-					'status'  => 'success',
-					'title'   => 'Deleted!',
-					'message' => 'Xóa role thành công.',
-				]
-			);
-		}
-
-		return response()->json(
-			[
-				'status'  => 'error',
-				'title'   => 'Error!',
-				'message' => 'Xóa role không thành công.',
-			]
-		);
-	}
+        return response()->json(
+            [
+                'status'  => 'error',
+                'title'   => 'Error!',
+                'message' => 'Xóa nhóm không thành công.',
+            ]
+        );
+    }
 }

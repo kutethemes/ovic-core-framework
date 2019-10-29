@@ -44,11 +44,15 @@
                     });
                 },
             },
+            scrollX: true,
             columns: [
                 {
                     className: "client-avatar",
-                    data: "avatar",
-                    sortable: false
+                    data: "avatar_url",
+                    sortable: false,
+                    render: function (data, type, row, meta) {
+                        return "<img alt='Ảnh đại diện' src='" + data + "'>";
+                    }
                 },
                 {
                     className: "client-name",
@@ -57,7 +61,7 @@
                 },
                 {
                     className: "client-donvi",
-                    data: "donvi_id",
+                    data: "donvi_text",
                     sortable: false
                 },
                 {
@@ -66,30 +70,36 @@
                     sortable: false
                 },
                 {
-                    className: "client-options",
+                    className: "client-status",
                     data: "status",
-                    sortable: false
-                }
+                    sortable: false,
+                    render: function (data, type, row, meta) {
+                        let _class = "inactive";
+                        let _title = "Người dùng không kích hoạt";
+                        let _icon  = "<span class='label label-danger'>Inactive</span>";
+
+                        switch ( data ) {
+                            case 1:
+                                _class = "active";
+                                _title = "Người dùng đang kích hoạt";
+                                _icon  = "<span class='label label-warning'>Active</span>";
+                                break;
+                            case 2:
+                                _class = "inactive";
+                                _title = "Người dùng ẩn";
+                                _icon  = "<span class='label label-warning'>Hidden</span>";
+                                break;
+                        }
+                        return "<a href='#' title='" + _title + "' class='status " + _class + "'>" + _icon + "</a>";
+                    }
+                },
             ],
+            createdRow: function (row, data, dataIndex) {
+                // Set the data-status attribute, and add a class
+                $(row).addClass('row-' + data.id);
+            },
             language: {
-                sProcessing: "<div class=\"sk-spinner sk-spinner-double-bounce\">\n" +
-                    "                                <div class=\"sk-double-bounce1\"></div>\n" +
-                    "                                <div class=\"sk-double-bounce2\"></div>\n" +
-                    "                            </div>",
-                sLengthMenu: "Xem: _MENU_",
-                sZeroRecords: "Không tìm thấy user",
-                sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
-                sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
-                sInfoFiltered: "(được lọc từ _MAX_ mục)",
-                sInfoPostFix: "",
-                sSearch: "Tìm kiếm:",
-                sUrl: "",
-                oPaginate: {
-                    sFirst: "Đầu",
-                    sPrevious: "Trước",
-                    sNext: "Tiếp",
-                    sLast: "Cuối"
-                }
+                url: "{{ asset('datatable_language/vi.json') }}"
             }
         });
         $(document).on('click', '.btn-group.sorting button', function () {
@@ -135,11 +145,11 @@
     <table id="table-users" class="table table-striped table-hover" style="width:100%">
         <thead>
         <tr>
-            <th class="client-avatar">Avatar</th>
+            <th class="client-avatar"></th>
             <th class="client-name">Tên hiển thị</th>
             <th class="client-donvi">Đơn vị</th>
             <th class="client-email">Email</th>
-            <th class="client-options">Thao tác</th>
+            <th class="client-status">Trạng thái</th>
         </tr>
         </thead>
     </table>

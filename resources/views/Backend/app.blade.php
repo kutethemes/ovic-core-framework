@@ -96,11 +96,11 @@
 
 {{-- Mainly scripts --}}
 <script src="{{ asset('js/app.js') }}"></script>
-<script defer src="{{ asset('js/plugins/metisMenu/metisMenu.min.js') }}"></script>
-<script defer src="{{ asset('js/plugins/slimscroll/slimscroll.min.js') }}"></script>
+<script src="{{ asset('js/plugins/metisMenu/metisMenu.min.js') }}"></script>
+<script src="{{ asset('js/plugins/slimscroll/slimscroll.min.js') }}"></script>
 {{-- Custom and plugin javascript --}}
-<script defer src="{{ asset('js/inspinia.min.js') }}"></script>
-<script defer src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
+<script src="{{ asset('js/inspinia.min.js') }}"></script>
+<script src="{{ asset('js/plugins/pace/pace.min.js') }}"></script>
 {{-- Blade scripts --}}
 @stack( 'scripts' )
 

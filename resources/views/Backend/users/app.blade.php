@@ -18,6 +18,9 @@
     <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
 
     <style>
+        .client-avatar {
+            max-width: 42px;
+        }
         .ibox {
             background-color: #fff;
         }
@@ -27,17 +30,24 @@
         .head-group .button-group {
             float: right;
         }
+        .client-donvi {
+            min-width: 250px;
+        }
         .client-name,
         .client-email {
-            width: 230px;
+            min-width: 220px;
+            max-width: 220px;
         }
-        .client-options {
-            width: 110px;
+        .client-status {
+            min-width: 90px;
+            max-width: 90px;
             text-align: center;
         }
-        .client-options > * {
-            float: left;
-            margin: 0 5px;
+        .client-status > * {
+            float: none;
+        }
+        .client-status .inactive .label-warning {
+            background-color: #ccc;
         }
         .client-avatar,
         .head-table > * {
@@ -66,6 +76,26 @@
             background-color: #fff;
             z-index: 3;
             padding: 15px;
+        }
+        .dataTables_scroll table {
+            margin-bottom: 0;
+        }
+        .dataTables_scrollHead table thead > tr > th {
+            border: none;
+        }
+        .footer-table {
+            margin-top: 1rem;
+        }
+        .clients-list table tr td {
+            min-height: 46px;
+            word-wrap: break-word;
+        }
+        .clients-list tbody > tr {
+            cursor: pointer;
+        }
+        .clients-list table tbody > tr.active {
+            background-color: #1ab394;
+            color: #fff;
         }
         @media (min-width: 1200px) {
             .head-table > * {

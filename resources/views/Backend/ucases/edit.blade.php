@@ -58,43 +58,16 @@
             no_results_text: "Oops, nothing found!",
             disable_search_threshold: 5
         });
-        $(document).on('click', '#modal-media .btn-primary', function () {
-            let file_box = $('#dropzone-previews .file-box.active');
-
-            if ( file_box.length && file_box.find('img').length ) {
-                let id        = file_box.data('id');
-                let avatar_id = $('input[name="avatar"]');
-                let avatar    = $('a[data-toggle="modal"]').find('img');
-                let src       = file_box.find('img').attr('src');
-
-                avatar_id.val(id).trigger('change');
-                avatar.attr('src', src);
-            }
-        });
-        $(document).on('click', '.wrapper-content .btn', function () {
-
-            let button = $(this),
+        /* Edit */
+        $(document).on('click', '#table-ucases tbody > tr', function () {
+            let row    = $(this),
                 form   = $('#edit-ucase'),
-                ucases = $('#table-ucases'),
-                data   = form.serializeObject();
+                ucase  = Table.row(this).data(),
+                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
 
-            if ( button.hasClass('add-new') ) {
-
-                form.trigger('reset');
-                form.find('input[name="id"]').val('');
-                form.find('input[name="avatar"]').val('0');
-                form.find('.avatar img').attr('src', 'img/a_none.jpg');
-                form.find('.chosen-select').val('').trigger('chosen:updated');
-                form.find('.form-group .add-ucase').removeClass('d-none').siblings().addClass('d-none');
-
-            } else if ( button.hasClass('edit') ) {
-
-                let chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ],
-                    ucase  = button.parent().find('input').val();
-
-                ucase = JSON.parse(ucase);
-
-                form.find('.avatar img').attr('src', ucase.avatar_url);
+            if ( !row.hasClass('active') ) {
+                /* active */
+                row.addClass('active').siblings().removeClass('active');
 
                 $.each(ucase, function (index, value) {
                     if ( form.find('[name="' + index + '"]').length ) {
@@ -107,6 +80,9 @@
                             }
 
                             form.find('[name="' + index + '"]').val(value).trigger('chosen:updated');
+                        } else if ( index === 'password' ) {
+                            form.find('[name="' + index + '"]').val(value).attr('disabled', 'disabled').removeAttr('name');
+                            form.find('[name="password_confirmation"]').removeAttr('name');
                         } else {
                             form.find('[name="' + index + '"]').val(value);
                         }
@@ -114,60 +90,82 @@
                 });
 
                 form.find('.form-group .add-ucase').addClass('d-none');
+                form.find('.field-password-confirmation').css('display', 'none');
+                form.find('.field-password .input-group-append').css('display', 'flex');
                 form.find('.form-group .update-ucase,.form-group .remove-ucase').removeClass('d-none');
+            } else {
+                $('.wrapper-content .btn.add-new').trigger('click');
+            }
+        });
+        /* Active/Deactive */
+        $(document).on('click', '#table-ucases .status', function () {
+            let button  = $(this),
+                tr      = button.closest('tr'),
+                ucase   = Table.row(tr).data(),
+                message = 'Tắt kích hoạt thành công';
 
-            } else if ( button.hasClass('lock') ) {
+            if ( ucase.status !== 1 ) {
+                ucase.status = 1;
+                message      = 'Kích hoạt thành công';
+            } else {
+                ucase.status = 0;
+            }
 
-                let input   = button.parent().find('input');
-                let ucase   = JSON.parse(input.val());
-                let message = 'Khóa chức năng thành công';
-                let txt     = 'Mở khóa chức năng';
+            $.ajax({
+                url: "ucases/" + ucase.id,
+                type: 'PUT',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    status: ucase.status,
+                    dataTable: true
+                },
+                success: function (response) {
 
-                if ( ucase.status === 0 ) {
-                    ucase.status = 1;
-                    txt          = 'Khoá chức năng';
-                    message      = 'Mở khóa chức năng thành công';
-                } else {
-                    ucase.status = 0;
-                }
+                    if ( response.status === 200 ) {
 
-                $.ajax({
-                    url: "ucases/" + ucase.id,
-                    type: 'PUT',
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        status: ucase.status
-                    },
-                    success: function (response) {
-
-                        if ( response.status === 200 ) {
-
-                            input.val(JSON.stringify(ucase));
-                            button.attr('title', txt);
-                            button.toggleClass('btn-warning btn-danger');
-                            button.find('span').toggleClass('fa-lock fa-unlock-alt');
-
-                            toastr.success(message);
-
-                        } else {
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
+                        if ( Object.keys(response.data).length !== 0 ) {
+                            Table.row(tr).data(response.data);
                         }
-                    },
-                });
+
+                        toastr.success(message);
+
+                    } else {
+                        let html = '';
+                        $.each(response.message, function (index, value) {
+                            html += "<p class='text-danger'>" + value + "</p>";
+                        });
+
+                        swal({
+                            html: true,
+                            type: 'error',
+                            title: '',
+                            text: html,
+                            showConfirmButton: true
+                        });
+                    }
+                },
+            });
+
+            return false;
+        });
+        /* Button action */
+        $(document).on('click', '.wrapper-content .btn', function () {
+
+            let button = $(this),
+                form   = $('#edit-ucase'),
+                ucases = $('#table-ucases'),
+                data   = form.serializeObject();
+
+            if ( button.hasClass('add-new') ) {
+
+                form.trigger('reset');
+                form.find('input[name="id"]').val('');
+                form.find('.avatar img').attr('src', 'img/a_none.jpg');
+                form.find('.chosen-select').val('').trigger('chosen:updated');
+                form.find('.form-group .add-ucase').removeClass('d-none').siblings().addClass('d-none');
 
             } else if ( button.hasClass('add-ucase') ) {
                 $.ajax({
@@ -184,7 +182,7 @@
 
                             Table.ajax.reload(null, false);
 
-                            toastr.success('Tạo ucase thành công.');
+                            toastr.success(response.message);
                         } else {
 
                             let html = '';
@@ -221,9 +219,8 @@
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             success: function (response) {
-                                if ( response.status === 'success' ) {
-                                    ucases.find('input[name="ucase-' + data.id + '"]').closest('tr').remove();
-                                }
+
+                                Table.ajax.reload(null, false);
 
                                 swal({
                                     type: response.status,
@@ -238,6 +235,10 @@
                     }
                 });
             } else if ( button.hasClass('update-ucase') ) {
+
+                let tr         = ucases.find('.row-' + data.id);
+                data.dataTable = true;
+
                 $.ajax({
                     url: "ucases/" + data.id,
                     type: 'PUT',
@@ -249,7 +250,9 @@
                     success: function (response) {
                         if ( response.status === 200 ) {
 
-                            Table.ajax.reload(null, false);
+                            if ( Object.keys(response.data).length !== 0 ) {
+                                Table.row(tr).data(response.data);
+                            }
 
                             toastr.success(response.message);
                         } else {

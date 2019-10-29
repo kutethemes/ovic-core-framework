@@ -100,32 +100,16 @@
                 avatar.attr('src', src);
             }
         });
-        $(document).on('click', '.wrapper-content .btn', function () {
-
-            let button = $(this),
+        /* Edit */
+        $(document).on('click', '#table-users tbody > tr', function () {
+            let row    = $(this),
                 form   = $('#edit-user'),
-                users  = $('#table-users'),
-                data   = form.serializeObject();
+                user   = Table.row(this).data(),
+                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
 
-            if ( button.hasClass('add-new') ) {
-
-                form.trigger('reset');
-                form.find('input[name="id"]').val('');
-                form.find('input[name="avatar"]').val('0');
-                form.find('.avatar img').attr('src', 'img/a_none.jpg');
-                form.find('.field-password input').removeAttr('disabled').attr('name', 'password');
-                form.find('.chosen-select').val('').trigger('chosen:updated');
-                form.find('.field-password-confirmation').css('display', 'flex').find('input').attr('name', 'password_confirmation');
-                form.find('.field-password .input-group-append').css('display', 'none');
-                form.find('.form-group .add-user').removeClass('d-none').siblings().addClass('d-none');
-
-            } else if ( button.hasClass('edit') ) {
-
-                let chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ],
-                    user   = button.parent().find('input').val();
-
-                user = JSON.parse(user);
-
+            if ( !row.hasClass('active') ) {
+                /* active */
+                row.addClass('active').siblings().removeClass('active');
                 form.find('.avatar img').attr('src', user.avatar_url);
 
                 $.each(user, function (index, value) {
@@ -152,61 +136,87 @@
                 form.find('.field-password-confirmation').css('display', 'none');
                 form.find('.field-password .input-group-append').css('display', 'flex');
                 form.find('.form-group .update-user,.form-group .remove-user').removeClass('d-none');
+            } else {
+                $('.wrapper-content .btn.add-new').trigger('click');
+            }
+        });
+        /* Active/Deactive */
+        $(document).on('click', '#table-users .status', function () {
+            let button  = $(this),
+                tr      = button.closest('tr'),
+                user    = Table.row(tr).data(),
+                message = 'Tắt kích hoạt thành công';
 
-            } else if ( button.hasClass('lock') ) {
+            if ( user.status !== 1 ) {
+                user.status = 1;
+                message     = 'Kích hoạt thành công';
+            } else {
+                user.status = 0;
+            }
 
-                let input   = button.parent().find('input');
-                let user    = JSON.parse(input.val());
-                let message = 'Khóa user thành công';
-                let txt     = 'Mở khóa user';
+            $.ajax({
+                url: "users/" + user.id,
+                type: 'PUT',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    status: user.status,
+                    dataTable: true
+                },
+                success: function (response) {
 
-                if ( user.status === 0 ) {
-                    user.status = 1;
-                    txt         = 'Khoá user';
-                    message     = 'Mở khóa user thành công';
-                } else {
-                    user.status = 0;
-                }
+                    if ( response.status === 200 ) {
 
-                $.ajax({
-                    url: "users/" + user.id,
-                    type: 'PUT',
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        status: user.status
-                    },
-                    success: function (response) {
-
-                        if ( response.status === 200 ) {
-
-                            input.val(JSON.stringify(user));
-                            button.attr('title', txt);
-                            button.toggleClass('btn-warning btn-danger');
-                            button.find('span').toggleClass('fa-lock fa-unlock-alt');
-
-                            toastr.success(message);
-
-                        } else {
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
+                        if ( Object.keys(response.data).length !== 0 ) {
+                            Table.row(tr).data(response.data);
                         }
-                    },
-                });
+
+                        toastr.success(message);
+
+                    } else {
+                        let html = '';
+                        $.each(response.message, function (index, value) {
+                            html += "<p class='text-danger'>" + value + "</p>";
+                        });
+
+                        swal({
+                            html: true,
+                            type: 'error',
+                            title: '',
+                            text: html,
+                            showConfirmButton: true
+                        });
+                    }
+                },
+            });
+
+            return false;
+        });
+        /* Button action */
+        $(document).on('click', '.wrapper-content .btn', function () {
+
+            let button = $(this),
+                form   = $('#edit-user'),
+                users  = $('#table-users'),
+                data   = form.serializeObject();
+
+            if ( button.hasClass('add-new') ) {
+
+                users.find('tbody > tr').removeClass('active');
+                form.trigger('reset');
+                form.find('input[name="id"]').val('');
+                form.find('input[name="avatar"]').val('0');
+                form.find('.avatar img').attr('src', 'img/a_none.jpg');
+                form.find('.field-password input').removeAttr('disabled').attr('name', 'password');
+                form.find('.chosen-select').val('').trigger('chosen:updated');
+                form.find('.field-password-confirmation').css('display', 'flex').find('input').attr('name', 'password_confirmation');
+                form.find('.field-password .input-group-append').css('display', 'none');
+                form.find('.form-group .add-user').removeClass('d-none').siblings().addClass('d-none');
 
             } else if ( button.hasClass('add-user') ) {
+
                 $.ajax({
                     url: "users",
                     type: 'POST',
@@ -221,7 +231,7 @@
 
                             Table.ajax.reload(null, false);
 
-                            toastr.success('Tạo user thành công.');
+                            toastr.success(response.message);
                         } else {
 
                             let html = '';
@@ -258,8 +268,9 @@
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             success: function (response) {
+
                                 if ( response.status === 'success' ) {
-                                    users.find('input[name="user-' + data.id + '"]').closest('tr').remove();
+                                    Table.ajax.reload(null, false);
                                 }
 
                                 swal({
@@ -275,6 +286,10 @@
                     }
                 });
             } else if ( button.hasClass('update-user') ) {
+
+                let tr         = users.find('.row-' + data.id);
+                data.dataTable = true;
+
                 $.ajax({
                     url: "users/" + data.id,
                     type: 'PUT',
@@ -286,7 +301,9 @@
                     success: function (response) {
                         if ( response.status === 200 ) {
 
-                            Table.ajax.reload(null, false);
+                            if ( Object.keys(response.data).length !== 0 ) {
+                                Table.row(tr).data(response.data);
+                            }
 
                             toastr.success(response.message);
                         } else {

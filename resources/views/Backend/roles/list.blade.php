@@ -12,8 +12,12 @@
 @push( 'styles' )
     <style>
         .client-order {
-            width: 30px;
+            max-width: 45px;
             text-align: center;
+        }
+        .client-title,
+        .client-desc {
+            min-width: 200px;
         }
     </style>
 @endpush
@@ -53,6 +57,7 @@
                     });
                 },
             },
+            scrollX: true,
             columns: [
                 {
                     className: "client-order",
@@ -75,30 +80,29 @@
                     sortable: false
                 },
                 {
-                    className: "client-options",
+                    className: "client-status",
                     data: "status",
-                    sortable: false
+                    sortable: false,
+                    render: function (data, type, row, meta) {
+                        let _class = "inactive";
+                        let _title = "Nhóm không kích hoạt";
+                        let _icon  = "<span class='label label-danger'>Inactive</span>";
+
+                        if ( data === 1 ) {
+                            _class = "active";
+                            _title = "Nhóm đang kích hoạt";
+                            _icon  = "<span class='label label-warning'>Active</span>";
+                        }
+                        return "<a href='#' title='" + _title + "' class='status " + _class + "'>" + _icon + "</a>";
+                    }
                 }
             ],
+            createdRow: function (row, data, dataIndex) {
+                // Set the data-status attribute, and add a class
+                $(row).addClass('row-' + data.id);
+            },
             language: {
-                sProcessing: "<div class=\"sk-spinner sk-spinner-double-bounce\">\n" +
-                    "                                <div class=\"sk-double-bounce1\"></div>\n" +
-                    "                                <div class=\"sk-double-bounce2\"></div>\n" +
-                    "                            </div>",
-                sLengthMenu: "Xem: _MENU_",
-                sZeroRecords: "Không tìm thấy roles",
-                sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
-                sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
-                sInfoFiltered: "(được lọc từ _MAX_ mục)",
-                sInfoPostFix: "",
-                sSearch: "Tìm kiếm:",
-                sUrl: "",
-                oPaginate: {
-                    sFirst: "Đầu",
-                    sPrevious: "Trước",
-                    sNext: "Tiếp",
-                    sLast: "Cuối"
-                }
+                url: "{{ asset('datatable_language/vi.json') }}"
             }
         });
         $(document).on('click', '.btn-group.sorting button', function () {
@@ -145,7 +149,7 @@
             <th class="client-name">Tên riêng</th>
             <th class="client-title">Tên hiển thị</th>
             <th class="client-desc">Mô tả</th>
-            <th class="client-options">Thao tác</th>
+            <th class="client-status">Trạng thái</th>
         </tr>
         </thead>
     </table>

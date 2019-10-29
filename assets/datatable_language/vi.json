@@ -1,0 +1,17 @@
+{
+    "sProcessing": "<div class=\"sk-spinner sk-spinner-double-bounce\"><div class=\"sk-double-bounce1\"></div><div class=\"sk-double-bounce2\"></div></div>",
+    "sLengthMenu": "Xem: _MENU_",
+    "sZeroRecords": "Không tìm thấy dữ liệu.",
+    "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+    "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+    "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+    "sInfoPostFix": "",
+    "sSearch": "Tìm kiếm:",
+    "sUrl": "",
+    "oPaginate": {
+        "sFirst": "Đầu",
+        "sPrevious": "Trước",
+        "sNext": "Tiếp",
+        "sLast": "Cuối"
+    }
+}
