@@ -53,7 +53,7 @@ class RolesController extends Controller
             $sorting = [
                 ['status', '=', $status],
             ];
-        } elseif ($sort != '' && ! empty($search)) {
+        } elseif ($sort != '' && !empty($search)) {
             $sorting = [
                 ['status', '=', $sort],
             ];
@@ -61,45 +61,40 @@ class RolesController extends Controller
 
         if (empty($search)) {
             $roles = Roles::where($sorting)
-                          ->offset($start)
-                          ->limit($limit)
-                          ->orderBy('ordering', 'asc')
-                          ->get()
-                          ->toArray()
-            ;
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy('ordering', 'asc')
+                ->get()
+                ->toArray();
         } else {
             $roles = Roles::where($sorting)
-                          ->where(
-                              function ($query) use ($search) {
-                                  $query->where('name', 'LIKE', "%{$search}%")
-                                        ->orWhere('title', 'LIKE', "%{$search}%")
-                                        ->orWhere('description', 'LIKE', "%{$search}%")
-                                  ;
-                              }
-                          )
-                          ->offset($start)
-                          ->limit($limit)
-                          ->orderBy('ordering', 'asc')
-                          ->get()
-                          ->toArray()
-            ;
+                ->where(
+                    function ($query) use ($search) {
+                        $query->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('title', 'LIKE', "%{$search}%")
+                            ->orWhere('description', 'LIKE', "%{$search}%");
+                    }
+                )
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy('ordering', 'asc')
+                ->get()
+                ->toArray();
 
             $totalFiltered = Roles::where($sorting)
-                                  ->where(
-                                      function ($query) use ($search) {
-                                          $query->where('name', 'LIKE', "%{$search}%")
-                                                ->orWhere('title', 'LIKE', "%{$search}%")
-                                                ->orWhere('description', 'LIKE', "%{$search}%")
-                                          ;
-                                      }
-                                  )
-                                  ->count()
-            ;
+                ->where(
+                    function ($query) use ($search) {
+                        $query->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('title', 'LIKE', "%{$search}%")
+                            ->orWhere('description', 'LIKE', "%{$search}%");
+                    }
+                )
+                ->count();
         }
 
         $data = [];
 
-        if ( ! empty($roles)) {
+        if (!empty($roles)) {
             foreach ($roles as $role) {
                 $data[] = $this->role_data($role);
             }
@@ -227,7 +222,7 @@ class RolesController extends Controller
             if ($request->has('dataTable')) {
                 $role = Roles::where('id', $id)->get()->first();
 
-                if ( ! empty($role)) {
+                if (!empty($role)) {
                     $dataTable = $this->role_data($role);
                 }
             }
@@ -260,13 +255,13 @@ class RolesController extends Controller
     {
         $delete = Roles::find($id);
 
-        if ( ! empty($delete)) {
+        if (!empty($delete)) {
             $delete->delete();
 
             return response()->json(
                 [
                     'status'  => 'success',
-                    'title'   => 'Deleted!',
+                    'title'   => 'Đã xóa!',
                     'message' => 'Xóa nhóm thành công.',
                 ]
             );
@@ -275,7 +270,7 @@ class RolesController extends Controller
         return response()->json(
             [
                 'status'  => 'error',
-                'title'   => 'Error!',
+                'title'   => 'Lỗi!',
                 'message' => 'Xóa nhóm không thành công.',
             ]
         );

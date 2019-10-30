@@ -34,19 +34,24 @@
             font-size: 12px;
             padding: 12px 20px 12px 10px;
         }
+
         .navbar-default .nav-second-level li a {
             padding: 6px 10px 6px 10px;
             padding-left: 20px;
         }
+
         .navbar-default .nav > li.active {
             border-left-width: 2px;
         }
+
         .navbar.navbar-static-top {
             background-color: #fff;
         }
+
         body.full-height-layout #app {
             height: 100%;
         }
+
         #app {
             width: 100%;
             overflow-x: hidden;
@@ -54,13 +59,38 @@
             display: -webkit-flex;
             display: flex;
         }
+
         .full-height-content {
             height: calc(100% - 85px);
             position: relative;
         }
+
         .normal-scroll-content {
             overflow-x: hidden;
             height: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            body.full-height-layout #app {
+                display: block;
+            }
+
+            .wrapper-content {
+                display: block;
+                padding-bottom: 60px;
+            }
+
+            .wrapper-content > * {
+                max-width: inherit;
+                float: none;
+            }
+
+            .wrapper-content,
+            .wrapper-content > *,
+            .full-height-layout #wrapper,
+            .full-height-layout #page-wrapper {
+                height: auto !important;
+            }
         }
     </style>
 

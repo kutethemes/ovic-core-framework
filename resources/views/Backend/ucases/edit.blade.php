@@ -14,19 +14,12 @@
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 
     <style>
-        label.float-right {
-            margin-bottom: 0;
-        }
-        div.client-detail {
-            height: 575px;
-        }
-        .form-group.submit {
-            margin-bottom: 0;
-            margin-top: 1rem;
-            text-align: right;
-        }
         div.chosen-container-multi .chosen-choices li.search-choice {
             margin: 5px 0 3px 5px;
+        }
+
+        .form-group.field-name {
+            padding-top: 10px;
         }
     </style>
 @endpush
@@ -36,261 +29,140 @@
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
 
     <script>
-        if ( !$.fn.serializeObject ) {
-            $.fn.serializeObject = function () {
-                var o = {};
-                var a = this.serializeArray();
-                $.each(a, function () {
-                    if ( o[ this.name ] ) {
-                        if ( !o[ this.name ].push ) {
-                            o[ this.name ] = [ o[ this.name ] ];
-                        }
-                        o[ this.name ].push(this.value || '');
-                    } else {
-                        o[ this.name ] = this.value || '';
-                    }
-                });
-                return o;
-            };
-        }
-        $('.chosen-select').chosen({
+        $( '.chosen-select' ).chosen( {
             width: "100%",
             no_results_text: "Oops, nothing found!",
             disable_search_threshold: 5
-        });
+        } );
         /* Edit */
-        $(document).on('click', '#table-ucases tbody > tr', function () {
-            let row    = $(this),
-                form   = $('#edit-ucase'),
-                ucase  = Table.row(this).data(),
-                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
+        $( document ).on( 'click', '#table-posts tbody > tr', function () {
+            let row = $( this ),
+                form = $( '#edit-post' ),
+                icon = form.find( '.ovic-field-icon' ),
+                role = OvicTable.row( this ).data();
 
-            if ( !row.hasClass('active') ) {
+            if ( !row.hasClass( 'active' ) ) {
                 /* active */
-                row.addClass('active').siblings().removeClass('active');
+                row.addClass( 'active' ).siblings().removeClass( 'active' );
 
-                $.each(ucase, function (index, value) {
-                    if ( form.find('[name="' + index + '"]').length ) {
-                        if ( chosen.indexOf(index) !== -1 ) {
+                $.each( role, function ( index, value ) {
+                    if ( $.isPlainObject( value ) ) {
+                        $.each( value, function ( objIndex, objValue ) {
+                            let name = '[name="' + index + '[' + objIndex + ']"]';
 
-                            value = JSON.parse(value);
-
-                            if ( Array.isArray(value) ) {
-                                value = value.map(Number);
+                            if ( form.find( name ).length ) {
+                                if ( objIndex === 'icon' ) {
+                                    icon.find( 'i' ).removeAttr( 'class' ).addClass( objValue );
+                                    icon.find( 'input' ).val( objValue ).trigger( 'change' );
+                                    icon.find( '.ovic-icon-preview' ).removeClass( 'd-none' );
+                                    icon.find( '.ovic-icon-remove' ).removeClass( 'd-none' );
+                                } else {
+                                    form.find( name ).val( objValue ).trigger( 'change' );
+                                }
                             }
-
-                            form.find('[name="' + index + '"]').val(value).trigger('chosen:updated');
-                        } else if ( index === 'password' ) {
-                            form.find('[name="' + index + '"]').val(value).attr('disabled', 'disabled').removeAttr('name');
-                            form.find('[name="password_confirmation"]').removeAttr('name');
+                        } );
+                    } else if ( form.find( '[name="' + index + '"]' ).length ) {
+                        if ( index === 'parent_id' ) {
+                            form.find( '[name="' + index + '"]' ).val( value ).trigger( 'chosen:updated' );
                         } else {
-                            form.find('[name="' + index + '"]').val(value);
+                            form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
                         }
                     }
-                });
+                } );
 
-                form.find('.form-group .add-ucase').addClass('d-none');
-                form.find('.field-password-confirmation').css('display', 'none');
-                form.find('.field-password .input-group-append').css('display', 'flex');
-                form.find('.form-group .update-ucase,.form-group .remove-ucase').removeClass('d-none');
+                form.find( '.form-group .add-post' ).addClass( 'd-none' );
+                form.find( '.form-group .update-post,.form-group .remove-post' ).removeClass( 'd-none' );
+
             } else {
-                $('.wrapper-content .btn.add-new').trigger('click');
+                $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
             }
-        });
-        /* Active/Deactive */
-        $(document).on('click', '#table-ucases .status', function () {
-            let button  = $(this),
-                tr      = button.closest('tr'),
-                ucase   = Table.row(tr).data(),
-                message = 'Tắt kích hoạt thành công';
+        } );
+        /* Add new */
+        $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
+            let form = $( '#edit-post' ),
+                table = $( '#table-posts' );
 
-            if ( ucase.status !== 1 ) {
-                ucase.status = 1;
-                message      = 'Kích hoạt thành công';
-            } else {
-                ucase.status = 0;
-            }
-
-            $.ajax({
-                url: "ucases/" + ucase.id,
-                type: 'PUT',
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    status: ucase.status,
-                    dataTable: true
-                },
-                success: function (response) {
-
-                    if ( response.status === 200 ) {
-
-                        if ( Object.keys(response.data).length !== 0 ) {
-                            Table.row(tr).data(response.data);
-                        }
-
-                        toastr.success(message);
-
-                    } else {
-                        let html = '';
-                        $.each(response.message, function (index, value) {
-                            html += "<p class='text-danger'>" + value + "</p>";
-                        });
-
-                        swal({
-                            html: true,
-                            type: 'error',
-                            title: '',
-                            text: html,
-                            showConfirmButton: true
-                        });
-                    }
-                },
-            });
+            table.find( 'tbody > tr' ).removeClass( 'active' );
+            form.trigger( 'reset' );
+            form.find( '.ovic-icon-remove' ).trigger( 'click' );
+            form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
+            form.find( 'select[name="parent_id"]' ).val( 0 ).trigger( 'chosen:updated' );
+            form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
 
             return false;
-        });
-        /* Button action */
-        $(document).on('click', '.wrapper-content .btn', function () {
+        } );
+        /* Status */
+        $( document ).on( 'click', '#table-posts .status', function () {
 
-            let button = $(this),
-                form   = $('#edit-ucase'),
-                ucases = $('#table-ucases'),
-                data   = form.serializeObject();
-
-            if ( button.hasClass('add-new') ) {
-
-                form.trigger('reset');
-                form.find('input[name="id"]').val('');
-                form.find('.avatar img').attr('src', 'img/a_none.jpg');
-                form.find('.chosen-select').val('').trigger('chosen:updated');
-                form.find('.form-group .add-ucase').removeClass('d-none').siblings().addClass('d-none');
-
-            } else if ( button.hasClass('add-ucase') ) {
-                $.ajax({
-                    url: "ucases",
-                    type: 'POST',
-                    dataType: 'json',
-                    data: data,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-
-                        if ( response.status === 200 ) {
-
-                            Table.ajax.reload(null, false);
-
-                            toastr.success(response.message);
-                        } else {
-
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
-                        }
-                    },
-                });
-            } else if ( button.hasClass('remove-ucase') ) {
-                swal({
-                    title: "Bạn có chắc muốn xóa \"" + data.name + "\"?",
-                    text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                }, function (isConfirm) {
-                    if ( isConfirm ) {
-                        $.ajax({
-                            url: "ucases/" + data.id,
-                            type: 'DELETE',
-                            dataType: 'json',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function (response) {
-
-                                Table.ajax.reload(null, false);
-
-                                swal({
-                                    type: response.status,
-                                    title: response.title,
-                                    text: response.message,
-                                    showConfirmButton: true,
-                                });
-
-                                $('.btn-primary.add-new').trigger('click');
-                            },
-                        });
-                    }
-                });
-            } else if ( button.hasClass('update-ucase') ) {
-
-                let tr         = ucases.find('.row-' + data.id);
-                data.dataTable = true;
-
-                $.ajax({
-                    url: "ucases/" + data.id,
-                    type: 'PUT',
-                    dataType: 'json',
-                    data: data,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        if ( response.status === 200 ) {
-
-                            if ( Object.keys(response.data).length !== 0 ) {
-                                Table.row(tr).data(response.data);
-                            }
-
-                            toastr.success(response.message);
-                        } else {
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
-                        }
-                    },
-                });
-            }
+            $( this ).update_status(
+                "ucases",
+                "Tắt chức năng thành công",
+                "Kích hoạt thành công"
+            );
 
             return false;
-        });
+        } );
+        /* Add post */
+        $( document ).on( 'click', '.wrapper-content .btn.add-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            button.add_new( "ucases", data );
+
+            return false;
+        } );
+        /* Update post */
+        $( document ).on( 'click', '.wrapper-content .btn.update-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            button.update_post( "ucases", data, "#table-posts" );
+
+            return false;
+        } );
+        /* Remove post */
+        $( document ).on( 'click', '.wrapper-content .btn.remove-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            data.name = data.title;
+            button.remove_post( "ucases", data );
+
+            return false;
+        } );
+        /* Update select parent_id */
+        $( document ).on( 'success_load_dataTable', function ( event, settings ) {
+            let select = $( 'select[name="parent_id"]' ),
+                option = '';
+
+            if ( settings.data.length > 0 ) {
+                option += '<option value="0">Không thuộc nhóm nào</option>';
+                $.each( settings.data, function ( index, value ) {
+                    option += '<option value="' + value.id + '">' + value.title + '</option>';
+                } );
+                select.empty(); //remove all child nodes
+                select.append( option ).trigger( 'chosen:updated' );
+            }
+        } );
     </script>
 @endpush
 
-<form action="#" id="edit-ucases" method="post">
+<form action="#" id="edit-post" method="post">
     <input type="hidden" name="id" value="">
 
     <div class="client-detail">
 
-        <div class="form-group row">
+        <div class="form-group field-name row">
             <label class="col-sm-3 col-form-label">
-                Module Name
+                Tên router
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="text" name="module" class="form-control" placeholder="Module Name"
-                           required="" aria-required="true" maxlength="100">
+                    <input type="text" name="slug" class="form-control" placeholder="Tên router"
+                           required="" aria-required="true">
                     <span class="input-group-append">
                         <select name="status" class="btn btn-white dropdown-toggle">
                             <option value="1">Kích hoạt</option>
@@ -305,7 +177,7 @@
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-                Title
+                Tên hiển thị
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
@@ -318,11 +190,25 @@
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">
+                Thuộc nhóm
+            </label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <select name="parent_id" class="btn btn-white dropdown-toggle chosen-select btn-block">
+                        <option value="0">Không thuộc nhóm nào</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">
                 Quyền truy cập
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <select name="access" class="btn btn-white dropdown-toggle">
+                    <select name="access" class="btn btn-white dropdown-toggle btn-block text-left">
                         <option value="1">Backend</option>
                         <option value="2">Frontend</option>
                         <option value="0">Public</option>
@@ -332,31 +218,44 @@
         </div>
         <div class="hr-line-dashed"></div>
 
-        <div class="form-group row">
+        <div class="form-group field-module row">
+            <label class="col-sm-3 col-form-label">
+                Module
+            </label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="text" name="router[module]" class="form-control" placeholder="Module Name"
+                           required="" aria-required="true" maxlength="100">
+                </div>
+            </div>
+        </div>
+        <div class="hr-line-dashed field-module"></div>
+
+        <div class="form-group field-controller row">
             <label class="col-sm-3 col-form-label">
                 Controller
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="text" name="controller" class="form-control" placeholder="Controller"
+                    <input type="text" name="router[controller]" class="form-control" placeholder="Controller"
                            required="" aria-required="true" maxlength="150">
                 </div>
             </div>
         </div>
-        <div class="hr-line-dashed"></div>
+        <div class="hr-line-dashed field-controller"></div>
 
-        <div class="form-group row">
+        <div class="form-group field-custom_link row">
             <label class="col-sm-3 col-form-label">
                 Custom Link
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="text" name="custom_link" class="form-control" placeholder="Custom Link"
+                    <input type="text" name="router[custom_link]" class="form-control" placeholder="Custom Link"
                            required="" aria-required="true" maxlength="150">
                 </div>
             </div>
         </div>
-        <div class="hr-line-dashed"></div>
+        <div class="hr-line-dashed field-custom_link"></div>
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">
@@ -364,7 +263,7 @@
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <textarea type="text" name="description" class="form-control" placeholder="Mô tả">
+                    <textarea type="text" name="router[description]" class="form-control" placeholder="Mô tả">
                     </textarea>
                 </div>
             </div>
@@ -377,9 +276,9 @@
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <select name="position" class="btn btn-white dropdown-toggle">
+                    <select name="position" class="btn btn-white dropdown-toggle btn-block text-left">
                         <option value="top">Top</option>
-                        <option value="left">Left</option>
+                        <option value="left" selected>Left</option>
                         <option value="right">Right</option>
                         <option value="button">Bottom</option>
                     </select>
@@ -395,7 +294,7 @@
             <div class="col-sm-9">
                 <div class="input-group">
                     @include( ovic_blade('Components.icon.icon'), [
-                        'name'  =>'icon',
+                        'name'  =>'router[icon]',
                         'value' =>'',
                     ] )
                 </div>
@@ -419,15 +318,15 @@
 
     <div class="form-group submit row">
         <div class="col-sm-12">
-            <button type="button" class="btn btn-danger remove-ucase d-none">
+            <button type="button" class="btn btn-danger remove-post d-none">
                 <i class="fa fa-trash-o"></i>
                 Xóa
             </button>
-            <button class="btn btn-primary update-ucase d-none" type="button">
+            <button class="btn btn-primary update-post d-none" type="button">
                 <i class="fa fa-save"></i>
                 Save change
             </button>
-            <button class="btn btn-primary add-ucase" type="button">
+            <button class="btn btn-primary add-post" type="button">
                 <i class="fa fa-upload"></i>
                 Thêm chức năng
             </button>

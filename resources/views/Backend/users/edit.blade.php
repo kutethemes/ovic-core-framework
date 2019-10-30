@@ -17,34 +17,28 @@
         .avatar {
             display: inline-block;
         }
+
         .client-avatar img {
             max-width: 28px;
         }
+
         .avatar img {
             max-width: 96px;
         }
+
         img.img-thumbnail {
             border-width: 3px;
         }
+
         .img-thumbnail:hover {
             border-color: #23c6c8;
         }
-        label.float-right {
-            margin-bottom: 0;
-        }
-        div.client-detail {
-            height: 575px;
-        }
-        .form-group.submit {
-            margin-bottom: 0;
-            margin-top: 1rem;
-            text-align: right;
-        }
+
         div.chosen-container-multi .chosen-choices li.search-choice {
             margin: 5px 0 3px 5px;
         }
-        .field-password .input-group-append,
-        .field-password-confirmation {
+
+        .field-password .input-group-append {
             display: none;
         }
     </style>
@@ -55,281 +49,142 @@
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
 
     <script>
-        if ( !$.fn.serializeObject ) {
-            $.fn.serializeObject = function () {
-                var o = {};
-                var a = this.serializeArray();
-                $.each(a, function () {
-                    if ( o[ this.name ] ) {
-                        if ( !o[ this.name ].push ) {
-                            o[ this.name ] = [ o[ this.name ] ];
-                        }
-                        o[ this.name ].push(this.value || '');
-                    } else {
-                        o[ this.name ] = this.value || '';
-                    }
-                });
-                return o;
-            };
-        }
-        $('.chosen-select').chosen({
+        $( '.chosen-select' ).chosen( {
             width: "100%",
             no_results_text: "Oops, nothing found!",
             disable_search_threshold: 5
-        });
-        $(document).on('click', 'button.edit-field', function () {
-            let group = $(this).closest('.input-group');
-            let input = group.find('input');
+        } );
+        $( document ).on( 'click', 'button.edit-field', function () {
+            let group = $( this ).closest( '.input-group' );
+            let input = group.find( 'input' );
 
-            if ( input.attr('disabled') === undefined ) {
-                input.attr('disabled', 'disabled').removeAttr('name');
+            if ( input.attr( 'disabled' ) === undefined ) {
+                input.attr( 'disabled', 'disabled' ).removeAttr( 'name' );
             } else {
-                input.removeAttr('disabled').attr('name', 'password');
+                input.removeAttr( 'disabled' ).attr( 'name', 'password' );
             }
-        });
-        $(document).on('click', '#modal-media .btn-primary', function () {
-            let file_box = $('#dropzone-previews .file-box.active');
+        } );
+        $( document ).on( 'click', '#modal-media .btn-primary', function () {
+            let file_box = $( '#dropzone-previews .file-box.active' );
 
-            if ( file_box.length && file_box.find('img').length ) {
-                let id        = file_box.data('id');
-                let avatar_id = $('input[name="avatar"]');
-                let avatar    = $('a[data-toggle="modal"]').find('img');
-                let src       = file_box.find('img').attr('src');
+            if ( file_box.length && file_box.find( 'img' ).length ) {
+                let id = file_box.data( 'id' );
+                let avatar_id = $( 'input[name="avatar"]' );
+                let avatar = $( 'a[data-toggle="modal"]' ).find( 'img' );
+                let src = file_box.find( 'img' ).attr( 'src' );
 
-                avatar_id.val(id).trigger('change');
-                avatar.attr('src', src);
+                avatar_id.val( id ).trigger( 'change' );
+                avatar.attr( 'src', src );
             }
-        });
+        } );
         /* Edit */
-        $(document).on('click', '#table-users tbody > tr', function () {
-            let row    = $(this),
-                form   = $('#edit-user'),
-                user   = Table.row(this).data(),
+        $( document ).on( 'click', '#table-posts tbody > tr', function () {
+            let row = $( this ),
+                form = $( '#edit-post' ),
+                user = OvicTable.row( this ).data(),
                 chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
 
-            if ( !row.hasClass('active') ) {
+            if ( !row.hasClass( 'active' ) ) {
                 /* active */
-                row.addClass('active').siblings().removeClass('active');
-                form.find('.avatar img').attr('src', user.avatar_url);
+                row.addClass( 'active' ).siblings().removeClass( 'active' );
+                form.find( '.avatar img' ).attr( 'src', user.avatar_url );
 
-                $.each(user, function (index, value) {
-                    if ( form.find('[name="' + index + '"]').length ) {
-                        if ( chosen.indexOf(index) !== -1 ) {
+                $.each( user, function ( index, value ) {
+                    if ( form.find( '[name="' + index + '"]' ).length ) {
+                        if ( chosen.indexOf( index ) !== -1 ) {
 
-                            value = JSON.parse(value);
+                            value = JSON.parse( value );
 
-                            if ( Array.isArray(value) ) {
-                                value = value.map(Number);
+                            if ( Array.isArray( value ) ) {
+                                value = value.map( Number );
                             }
 
-                            form.find('[name="' + index + '"]').val(value).trigger('chosen:updated');
+                            form.find( '[name="' + index + '"]' ).val( value ).trigger( 'chosen:updated' );
                         } else if ( index === 'password' ) {
-                            form.find('[name="' + index + '"]').val(value).attr('disabled', 'disabled').removeAttr('name');
-                            form.find('[name="password_confirmation"]').removeAttr('name');
+                            form.find( '[name="' + index + '"]' ).val( value ).attr( 'disabled', 'disabled' ).removeAttr( 'name' ).trigger( 'change' );
+                            form.find( '[name="password_confirmation"]' ).removeAttr( 'name' );
                         } else {
-                            form.find('[name="' + index + '"]').val(value);
+                            form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
                         }
                     }
-                });
+                } );
 
-                form.find('.form-group .add-user').addClass('d-none');
-                form.find('.field-password-confirmation').css('display', 'none');
-                form.find('.field-password .input-group-append').css('display', 'flex');
-                form.find('.form-group .update-user,.form-group .remove-user').removeClass('d-none');
+                form.find( '.form-group .add-post' ).addClass( 'd-none' );
+                form.find( '.field-password-confirmation' ).css( 'display', 'none' );
+                form.find( '.field-password .input-group-append' ).css( 'display', 'flex' );
+                form.find( '.form-group .update-post,.form-group .remove-post' ).removeClass( 'd-none' );
             } else {
-                $('.wrapper-content .btn.add-new').trigger('click');
+                $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
             }
-        });
-        /* Active/Deactive */
-        $(document).on('click', '#table-users .status', function () {
-            let button  = $(this),
-                tr      = button.closest('tr'),
-                user    = Table.row(tr).data(),
-                message = 'Tắt kích hoạt thành công';
+        } );
+        /* Status */
+        $( document ).on( 'click', '#table-posts .status', function () {
 
-            if ( user.status !== 1 ) {
-                user.status = 1;
-                message     = 'Kích hoạt thành công';
-            } else {
-                user.status = 0;
-            }
-
-            $.ajax({
-                url: "users/" + user.id,
-                type: 'PUT',
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    status: user.status,
-                    dataTable: true
-                },
-                success: function (response) {
-
-                    if ( response.status === 200 ) {
-
-                        if ( Object.keys(response.data).length !== 0 ) {
-                            Table.row(tr).data(response.data);
-                        }
-
-                        toastr.success(message);
-
-                    } else {
-                        let html = '';
-                        $.each(response.message, function (index, value) {
-                            html += "<p class='text-danger'>" + value + "</p>";
-                        });
-
-                        swal({
-                            html: true,
-                            type: 'error',
-                            title: '',
-                            text: html,
-                            showConfirmButton: true
-                        });
-                    }
-                },
-            });
+            $( this ).update_status(
+                "users",
+                "Tắt kích hoạt thành công",
+                "Kích hoạt thành công"
+            );
 
             return false;
-        });
-        /* Button action */
-        $(document).on('click', '.wrapper-content .btn', function () {
+        } );
+        /* Add new */
+        $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
+            let form = $( '#edit-post' ),
+                table = $( '#table-posts' );
 
-            let button = $(this),
-                form   = $('#edit-user'),
-                users  = $('#table-users'),
-                data   = form.serializeObject();
-
-            if ( button.hasClass('add-new') ) {
-
-                users.find('tbody > tr').removeClass('active');
-                form.trigger('reset');
-                form.find('input[name="id"]').val('');
-                form.find('input[name="avatar"]').val('0');
-                form.find('.avatar img').attr('src', 'img/a_none.jpg');
-                form.find('.field-password input').removeAttr('disabled').attr('name', 'password');
-                form.find('.chosen-select').val('').trigger('chosen:updated');
-                form.find('.field-password-confirmation').css('display', 'flex').find('input').attr('name', 'password_confirmation');
-                form.find('.field-password .input-group-append').css('display', 'none');
-                form.find('.form-group .add-user').removeClass('d-none').siblings().addClass('d-none');
-
-            } else if ( button.hasClass('add-user') ) {
-
-                $.ajax({
-                    url: "users",
-                    type: 'POST',
-                    dataType: 'json',
-                    data: data,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-
-                        if ( response.status === 200 ) {
-
-                            Table.ajax.reload(null, false);
-
-                            toastr.success(response.message);
-                        } else {
-
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
-                        }
-                    },
-                });
-            } else if ( button.hasClass('remove-user') ) {
-                swal({
-                    title: "Bạn có chắc muốn xóa \"" + data.name + "\"?",
-                    text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                }, function (isConfirm) {
-                    if ( isConfirm ) {
-                        $.ajax({
-                            url: "users/" + data.id,
-                            type: 'DELETE',
-                            dataType: 'json',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function (response) {
-
-                                if ( response.status === 'success' ) {
-                                    Table.ajax.reload(null, false);
-                                }
-
-                                swal({
-                                    type: response.status,
-                                    title: response.title,
-                                    text: response.message,
-                                    showConfirmButton: true,
-                                });
-
-                                $('.btn-primary.add-new').trigger('click');
-                            },
-                        });
-                    }
-                });
-            } else if ( button.hasClass('update-user') ) {
-
-                let tr         = users.find('.row-' + data.id);
-                data.dataTable = true;
-
-                $.ajax({
-                    url: "users/" + data.id,
-                    type: 'PUT',
-                    dataType: 'json',
-                    data: data,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        if ( response.status === 200 ) {
-
-                            if ( Object.keys(response.data).length !== 0 ) {
-                                Table.row(tr).data(response.data);
-                            }
-
-                            toastr.success(response.message);
-                        } else {
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
-                        }
-                    },
-                });
-            }
+            table.find( 'tbody > tr' ).removeClass( 'active' );
+            form.trigger( 'reset' );
+            form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
+            form.find( 'input[name="avatar"]' ).val( '0' ).trigger( 'change' );
+            form.find( '.avatar img' ).attr( 'src', 'img/a_none.jpg' );
+            form.find( '.field-password input' ).removeAttr( 'disabled' ).attr( 'name', 'password' );
+            form.find( '.chosen-select' ).val( '' ).trigger( 'chosen:updated' );
+            form.find( '.field-password-confirmation' ).css( 'display', 'flex' ).find( 'input' ).attr( 'name', 'password_confirmation' );
+            form.find( '.field-password .input-group-append' ).css( 'display', 'none' );
+            form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
 
             return false;
-        });
+        } );
+        /* Add post */
+        $( document ).on( 'click', '.wrapper-content .btn.add-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            button.add_new( "users", data );
+
+            return false;
+        } );
+        /* Update post */
+        $( document ).on( 'click', '.wrapper-content .btn.update-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            button.update_post( "users", data, "#table-posts" );
+
+            return false;
+        } );
+        /* Remove post */
+        $( document ).on( 'click', '.wrapper-content .btn.remove-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            button.remove_post( "users", data );
+
+            return false;
+        } );
+        /* Update select parent_id */
+        $( document ).on( 'complete_load_dataTable', function ( event, settings, json ) {
+            //
+            console.log(json);
+        } );
     </script>
 @endpush
 
-<form action="#" id="edit-user" method="post">
+<form action="#" id="edit-post" method="post">
     <input type="hidden" name="id" value="">
     <input type="hidden" name="avatar" value="0">
 
@@ -385,10 +240,10 @@
                            name="password" aria-required="true" aria-invalid="false"
                            minlength="8">
                     <span class="input-group-append">
-                            <button class="btn btn-info edit-field" type="button">
-                                <i class="fa fa-paste"></i> Edit
-                            </button>
-                        </span>
+                        <button class="btn btn-info edit-field" type="button">
+                            <i class="fa fa-paste"></i> Edit
+                        </button>
+                    </span>
                 </div>
             </div>
         </div>
@@ -405,7 +260,7 @@
                        minlength="8">
             </div>
         </div>
-        <div class="hr-line-dashed"></div>
+        <div class="hr-line-dashed field-password-confirmation"></div>
 
         @if( \Ovic\Framework\Donvi::hasTable() )
             <div class="form-group row">
@@ -461,11 +316,11 @@
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
                         @php
-                            $ucases = \Ovic\Framework\Ucases::all( [ 'id', 'name' ] )->toArray();
+                            $ucases = \Ovic\Framework\Ucases::all( [ 'id', 'title' ] )->toArray();
                         @endphp
                         @if( !empty( $ucases ) )
                             @foreach ( $ucases as $ucase )
-                                <option value="{{ $ucase['id'] }}">{{ $ucase['name'] }}</option>
+                                <option value="{{ $ucase['id'] }}">{{ $ucase['title'] }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -478,15 +333,15 @@
 
     <div class="form-group submit row">
         <div class="col-sm-12">
-            <button type="button" class="btn btn-danger remove-user d-none">
+            <button type="button" class="btn btn-danger remove-post d-none">
                 <i class="fa fa-trash-o"></i>
                 Xóa
             </button>
-            <button class="btn btn-primary update-user d-none" type="button">
+            <button class="btn btn-primary update-post d-none" type="button">
                 <i class="fa fa-save"></i>
                 Save change
             </button>
-            <button class="btn btn-primary add-user" type="button">
+            <button class="btn btn-primary add-post" type="button">
                 <i class="fa fa-upload"></i>
                 Add user
             </button>

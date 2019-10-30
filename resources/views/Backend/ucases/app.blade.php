@@ -15,7 +15,7 @@
 
 @section( 'page-list' )
 
-
+    @include( ovic_blade('Backend.ucases.list') )
 
 @endsection
 

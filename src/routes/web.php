@@ -17,12 +17,13 @@ Route::group(
     function () {
         $data = [
             'id'        => '',
+            'slug'      => '',
             'title'     => '',
             'parent_id' => '',
             'router'    => [
                 'icon'        => '',
-                'module'      => '',
-                'controller'  => '',
+                'module'      => '', // not custom link
+                'controller'  => '', // not custom link
                 'custom_link' => '',
                 'description' => '',
             ],
@@ -56,6 +57,7 @@ Route::group(
         Route::resource('roles', 'Ovic\Framework\RolesController');
 
         /* Ucases Route */
+        Route::post('ucases/list', 'Ovic\Framework\UcasesController@ucases')->name('ucases.list');
         Route::resource('ucases', 'Ovic\Framework\UcasesController');
 
         /* Post Route */

@@ -9,12 +9,13 @@
      */
 @endphp
 
-@push( 'styles' )
+@push( 'styles.users' )
     <style>
         .client-order {
             max-width: 45px;
             text-align: center;
         }
+
         .client-title,
         .client-desc {
             min-width: 200px;
@@ -22,42 +23,9 @@
     </style>
 @endpush
 
-@push( 'scripts' )
-    <!-- dataTables -->
-    <script src="{{ asset('js/plugins/dataTables/datatables.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/dataTables/dataTables.bootstrap4.min.js') }}"></script>
-
+@push( 'scripts.users' )
     <script>
-        var Table = $('#table-roles').DataTable({
-            processing: false,
-            lengthChange: false,
-            serverSide: true,
-            dom: '<"head-table"fi>rt<"footer-table"p><"clear">',
-            ajax: {
-                url: "roles/list",
-                dataType: "json",
-                type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: function (d) {
-                    let value  = '',
-                        button = $('.btn-group.sorting .btn-primary');
-                    if ( button.length ) {
-                        value = button.val();
-                    }
-                    d.sorting = value;
-                },
-                error: function () {
-                    swal({
-                        type: 'error',
-                        title: "Error!",
-                        text: "Không tải được dữ liệu.",
-                        showConfirmButton: true
-                    });
-                },
-            },
-            scrollX: true,
+        $( '#table-posts' ).init_dataTable( "roles", {
             columns: [
                 {
                     className: "client-order",
@@ -83,44 +51,21 @@
                     className: "client-status",
                     data: "status",
                     sortable: false,
-                    render: function (data, type, row, meta) {
+                    render: function ( data, type, row, meta ) {
                         let _class = "inactive";
                         let _title = "Nhóm không kích hoạt";
-                        let _icon  = "<span class='label label-danger'>Inactive</span>";
+                        let _icon = "<span class='label label-danger'>Inactive</span>";
 
                         if ( data === 1 ) {
                             _class = "active";
                             _title = "Nhóm đang kích hoạt";
-                            _icon  = "<span class='label label-warning'>Active</span>";
+                            _icon = "<span class='label label-warning'>Active</span>";
                         }
                         return "<a href='#' title='" + _title + "' class='status " + _class + "'>" + _icon + "</a>";
                     }
                 }
-            ],
-            createdRow: function (row, data, dataIndex) {
-                // Set the data-status attribute, and add a class
-                $(row).addClass('row-' + data.id);
-            },
-            language: {
-                url: "{{ asset('datatable_language/vi.json') }}"
-            }
-        });
-        $(document).on('click', '.btn-group.sorting button', function () {
-            let button = $(this),
-                value  = button.val();
-
-            if ( !button.hasClass('btn-primary') ) {
-                Table.column(1).search(value).draw();
-                button.toggleClass('btn-primary btn-white');
-                $('.btn-group.sorting button').not(button).removeClass('btn-primary').addClass('btn-white');
-            } else {
-                button.toggleClass('btn-primary btn-white');
-                Table.column(1).search('').draw();
-            }
-        });
-        $(window).on('resize', function () {
-            Table.columns.adjust();
-        });
+            ]
+        } );
     </script>
 @endpush
 
@@ -142,7 +87,7 @@
     </div>
 </div>
 <div class="clients-list">
-    <table id="table-roles" class="table table-striped table-hover" style="width:100%">
+    <table id="table-posts" class="table table-striped table-hover" style="width:100%">
         <thead>
         <tr>
             <th class="client-order">Order</th>

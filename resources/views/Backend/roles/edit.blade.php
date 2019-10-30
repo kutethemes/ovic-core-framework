@@ -9,247 +9,88 @@
      */
 @endphp
 
-@push( 'styles' )
-    <style>
-        label.float-right {
-            margin-bottom: 0;
-        }
-        div.client-detail {
-            height: 575px;
-        }
-        .form-group.submit {
-            margin-bottom: 0;
-            margin-top: 1rem;
-            text-align: right;
-        }
-    </style>
-@endpush
-
-@push( 'scripts' )
+@push( 'scripts.users' )
     <script>
-        if ( !$.fn.serializeObject ) {
-            $.fn.serializeObject = function () {
-                var o = {};
-                var a = this.serializeArray();
-                $.each(a, function () {
-                    if ( o[ this.name ] ) {
-                        if ( !o[ this.name ].push ) {
-                            o[ this.name ] = [ o[ this.name ] ];
-                        }
-                        o[ this.name ].push(this.value || '');
-                    } else {
-                        o[ this.name ] = this.value || '';
-                    }
-                });
-                return o;
-            };
-        }
         /* Edit */
-        $(document).on('click', '#table-roles tbody > tr', function () {
-            let row  = $(this),
-                form = $('#edit-role'),
-                role = Table.row(this).data();
+        $( document ).on( 'click', '#table-posts tbody > tr', function () {
+            let row = $( this ),
+                form = $( '#edit-post' ),
+                role = OvicTable.row( this ).data();
 
-            if ( !row.hasClass('active') ) {
+            if ( !row.hasClass( 'active' ) ) {
                 /* active */
-                row.addClass('active').siblings().removeClass('active');
+                row.addClass( 'active' ).siblings().removeClass( 'active' );
 
-                $.each(role, function (index, value) {
-                    if ( form.find('[name="' + index + '"]').length ) {
-                        form.find('[name="' + index + '"]').val(value);
+                $.each( role, function ( index, value ) {
+                    if ( form.find( '[name="' + index + '"]' ).length ) {
+                        form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
                     }
-                });
+                } );
 
-                form.find('.form-group .add-role').addClass('d-none');
-                form.find('.form-group .update-role,.form-group .remove-role').removeClass('d-none');
+                form.find( '.form-group .add-post' ).addClass( 'd-none' );
+                form.find( '.form-group .update-post,.form-group .remove-post' ).removeClass( 'd-none' );
 
             } else {
-                $('.wrapper-content .btn.add-new').trigger('click');
+                $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
             }
-        });
-        /* Active/Deactive */
-        $(document).on('click', '#table-roles .status', function () {
-            let button  = $(this),
-                tr      = button.closest('tr'),
-                role    = Table.row(tr).data(),
-                message = 'Tắt nhóm thành công';
+        } );
+        /* Status */
+        $( document ).on( 'click', '#table-posts .status', function () {
 
-            if ( role.status !== 1 ) {
-                role.status = 1;
-                message     = 'Kích hoạt nhóm thành công';
-            } else {
-                role.status = 0;
-            }
-
-            $.ajax({
-                url: "roles/" + role.id,
-                type: 'PUT',
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    status: role.status,
-                    dataTable: true
-                },
-                success: function (response) {
-
-                    if ( response.status === 200 ) {
-
-                        if ( Object.keys(response.data).length !== 0 ) {
-                            Table.row(tr).data(response.data);
-                        }
-
-                        toastr.success(message);
-
-                    } else {
-                        let html = '';
-                        $.each(response.message, function (index, value) {
-                            html += "<p class='text-danger'>" + value + "</p>";
-                        });
-
-                        swal({
-                            html: true,
-                            type: 'error',
-                            title: '',
-                            text: html,
-                            showConfirmButton: true
-                        });
-                    }
-                },
-            });
+            $( this ).update_status(
+                "roles",
+                "Tắt nhóm thành công",
+                "Kích hoạt nhóm thành công"
+            );
 
             return false;
-        });
-        /* Button action */
-        $(document).on('click', '.wrapper-content .btn', function () {
+        } );
+        /* Add new */
+        $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
+            let form = $( '#edit-post' ),
+                table = $( '#table-posts' );
 
-            let button = $(this),
-                form   = $('#edit-role'),
-                roles  = $('#table-roles'),
-                data   = form.serializeObject();
-
-            if ( button.hasClass('add-new') ) {
-
-                roles.find('tbody > tr').removeClass('active');
-                form.trigger('reset');
-                form.find('input[name="id"]').val('');
-                form.find('.form-group .add-role').removeClass('d-none').siblings().addClass('d-none');
-
-            } else if ( button.hasClass('add-role') ) {
-                $.ajax({
-                    url: "roles",
-                    type: 'POST',
-                    dataType: 'json',
-                    data: data,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-
-                        if ( response.status === 200 ) {
-
-                            Table.ajax.reload(null, false);
-
-                            toastr.success(response.message);
-
-                        } else {
-
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
-                        }
-                    },
-                });
-            } else if ( button.hasClass('remove-role') ) {
-                swal({
-                    title: "Bạn có chắc muốn xóa \"" + data.name + "\"?",
-                    text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                }, function (isConfirm) {
-                    if ( isConfirm ) {
-                        $.ajax({
-                            url: "roles/" + data.id,
-                            type: 'DELETE',
-                            dataType: 'json',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function (response) {
-                                if ( response.status === 'success' ) {
-                                    Table.ajax.reload(null, false);
-                                }
-                                swal({
-                                    type: response.status,
-                                    title: response.title,
-                                    text: response.message,
-                                    showConfirmButton: true,
-                                });
-
-                                $('.btn-primary.add-new').trigger('click');
-                            },
-                        });
-                    }
-                });
-            } else if ( button.hasClass('update-role') ) {
-
-                let tr         = roles.find('.row-' + data.id);
-                data.dataTable = true;
-
-                $.ajax({
-                    url: "roles/" + data.id,
-                    type: 'PUT',
-                    dataType: 'json',
-                    data: data,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        if ( response.status === 200 ) {
-
-                            if ( Object.keys(response.data).length !== 0 ) {
-                                Table.row(tr).data(response.data);
-                            }
-
-                            toastr.success(response.message);
-
-                        } else {
-                            let html = '';
-                            $.each(response.message, function (index, value) {
-                                html += "<p class='text-danger'>" + value + "</p>";
-                            });
-
-                            swal({
-                                html: true,
-                                type: 'error',
-                                title: '',
-                                text: html,
-                                showConfirmButton: true
-                            });
-                        }
-                    },
-                });
-            }
+            table.find( 'tbody > tr' ).removeClass( 'active' );
+            form.trigger( 'reset' );
+            form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
+            form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
 
             return false;
-        });
+        } );
+        /* Add post */
+        $( document ).on( 'click', '.wrapper-content .btn.add-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            button.add_new( "roles", data );
+
+            return false;
+        } );
+        /* Update post */
+        $( document ).on( 'click', '.wrapper-content .btn.update-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            button.update_post( "roles", data, "#table-users" );
+
+            return false;
+        } );
+        /* Remove post */
+        $( document ).on( 'click', '.wrapper-content .btn.remove-post', function () {
+            let button = $( this ),
+                form = $( '#edit-post' ),
+                data = form.serializeObject();
+
+            button.remove_post( "roles", data );
+
+            return false;
+        } );
     </script>
 @endpush
 
-<form action="#" id="edit-role" method="post">
+<form action="#" id="edit-post" method="post">
     <input type="hidden" name="id" value="">
 
     <div class="client-detail">
@@ -317,15 +158,15 @@
 
     <div class="form-group submit row">
         <div class="col-sm-12">
-            <button type="button" class="btn btn-danger remove-role d-none">
+            <button type="button" class="btn btn-danger remove-post d-none">
                 <i class="fa fa-trash-o"></i>
                 Xóa
             </button>
-            <button class="btn btn-primary update-role d-none" type="button">
+            <button class="btn btn-primary update-post d-none" type="button">
                 <i class="fa fa-save"></i>
                 Save change
             </button>
-            <button class="btn btn-primary add-role" type="button">
+            <button class="btn btn-primary add-post" type="button">
                 <i class="fa fa-upload"></i>
                 Add role
             </button>

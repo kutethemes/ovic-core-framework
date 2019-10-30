@@ -77,7 +77,7 @@ class UsersController extends Controller
             $sorting = [
                 ['status', '=', $status],
             ];
-        } elseif ($sort != '' && ! empty($search)) {
+        } elseif ($sort != '' && !empty($search)) {
             $sorting = [
                 ['status', '=', $sort],
             ];
@@ -85,44 +85,39 @@ class UsersController extends Controller
 
         if (empty($search)) {
             $users = User::where($sorting)
-                         ->offset($start)
-                         ->limit($limit)
+                ->offset($start)
+                ->limit($limit)
                 /* ->orderBy( $order, $dir ) */
-                         ->latest()
-                         ->get()
-                         ->toArray()
-            ;
+                ->latest()
+                ->get()
+                ->toArray();
         } else {
             $users = User::where($sorting)
-                         ->where(
-                             function ($query) use ($search) {
-                                 $query->where('name', 'LIKE', "%{$search}%")
-                                       ->orWhere('email', 'LIKE', "%{$search}%")
-                                 ;
-                             }
-                         )
-                         ->offset($start)
-                         ->limit($limit)
+                ->where(
+                    function ($query) use ($search) {
+                        $query->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%");
+                    }
+                )
+                ->offset($start)
+                ->limit($limit)
                 /* ->orderBy( $order, $dir ) */
-                         ->latest()
-                         ->get()
-                         ->toArray()
-            ;
+                ->latest()
+                ->get()
+                ->toArray();
 
             $totalFiltered = User::where($sorting)
-                                 ->where(
-                                     function ($query) use ($search) {
-                                         $query->where('name', 'LIKE', "%{$search}%")
-                                               ->orWhere('email', 'LIKE', "%{$search}%")
-                                         ;
-                                     }
-                                 )->count()
-            ;
+                ->where(
+                    function ($query) use ($search) {
+                        $query->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%");
+                    }
+                )->count();
         }
 
         $data = [];
 
-        if ( ! empty($users)) {
+        if (!empty($users)) {
             foreach ($users as $user) {
                 $data[] = $this->user_data($user);
             }
@@ -143,7 +138,7 @@ class UsersController extends Controller
         $avatar_url = "img/a_none.jpg";
         $donvi      = "Bảng đơn vị không tồn tại";
 
-        if ( ! empty($user['avatar']) && $user['avatar'] > 0) {
+        if (!empty($user['avatar']) && $user['avatar'] > 0) {
             $path       = Post::where('id', '=', $user['avatar'])->value('name');
             $avatar_url = route('get_file', explode('/', $path));
         } else {
@@ -190,9 +185,9 @@ class UsersController extends Controller
             $user->email     = $data['email'];
             $user->avatar    = $data['avatar'];
             $user->password  = Hash::make($data['password']);
-            $user->donvi_id  = ! empty($data['donvi_id']) ? $data['donvi_id'] : 0;
-            $user->donvi_ids = ! empty($data['donvi_ids']) ? json_encode($data['donvi_ids']) : 0;
-            $user->role_ids  = ! empty($data['role_ids']) ? json_encode($data['role_ids']) : 0;
+            $user->donvi_id  = !empty($data['donvi_id']) ? $data['donvi_id'] : 0;
+            $user->donvi_ids = !empty($data['donvi_ids']) ? json_encode($data['donvi_ids']) : 0;
+            $user->role_ids  = !empty($data['role_ids']) ? json_encode($data['role_ids']) : 0;
             $user->status    = $data['status'];
 
             $user->save();
@@ -202,7 +197,7 @@ class UsersController extends Controller
             if ($request->has('dataTable')) {
                 $user = User::where('id', $user_id)->get()->first();
 
-                if ( ! empty($user)) {
+                if (!empty($user)) {
                     $dataTable = $this->user_data($user);
                 }
             }
@@ -277,13 +272,13 @@ class UsersController extends Controller
         $data      = $request->except(['_token', 'id', 'dataTable']);
 
         if ($validator->passes()) {
-            if ( ! empty($data['password'])) {
+            if (!empty($data['password'])) {
                 $data['password'] = Hash::make($data['password']);
             }
-            if ( ! empty($data['role_ids'])) {
+            if (!empty($data['role_ids'])) {
                 $data['role_ids'] = json_encode($data['role_ids']);
             }
-            if ( ! empty($data['donvi_ids'])) {
+            if (!empty($data['donvi_ids'])) {
                 $data['donvi_ids'] = json_encode($data['donvi_ids']);
             }
 
@@ -292,14 +287,14 @@ class UsersController extends Controller
             if ($request->has('dataTable')) {
                 $user = User::where('id', $id)->get()->first();
 
-                if ( ! empty($user)) {
+                if (!empty($user)) {
                     $dataTable = $this->user_data($user);
                 }
             }
 
             return response()->json([
                 'status'  => 200,
-                'message' => 'Update user thành công.',
+                'message' => 'Update người dùng thành công.',
                 'data'    => $dataTable,
             ]);
         }
@@ -322,20 +317,20 @@ class UsersController extends Controller
     {
         $delete = User::find($id);
 
-        if ( ! empty($delete)) {
+        if (!empty($delete)) {
             $delete->delete();
 
             return response()->json([
                 'status'  => 'success',
-                'title'   => 'Deleted!',
-                'message' => 'Xóa user thành công.',
+                'title'   => 'Đã xóa!',
+                'message' => 'Xóa người dùng thành công.',
             ]);
         }
 
         return response()->json([
             'status'  => 'error',
-            'title'   => 'Error!',
-            'message' => 'Xóa user không thành công.',
+            'title'   => 'Lỗi!',
+            'message' => 'Xóa người dùng không thành công.',
         ]);
     }
 }

@@ -16,12 +16,12 @@ class CreateUcasesTable extends Migration
 		Schema::create( 'ucases',
 			function ( Blueprint $table ) {
 				$table->bigIncrements( 'id' );
-                $table->string( 'name' );
-				$table->integer( 'parent_id' )->unsigned();
+                $table->text( 'name' );
+				$table->integer( 'parent_id' )->unsigned()->default(0);
 				$table->text( 'router' );
 				$table->tinyInteger( 'ordering' )->unsigned()->default(99);
 				$table->string( 'position', 15 )->default('left');
-				$table->tinyInteger( 'access' )->unsigned()->default(0);
+				$table->tinyInteger( 'access' )->unsigned()->default(1);
 				$table->tinyInteger( 'status' )->unsigned()->default(1);
 				$table->timestamps();
 			}
