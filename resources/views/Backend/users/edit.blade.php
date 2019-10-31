@@ -132,6 +132,8 @@
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
 
+            data.dataTable = true;
+
             button.update_post( "users", data, "#table-posts" );
 
             return false;

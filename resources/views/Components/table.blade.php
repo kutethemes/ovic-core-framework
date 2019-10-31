@@ -14,6 +14,8 @@
 @push( 'styles' )
     <!-- Sweet Alert -->
     <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
+    <!-- Toastr style -->
+    <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
 
     <style>
         .client-avatar {
@@ -179,6 +181,8 @@
 @push( 'scripts' )
     <!-- Sweet alert -->
     <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+    <!-- Toastr script -->
+    <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
     <!-- dataTables -->
     <script src="{{ asset('js/plugins/dataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('js/plugins/dataTables/dataTables.bootstrap4.min.js') }}"></script>
@@ -245,12 +249,6 @@
                 },
                 language: {
                     url: "{{ asset('datatable_language/vi.json') }}"
-                },
-                drawCallback: function ( settings ) {
-                    table.trigger( 'success_load_dataTable', settings.json );
-                },
-                initComplete: function ( settings, json ) {
-                    table.trigger( 'complete_load_dataTable', [ settings, json ] );
                 }
             }, config );
 
@@ -268,9 +266,6 @@
                 button.toggleClass( 'btn-primary btn-white' );
                 OvicTable.column( 1 ).search( '' ).draw();
             }
-        } );
-        $( window ).on( 'resize', function () {
-            OvicTable.columns.adjust();
         } );
         /* Add Post */
         $.fn.add_new = function ( main_url, data ) {
@@ -351,7 +346,6 @@
         $.fn.update_post = function ( main_url, data, table ) {
 
             let tr = $( table ).find( '.row-' + data.id );
-            data.dataTable = true;
 
             $.ajax( {
                 url: main_url + "/" + data.id,
@@ -364,7 +358,9 @@
                 success: function ( response ) {
                     if ( response.status === 200 ) {
 
-                        if ( $.isPlainObject( response.data ) ) {
+                        if ( data.dataTable === undefined ) {
+                            OvicTable.ajax.reload( null, false );
+                        } else if ( $.isPlainObject( response.data ) ) {
                             OvicTable.row( tr ).data( response.data );
                         }
 
@@ -404,18 +400,20 @@
                 url: main_url + "/" + data.id,
                 type: 'PUT',
                 dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
-                },
                 data: {
                     status: data.status,
                     dataTable: true
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                 },
                 success: function ( response ) {
 
                     if ( response.status === 200 ) {
 
-                        if ( $.isPlainObject( response.data ) ) {
+                        if ( reload ) {
+                            OvicTable.ajax.reload( null, false );
+                        } else if ( $.isPlainObject( response.data ) ) {
                             OvicTable.row( tr ).data( response.data );
                         }
 

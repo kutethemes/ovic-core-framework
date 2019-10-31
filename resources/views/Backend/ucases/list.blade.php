@@ -35,7 +35,10 @@
 @endpush
 
 @push( 'scripts.table' )
+
     <script>
+        var groupColumn = 2;
+
         $( '#table-posts' ).init_dataTable( "ucases", {
             columns: [
                 {
@@ -120,7 +123,22 @@
                         return "<a href='#' title='" + _title + "' class='status " + _class + "'>" + _icon + "</a>";
                     }
                 },
-            ]
+            ],
+            drawCallback: function ( settings ) {
+                let api = this.api();
+                let rows = api.rows( { page: 'current' } ).nodes();
+                let last = null;
+                let data = [];
+
+                api.column( 2, { page: 'current' } ).data().each( function ( group, i ) {
+                    data = this.row( i ).data();
+
+                    if ( data.parent_id === 0 ) {
+                        $( rows ).eq( i ).addClass( 'parent' );
+                    }
+                } );
+                this.trigger( 'drawCallback_dataTable', settings );
+            },
         } );
     </script>
 @endpush

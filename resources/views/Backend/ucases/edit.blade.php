@@ -27,8 +27,21 @@
 @push( 'scripts.table' )
     <!-- Chosen -->
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('js/plugins/nestable/jquery.nestable.js') }}"></script>
 
     <script>
+        var updateMenu = function ( e ) {
+            var list = e.length ? e : $( e.target ),
+                data = list.nestable( 'serialize' );
+
+            console.log(data);
+        };
+        // activate Nestable for list 1
+        $( '#nestable2' ).nestable( {
+            group: 'menu',
+            maxDepth: 2
+        } ).on( 'change', updateMenu );
+
         $( '.chosen-select' ).chosen( {
             width: "100%",
             no_results_text: "Oops, nothing found!",
@@ -134,13 +147,14 @@
             return false;
         } );
         /* Update select parent_id */
-        $( document ).on( 'success_load_dataTable', function ( event, settings ) {
+        $( document ).on( 'drawCallback_dataTable', function ( event, settings ) {
             let select = $( 'select[name="parent_id"]' ),
+                data = settings.json.data,
                 option = '';
 
-            if ( settings.data.length > 0 ) {
+            if ( data.length > 0 ) {
                 option += '<option value="0">Không thuộc nhóm nào</option>';
-                $.each( settings.data, function ( index, value ) {
+                $.each( data, function ( index, value ) {
                     option += '<option value="' + value.id + '">' + value.title + '</option>';
                 } );
                 select.empty(); //remove all child nodes
@@ -149,6 +163,50 @@
         } );
     </script>
 @endpush
+
+<?php
+$ucases = \Ovic\Framework\Ucases::all()
+    ->collect()
+    ->groupBy('parent_id')
+    ->sortBy('ordering')
+    ->toArray();
+?>
+<div class="dd" id="nestable2">
+    <ol class="dd-list">
+        @php
+            $parents = $ucases[0]
+        @endphp
+        @foreach ( $parents as $parent )
+            @php
+                $router = json_decode($parent['router'], true)
+            @endphp
+            <li class="dd-item" data-id="{{ $parent['id'] }}">
+                <div class="dd-handle">
+                    <span class="label label-info"><i class="{{ $router['icon'] }}"></i></span>
+                    {{ $parent['title'] }}
+                </div>
+                @if( !empty( $ucases[$parent['id']]) )
+                    @php
+                        $childrens  = $ucases[$parent['id']];
+                    @endphp
+                    <ol class="dd-list">
+                        @foreach ( $childrens as $children )
+                            @php
+                                $router = json_decode($children['router'], true)
+                            @endphp
+                            <li class="dd-item" data-id="{{ $children['id'] }}">
+                                <div class="dd-handle">
+                                    <span class="label label-info"><i class="{{ $router['icon'] }}"></i></span>
+                                    {{ $children['title'] }}
+                                </div>
+                            </li>
+                        @endforeach
+                    </ol>
+                @endif
+            </li>
+        @endforeach
+    </ol>
+</div>
 
 <form action="#" id="edit-post" method="post">
     <input type="hidden" name="id" value="">

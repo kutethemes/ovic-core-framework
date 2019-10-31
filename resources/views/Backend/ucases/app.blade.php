@@ -15,17 +15,17 @@
 
 @section( 'content-table' )
 
-    <div class="col-sm-8 full-height">
-        <div class="ibox full-height-scroll">
-            <div class="ibox-content">
-                @include( ovic_blade('Backend.ucases.list') )
-            </div>
-        </div>
-    </div>
     <div class="col-sm-4 full-height">
         <div class="ibox selected full-height-scroll">
             <div class="ibox-content">
                 @include( ovic_blade('Backend.ucases.edit') )
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 full-height">
+        <div class="ibox full-height-scroll">
+            <div class="ibox-content">
+                @include( ovic_blade('Backend.ucases.list') )
             </div>
         </div>
     </div>

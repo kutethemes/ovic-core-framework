@@ -19,10 +19,6 @@
 @push( 'styles' )
     <!-- dropzone -->
     <link href="{{ asset('css/plugins/dropzone/dropzone.min.css') }}" rel="stylesheet">
-    <!-- Toastr style -->
-    <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
-    <!-- Sweet Alert -->
-    <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
     <!-- jsTree -->
     <link href="{{ asset('css/plugins/jsTree/style.min.css') }}" rel="stylesheet">
 
@@ -153,10 +149,6 @@
 @endpush
 
 @push( 'scripts' )
-    <!-- Sweet alert -->
-    <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
-    <!-- Toastr script -->
-    <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
     <!-- dropzone -->
     <script src="{{ asset('js/plugins/dropzone/dropzone.min.js') }}"></script>
     <!-- jsTree -->
