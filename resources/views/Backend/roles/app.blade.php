@@ -9,18 +9,25 @@
      */
 @endphp
 
-@extends( ovic_blade( 'Backend.users.app' ) )
+@extends( ovic_blade( 'Components.table' ) )
 
 @section( 'title', 'QUẢN LÝ NHÓM NGƯỜI DÙNG' )
 
-@section( 'page-list' )
+@section( 'content-table' )
 
-    @include( ovic_blade('Backend.roles.list') )
-
-@endsection
-
-@section( 'page-edit' )
-
-    @include( ovic_blade('Backend.roles.edit') )
+    <div class="col-sm-8 full-height">
+        <div class="ibox full-height-scroll">
+            <div class="ibox-content">
+                @include( ovic_blade('Backend.roles.list') )
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 full-height">
+        <div class="ibox selected full-height-scroll">
+            <div class="ibox-content">
+                @include( ovic_blade('Backend.roles.edit') )
+            </div>
+        </div>
+    </div>
 
 @endsection

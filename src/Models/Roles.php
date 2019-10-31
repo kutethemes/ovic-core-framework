@@ -7,19 +7,19 @@ use Illuminate\Support\Facades\Schema;
 
 class Roles extends Eloquent
 {
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'roles';
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'roles';
 
-	public static function hasTable()
-	{
-		if ( Schema::hasTable( 'roles' ) ) {
-			return true;
-		}
+    public static function hasTable()
+    {
+        if ( Schema::hasTable('roles') ) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

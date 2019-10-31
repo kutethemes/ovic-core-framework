@@ -27,7 +27,16 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return view(ovic_blade('Backend.users.app'));
+        $donvis = Donvi::hasTable() ? Donvi::all([ 'id', 'tendonvi' ])->toArray() : [];
+        $roles  = Roles::hasTable() ? Roles::all([ 'id', 'title' ])->toArray() : [];
+        $ucases = Ucases::hasTable() ? Ucases::all([ 'id', 'title' ])->toArray() : [];
+
+        return view(
+            ovic_blade('Backend.users.app'),
+            compact(
+                [ 'donvis', 'roles', 'ucases' ]
+            )
+        );
     }
 
     /**
@@ -45,7 +54,7 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function users(Request $request)
+    public function users( Request $request )
     {
         $columns = [
             0 => 'avatar',
@@ -70,20 +79,20 @@ class UsersController extends Controller
         */
 
         $sorting = [
-            ['id', '>', 0],
+            [ 'id', '>', 0 ],
         ];
 
-        if ($status != '') {
+        if ( $status != '' ) {
             $sorting = [
-                ['status', '=', $status],
+                [ 'status', '=', $status ],
             ];
-        } elseif ($sort != '' && !empty($search)) {
+        } elseif ( $sort != '' && !empty($search) ) {
             $sorting = [
-                ['status', '=', $sort],
+                [ 'status', '=', $sort ],
             ];
         }
 
-        if (empty($search)) {
+        if ( empty($search) ) {
             $users = User::where($sorting)
                 ->offset($start)
                 ->limit($limit)
@@ -94,7 +103,7 @@ class UsersController extends Controller
         } else {
             $users = User::where($sorting)
                 ->where(
-                    function ($query) use ($search) {
+                    function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
                             ->orWhere('email', 'LIKE', "%{$search}%");
                     }
@@ -108,7 +117,7 @@ class UsersController extends Controller
 
             $totalFiltered = User::where($sorting)
                 ->where(
-                    function ($query) use ($search) {
+                    function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
                             ->orWhere('email', 'LIKE', "%{$search}%");
                     }
@@ -117,8 +126,8 @@ class UsersController extends Controller
 
         $data = [];
 
-        if (!empty($users)) {
-            foreach ($users as $user) {
+        if ( !empty($users) ) {
+            foreach ( $users as $user ) {
                 $data[] = $this->user_data($user);
             }
         }
@@ -133,19 +142,19 @@ class UsersController extends Controller
         return response()->json($json_data);
     }
 
-    public function user_data($user)
+    public function user_data( $user )
     {
         $avatar_url = "img/a_none.jpg";
         $donvi      = "Bảng đơn vị không tồn tại";
 
-        if (!empty($user['avatar']) && $user['avatar'] > 0) {
+        if ( !empty($user['avatar']) && $user['avatar'] > 0 ) {
             $path       = Post::where('id', '=', $user['avatar'])->value('name');
             $avatar_url = route('get_file', explode('/', $path));
         } else {
             $user['avatar'] = 0;
         }
 
-        if (Donvi::hasTable()) {
+        if ( Donvi::hasTable() ) {
             $donvi = Donvi::where('id', $user['donvi_id'])->value('tendonvi');
         }
 
@@ -163,20 +172,20 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function store(Request $request)
+    public function store( Request $request )
     {
         $dataTable = [];
         $validator = Validator::make($request->all(), [
-            'name'        => ['required', 'string', 'max:255'],
-            'email'       => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password'    => ['required', 'string', 'min:8', 'confirmed'],
-            'donvi_id'    => ['numeric'],
-            'status'      => ['numeric', 'min:0', 'max:2'],
-            'donvi_ids.*' => ['string', 'integer'],
-            'role_ids.*'  => ['string', 'integer'],
+            'name'        => [ 'required', 'string', 'max:255' ],
+            'email'       => [ 'required', 'string', 'email', 'max:255', 'unique:users' ],
+            'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
+            'donvi_id'    => [ 'numeric' ],
+            'status'      => [ 'numeric', 'min:0', 'max:2' ],
+            'donvi_ids.*' => [ 'string', 'integer' ],
+            'role_ids.*'  => [ 'string', 'integer' ],
         ]);
 
-        if ($validator->passes()) {
+        if ( $validator->passes() ) {
             $data = $request->toArray();
 
             $user = new User();
@@ -194,10 +203,10 @@ class UsersController extends Controller
 
             $user_id = $user->getAttributeValue('id');
 
-            if ($request->has('dataTable')) {
+            if ( $request->has('dataTable') ) {
                 $user = User::where('id', $user_id)->get()->first();
 
-                if (!empty($user)) {
+                if ( !empty($user) ) {
                     $dataTable = $this->user_data($user);
                 }
             }
@@ -223,7 +232,7 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show( $id )
     {
         $user = \Auth::user();
 
@@ -237,7 +246,7 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit( $id )
     {
         //
     }
@@ -250,44 +259,44 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update( Request $request, $id )
     {
         $dataTable = [];
         $rules     = [
-            'donvi_id'    => ['numeric'],
-            'status'      => ['numeric', 'min:0', 'max:2'],
-            'donvi_ids.*' => ['string', 'integer'],
-            'role_ids.*'  => ['string', 'integer'],
+            'donvi_id'    => [ 'numeric' ],
+            'status'      => [ 'numeric', 'min:0', 'max:2' ],
+            'donvi_ids.*' => [ 'string', 'integer' ],
+            'role_ids.*'  => [ 'string', 'integer' ],
         ];
-        if ($request->has('password')) {
-            $rules['password'] = ['required', 'string', 'min:8'];
+        if ( $request->has('password') ) {
+            $rules['password'] = [ 'required', 'string', 'min:8' ];
         }
-        if ($request->has('name')) {
-            $rules['name'] = ['required', 'string', 'max:255'];
+        if ( $request->has('name') ) {
+            $rules['name'] = [ 'required', 'string', 'max:255' ];
         }
-        if ($request->has('email')) {
-            $rules['email'] = ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$id];
+        if ( $request->has('email') ) {
+            $rules['email'] = [ 'required', 'string', 'email', 'max:255', 'unique:users,email,'.$id ];
         }
         $validator = Validator::make($request->all(), $rules);
-        $data      = $request->except(['_token', 'id', 'dataTable']);
+        $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
-        if ($validator->passes()) {
-            if (!empty($data['password'])) {
+        if ( $validator->passes() ) {
+            if ( !empty($data['password']) ) {
                 $data['password'] = Hash::make($data['password']);
             }
-            if (!empty($data['role_ids'])) {
+            if ( !empty($data['role_ids']) ) {
                 $data['role_ids'] = json_encode($data['role_ids']);
             }
-            if (!empty($data['donvi_ids'])) {
+            if ( !empty($data['donvi_ids']) ) {
                 $data['donvi_ids'] = json_encode($data['donvi_ids']);
             }
 
             User::where('id', $id)->update($data);
 
-            if ($request->has('dataTable')) {
+            if ( $request->has('dataTable') ) {
                 $user = User::where('id', $id)->get()->first();
 
-                if (!empty($user)) {
+                if ( !empty($user) ) {
                     $dataTable = $this->user_data($user);
                 }
             }
@@ -313,11 +322,11 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy( $id )
     {
         $delete = User::find($id);
 
-        if (!empty($delete)) {
+        if ( !empty($delete) ) {
             $delete->delete();
 
             return response()->json([

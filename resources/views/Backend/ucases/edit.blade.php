@@ -9,7 +9,7 @@
      */
 @endphp
 
-@push( 'styles' )
+@push( 'styles.table' )
     <!-- Chosen -->
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 
@@ -24,7 +24,7 @@
     </style>
 @endpush
 
-@push( 'scripts' )
+@push( 'scripts.table' )
     <!-- Chosen -->
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
 
@@ -293,10 +293,10 @@
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    @include( ovic_blade('Components.icon.icon'), [
-                        'name'  =>'router[icon]',
-                        'value' =>'',
-                    ] )
+                    @include( ovic_blade('Fields.icon.icon'), [
+                        'name'  =>  'router[icon]',
+                        'value' =>  '',
+                    ])
                 </div>
             </div>
         </div>

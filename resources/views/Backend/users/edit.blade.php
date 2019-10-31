@@ -9,29 +9,13 @@
      */
 @endphp
 
-@push( 'styles' )
+@push( 'styles.table' )
     <!-- Chosen -->
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 
     <style>
-        .avatar {
-            display: inline-block;
-        }
-
         .client-avatar img {
             max-width: 28px;
-        }
-
-        .avatar img {
-            max-width: 96px;
-        }
-
-        img.img-thumbnail {
-            border-width: 3px;
-        }
-
-        .img-thumbnail:hover {
-            border-color: #23c6c8;
         }
 
         div.chosen-container-multi .chosen-choices li.search-choice {
@@ -44,7 +28,7 @@
     </style>
 @endpush
 
-@push( 'scripts' )
+@push( 'scripts.table' )
     <!-- Chosen -->
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
 
@@ -64,19 +48,6 @@
                 input.removeAttr( 'disabled' ).attr( 'name', 'password' );
             }
         } );
-        $( document ).on( 'click', '#modal-media .btn-primary', function () {
-            let file_box = $( '#dropzone-previews .file-box.active' );
-
-            if ( file_box.length && file_box.find( 'img' ).length ) {
-                let id = file_box.data( 'id' );
-                let avatar_id = $( 'input[name="avatar"]' );
-                let avatar = $( 'a[data-toggle="modal"]' ).find( 'img' );
-                let src = file_box.find( 'img' ).attr( 'src' );
-
-                avatar_id.val( id ).trigger( 'change' );
-                avatar.attr( 'src', src );
-            }
-        } );
         /* Edit */
         $( document ).on( 'click', '#table-posts tbody > tr', function () {
             let row = $( this ),
@@ -87,7 +58,7 @@
             if ( !row.hasClass( 'active' ) ) {
                 /* active */
                 row.addClass( 'active' ).siblings().removeClass( 'active' );
-                form.find( '.avatar img' ).attr( 'src', user.avatar_url );
+                form.find( '.ovic-field-image img' ).attr( 'src', user.avatar_url );
 
                 $.each( user, function ( index, value ) {
                     if ( form.find( '[name="' + index + '"]' ).length ) {
@@ -136,8 +107,7 @@
             table.find( 'tbody > tr' ).removeClass( 'active' );
             form.trigger( 'reset' );
             form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
-            form.find( 'input[name="avatar"]' ).val( '0' ).trigger( 'change' );
-            form.find( '.avatar img' ).attr( 'src', 'img/a_none.jpg' );
+            form.find( '.ovic-field-image .ovic-image-remove' ).trigger( 'click' );
             form.find( '.field-password input' ).removeAttr( 'disabled' ).attr( 'name', 'password' );
             form.find( '.chosen-select' ).val( '' ).trigger( 'chosen:updated' );
             form.find( '.field-password-confirmation' ).css( 'display', 'flex' ).find( 'input' ).attr( 'name', 'password_confirmation' );
@@ -176,23 +146,19 @@
 
             return false;
         } );
-        /* Update select parent_id */
-        $( document ).on( 'complete_load_dataTable', function ( event, settings, json ) {
-            //
-            console.log(json);
-        } );
     </script>
 @endpush
 
 <form action="#" id="edit-post" method="post">
     <input type="hidden" name="id" value="">
-    <input type="hidden" name="avatar" value="0">
 
     <div class="row m-b-lg">
         <div class="col-lg-12 text-center">
-            <a href="#" data-toggle="modal" data-target="#modal-media" class="avatar">
-                <img alt="avatar" class="rounded-circle img-thumbnail" src="img/a_none.jpg">
-            </a>
+            @include( ovic_blade('Backend.media.field'), [
+                'name'  =>  'avatar',
+                'value' =>  '0',
+                'alt'   =>  'Ảnh đại diện',
+            ])
         </div>
     </div>
     <div class="client-detail">
@@ -262,7 +228,7 @@
         </div>
         <div class="hr-line-dashed field-password-confirmation"></div>
 
-        @if( \Ovic\Framework\Donvi::hasTable() )
+        @if( !empty( $donvis) )
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">
                     Đơn vị
@@ -271,21 +237,16 @@
                     <select name="donvi_id" class="form-control chosen-select"
                             data-placeholder="Chọn đơn vị">
                         <option value="0">Chọn đơn vị</option>
-                        @php
-                            $donvis = \Ovic\Framework\Donvi::all( [ 'id', 'tendonvi' ] )->toArray();
-                        @endphp
-                        @if( !empty( $donvis) )
-                            @foreach ( $donvis as $donvi )
-                                <option value="{{ $donvi['id'] }}">{{ $donvi['tendonvi'] }}</option>
-                            @endforeach
-                        @endif
+                        @foreach ( $donvis as $donvi )
+                            <option value="{{ $donvi['id'] }}">{{ $donvi['tendonvi'] }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
         @endif
 
-        @if( \Ovic\Framework\Roles::hasTable() )
+        @if( !empty( $roles) )
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">
                     Nhóm quyền
@@ -293,21 +254,16 @@
                 <div class="col-sm-9">
                     <select name="role_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn nhóm quyền">
-                        @php
-                            $roles = \Ovic\Framework\Roles::all( [ 'id', 'title' ] )->toArray();
-                        @endphp
-                        @if( !empty( $roles) )
-                            @foreach ( $roles as $role )
-                                <option value="{{ $role['id'] }}">{{ $role['title'] }}</option>
-                            @endforeach
-                        @endif
+                        @foreach ( $roles as $role )
+                            <option value="{{ $role['id'] }}">{{ $role['title'] }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
             <div class="hr-line-dashed"></div>
         @endif
 
-        @if( \Ovic\Framework\Ucases::hasTable() )
+        @if( !empty( $ucases ) )
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">
                     Phạm vi quản lý
@@ -315,14 +271,9 @@
                 <div class="col-sm-9">
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
-                        @php
-                            $ucases = \Ovic\Framework\Ucases::all( [ 'id', 'title' ] )->toArray();
-                        @endphp
-                        @if( !empty( $ucases ) )
-                            @foreach ( $ucases as $ucase )
-                                <option value="{{ $ucase['id'] }}">{{ $ucase['title'] }}</option>
-                            @endforeach
-                        @endif
+                        @foreach ( $ucases as $ucase )
+                            <option value="{{ $ucase['id'] }}">{{ $ucase['title'] }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>

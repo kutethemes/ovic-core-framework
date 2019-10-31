@@ -9,7 +9,7 @@
      */
 @endphp
 
-@push( 'styles.users' )
+@push( 'styles.table' )
     <style>
         .client-order {
             max-width: 45px;
@@ -23,7 +23,7 @@
     </style>
 @endpush
 
-@push( 'scripts.users' )
+@push( 'scripts.table' )
     <script>
         $( '#table-posts' ).init_dataTable( "roles", {
             columns: [

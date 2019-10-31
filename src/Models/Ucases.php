@@ -7,19 +7,19 @@ use Illuminate\Support\Facades\Schema;
 
 class Ucases extends Eloquent
 {
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'ucases';
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'ucases';
 
-	public static function hasTable()
-	{
-		if ( Schema::hasTable( 'ucases' ) ) {
-			return true;
-		}
+    public static function hasTable()
+    {
+        if ( Schema::hasTable('ucases') ) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

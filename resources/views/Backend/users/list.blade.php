@@ -9,7 +9,7 @@
      */
 @endphp
 
-@push( 'scripts' )
+@push( 'scripts.table' )
     <script>
         $( '#table-posts' ).init_dataTable( "users", {
             columns: [

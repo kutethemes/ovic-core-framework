@@ -7,27 +7,27 @@ use Illuminate\Support\Facades\Schema;
 
 class Donvi extends Eloquent
 {
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'donvi';
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'donvi';
 
-	public static function hasTable()
-	{
-		if ( Schema::hasTable( 'donvi' ) ) {
-			return true;
-		}
+    public static function hasTable()
+    {
+        if ( Schema::hasTable('donvi') ) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Get the post that owns the comment.
-	 */
-	public function users()
-	{
-		return $this->belongsTo( Users::class );
-	}
+    /**
+     * Get the post that owns the comment.
+     */
+    public function users()
+    {
+        return $this->belongsTo(Users::class);
+    }
 }

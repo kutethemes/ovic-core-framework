@@ -100,7 +100,7 @@
 
 <div id="app">
 
-    @yield( 'before-content' )
+    @stack( 'before-content' )
 
     @include( ovic_blade('Backend.left-sidebar') )
 
@@ -120,7 +120,7 @@
 
     @include( ovic_blade('Backend.right-sidebar') )
 
-    @yield( 'after-content' )
+    @stack( 'after-content' )
 
 </div>
 

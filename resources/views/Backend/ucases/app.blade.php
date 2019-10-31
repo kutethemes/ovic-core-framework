@@ -9,24 +9,31 @@
      */
 @endphp
 
-@extends( ovic_blade( 'Backend.users.app' ) )
+@extends( ovic_blade( 'Components.table' ) )
 
 @section( 'title', 'PHÂN QUYỀN CHỨC NĂNG' )
 
-@section( 'page-list' )
+@section( 'content-table' )
 
-    @include( ovic_blade('Backend.ucases.list') )
+    <div class="col-sm-8 full-height">
+        <div class="ibox full-height-scroll">
+            <div class="ibox-content">
+                @include( ovic_blade('Backend.ucases.list') )
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 full-height">
+        <div class="ibox selected full-height-scroll">
+            <div class="ibox-content">
+                @include( ovic_blade('Backend.ucases.edit') )
+            </div>
+        </div>
+    </div>
 
 @endsection
 
-@section( 'page-edit' )
+@push( 'after-content' )
 
-    @include( ovic_blade('Backend.ucases.edit') )
+    @include( ovic_blade('Fields.icon.modal') )
 
-@endsection
-
-@section( 'after-content' )
-
-    @include( ovic_blade('Components.icon.template') )
-
-@endsection
+@endpush

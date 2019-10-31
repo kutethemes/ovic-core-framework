@@ -9,7 +9,7 @@
      */
 @endphp
 
-@push( 'scripts.users' )
+@push( 'scripts.table' )
     <script>
         /* Edit */
         $( document ).on( 'click', '#table-posts tbody > tr', function () {

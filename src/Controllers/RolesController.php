@@ -33,7 +33,7 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function roles(Request $request)
+    public function roles( Request $request )
     {
         $totalData = Roles::count();
 
@@ -46,20 +46,20 @@ class RolesController extends Controller
         $status = $request->input('columns.1.search.value');
 
         $sorting = [
-            ['id', '>', 0],
+            [ 'id', '>', 0 ],
         ];
 
-        if ($status != '') {
+        if ( $status != '' ) {
             $sorting = [
-                ['status', '=', $status],
+                [ 'status', '=', $status ],
             ];
-        } elseif ($sort != '' && !empty($search)) {
+        } elseif ( $sort != '' && !empty($search) ) {
             $sorting = [
-                ['status', '=', $sort],
+                [ 'status', '=', $sort ],
             ];
         }
 
-        if (empty($search)) {
+        if ( empty($search) ) {
             $roles = Roles::where($sorting)
                 ->offset($start)
                 ->limit($limit)
@@ -69,7 +69,7 @@ class RolesController extends Controller
         } else {
             $roles = Roles::where($sorting)
                 ->where(
-                    function ($query) use ($search) {
+                    function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
                             ->orWhere('title', 'LIKE', "%{$search}%")
                             ->orWhere('description', 'LIKE', "%{$search}%");
@@ -83,7 +83,7 @@ class RolesController extends Controller
 
             $totalFiltered = Roles::where($sorting)
                 ->where(
-                    function ($query) use ($search) {
+                    function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
                             ->orWhere('title', 'LIKE', "%{$search}%")
                             ->orWhere('description', 'LIKE', "%{$search}%");
@@ -94,8 +94,8 @@ class RolesController extends Controller
 
         $data = [];
 
-        if (!empty($roles)) {
-            foreach ($roles as $role) {
+        if ( !empty($roles) ) {
+            foreach ( $roles as $role ) {
                 $data[] = $this->role_data($role);
             }
         }
@@ -110,7 +110,7 @@ class RolesController extends Controller
         return response()->json($json_data);
     }
 
-    public function role_data($role)
+    public function role_data( $role )
     {
         $role['status'] = $role['status'] < 0 ? 0 : $role['status'];
 
@@ -124,19 +124,19 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store( Request $request )
     {
         $validator = Validator::make($request->all(),
             [
-                'name'        => ['required', 'string', 'max:150'],
-                'title'       => ['required', 'string', 'max:150'],
-                'description' => ['string'],
-                'ordering'    => ['numeric', 'min:0'],
-                'status'      => ['numeric', 'min:0', 'max:1'],
+                'name'        => [ 'required', 'string', 'max:150' ],
+                'title'       => [ 'required', 'string', 'max:150' ],
+                'description' => [ 'string' ],
+                'ordering'    => [ 'numeric', 'min:0' ],
+                'status'      => [ 'numeric', 'min:0', 'max:1' ],
             ]
         );
 
-        if ($validator->passes()) {
+        if ( $validator->passes() ) {
             $data = $request->toArray();
 
             $role = new Roles();
@@ -172,7 +172,7 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show( $id )
     {
         //
     }
@@ -184,7 +184,7 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit( $id )
     {
         //
     }
@@ -197,32 +197,32 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update( Request $request, $id )
     {
         $dataTable = [];
         $rules     = [
-            'description' => ['string'],
-            'ordering'    => ['numeric', 'min:0'],
-            'status'      => ['numeric', 'min:0', 'max:1'],
+            'description' => [ 'string' ],
+            'ordering'    => [ 'numeric', 'min:0' ],
+            'status'      => [ 'numeric', 'min:0', 'max:1' ],
         ];
-        if ($request->has('name')) {
-            $rules['name'] = ['required', 'string', 'max:150', 'unique:roles,name,'.$id];
+        if ( $request->has('name') ) {
+            $rules['name'] = [ 'required', 'string', 'max:150', 'unique:roles,name,'.$id ];
         }
-        if ($request->has('title')) {
-            $rules['title'] = ['required', 'string', 'max:150'];
+        if ( $request->has('title') ) {
+            $rules['title'] = [ 'required', 'string', 'max:150' ];
         }
 
         $validator = Validator::make($request->all(), $rules);
-        $data      = $request->except(['_token', 'id', 'dataTable']);
+        $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
-        if ($validator->passes()) {
+        if ( $validator->passes() ) {
             /* update */
             Roles::where('id', $id)->update($data);
 
-            if ($request->has('dataTable')) {
+            if ( $request->has('dataTable') ) {
                 $role = Roles::where('id', $id)->get()->first();
 
-                if (!empty($role)) {
+                if ( !empty($role) ) {
                     $dataTable = $this->role_data($role);
                 }
             }
@@ -251,11 +251,11 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy( $id )
     {
         $delete = Roles::find($id);
 
-        if (!empty($delete)) {
+        if ( !empty($delete) ) {
             $delete->delete();
 
             return response()->json(

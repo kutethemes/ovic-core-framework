@@ -1,12 +1,9 @@
 @php
     /**
-     * The icon field for our theme
+     * The icon modal for our theme
      *
      * @package Ovic
      * @subpackage Framework
-     *
-     * @var $name
-     * @var $value
      *
      * @version 1.0
      */
@@ -135,6 +132,23 @@
             border-bottom: 1px solid #eee;
         }
 
+        .ovic-modal-header select {
+            display: block;
+            width: 250px;
+            margin: 0 auto;
+            background-color: #fff;
+        }
+
+        .ovic-modal-icon .ovic-icon-title {
+            padding: 15px 0;
+            margin: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid #eee;
+            background-color: #f7f7f7;
+        }
+
         .ovic-modal-icon .ovic-icon-search {
             width: 250px;
             height: 40px;
@@ -207,12 +221,13 @@
 
 @push( 'scripts' )
     <script>
-        $.fn.ovic_field_icon = function () {
-            return this.each( function () {
+        var iconFont = {};
 
-                var $this = $( this ),
-                    $icon_target = $this,
-                    icon_modal_loaded = false;
+        $( document ).ready( function () {
+
+            $( '.ovic-field-icon' ).each( function () {
+
+                var $this = $( this );
 
                 $this.on( 'click', '.ovic-icon-add', function ( e ) {
 
@@ -222,8 +237,9 @@
                         $modal = $( '#ovic-modal-icon' );
 
                     $modal.show();
+                    iconFont.$icon_target = $this;
 
-                    if ( !icon_modal_loaded ) {
+                    if ( !iconFont.icon_modal_loaded ) {
 
                         $modal.find( '.ovic-modal-loading' ).show();
 
@@ -233,7 +249,7 @@
 
                             $modal.find( '.ovic-modal-loading' ).hide();
 
-                            icon_modal_loaded = true;
+                            iconFont.icon_modal_loaded = true;
 
                             var $load = $modal.find( '.ovic-modal-load' ).html( response.content );
 
@@ -243,10 +259,10 @@
 
                                 var icon = $( this ).data( 'ovic-icon' );
 
-                                $icon_target.find( 'i' ).removeAttr( 'class' ).addClass( icon );
-                                $icon_target.find( 'input' ).val( icon ).trigger( 'change' );
-                                $icon_target.find( '.ovic-icon-preview' ).removeClass( 'd-none' );
-                                $icon_target.find( '.ovic-icon-remove' ).removeClass( 'd-none' );
+                                iconFont.$icon_target.find( 'i' ).removeAttr( 'class' ).addClass( icon );
+                                iconFont.$icon_target.find( 'input' ).val( icon ).trigger( 'change' );
+                                iconFont.$icon_target.find( '.ovic-icon-preview' ).removeClass( 'd-none' );
+                                iconFont.$icon_target.find( '.ovic-icon-remove' ).removeClass( 'd-none' );
 
                                 $modal.hide();
 
@@ -294,28 +310,31 @@
                 } );
 
             } );
-        };
-        $( document ).ready( function () {
-            $( '.ovic-field-icon' ).ovic_field_icon();
         } );
     </script>
 @endpush
 
-@php
-    $hidden = ( empty( $value ) ) ? ' d-none' : '';
-@endphp
-
-<div class="ovic-field-icon">
-    <div class="ovic-icon-select">
-        <span class="ovic-icon-preview{{ $hidden }}">
-            <i class="{{ $value }}"></i>
-        </span>
-        <a href="#" class="btn btn-primary ovic-icon-add">
-            Add Icon
-        </a>
-        <a href="#" class="btn btn-warning ovic-icon-remove{{ $hidden }}">
-            Remove Icon
-        </a>
-        <input type="text" name="{{ $name }}" value="{{ $value }}" class="ovic-icon-value"/>
+<div id="ovic-modal-icon" class="ovic-modal ovic-modal-icon">
+    <div class="ovic-modal-table">
+        <div class="ovic-modal-table-cell">
+            <div class="ovic-modal-overlay"></div>
+            <div class="ovic-modal-inner">
+                <div class="ovic-modal-title">
+                    Add Icon
+                    <div class="ovic-modal-close ovic-icon-close"></div>
+                </div>
+                <div class="ovic-modal-header ovic-text-center">
+                    <input type="text"
+                           placeholder="Search a Icon..."
+                           class="ovic-icon-search"/>
+                </div>
+                <div class="ovic-modal-content">
+                    <div class="ovic-modal-loading">
+                        <div class="ovic-loading"></div>
+                    </div>
+                    <div class="ovic-modal-load"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

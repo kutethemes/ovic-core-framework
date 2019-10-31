@@ -9,7 +9,7 @@
      */
 @endphp
 
-@push( 'styles.users' )
+@push( 'styles.table' )
     <style>
         .client-order {
             max-width: 45px;
@@ -20,10 +20,21 @@
             width: 20px;
             text-align: center;
         }
+
+        .client-description {
+            width: 200px;
+        }
+
+        .client-controller,
+        .client-module,
+        .client-name {
+            min-width: 165px;
+            max-width: 165px;
+        }
     </style>
 @endpush
 
-@push( 'scripts.users' )
+@push( 'scripts.table' )
     <script>
         $( '#table-posts' ).init_dataTable( "ucases", {
             columns: [

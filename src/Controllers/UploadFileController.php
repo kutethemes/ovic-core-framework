@@ -9,291 +9,365 @@ use Illuminate\Support\Facades\Storage;
 
 class UploadFileController extends Controller
 {
-	private $folder = 'uploads/';
+    private $folder = 'uploads/';
 
-	/**
-	 * Create a new controller instance.
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
-		$this->middleware( 'auth' );
-	}
+    public $limit       = 18;
+    public $offset      = 0;
+    public $attachments = [];
+    public $directories = [];
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index()
-	{
-		return view( ovic_blade( 'Backend.media.app' ) );
-	}
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->attachments = \Ovic\Framework\Post::get_posts(
+            [
+                [ 'post_type', '=', 'attachment' ],
+                [ 'status', '=', 'publish' ],
+                'limit'  => $this->limit,
+                'offset' => $this->offset,
+            ]
+        );
+        if ( !empty($this->attachments) ) {
+            $year        = '';
+            $directories = [];
+            foreach ( $this->attachments as $attachment ) {
+                $dir_year = explode('/', $attachment['name']);
+                $dir_year = array_shift($dir_year);
+                $dir      = str_replace($attachment['title'], '', $attachment['name']);
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
-	{
-		//
-	}
+                $directories[$dir_year][] = $dir;
+            }
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function filter( Request $request )
-	{
-		$request = $request->toArray();
+            asort($directories);
 
-		if ( !empty( $request['_form'] ) ) {
-			$args = [
-				[ 'post_type', '=', 'attachment' ],
-				[ 'status', '=', 'publish' ],
-				'limit'  => $request['_form']['limit'],
-				'offset' => $request['_form']['offset'],
-			];
+            foreach ( $directories as $year => $month ) {
+                $month = array_unique(array_values($month));
+                $data  = [
+                    "text"   => "Năm {$year}",
+                    "a_attr" => [
+                        "class"    => "dir-filter",
+                        "data-dir" => $year,
+                    ]
+                ];
+                if ( !empty($month) ) {
+                    foreach ( $month as $mon ) {
+                        $data['children'][] = [
+                            "text"   => "Tháng ".str_replace([ $year, '/' ], [ '', '' ], $mon),
+                            "a_attr" => [
+                                "class"    => "dir-filter",
+                                "data-dir" => $mon,
+                            ]
+                        ];
+                    }
+                }
+                $this->directories[] = $data;
+            }
+        }
+    }
 
-			if ( !empty( $request['_form']['s'] ) ) {
-				$args[] = [ "title", "like", "%{$request['_form']['s']}%" ];
-			}
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view(ovic_blade('Backend.media.app'))->with([
+            'attachments' => $this->attachments,
+            'limit'       => $this->limit,
+            'offset'      => $this->offset,
+            'directories' => json_encode($this->directories)
+        ]);
+    }
 
-			if ( !empty( $request['_form']['dir'] ) ) {
-				$args[] = [ "name", "like", "%{$request['_form']['dir']}%" ];
-			}
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
 
-			$attachments = \Ovic\Framework\Post::get_posts( $args );
+    /**
+     * Show the modal data for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function modal( Request $request )
+    {
+        $content = '';
+        $dir     = '';
+        if ( !empty($this->attachments) ) {
+            foreach ( $this->attachments as $attachment ) {
+                $content .= view(ovic_blade('Backend.media.image'), compact('attachment'))->toHtml();
+            }
+        }
+        return response()->json([
+            'content'     => $content,
+            'directories' => json_encode($this->directories)
+        ]);
+    }
 
-			foreach ( $attachments as $key => $attachment ) {
-				$mimetype  = $attachment['meta']['_attachment_metadata']['mimetype'];
-				$extension = $attachment['meta']['_attachment_metadata']['extension'];
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function filter( Request $request )
+    {
+        $request = $request->toArray();
 
-				switch ( $request['_form']['sort'] ) {
-					case 'im':
-						if ( !strstr( $mimetype, "image/" ) ) {
-							unset( $attachments[$key] );
-						}
-						break;
+        if ( !empty($request['_form']) ) {
+            $args = [
+                [ 'post_type', '=', 'attachment' ],
+                [ 'status', '=', 'publish' ],
+                'limit'  => $request['_form']['limit'],
+                'offset' => $request['_form']['offset'],
+            ];
 
-					case 'vi':
-						if ( !strstr( $mimetype, "video/" ) ) {
-							unset( $attachments[$key] );
-						}
-						break;
+            if ( !empty($request['_form']['s']) ) {
+                $args[] = [ "title", "like", "%{$request['_form']['s']}%" ];
+            }
 
-					case 'au':
-						if ( !strstr( $mimetype, "audio/" ) ) {
-							unset( $attachments[$key] );
-						}
-						break;
+            if ( !empty($request['_form']['dir']) ) {
+                $args[] = [ "name", "like", "%{$request['_form']['dir']}%" ];
+            }
 
-					case 'doc':
-						$ext_allow = [ 'doc', 'docx', 'xls', 'xlsx', 'pdf' ];
-						if ( !in_array( $extension, $ext_allow ) ) {
-							unset( $attachments[$key] );
-						}
-						break;
+            $attachments = \Ovic\Framework\Post::get_posts($args);
 
-					case 'ar':
-						$ext_allow = [ 'rar', 'zip' ];
-						if ( !in_array( $extension, $ext_allow ) ) {
-							unset( $attachments[$key] );
-						}
-						break;
-				}
-			}
+            foreach ( $attachments as $key => $attachment ) {
+                $mimetype  = $attachment['meta']['_attachment_metadata']['mimetype'];
+                $extension = $attachment['meta']['_attachment_metadata']['extension'];
 
-			$html = '';
+                switch ( $request['_form']['sort'] ) {
+                    case 'im':
+                        if ( !strstr($mimetype, "image/") ) {
+                            unset($attachments[$key]);
+                        }
+                        break;
 
-			foreach ( $attachments as $attachment ) {
-				$html .= view( ovic_blade( 'Backend.media.image' ), compact( 'attachment' ) )->toHtml();
-			}
+                    case 'vi':
+                        if ( !strstr($mimetype, "video/") ) {
+                            unset($attachments[$key]);
+                        }
+                        break;
 
-			$count  = count( $attachments );
-			$status = $count > 0 ? 'success' : 'info';
+                    case 'au':
+                        if ( !strstr($mimetype, "audio/") ) {
+                            unset($attachments[$key]);
+                        }
+                        break;
 
-			return response()->json(
-				[
-					'status'  => $status,
-					'message' => 'Đã tìm được ' . $count . ' kết quả.',
-					'html'    => $html,
-					'count'   => $count,
-				]
-			);
-		}
+                    case 'doc':
+                        $ext_allow = [ 'doc', 'docx', 'xls', 'xlsx', 'pdf' ];
+                        if ( !in_array($extension, $ext_allow) ) {
+                            unset($attachments[$key]);
+                        }
+                        break;
 
-		return response()->json(
-			[
-				'status'  => 'error',
-				'message' => 'Không rõ kiểu lọc.',
-				'html'    => '',
-			], 400
-		);
-	}
+                    case 'ar':
+                        $ext_allow = [ 'rar', 'zip' ];
+                        if ( !in_array($extension, $ext_allow) ) {
+                            unset($attachments[$key]);
+                        }
+                        break;
+                }
+            }
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param \Illuminate\Http\Request $request
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function store( Request $request )
-	{
-		if ( !$request->hasFile( 'file' ) ) {
-			return response()->json(
-				[
-					'status'  => 'error',
-					'message' => 'The File do not exits.',
-					'html'    => '',
-				], 400
-			);
-		}
+            $html = '';
 
-		$now  = now();
-		$file = $request->file( 'file' );
+            foreach ( $attachments as $attachment ) {
+                $html .= view(ovic_blade('Backend.media.image'), compact('attachment'))->toHtml();
+            }
 
-		$MimeType     = $file->getClientMimeType();
-		$extension    = $file->getClientOriginalExtension();
-		$FileSize     = $file->getSize();
-		$OriginalName = $file->getClientOriginalName();
+            $count  = count($attachments);
+            $status = $count > 0 ? 'success' : 'info';
 
-		$FileName = str_replace( ".{$extension}", "-{$now->getTimestamp()}.{$extension}", $OriginalName );
+            return response()->json(
+                [
+                    'status'  => $status,
+                    'message' => 'Đã tìm được '.$count.' kết quả.',
+                    'html'    => $html,
+                    'count'   => $count,
+                ]
+            );
+        }
 
-		$FilePath = Storage::putFileAs(
-			"{$this->folder}{$now->year}/{$now->month}",
-			$file,
-			$FileName
-		);
+        return response()->json(
+            [
+                'status'  => 'error',
+                'message' => 'Không rõ kiểu lọc.',
+                'html'    => '',
+            ], 400
+        );
+    }
 
-		$created = \Ovic\Framework\Post::add_post(
-			[
-				'title'     => $FileName,
-				'name'      => "{$now->year}/{$now->month}/{$FileName}",
-				'post_type' => 'attachment',
-				'meta'      => [
-					'_attachment_metadata' => [
-						'alt'       => '',
-						'size'      => size_format( $FileSize ),
-						'mimetype'  => $MimeType,
-						'extension' => $extension,
-					],
-				],
-				'user_id'   => Auth::user()->id,
-				'owner_id'  => Auth::user()->id,
-			]
-		);
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store( Request $request )
+    {
+        if ( !$request->hasFile('file') ) {
+            return response()->json(
+                [
+                    'status'  => 'error',
+                    'message' => 'The File do not exits.',
+                    'html'    => '',
+                ], 400
+            );
+        }
 
-		if ( $created['code'] == 400 ) {
-			Storage::delete( $FilePath );
+        $now  = now();
+        $file = $request->file('file');
 
-			return response()->json(
-				[
-					'status'  => 'error',
-					'message' => 'The File can not save.',
-					'html'    => '',
-				], 400
-			);
-		}
+        $MimeType     = $file->getClientMimeType();
+        $extension    = $file->getClientOriginalExtension();
+        $FileSize     = $file->getSize();
+        $OriginalName = $file->getClientOriginalName();
 
-		return response()->json(
-			[
-				'status'  => 'success',
-				'message' => 'Image saved Successfully',
-				'html'    => $this->show( $created['post_id'] )->toHtml(),
-			]
-		);
-	}
+        $FileName = str_replace(".{$extension}", "-{$now->getTimestamp()}.{$extension}", $OriginalName);
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param int $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show( $id )
-	{
-		$attachment = Post::get_posts(
-			[
-				[ 'id', '=', $id ],
-				[ 'post_type', '=', 'attachment' ],
-				[ 'status', '=', 'publish' ],
-			]
-		);
+        $FilePath = Storage::putFileAs(
+            "{$this->folder}{$now->year}/{$now->month}",
+            $file,
+            $FileName
+        );
 
-		$attachment = array_shift( $attachment );
+        $created = \Ovic\Framework\Post::add_post(
+            [
+                'title'     => $FileName,
+                'name'      => "{$now->year}/{$now->month}/{$FileName}",
+                'post_type' => 'attachment',
+                'meta'      => [
+                    '_attachment_metadata' => [
+                        'alt'       => '',
+                        'size'      => size_format($FileSize),
+                        'mimetype'  => $MimeType,
+                        'extension' => $extension,
+                    ],
+                ],
+                'user_id'   => Auth::user()->id,
+                'owner_id'  => Auth::user()->id,
+            ]
+        );
 
-		return view( ovic_blade( 'Backend.media.image' ), compact( 'attachment' ) );
-	}
+        if ( $created['code'] == 400 ) {
+            Storage::delete($FilePath);
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param int $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit( $id )
-	{
-		//
-	}
+            return response()->json(
+                [
+                    'status'  => 'error',
+                    'message' => 'The File can not save.',
+                    'html'    => '',
+                ], 400
+            );
+        }
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param \Illuminate\Http\Request $request
-	 * @param int                      $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update( Request $request, $id )
-	{
-		//
-	}
+        return response()->json(
+            [
+                'status'  => 'success',
+                'message' => 'Image saved Successfully',
+                'html'    => $this->show($created['post_id'])->toHtml(),
+            ]
+        );
+    }
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param int $ids
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function remove( Request $request )
-	{
-		$ids = $request->input( 'ids' );
-		$ids = ( strpos( $ids, ',' ) === false ) ? (array)$ids : explode( ',', $ids );
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show( $id )
+    {
+        $attachment = Post::get_posts(
+            [
+                [ 'id', '=', $id ],
+                [ 'post_type', '=', 'attachment' ],
+                [ 'status', '=', 'publish' ],
+            ]
+        );
 
-		foreach ( $ids as $id ) {
-			$this->destroy( $id );
-		}
+        $attachment = array_shift($attachment);
 
-		return response()->json( [
-			'ids'     => $ids,
-			'message' => 'Xóa thành công.',
-		] );
-	}
+        return view(ovic_blade('Backend.media.image'), compact('attachment'));
+    }
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param int $id
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy( $id )
-	{
-		$path = Post::where( 'id', $id )->value( 'name' );
-		$path = str_replace( '//', '/', "{$this->folder}{$path}" );
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit( $id )
+    {
+        //
+    }
 
-		Storage::delete( $path );
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update( Request $request, $id )
+    {
+        //
+    }
 
-		$removed = Post::remove_post( $id );
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $ids
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function remove( Request $request )
+    {
+        $ids = $request->input('ids');
+        $ids = ( strpos($ids, ',') === false ) ? (array) $ids : explode(',', $ids);
 
-		return response()->json( $removed, $removed['code'] );
-	}
+        foreach ( $ids as $id ) {
+            $this->destroy($id);
+        }
+
+        return response()->json([
+            'ids'     => $ids,
+            'message' => 'Xóa thành công.',
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy( $id )
+    {
+        $path = Post::where('id', $id)->value('name');
+        $path = str_replace('//', '/', "{$this->folder}{$path}");
+
+        Storage::delete($path);
+
+        $removed = Post::remove_post($id);
+
+        return response()->json($removed, $removed['code']);
+    }
 }

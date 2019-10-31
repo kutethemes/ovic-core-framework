@@ -11,11 +11,10 @@
 */
 Route::group(
     [
-        'middleware' =>
-            ['web', 'auth'],
+        'middleware' => [ 'web', 'auth' ],
     ],
     function () {
-        $data = [
+        [
             'id'        => '',
             'slug'      => '',
             'title'     => '',
@@ -64,6 +63,7 @@ Route::group(
         Route::resource('post', 'Ovic\Framework\PostsController');
 
         /* Upload Route */
+        Route::post('upload/modal', 'Ovic\Framework\UploadFileController@modal')->name('upload.modal');
         Route::post('upload/remove', 'Ovic\Framework\UploadFileController@remove')->name('upload.remove');
         Route::post('upload/filter', 'Ovic\Framework\UploadFileController@filter')->name('upload.filter');
         Route::resource('upload', 'Ovic\Framework\UploadFileController');

@@ -18,7 +18,7 @@ class IconController extends Controller
 
     public function getIcon()
     {
-        $html = '';
+        $html       = '';
         $icon_lists = $this->default_icons();
         if (!empty($icon_lists)) {
             foreach ($icon_lists as $list) {
