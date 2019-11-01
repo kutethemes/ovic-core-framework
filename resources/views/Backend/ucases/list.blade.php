@@ -19,8 +19,8 @@
             <i class="fa fa-wrench"></i>
         </a>
         <ul id="nestable-menu" class="dropdown-menu dropdown-menu-right dropdown-order" x-placement="bottom-start">
-            <li><a href="#" data-action="collapse-all" class="dropdown-item">Expand All</a></li>
-            <li><a href="#" data-action="expand-all" class="dropdown-item">Collapse All</a></li>
+            <li><a href="#" data-action="expand-all" class="dropdown-item">Expand All</a></li>
+            <li><a href="#" data-action="collapse-all" class="dropdown-item">Collapse All</a></li>
             <li class="dropdown-divider"></li>
             <li><a href="#" data-action="add-new" class="dropdown-item add-new">Add New</a></li>
         </ul>
