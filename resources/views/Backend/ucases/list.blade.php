@@ -37,59 +37,27 @@
     @if( !empty( $menus ) )
         <div class="row">
             @foreach( $menus as $key => $menu )
-                <div class="col-sm-6{{ $key == 'menu-left' ? ' b-r' : '' }}">
+                <div class="col-sm-6 {{ $key == 'menu-left' ? 'b-r' : '' }}">
                     <div id="{{ $key }}" class="dd">
                         <ol class="dd-list">
                             @if( !empty( $menu[0] ) )
-                                @php
-                                    $parents = $menu[0]
-                                @endphp
-                                @foreach ( $parents as $parent )
-                                    @php
-                                        $router = json_decode($parent['router'], true)
-                                    @endphp
-                                    <li id="menu-{{ $parent['id'] }}" class="dd-item" data-id="{{ $parent['id'] }}">
-                                        <div class="dd-handle">
-                                        <span class="label label-info">
-                                            <i class="{{ $router['icon'] }}"></i>
-                                        </span>
-                                            <div class="name">
-                                                {{ $parent['title'] }}
-                                            </div>
-                                            <div class="dd-nodrag btn-group">
-                                                <button class="btn btn-outline btn-primary edit">Edit</button>
-                                                <button class="btn btn-danger remove"><i class="fa fa-trash-o"></i>
-                                                </button>
-                                            </div>
-                                        </div>
+                                @foreach ( $menu[0] as $parent )
+                                    <li class="dd-item" data-id="{{ $parent['id'] }}">
+
+                                        @include( ovic_blade('Backend.ucases.item'), ['data' => $parent] )
+
                                         @if( !empty( $menu[$parent['id']] ) )
-                                            @php
-                                                $childrens  = $menu[$parent['id']];
-                                            @endphp
+
                                             <ol class="dd-list">
-                                                @foreach ( $childrens as $children )
-                                                    @php
-                                                        $router = json_decode($children['router'], true)
-                                                    @endphp
+                                                @foreach ( $menu[$parent['id']] as $children )
                                                     <li class="dd-item" data-id="{{ $children['id'] }}">
-                                                        <div class="dd-handle">
-                                                        <span class="label label-info">
-                                                            <i class="{{ $router['icon'] }}"></i>
-                                                        </span>
-                                                            <div class="name">
-                                                                {{ $children['title'] }}
-                                                            </div>
-                                                            <div class="dd-nodrag btn-group">
-                                                                <button class="btn btn-outline btn-primary edit">Edit
-                                                                </button>
-                                                                <button class="btn btn-danger remove">
-                                                                    <i class="fa fa-trash-o"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
+
+                                                        @include( ovic_blade('Backend.ucases.item'), ['data' => $children] )
+
                                                     </li>
                                                 @endforeach
                                             </ol>
+
                                         @endif
                                     </li>
                                 @endforeach

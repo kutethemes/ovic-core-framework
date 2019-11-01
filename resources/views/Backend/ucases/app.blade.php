@@ -128,6 +128,33 @@
             color: #1ab394;
         }
 
+        .dd-item > .dd-handle.hidden {
+            background-color: #ccc;
+            border-color: #ccc;
+        }
+
+        .dd-item > .dd-handle.hidden .btn-primary.btn-outline,
+        .dd-item > .dd-handle.hidden .btn-primary.btn-outline:hover,
+        .dd-item > .dd-handle.hidden .btn-primary.btn-outline:focus {
+            border-color: #fff;
+            background-color: #fff;
+            color: #1ab394;
+        }
+
+        .dd-item > .dd-handle.disable {
+            background-color: #ed5565;
+            border-color: #ed5565;
+            color: #fff;
+        }
+
+        .dd-item > .dd-handle.disable .btn-primary.btn-outline,
+        .dd-item > .dd-handle.disable .btn-primary.btn-outline:hover,
+        .dd-item > .dd-handle.disable .btn-primary.btn-outline:focus {
+            border-color: #fff;
+            background-color: #fff;
+            color: #1ab394;
+        }
+
         div.client-detail {
             height: auto;
             padding-bottom: 40px;
@@ -213,19 +240,34 @@
                     }
                 } );
             },
-            template = function ( data ) {
-                let html = '';
+            template = function ( data, addNew = false ) {
+                let html = '',
+                    item = '',
+                    status = '';
 
-                html += '<li id="menu-' + data.id + '" class="dd-item" data-id="' + data.id + '">';
-                html += '   <div class="dd-handle">';
-                html += '       <span class="label label-info"><i class="' + data.icon + '"></i></span>';
-                html += '       <div class="name">' + data.title + '</div>';
-                html += '       <div class="dd-nodrag btn-group">';
-                html += '           <button class="btn btn-outline btn-primary edit">Edit</button>';
-                html += '           <button class="btn btn-danger remove"><i class="fa fa-trash-o"></i></button>';
-                html += '       </div>';
-                html += '   </div>';
-                html += '</li>';
+                if ( data.status == 0 ) {
+                    status = 'disable';
+                }
+                if ( data.status == 2 ) {
+                    status = 'hidden';
+                }
+
+                item += '<div id="menu-' + data.id + '" class="dd-handle ' + status + '">';
+                item += '   <span class="label label-info"><i class="' + data.icon + '"></i></span>';
+                item += '   <div class="name">' + data.title + '</div>';
+                item += '   <div class="dd-nodrag btn-group">';
+                item += '       <button class="btn btn-outline btn-primary edit">Edit</button>';
+                item += '       <button class="btn btn-danger remove"><i class="fa fa-trash-o"></i></button>';
+                item += '   </div>';
+                item += '</div>';
+
+                if ( addNew ) {
+                    html += '<li class="dd-item" data-id="' + data.id + '">';
+                    html += item;
+                    html += '</li>';
+                } else {
+                    html = item;
+                }
 
                 return html;
             };
@@ -465,7 +507,7 @@
 
                         data.id = response.id;
                         data.icon = form.find( 'input[name="router[icon]"]' ).val();
-                        let html = template( data );
+                        let html = template( data, true );
 
                         if ( data.position === 'left' ) {
                             $( '#menu-left' ).append( html );
