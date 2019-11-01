@@ -155,6 +155,18 @@
     <script src="{{ asset('js/plugins/jsTree/jstree.min.js') }}"></script>
 
     <script>
+        var treeFolder = function ( directories, reload = false ) {
+            if ( reload ) {
+                $( '#mytree' ).jstree( true ).settings.core.data = JSON.parse( directories );
+                $( '#mytree' ).jstree( true ).refresh();
+            } else {
+                $( '#mytree' ).jstree( {
+                    "core": {
+                        "data": JSON.parse( directories )
+                    },
+                } );
+            }
+        };
         if ( !$.fn.serializeObject ) {
             $.fn.serializeObject = function () {
                 var o = {};
@@ -191,6 +203,9 @@
             success: function ( file, response ) {
 
                 $( '#dropzone-previews .content-previews' ).prepend( response.html );
+
+                /* Tạo thư mục */
+                treeFolder( response.directories, true );
 
                 toastr[response.status]( response.message );
             },
@@ -270,6 +285,9 @@
                             ids: ids
                         },
                         success: function ( response ) {
+                            /* Tạo thư mục */
+                            treeFolder( response.directories, true );
+
                             $.each( response.ids, function ( index, value ) {
                                 content.find( '.image-' + value ).remove();
                             } );
@@ -323,7 +341,7 @@
             $( 'input[name="sort"]' ).val( 'all' );
             $( 'input[name="offset"]' ).val( "{{ $offset }}" );
             $( 'button[value="all"]' ).addClass( 'active' ).siblings().removeClass( 'active' );
-            $( '#jstree1' ).find( 'a' ).removeClass( 'jstree-clicked' );
+            $( '#mytree' ).find( 'a' ).removeClass( 'jstree-clicked' );
         } );
         /* Lọc kiểu file */
         $( document ).on( 'click', '.file-control', function () {
@@ -413,11 +431,7 @@
         } );
         @if( !empty($directories) )
         /* Tạo thư mục */
-        $( '#jstree1' ).jstree( {
-            "core": {
-                "data": JSON.parse( '{!! $directories !!}' )
-            },
-        } );
+        treeFolder( '{!! $directories !!}' );
         @endif
     </script>
 @endpush
@@ -465,7 +479,7 @@
                 </div>
                 <div class="hr-line-dashed"></div>
                 <h5>Thư mục</h5>
-                <div id="jstree1"></div>
+                <div id="mytree"></div>
                 <div class="hr-line-dashed"></div>
                 <div class="clearfix"></div>
                 <button type="submit" class="btn btn-outline btn-info reset-filter">Reset filter</button>

@@ -17,13 +17,13 @@ class UcasesController extends Controller
      */
     public function index()
     {
-        $menu_left  = \Ovic\Framework\Ucases::where('position', 'left')
+        $menu_left = \Ovic\Framework\Ucases::where('position', 'left')
             ->get()
             ->collect()
             ->sortBy('ordering')
             ->groupBy('parent_id')
             ->toArray();
-        $menu_right = \Ovic\Framework\Ucases::where('position', 'right')
+        $menu_top  = \Ovic\Framework\Ucases::where('position', 'top')
             ->get()
             ->collect()
             ->sortBy('ordering')
@@ -31,8 +31,8 @@ class UcasesController extends Controller
             ->toArray();
 
         $menus = [
-            'menu-left'  => $menu_left,
-            'menu-right' => $menu_right,
+            'menu-left' => $menu_left,
+            'menu-top'  => $menu_top,
         ];
 
         return view(ovic_blade('Backend.ucases.app'), compact('menus'));

@@ -24,6 +24,11 @@ class UploadFileController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->init();
+    }
+
+    public function init()
+    {
         $this->attachments = \Ovic\Framework\Post::get_posts(
             [
                 [ 'post_type', '=', 'attachment' ],
@@ -32,9 +37,15 @@ class UploadFileController extends Controller
                 'offset' => $this->offset,
             ]
         );
-        if ( !empty($this->attachments) ) {
-            $year        = '';
-            $directories = [];
+        $this->directories = $this->createDirectories($this->attachments);
+    }
+
+    public function createDirectories( $attachments )
+    {
+        $folder      = [];
+        $year        = '';
+        $directories = [];
+        if ( !empty($attachments) ) {
             foreach ( $this->attachments as $attachment ) {
                 $dir_year = explode('/', $attachment['name']);
                 $dir_year = array_shift($dir_year);
@@ -65,9 +76,11 @@ class UploadFileController extends Controller
                         ];
                     }
                 }
-                $this->directories[] = $data;
+                $folder[] = $data;
             }
         }
+
+        return $folder;
     }
 
     /**
@@ -274,11 +287,14 @@ class UploadFileController extends Controller
             );
         }
 
+        $this->init();
+
         return response()->json(
             [
-                'status'  => 'success',
-                'message' => 'Image saved Successfully',
-                'html'    => $this->show($created['post_id'])->toHtml(),
+                'status'      => 'success',
+                'message'     => 'Image saved Successfully',
+                'html'        => $this->show($created['post_id'])->toHtml(),
+                'directories' => json_encode($this->directories)
             ]
         );
     }
@@ -346,9 +362,12 @@ class UploadFileController extends Controller
             $this->destroy($id);
         }
 
+        $this->init();
+
         return response()->json([
-            'ids'     => $ids,
-            'message' => 'Xóa thành công.',
+            'ids'         => $ids,
+            'message'     => 'Xóa thành công.',
+            'directories' => json_encode($this->directories)
         ]);
     }
 
@@ -365,8 +384,10 @@ class UploadFileController extends Controller
         $path = str_replace('//', '/', "{$this->folder}{$path}");
 
         Storage::delete($path);
+        $this->init();
 
-        $removed = Post::remove_post($id);
+        $removed                = Post::remove_post($id);
+        $removed['directories'] = json_encode($this->directories);
 
         return response()->json($removed, $removed['code']);
     }

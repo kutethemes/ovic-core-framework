@@ -47,9 +47,11 @@
                 <div class="col-sm-9">
                     <div class="input-group">
                         <div class="btn-group">
-                            <button class="btn btn-white active" type="button" data-name="position" value="left">Left
+                            <button class="btn btn-white active" type="button" data-name="position" value="left">
+                                Left
                             </button>
-                            <button class="btn btn-white" type="button" data-name="position" value="right">Right
+                            <button class="btn btn-white" type="button" data-name="position" value="top">
+                                Top
                             </button>
                         </div>
                     </div>

@@ -203,7 +203,7 @@
                     dataType: 'json',
                     data: {
                         data: data,
-                        position: list.attr( 'id' ) === 'menu-left' ? 'left' : 'right'
+                        position: list.attr( 'id' ) === 'menu-left' ? 'left' : 'top'
                     },
                     headers: {
                         'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
@@ -290,7 +290,7 @@
         }
         // activate Nestable for list menu
         $( '#menu-left' ).nestable( { maxDepth: 2 } ).on( 'change', updateMenu );
-        $( '#menu-right' ).nestable( { maxDepth: 2 } ).on( 'change', updateMenu );
+        $( '#menu-top' ).nestable( { maxDepth: 2 } ).on( 'change', updateMenu );
 
         // action Nestable for list menu
         $( '#nestable-menu' ).on( 'click', function ( e ) {
@@ -470,7 +470,7 @@
                         if ( data.position === 'left' ) {
                             $( '#menu-left' ).append( html );
                         } else {
-                            $( '#menu-right' ).append( html );
+                            $( '#menu-top' ).append( html );
                         }
 
                         toastr.info( response.message );
