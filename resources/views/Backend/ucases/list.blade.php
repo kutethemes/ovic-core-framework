@@ -10,7 +10,7 @@
 @endphp
 
 <div class="ibox-title">
-    <h5>Danh sách menu <small>Menu Left / Menu Right</small></h5>
+    <h5>Danh sách menu <small>Menu Left / Menu Top</small></h5>
     <div class="ibox-tools">
         <a class="collapse-link">
             <i class="fa fa-chevron-up"></i>
