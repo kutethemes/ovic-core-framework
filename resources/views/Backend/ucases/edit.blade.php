@@ -25,7 +25,14 @@
         </ul>
     </div>
 </div>
-<div class="ibox-content">
+<div class="ibox-content ibox-edit">
+    <div class="sk-spinner sk-spinner-wave">
+        <div class="sk-rect1"></div>
+        <div class="sk-rect2"></div>
+        <div class="sk-rect3"></div>
+        <div class="sk-rect4"></div>
+        <div class="sk-rect5"></div>
+    </div>
     <form action="#" id="edit-post" method="post">
         <input type="hidden" name="id" value="">
         <input type="hidden" name="position" value="left">

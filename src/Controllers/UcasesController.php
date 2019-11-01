@@ -260,6 +260,12 @@ class UcasesController extends Controller
                 }
             }
         }
+
+        return response()->json(
+            [
+                'message' => 'Cập nhật ordering thành công.',
+            ]
+        );
     }
 
     /**

@@ -155,6 +155,14 @@
             display: none !important;
         }
 
+        .ibox-content.sk-loading::after {
+            z-index: 2;
+        }
+
+        .ibox-content.sk-loading {
+            height: calc(100% - 50px);
+        }
+
         @media (max-width: 1400px) {
             .client-detail .form-group {
                 display: block;
@@ -184,7 +192,10 @@
     <script>
         var updateMenu = function ( e ) {
                 var list = e.length ? e : $( e.target ),
-                    data = list.nestable( 'serialize' );
+                    data = list.nestable( 'serialize' ),
+                    loading = list.closest( '.ibox-content' );
+
+                loading.addClass( 'sk-loading' );
 
                 $.ajax( {
                     url: "ucases/order",
@@ -198,6 +209,7 @@
                         'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                     },
                     success: function ( response ) {
+                        loading.removeClass( 'sk-loading' );
                     }
                 } );
             },
@@ -368,11 +380,14 @@
         $( document ).on( 'click', '.dd-handle .btn.edit', function () {
             let button = $( this ),
                 form = $( '#edit-post' ),
+                loading = form.closest( '.ibox-content' ),
                 menu = $( '.dd' ),
                 icon = form.find( '.ovic-field-icon' ),
                 item = button.closest( '.dd-item' );
 
             if ( !item.hasClass( 'active' ) ) {
+
+                loading.addClass( 'sk-loading' );
 
                 $.ajax( {
                     url: "ucases/" + item.data( 'id' ) + "/edit",
@@ -418,6 +433,8 @@
                                 showConfirmButton: true,
                             } );
                         }
+
+                        loading.removeClass( 'sk-loading' );
                     },
                 } );
 
@@ -429,7 +446,10 @@
         $( document ).on( 'click', '#edit-post .btn.add-post', function () {
             let button = $( this ),
                 form = button.closest( '#edit-post' ),
+                loading = form.closest( '.ibox-content' ),
                 data = form.serializeObject();
+
+            loading.addClass( 'sk-loading' );
 
             $.ajax( {
                 url: 'ucases',
@@ -469,6 +489,8 @@
                             showConfirmButton: true
                         } );
                     }
+
+                    loading.removeClass( 'sk-loading' );
                 },
             } );
         } );
@@ -476,7 +498,10 @@
         $( document ).on( 'click', '#edit-post .btn.update-post', function () {
             let button = $( this ),
                 form = button.closest( '#edit-post' ),
+                loading = $( '.ibox-content.ibox-list' ),
                 data = form.serializeObject();
+
+            loading.addClass( 'sk-loading' );
 
             $.ajax( {
                 url: "ucases/" + data.id,
@@ -509,6 +534,8 @@
                             showConfirmButton: true
                         } );
                     }
+
+                    loading.removeClass( 'sk-loading' );
                 },
             } );
 
