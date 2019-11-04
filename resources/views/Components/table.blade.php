@@ -191,6 +191,10 @@
 
         var OvicTable = null;
 
+        toastr.options = {
+            "preventDuplicates": true,
+        };
+
         if ( !$.fn.serializeObject ) {
             $.fn.serializeObject = function () {
                 var o = {};
@@ -411,11 +415,7 @@
 
                     if ( response.status === 200 ) {
 
-                        if ( reload ) {
-                            OvicTable.ajax.reload( null, false );
-                        } else if ( $.isPlainObject( response.data ) ) {
-                            OvicTable.row( tr ).data( response.data );
-                        }
+                        OvicTable.row( tr ).data( response.data );
 
                         toastr.info( message );
 

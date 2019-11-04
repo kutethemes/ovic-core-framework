@@ -11,7 +11,7 @@
 
 @extends( ovic_blade( 'Backend.app' ) )
 
-@section( 'title', 'PHÂN QUYỀN CHỨC NĂNG' )
+@section( 'title', 'QUẢN LÝ CHỨC NĂNG' )
 
 @push( 'styles' )
     <!-- Sweet Alert -->

@@ -285,10 +285,10 @@ class UsersController extends Controller
                 $data['password'] = Hash::make($data['password']);
             }
             if ( !empty($data['role_ids']) ) {
-                $data['role_ids'] = json_encode($data['role_ids']);
+                $data['role_ids'] = json_encode($data['role_ids'], JSON_NUMERIC_CHECK);
             }
             if ( !empty($data['donvi_ids']) ) {
-                $data['donvi_ids'] = json_encode($data['donvi_ids']);
+                $data['donvi_ids'] = json_encode($data['donvi_ids'], JSON_NUMERIC_CHECK);
             }
 
             User::where('id', $id)->update($data);

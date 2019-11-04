@@ -37,12 +37,12 @@
     @if( !empty( $menus ) )
         <div class="row">
             @foreach( $menus as $key => $menu )
-                <div class="col-sm-6 {{ $key == 'menu-left' ? 'b-r' : '' }}">
+                <div class="col-sm-6{{ $key == 'menu-left' ? ' b-r' : '' }}">
                     <div id="{{ $key }}" class="dd">
                         <ol class="dd-list">
                             @if( !empty( $menu[0] ) )
                                 @foreach ( $menu[0] as $parent )
-                                    <li class="dd-item" data-id="{{ $parent['id'] }}">
+                                    <li class="dd-item{{ !empty( $menu[$parent['id']] ) ? ' has-children' : '' }}" data-id="{{ $parent['id'] }}">
 
                                         @include( ovic_blade('Backend.ucases.item'), ['data' => $parent] )
 

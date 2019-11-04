@@ -11,7 +11,7 @@
 */
 Route::group(
     [
-        'middleware' => [ 'web', 'auth' ],
+        'middleware' => [ 'web', 'auth', 'permission' ],
     ],
     function () {
         [
@@ -59,6 +59,13 @@ Route::group(
         Route::post('ucases/order', 'Ovic\Framework\UcasesController@order')->name('ucases.order');
         Route::post('ucases/list', 'Ovic\Framework\UcasesController@ucases')->name('ucases.list');
         Route::resource('ucases', 'Ovic\Framework\UcasesController');
+
+        /* Permission Route */
+        Route::resource('permission', 'Ovic\Framework\PermissionController', [
+            'only' => [
+                'update', 'index'
+            ]
+        ]);
 
         /* Post Route */
         Route::resource('post', 'Ovic\Framework\PostsController');

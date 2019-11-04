@@ -114,6 +114,7 @@
                 <div class="col-sm-9">
                     <select name="role_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn nhóm quyền">
+                        <option value="0">Chọn nhóm quyền</option>
                         @foreach ( $roles as $role )
                             <option value="{{ $role['id'] }}">{{ $role['title'] }}</option>
                         @endforeach
@@ -131,6 +132,7 @@
                 <div class="col-sm-9">
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
+                        <option value="0">Chọn phạm vi quản lý</option>
                         @foreach ( $ucases as $ucase )
                             <option value="{{ $ucase['id'] }}">{{ $ucase['title'] }}</option>
                         @endforeach

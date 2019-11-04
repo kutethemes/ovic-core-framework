@@ -13,6 +13,7 @@
         'roles.index',
         'ucases.index',
         'upload.index',
+        'permission.index',
     ];
 @endphp
 <!-- Left Sidebar -->
@@ -58,6 +59,12 @@
                         <a href="{{ url('/ucases') }}">
                             <i class="fa fa-codepen"></i>
                             <span class="nav-label">Quản lý chức năng</span>
+                        </a>
+                    </li>
+                    <li @if ( $name == 'permission.index' ) class="active" @endif>
+                        <a href="{{ url('/permission') }}">
+                            <i class="fa fa-key"></i>
+                            <span class="nav-label">Phân quyền chức năng</span>
                         </a>
                     </li>
                     <li @if ( $name == 'upload.index' ) class="active" @endif>

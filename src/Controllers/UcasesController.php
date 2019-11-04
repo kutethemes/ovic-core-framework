@@ -17,13 +17,13 @@ class UcasesController extends Controller
      */
     public function index()
     {
-        $menu_left = \Ovic\Framework\Ucases::where('position', 'left')
+        $menu_left = Ucases::where('position', 'left')
             ->get()
             ->collect()
             ->sortBy('ordering')
             ->groupBy('parent_id')
             ->toArray();
-        $menu_top  = \Ovic\Framework\Ucases::where('position', 'top')
+        $menu_top  = Ucases::where('position', 'top')
             ->get()
             ->collect()
             ->sortBy('ordering')
