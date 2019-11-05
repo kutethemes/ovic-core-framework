@@ -26,11 +26,9 @@ class DashboardController extends Controller
 
 	public function clear_cache()
 	{
-		Artisan::call( 'optimize' );
 		Artisan::call( 'cache:clear' );
 		Artisan::call( 'route:cache' );
 		Artisan::call( 'route:clear' );
-		Artisan::call( 'view:clear' );
 		Artisan::call( 'config:cache' );
 
 		return '<h1>Clear All cleared</h1>';

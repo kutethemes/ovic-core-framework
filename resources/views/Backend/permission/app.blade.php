@@ -196,21 +196,10 @@
             transform: rotate(45deg);
         }
 
-        .folder-list {
-            padding-left: 0;
-        }
-
-        .folder-list li {
-            padding: 6px 0;
-        }
-
-        .folder-list li.active i {
-            color: #1ab394 !important;
-        }
-
-        .folder-list li.active {
-            border-color: #f79d3c;
-            font-weight: bold;
+        .elements-list li .nav-link {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
         }
     </style>
 @endpush
@@ -312,7 +301,8 @@
 
             form.trigger( 'reset' );
             form.find( '[name="id"]' ).val( id ).trigger( 'change' );
-            button.parent().addClass( 'active' ).siblings().removeClass( 'active' );
+            button.addClass( 'active' );
+            button.closest( '.client-detail' ).find( 'a' ).not( button ).removeClass( 'active' );
 
             $.each( ucase, function ( index, value ) {
                 let item = $( '#menu-' + index ),

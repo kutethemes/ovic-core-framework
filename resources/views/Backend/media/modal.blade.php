@@ -104,11 +104,7 @@
                             var $load = $modal.find( '.content-previews' ).html( response.content );
 
                             /* Tạo thư mục */
-                            $( '#jstree1' ).jstree( {
-                                "core": {
-                                    "data": JSON.parse( response.directories )
-                                },
-                            } );
+                            treeFolder( response.directories );
 
                             $modal.on( 'click', '.btn-primary.selected', function () {
 

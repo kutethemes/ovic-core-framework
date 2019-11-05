@@ -14,36 +14,6 @@ Route::group(
         'middleware' => [ 'web', 'auth', 'permission' ],
     ],
     function () {
-        [
-            'id'        => '',
-            'slug'      => '',
-            'title'     => '',
-            'parent_id' => '',
-            'router'    => [
-                'icon'        => '',
-                'module'      => '', // not custom link
-                'controller'  => '', // not custom link
-                'custom_link' => '',
-                'description' => '',
-            ],
-            'ordering'  => '',
-            'position'  => [
-                'top'    => 'Top',
-                'left'   => 'Left',
-                'right'  => 'Right',
-                'bottom' => 'Bottom',
-            ],
-            'access'    => [
-                '1' => 'Backend',
-                '2' => 'Frontend',
-                '0' => 'Public',
-            ],
-            'status'    => [
-                '1' => 'Active',
-                '2' => 'Inactive',
-                '0' => 'Hidden',
-            ],
-        ];
         /* Dashboard Route */
         Route::get('dashboard', 'Ovic\Framework\DashboardController@index')->name('dashboard');
 

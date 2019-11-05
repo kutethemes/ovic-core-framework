@@ -5,10 +5,16 @@ namespace Ovic\Framework;
 use App\User;
 use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Support\Facades\Config;
 
 class Permission extends Middleware
 {
     public function handle( $request, Closure $next, ...$guards )
+    {
+        return $next($request);
+    }
+
+    public function permission()
     {
         $permission = [];
         $user       = auth()->user();
@@ -35,6 +41,6 @@ class Permission extends Middleware
             }
         }
 
-        return $next($request);
+        return $permission;
     }
 }

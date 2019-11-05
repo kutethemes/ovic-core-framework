@@ -38,7 +38,7 @@ class PermissionController extends Controller
             ->toArray();
 
         $roles = Roles::where('status', '1')
-            ->get([ 'id', 'title', 'ucase_ids' ])
+            ->get([ 'id', 'title', 'ucase_ids', 'created_at', 'description' ])
             ->collect()
             ->sortBy('ordering')
             ->toArray();

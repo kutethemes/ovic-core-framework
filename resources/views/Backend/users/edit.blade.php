@@ -25,7 +25,7 @@
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-                Name
+                Tên hiển thị
             </label>
             <div class="col-sm-9">
                 <div class="input-group">

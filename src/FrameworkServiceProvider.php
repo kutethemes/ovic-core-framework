@@ -2,7 +2,6 @@
 
 namespace Ovic\Framework;
 
-use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,18 +13,6 @@ class FrameworkServiceProvider extends ServiceProvider
      * @var bool
      */
     protected $defer = false;
-
-    /**
-     * Register factories.
-     *
-     * @param  string  $path
-     *
-     * @return void
-     */
-    protected function loadFactoriesFrom( $path )
-    {
-        $this->app->make(EloquentFactory::class)->load($path);
-    }
 
     /**
      * Register all modules.
@@ -40,9 +27,6 @@ class FrameworkServiceProvider extends ServiceProvider
      */
     public function boot( Request $request )
     {
-        /* Load Factories */
-        $this->loadFactoriesFrom(__DIR__.'/../database/factories');
-
         /* Load Migrations */
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 

@@ -6,35 +6,36 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateUcasesTable extends Migration
 {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create( 'ucases',
-			function ( Blueprint $table ) {
-				$table->bigIncrements( 'id' );
-                $table->text( 'name' );
-				$table->integer( 'parent_id' )->unsigned()->default(0);
-				$table->text( 'router' );
-				$table->tinyInteger( 'ordering' )->unsigned()->default(99);
-				$table->string( 'position', 15 )->default('left');
-				$table->tinyInteger( 'access' )->unsigned()->default(1);
-				$table->tinyInteger( 'status' )->unsigned()->default(1);
-				$table->timestamps();
-			}
-		);
-	}
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('ucases',
+            function ( Blueprint $table ) {
+                $table->bigIncrements('id');
+                $table->string('slug', 150)->unique();
+                $table->string('title');
+                $table->integer('parent_id')->default(0);
+                $table->text('router'); // Array: description, icon, module, controller, custom_link
+                $table->tinyInteger('ordering')->default(99);
+                $table->string('position', 15)->default('left');
+                $table->tinyInteger('access')->default(1);
+                $table->tinyInteger('status')->default(1);
+                $table->timestamps();
+            }
+        );
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::dropIfExists( 'ucases' );
-	}
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('ucases');
+    }
 }

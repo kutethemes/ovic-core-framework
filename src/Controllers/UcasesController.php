@@ -10,6 +10,13 @@ use Illuminate\Support\Collection;
 
 class UcasesController extends Controller
 {
+    private $messages = [
+        'slug.required'  => 'Tên router là trường bắt buộc tối đa 255 kí tự',
+        'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 255 kí tự',
+        'access.max'     => 'Quyền truy cập chấp nhận 3 ký tự số 0, 1 và 2',
+        'status.max'     => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -144,13 +151,14 @@ class UcasesController extends Controller
      */
     public function store( Request $request )
     {
-        $validator = Validator::make($request->all(), [
+        $rules     = [
             'slug'     => [ 'required', 'string', 'max:255', 'unique:ucases' ],
             'title'    => [ 'required', 'string', 'max:255' ],
-            'access'   => [ 'numeric', 'min:0', 'max:3' ],
-            'status'   => [ 'numeric', 'min:0', 'max:3' ],
+            'access'   => [ 'numeric', 'min:0', 'max:2' ],
+            'status'   => [ 'numeric', 'min:0', 'max:2' ],
             'router.*' => [ 'string', 'nullable' ],
-        ]);
+        ];
+        $validator = Validator::make($request->all(), $rules, $this->messages);
 
         if ( $validator->passes() ) {
             $data           = $request->toArray();
@@ -291,7 +299,7 @@ class UcasesController extends Controller
         if ( $request->has('title') ) {
             $rules['title'] = [ 'required', 'string', 'max:255' ];
         }
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, $this->messages);
         $data      = $request->except([ '_token', 'id' ]);
 
         if ( $validator->passes() ) {

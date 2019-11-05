@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
+    private $messages = [
+        'name.required'     => 'Tên hiển thị là trường bắt buộc',
+        'email.required'    => 'Email là trường bắt buộc',
+        'email.email'       => 'Email không đúng định dạng',
+        'password.required' => 'Mật khẩu là trường bắt buộc',
+        'password.min'      => 'Mật khẩu phải chứa ít nhất 8 ký tự',
+        'status.max'        => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
+    ];
+
     /**
      * Create a new controller instance.
      *
@@ -148,7 +157,7 @@ class UsersController extends Controller
         $donvi      = "Bảng đơn vị không tồn tại";
 
         if ( !empty($user['avatar']) && $user['avatar'] > 0 ) {
-            $path       = Post::where('id', '=', $user['avatar'])->value('name');
+            $path       = Posts::where('id', '=', $user['avatar'])->value('name');
             $avatar_url = route('get_file', explode('/', $path));
         } else {
             $user['avatar'] = 0;
@@ -175,7 +184,7 @@ class UsersController extends Controller
     public function store( Request $request )
     {
         $dataTable = [];
-        $validator = Validator::make($request->all(), [
+        $rules     = [
             'name'        => [ 'required', 'string', 'max:255' ],
             'email'       => [ 'required', 'string', 'email', 'max:255', 'unique:users' ],
             'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
@@ -183,7 +192,8 @@ class UsersController extends Controller
             'status'      => [ 'numeric', 'min:0', 'max:2' ],
             'donvi_ids.*' => [ 'string', 'integer' ],
             'role_ids.*'  => [ 'string', 'integer' ],
-        ]);
+        ];
+        $validator = Validator::make($request->all(), $rules, $this->messages);
 
         if ( $validator->passes() ) {
             $data = $request->toArray();
@@ -277,7 +287,7 @@ class UsersController extends Controller
         if ( $request->has('email') ) {
             $rules['email'] = [ 'required', 'string', 'email', 'max:255', 'unique:users,email,'.$id ];
         }
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, $this->messages);
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
         if ( $validator->passes() ) {

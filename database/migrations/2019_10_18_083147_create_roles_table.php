@@ -16,12 +16,12 @@ class CreateRolesTable extends Migration
         Schema::create('roles',
             function ( Blueprint $table ) {
                 $table->bigIncrements('id');
-                $table->string('name', 150);
-                $table->string('title', 150);
+                $table->string('name', 150)->unique();
+                $table->string('title');
                 $table->text('description');
-                $table->integer('ucase_ids')->nullable();
-                $table->integer('ordering')->unsigned()->default(99);
-                $table->tinyInteger('status')->unsigned()->nullable();
+                $table->integer('ucase_ids')->default(0);
+                $table->integer('ordering')->default(99);
+                $table->tinyInteger('status')->default(1);
                 $table->timestamps();
             }
         );

@@ -15,7 +15,7 @@ class Users extends User
 	protected $table   = 'users';
 	protected $appends = [ 'donvi' ];
 
-	public static function hasTable()
+    public static function hasTable()
 	{
 		if ( Schema::hasTable( 'users' ) ) {
 			return true;

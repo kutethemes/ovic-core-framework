@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
 {
+    private $messages = [
+        'name.required'  => 'Tên là trường bắt buộc tối đa 150 kí tự',
+        'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 150 kí tự',
+        'description'    => 'Mô tả chỉ nhận định dạng chuỗi',
+        'ordering.min'   => 'Order nhận giá trị số lớn hơn 0',
+        'status.max'     => 'Trạng thái chấp nhận 2 ký tự số 0 và 1',
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -126,15 +134,14 @@ class RolesController extends Controller
      */
     public function store( Request $request )
     {
-        $validator = Validator::make($request->all(),
-            [
-                'name'        => [ 'required', 'string', 'max:150' ],
-                'title'       => [ 'required', 'string', 'max:150' ],
-                'description' => [ 'string' ],
-                'ordering'    => [ 'numeric', 'min:0' ],
-                'status'      => [ 'numeric', 'min:0', 'max:1' ],
-            ]
-        );
+        $rules     = [
+            'name'        => [ 'required', 'string', 'max:150' ],
+            'title'       => [ 'required', 'string', 'max:150' ],
+            'description' => [ 'string' ],
+            'ordering'    => [ 'numeric', 'min:0' ],
+            'status'      => [ 'numeric', 'min:0', 'max:1' ],
+        ];
+        $validator = Validator::make($request->all(), $rules, $this->messages);
 
         if ( $validator->passes() ) {
             $data = $request->toArray();
@@ -212,7 +219,7 @@ class RolesController extends Controller
             $rules['title'] = [ 'required', 'string', 'max:150' ];
         }
 
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, $this->messages);
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
         if ( $validator->passes() ) {

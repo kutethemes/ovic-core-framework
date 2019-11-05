@@ -57,7 +57,7 @@ class PostsController extends Controller
 
 		$request = $request->toArray();
 
-		$created = Post::add_post( $request );
+		$created = Posts::add_post( $request );
 
 		return response()->json( $created, $created['code'] );
 	}
@@ -98,7 +98,7 @@ class PostsController extends Controller
 	{
 		$request = $request->toArray();
 
-		$updated = Post::update_post( $request, $id );
+		$updated = Posts::update_post( $request, $id );
 
 		return response()->json( $updated, $updated['code'] );
 	}
@@ -112,7 +112,7 @@ class PostsController extends Controller
 	 */
 	public function destroy( $id )
 	{
-		$removed = Post::remove_post( $id );
+		$removed = Posts::remove_post( $id );
 
 		return response()->json( $removed, $removed['code'] );
 	}

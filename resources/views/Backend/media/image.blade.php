@@ -12,7 +12,6 @@
 @endphp
 
 @php
-    $check      = ( isset( $multi ) ) ? $multi : true;
     $url        = route( 'get_file', explode( '/', $attachment['name'] ) );
     $mimetype   = $attachment['meta']['_attachment_metadata']['mimetype'];
     $extension  = $attachment['meta']['_attachment_metadata']['extension'];
@@ -20,11 +19,9 @@
 
 <div class="file-box image-{{ $attachment['id'] }}" data-id="{{ $attachment['id'] }}">
     <div class="file">
-        @if( $check == false )
-            <a href="#" class="btn-del-file" title="Xóa file">
-                <i class="fa fa-trash-o" aria-hidden="true"></i>
-            </a>
-        @endif
+        <a href="#" class="btn-del-file" title="Xóa file">
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
+        </a>
         <label class="btn btn-info btn-circle">
             <i class="fa fa-check"></i>
         </label>

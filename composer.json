@@ -22,7 +22,6 @@
         },
         "classmap": [
             "database/migrations",
-            "database/factories",
             "src/Models"
         ],
         "files": [

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class UploadFileController extends Controller
 {
@@ -27,9 +29,62 @@ class UploadFileController extends Controller
         $this->init();
     }
 
+    public function get_attachments( $args )
+    {
+        $limit  = 18;
+        $offset = 0;
+        if ( isset($args['limit']) ) {
+            $limit = $args['limit'];
+            unset($args['limit']);
+        }
+        if ( isset($args['offset']) ) {
+            $offset = $args['offset'];
+            unset($args['offset']);
+        }
+        $posts = Posts::where($args)
+            ->latest()
+            ->offset($offset)
+            ->limit($limit)
+            ->get()->toArray();
+
+        return $posts;
+    }
+
+    public function add_attachments( $request )
+    {
+        $name = !empty($request['name']) ? $request['name'] : Str::slug($request['title']);
+
+        $post = new Posts();
+
+        $post->name      = $name;
+        $post->title     = $request['title'];
+        $post->post_type = $request['post_type'];
+        $post->content   = !empty($request['content']) ? $request['content'] : '';
+        $post->user_id   = !empty($request['user_id']) ? $request['user_id'] : 0;
+        $post->owner_id  = !empty($request['owner_id']) ? $request['owner_id'] : 0;
+        $post->status    = !empty($request['status']) ? $request['status'] : 'publish';
+
+        $post->save();
+
+        $post_id = $post->getAttributeValue('id');
+
+        if ( !empty($request['meta']) ) {
+            foreach ( $request['meta'] as $meta_key => $meta_value ) {
+                $meta             = new Postmeta();
+                $meta->post_id    = $post_id;
+                $meta->meta_key   = maybe_serialize($meta_key);
+                $meta->meta_value = maybe_serialize($meta_value);
+
+                $meta->save();
+            }
+        }
+
+        return $post_id;
+    }
+
     public function init()
     {
-        $this->attachments = \Ovic\Framework\Post::get_posts(
+        $this->attachments = $this->get_attachments(
             [
                 [ 'post_type', '=', 'attachment' ],
                 [ 'status', '=', 'publish' ],
@@ -119,9 +174,10 @@ class UploadFileController extends Controller
         $dir     = '';
         if ( !empty($this->attachments) ) {
             foreach ( $this->attachments as $attachment ) {
-                $content .= view(ovic_blade('Backend.media.image'), compact('attachment'))->toHtml();
+                $content .= view(ovic_blade('Backend.media.image'), compact([ 'attachment' ]))->toHtml();
             }
         }
+        $this->init();
         return response()->json([
             'content'     => $content,
             'directories' => json_encode($this->directories)
@@ -153,7 +209,7 @@ class UploadFileController extends Controller
                 $args[] = [ "name", "like", "%{$request['_form']['dir']}%" ];
             }
 
-            $attachments = \Ovic\Framework\Post::get_posts($args);
+            $attachments = $this->get_attachments($args);
 
             foreach ( $attachments as $key => $attachment ) {
                 $mimetype  = $attachment['meta']['_attachment_metadata']['mimetype'];
@@ -257,7 +313,7 @@ class UploadFileController extends Controller
             $FileName
         );
 
-        $created = \Ovic\Framework\Post::add_post(
+        $post_id = $this->add_attachments(
             [
                 'title'     => $FileName,
                 'name'      => "{$now->year}/{$now->month}/{$FileName}",
@@ -275,28 +331,29 @@ class UploadFileController extends Controller
             ]
         );
 
-        if ( $created['code'] == 400 ) {
-            Storage::delete($FilePath);
+        if ( $post_id > 0 ) {
+
+            $this->init();
 
             return response()->json(
                 [
-                    'status'  => 'error',
-                    'message' => 'The File can not save.',
-                    'html'    => '',
-                ], 400
+                    'status'      => 'success',
+                    'message'     => 'Lưu file thành công.',
+                    'html'        => $this->show($post_id)->toHtml(),
+                    'directories' => json_encode($this->directories)
+                ]
+            );
+        } else {
+
+            return response()->json(
+                [
+                    'status'      => 'error',
+                    'message'     => 'Lỗi không lưu được file.',
+                    'html'        => '',
+                    'directories' => []
+                ]
             );
         }
-
-        $this->init();
-
-        return response()->json(
-            [
-                'status'      => 'success',
-                'message'     => 'Image saved Successfully',
-                'html'        => $this->show($created['post_id'])->toHtml(),
-                'directories' => json_encode($this->directories)
-            ]
-        );
     }
 
     /**
@@ -308,7 +365,7 @@ class UploadFileController extends Controller
      */
     public function show( $id )
     {
-        $attachment = Post::get_posts(
+        $attachment = $this->get_attachments(
             [
                 [ 'id', '=', $id ],
                 [ 'post_type', '=', 'attachment' ],
@@ -355,20 +412,32 @@ class UploadFileController extends Controller
      */
     public function remove( Request $request )
     {
-        $ids = $request->input('ids');
-        $ids = ( strpos($ids, ',') === false ) ? (array) $ids : explode(',', $ids);
+        $deleted = [];
+        $ids     = $request->input('ids');
+        $ids     = ( strpos($ids, ',') === false ) ? (array) $ids : explode(',', $ids);
 
         foreach ( $ids as $id ) {
-            $this->destroy($id);
+            $del_id = $this->destroy($request, $id, false);
+            if ( $del_id != 0 ) {
+                $deleted[] = $del_id;
+            }
         }
 
-        $this->init();
-
-        return response()->json([
-            'ids'         => $ids,
-            'message'     => 'Xóa thành công.',
-            'directories' => json_encode($this->directories)
-        ]);
+        if ( !empty($deleted) ) {
+            $this->init();
+            $response = [
+                'status'      => 200,
+                'ids'         => $deleted,
+                'message'     => 'Xóa file thành công.',
+                'directories' => json_encode($this->directories)
+            ];
+        } else {
+            $response = [
+                'status'  => 400,
+                'message' => 'Xóa file không thành công.',
+            ];
+        }
+        return response()->json($response);
     }
 
     /**
@@ -378,17 +447,44 @@ class UploadFileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $id )
+    public function destroy( Request $request, $id, $response = true )
     {
-        $path = Post::where('id', $id)->value('name');
-        $path = str_replace('//', '/', "{$this->folder}{$path}");
+        $rules    = [
+            'id' => [ 'exists:posts,id,'.$id ],
+        ];
+        $messages = [
+            'id' => 'File không tồn tại'
+        ];
 
-        Storage::delete($path);
-        $this->init();
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-        $removed                = Post::remove_post($id);
-        $removed['directories'] = json_encode($this->directories);
+        if ( $validator->passes() ) {
+            $path = Posts::where('id', $id)->value('name');
+            $path = str_replace('//', '/', "{$this->folder}{$path}");
 
-        return response()->json($removed, $removed['code']);
+            Storage::delete($path);
+
+            Postmeta::where('post_id', $id)->delete();
+            Posts::destroy($id);
+
+            if ( $response ) {
+                $this->init();
+                return response()->json([
+                    'status'      => 200,
+                    'message'     => 'Xóa file thành công.',
+                    'directories' => json_encode($this->directories),
+                ]);
+            } else {
+                return $id;
+            }
+        }
+        if ( $response ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => $validator->errors()->all(),
+            ]);
+        } else {
+            return 0;
+        }
     }
 }

@@ -21,8 +21,23 @@
     <link href="{{ asset('css/plugins/dropzone/dropzone.min.css') }}" rel="stylesheet">
     <!-- jsTree -->
     <link href="{{ asset('css/plugins/jsTree/style.min.css') }}" rel="stylesheet">
+    <!-- Awesome Bootstrap Checkbox -->
+    <link href="{{ asset('css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
 
     <style>
+        .checkbox.checkbox-danger {
+            padding-left: 0;
+            float: left;
+        }
+
+        .checkbox label::after {
+            top: 1px;
+        }
+
+        .checkbox label::before {
+            top: 2px;
+        }
+
         .file .image {
             text-align: center;
         }
@@ -36,6 +51,7 @@
             left: 0;
             display: none;
             color: red;
+            z-index: 2;
         }
 
         .file-box:hover .btn-del-file {
@@ -94,6 +110,7 @@
             height: 25px;
             padding: 3px 0;
             display: none;
+            z-index: 1;
         }
 
         .file-box.active .btn-circle {
@@ -108,14 +125,6 @@
             right: 0;
             bottom: 0;
             background-color: rgba(255, 255, 255, 0.6);
-        }
-
-        .file-box:hover::before {
-            content: "";
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            z-index: 2;
         }
 
         .file-box {
@@ -233,14 +242,32 @@
                             'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                         },
                         success: function ( response ) {
-                            parent.remove();
-                            swal( {
-                                type: response.status,
-                                title: "Deleted!",
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 1200
-                            } );
+                            if ( response.status === 200 ) {
+                                /* Tạo thư mục */
+                                treeFolder( response.directories, true );
+
+                                parent.remove();
+
+                                swal( {
+                                    type: 'success',
+                                    title: 'Deleted!',
+                                    text: response.message,
+                                    showConfirmButton: true
+                                } );
+                            } else {
+                                let html = '';
+                                $.each( response.message, function ( index, value ) {
+                                    html += "<p class='text-danger'>" + value + "</p>";
+                                } );
+
+                                swal( {
+                                    html: true,
+                                    type: 'error',
+                                    title: 'Error!',
+                                    text: html,
+                                    showConfirmButton: true
+                                } );
+                            }
                         },
                     } );
                 }
@@ -285,21 +312,29 @@
                             ids: ids
                         },
                         success: function ( response ) {
-                            /* Tạo thư mục */
-                            treeFolder( response.directories, true );
+                            if ( response.status === 200 ) {
+                                /* Tạo thư mục */
+                                treeFolder( response.directories, true );
 
-                            $.each( response.ids, function ( index, value ) {
-                                content.find( '.image-' + value ).remove();
-                            } );
-                            swal( {
-                                type: "success",
-                                title: "Deleted!",
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 1200
-                            } );
-                            input.val( 0 );
-                            button.css( 'display', 'none' );
+                                $.each( response.ids, function ( index, value ) {
+                                    content.find( '.image-' + value ).remove();
+                                } );
+                                swal( {
+                                    type: 'success',
+                                    title: 'Deleted!',
+                                    text: response.message,
+                                    showConfirmButton: true
+                                } );
+                                input.val( 0 );
+                                button.css( 'display', 'none' );
+                            } else {
+                                swal( {
+                                    type: 'error',
+                                    title: 'Error!',
+                                    text: response.message,
+                                    showConfirmButton: true
+                                } );
+                            }
                         },
                     } );
                 }
@@ -395,7 +430,16 @@
             $( '#dropzone-previews' ).toggleClass( 'list-style' );
         } );
         /* Chọn ảnh */
-        $( document ).on( 'click', '#dropzone-previews .file-box', function () {
+        $( document ).on( 'click', '.checkbox.checkbox-danger input', function () {
+            if ( $( this ).is( ':checked' ) ) {
+                $( '#dropzone-previews' ).addClass( 'select-image' );
+            } else {
+                $( '#dropzone-previews' ).removeClass( 'select-image' );
+                $( '#dropzone-previews' ).find( '.file-box.active' ).removeClass( 'active' );
+                $( '#dropzone-previews' ).find( 'input[name="images"]' ).val( '' ).trigger( 'selected_images' );
+            }
+        } );
+        $( document ).on( 'click', '#dropzone-previews.select-image .file-box', function () {
             let file = $( this ),
                 ids = [],
                 id = file.data( 'id' ),
@@ -439,6 +483,14 @@
 <div class="col-lg-3 full-height">
     <div class="ibox full-height-scroll">
         <div class="ibox-content">
+            @if( $check == true )
+                <div class="checkbox checkbox-danger">
+                    <input id="checkbox6" type="checkbox">
+                    <label for="checkbox6">
+                        Chọn nhiều ảnh
+                    </label>
+                </div>
+            @endif
             <div class="switch">
                 <div class="onoffswitch">
                     <input type="checkbox" checked="" class="onoffswitch-checkbox" id="example1">
@@ -493,7 +545,7 @@
 </div>
 <div class="col-lg-9 animated fadeInRight full-height">
     <div class="row normal-scroll-content">
-        <form id="dropzone-previews" class="col-lg-12 @if ( $check == true ) multi @endif">
+        <form id="dropzone-previews" class="col-lg-12 @if ( $check == true ) multi @else select-image @endif">
             <input type="hidden" name="images" value="">
             <div class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
