@@ -20,10 +20,10 @@ class IconController extends Controller
     {
         $html       = '';
         $icon_lists = $this->default_icons();
-        if (!empty($icon_lists)) {
-            foreach ($icon_lists as $list) {
-                $html .= (count($icon_lists) >= 2) ? '<div class="ovic-icon-title">'.$list['title'].'</div>' : '';
-                foreach ($list['icons'] as $icon) {
+        if ( !empty($icon_lists) ) {
+            foreach ( $icon_lists as $list ) {
+                $html .= ( count($icon_lists) >= 2 ) ? '<div class="ovic-icon-title">'.$list['title'].'</div>' : '';
+                foreach ( $list['icons'] as $icon ) {
                     $html .= '<a class="ovic-icon-tooltip" data-ovic-icon="'.$icon.'" title="'.$icon.'"><span class="ovic-icon ovic-selector"><i class="'.$icon.'"></i></span></a>';
                 }
             }
@@ -31,7 +31,7 @@ class IconController extends Controller
             $html .= '<div class="ovic-text-error">No data provided by developer</div>';
         }
 
-        return response()->json(['content' => $html]);
+        return response()->json([ 'content' => $html ]);
     }
 
     public function default_icons()

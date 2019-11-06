@@ -49,7 +49,7 @@
             </label>
             <div class="col-sm-9">
                 <input type="email" name="email" class="form-control"
-                       placeholder="Enter email"
+                       placeholder="Enter email" maxlength="100"
                        required="" aria-required="true">
             </div>
         </div>

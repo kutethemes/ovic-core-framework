@@ -66,7 +66,7 @@
                 <div class="col-sm-9">
                     <div class="input-group">
                         <input type="text" name="slug" class="form-control" placeholder="Tên router"
-                               required="" aria-required="true">
+                               required="" aria-required="true" maxlength="100">
                         <span class="input-group-append">
                         <select name="status" class="btn btn-white dropdown-toggle">
                             <option value="1">Kích hoạt</option>
@@ -86,7 +86,7 @@
                 <div class="col-sm-9">
                     <div class="input-group">
                         <input type="text" name="title" class="form-control" placeholder="Tên hiển thị"
-                               required="" aria-required="true" maxlength="150">
+                               required="" aria-required="true" maxlength="100">
                     </div>
                 </div>
             </div>
@@ -144,7 +144,7 @@
                 <div class="col-sm-9">
                     <div class="input-group">
                         <input type="text" name="router[module]" class="form-control" placeholder="Module Name"
-                               required="" aria-required="true" maxlength="100">
+                               required="" aria-required="true">
                     </div>
                 </div>
             </div>
@@ -157,7 +157,7 @@
                 <div class="col-sm-9">
                     <div class="input-group">
                         <input type="text" name="router[controller]" class="form-control" placeholder="Controller"
-                               required="" aria-required="true" maxlength="150">
+                               required="" aria-required="true">
                     </div>
                 </div>
             </div>
@@ -170,7 +170,7 @@
                 <div class="col-sm-9">
                     <div class="input-group">
                         <input type="text" name="router[custom_link]" class="form-control" placeholder="Custom Link"
-                               required="" aria-required="true" maxlength="150">
+                               required="" aria-required="true">
                     </div>
                 </div>
             </div>

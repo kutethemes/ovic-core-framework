@@ -206,6 +206,15 @@
     </script>
 @endpush
 
+<?php
+$user = Auth::user();
+if ($user->can('create', Post::class)){
+    echo "<pre>";
+    print_r('ok');
+    echo "</pre>";
+}
+?>
+
 @section( 'content-table' )
 
     <div class="col-sm-8 full-height">

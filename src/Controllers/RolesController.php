@@ -2,15 +2,23 @@
 
 namespace Ovic\Framework;
 
+use Ovic\Framework\Roles;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
 {
+    private $rules    = [
+        'name'        => [ 'required', 'string', 'max:100', 'unique:roles,name' ],
+        'title'       => [ 'required', 'string', 'max:100' ],
+        'description' => [ 'string' ],
+        'ordering'    => [ 'numeric', 'min:0' ],
+        'status'      => [ 'numeric', 'min:0', 'max:1' ],
+    ];
     private $messages = [
-        'name.required'  => 'Tên là trường bắt buộc tối đa 150 kí tự',
-        'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 150 kí tự',
+        'name.required'  => 'Tên là trường bắt buộc tối đa 100 kí tự',
+        'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
         'description'    => 'Mô tả chỉ nhận định dạng chuỗi',
         'ordering.min'   => 'Order nhận giá trị số lớn hơn 0',
         'status.max'     => 'Trạng thái chấp nhận 2 ký tự số 0 và 1',
@@ -23,6 +31,9 @@ class RolesController extends Controller
      */
     public function index()
     {
+        // Người dùng hiện tại
+        $user = auth()->user();
+
         return view(ovic_blade('Backend.roles.app'));
     }
 
@@ -134,14 +145,7 @@ class RolesController extends Controller
      */
     public function store( Request $request )
     {
-        $rules     = [
-            'name'        => [ 'required', 'string', 'max:150' ],
-            'title'       => [ 'required', 'string', 'max:150' ],
-            'description' => [ 'string' ],
-            'ordering'    => [ 'numeric', 'min:0' ],
-            'status'      => [ 'numeric', 'min:0', 'max:1' ],
-        ];
-        $validator = Validator::make($request->all(), $rules, $this->messages);
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
 
         if ( $validator->passes() ) {
             $data = $request->toArray();
@@ -207,19 +211,15 @@ class RolesController extends Controller
     public function update( Request $request, $id )
     {
         $dataTable = [];
-        $rules     = [
-            'description' => [ 'string' ],
-            'ordering'    => [ 'numeric', 'min:0' ],
-            'status'      => [ 'numeric', 'min:0', 'max:1' ],
-        ];
-        if ( $request->has('name') ) {
-            $rules['name'] = [ 'required', 'string', 'max:150', 'unique:roles,name,'.$id ];
+
+        if ( !$request->has('name') ) {
+            unset($this->rules['name']);
         }
-        if ( $request->has('title') ) {
-            $rules['title'] = [ 'required', 'string', 'max:150' ];
+        if ( !$request->has('title') ) {
+            unset($this->rules['title']);
         }
 
-        $validator = Validator::make($request->all(), $rules, $this->messages);
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
         if ( $validator->passes() ) {

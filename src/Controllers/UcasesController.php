@@ -10,9 +10,18 @@ use Illuminate\Support\Collection;
 
 class UcasesController extends Controller
 {
+    private $rules    = [
+        'slug'      => [ 'required', 'string', 'max:100', 'unique:ucases,slug' ],
+        'title'     => [ 'required', 'string', 'max:100' ],
+        'ordering'  => [ 'numeric', 'min:0' ],
+        'parent_id' => [ 'numeric', 'min:0' ],
+        'access'    => [ 'numeric', 'min:0', 'max:2' ],
+        'status'    => [ 'numeric', 'min:0', 'max:2' ],
+        'router.*'  => [ 'string', 'nullable' ],
+    ];
     private $messages = [
-        'slug.required'  => 'Tên router là trường bắt buộc tối đa 255 kí tự',
-        'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 255 kí tự',
+        'slug.required'  => 'Tên router là trường bắt buộc tối đa 100 kí tự',
+        'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
         'access.max'     => 'Quyền truy cập chấp nhận 3 ký tự số 0, 1 và 2',
         'status.max'     => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
     ];
@@ -151,14 +160,7 @@ class UcasesController extends Controller
      */
     public function store( Request $request )
     {
-        $rules     = [
-            'slug'     => [ 'required', 'string', 'max:255', 'unique:ucases' ],
-            'title'    => [ 'required', 'string', 'max:255' ],
-            'access'   => [ 'numeric', 'min:0', 'max:2' ],
-            'status'   => [ 'numeric', 'min:0', 'max:2' ],
-            'router.*' => [ 'string', 'nullable' ],
-        ];
-        $validator = Validator::make($request->all(), $rules, $this->messages);
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
 
         if ( $validator->passes() ) {
             $data           = $request->toArray();
@@ -286,20 +288,13 @@ class UcasesController extends Controller
      */
     public function update( Request $request, $id )
     {
-        $rules = [
-            'ordering'  => [ 'numeric', 'min:0' ],
-            'parent_id' => [ 'numeric', 'min:0' ],
-            'access'    => [ 'numeric', 'min:0', 'max:3' ],
-            'status'    => [ 'numeric', 'min:0', 'max:3' ],
-            'router.*'  => [ 'string', 'nullable' ],
-        ];
-        if ( $request->has('name') ) {
-            $rules['slug'] = [ 'required', 'string', 'max:255', 'unique:ucases,slug,'.$id ];
+        if ( !$request->has('name') ) {
+            unset($this->rules['slug']);
         }
-        if ( $request->has('title') ) {
-            $rules['title'] = [ 'required', 'string', 'max:255' ];
+        if ( !$request->has('title') ) {
+            unset($this->rules['title']);
         }
-        $validator = Validator::make($request->all(), $rules, $this->messages);
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $data      = $request->except([ '_token', 'id' ]);
 
         if ( $validator->passes() ) {

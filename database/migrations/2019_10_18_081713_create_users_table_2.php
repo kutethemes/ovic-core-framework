@@ -27,13 +27,13 @@ class CreateUsersTable2 extends Migration
             Schema::create('users',
                 function ( Blueprint $table ) {
                     $table->bigIncrements('id');
-                    $table->string('name');
+                    $table->string('name', 100);
                     $table->integer('avatar')->after('name')->default(0);
                     $table->text('role_ids')->after('avatar')->nullable();
                     $table->text('donvi_ids')->after('role_ids')->nullable();
                     $table->integer('donvi_id')->after('donvi_ids')->default(0);
                     $table->tinyInteger('status')->after('donvi_id')->default(1);
-                    $table->string('email')->unique();
+                    $table->string('email', 100)->unique();
                     $table->timestamp('email_verified_at')->nullable();
                     $table->string('password');
                     $table->rememberToken();

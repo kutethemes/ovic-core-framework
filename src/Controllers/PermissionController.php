@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Validator;
 class PermissionController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('permission');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -108,7 +118,7 @@ class PermissionController extends Controller
     public function update( Request $request, $id )
     {
         $validator = Validator::make($request->all(), [
-            'id' => [ 'required', 'numeric', 'unique:roles,id,'.$id ],
+            'id' => [ 'required', 'numeric', 'unique:roles,id' ],
         ]);
         $data      = $request->except([ '_token', 'id' ]);
 

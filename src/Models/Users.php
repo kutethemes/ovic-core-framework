@@ -7,33 +7,27 @@ use Illuminate\Support\Facades\Schema;
 
 class Users extends User
 {
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table   = 'users';
-	protected $appends = [ 'donvi' ];
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'users';
 
     public static function hasTable()
-	{
-		if ( Schema::hasTable( 'users' ) ) {
-			return true;
-		}
+    {
+        if ( Schema::hasTable('users') ) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Get the user that owns the phone.
-	 */
-	public function donvi()
-	{
-		return $this->hasMany( Donvi::class, 'user_id' );
-	}
-
-	public function getDonviAttribute()
-	{
-		return $this->donvi()->get()->toArray();
-	}
+    /**
+     * Get the user that owns the phone.
+     */
+    public function hasRole( $role )
+    {
+        return User::where('role_ids', $role)->get();
+    }
 }

@@ -11,12 +11,11 @@ use Illuminate\Support\Str;
 
 class UploadFileController extends Controller
 {
-    private $folder = 'uploads/';
-
-    public $limit       = 18;
-    public $offset      = 0;
-    public $attachments = [];
-    public $directories = [];
+    private $folder      = 'uploads/';
+    private $limit       = 18;
+    private $offset      = 0;
+    private $attachments = [];
+    private $directories = [];
 
     /**
      * Create a new controller instance.

@@ -10,9 +10,18 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
+    private $rules    = [
+        'name'        => [ 'required', 'string', 'max:100' ],
+        'email'       => [ 'required', 'string', 'email', 'max:100', 'unique:users,email' ],
+        'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
+        'donvi_id'    => [ 'numeric' ],
+        'status'      => [ 'numeric', 'min:0', 'max:2' ],
+        'donvi_ids.*' => [ 'string', 'integer' ],
+        'role_ids.*'  => [ 'string', 'integer' ],
+    ];
     private $messages = [
-        'name.required'     => 'Tên hiển thị là trường bắt buộc',
-        'email.required'    => 'Email là trường bắt buộc',
+        'name.required'     => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
+        'email.required'    => 'Email là trường bắt buộc tối đa 100 kí tự',
         'email.email'       => 'Email không đúng định dạng',
         'password.required' => 'Mật khẩu là trường bắt buộc',
         'password.min'      => 'Mật khẩu phải chứa ít nhất 8 ký tự',
@@ -184,16 +193,7 @@ class UsersController extends Controller
     public function store( Request $request )
     {
         $dataTable = [];
-        $rules     = [
-            'name'        => [ 'required', 'string', 'max:255' ],
-            'email'       => [ 'required', 'string', 'email', 'max:255', 'unique:users' ],
-            'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
-            'donvi_id'    => [ 'numeric' ],
-            'status'      => [ 'numeric', 'min:0', 'max:2' ],
-            'donvi_ids.*' => [ 'string', 'integer' ],
-            'role_ids.*'  => [ 'string', 'integer' ],
-        ];
-        $validator = Validator::make($request->all(), $rules, $this->messages);
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
 
         if ( $validator->passes() ) {
             $data = $request->toArray();
@@ -272,22 +272,16 @@ class UsersController extends Controller
     public function update( Request $request, $id )
     {
         $dataTable = [];
-        $rules     = [
-            'donvi_id'    => [ 'numeric' ],
-            'status'      => [ 'numeric', 'min:0', 'max:2' ],
-            'donvi_ids.*' => [ 'string', 'integer' ],
-            'role_ids.*'  => [ 'string', 'integer' ],
-        ];
-        if ( $request->has('password') ) {
-            $rules['password'] = [ 'required', 'string', 'min:8' ];
+        if ( !$request->has('password') ) {
+            unset($this->rules['password']);
         }
         if ( $request->has('name') ) {
-            $rules['name'] = [ 'required', 'string', 'max:255' ];
+            unset($this->rules['name']);
         }
         if ( $request->has('email') ) {
-            $rules['email'] = [ 'required', 'string', 'email', 'max:255', 'unique:users,email,'.$id ];
+            unset($this->rules['email']);
         }
-        $validator = Validator::make($request->all(), $rules, $this->messages);
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
         if ( $validator->passes() ) {

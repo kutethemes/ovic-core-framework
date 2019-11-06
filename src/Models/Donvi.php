@@ -22,12 +22,4 @@ class Donvi extends Eloquent
 
         return false;
     }
-
-    /**
-     * Get the post that owns the comment.
-     */
-    public function users()
-    {
-        return $this->belongsTo(Users::class);
-    }
 }

@@ -31,7 +31,7 @@
                     <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="name" class="form-control" placeholder="Tên riêng"
-                                   required="" aria-required="true" maxlength="150">
+                                   required="" aria-required="true" maxlength="100">
                             <span class="input-group-append">
                             <select name="status" class="btn btn-white dropdown-toggle">
                                 <option value="1">Kích hoạt</option>
@@ -50,7 +50,7 @@
                     <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="title" class="form-control" placeholder="Tên hiển thị"
-                                   required="" aria-required="true" maxlength="150">
+                                   required="" aria-required="true" maxlength="100">
                         </div>
                     </div>
                 </div>
