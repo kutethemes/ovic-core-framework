@@ -14,20 +14,12 @@ class Users extends User
      */
     protected $table = 'users';
 
-    public static function hasTable()
+    public function scopehasTable( $query )
     {
-        if ( Schema::hasTable('users') ) {
+        if ( Schema::hasTable($this->table) ) {
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * Get the user that owns the phone.
-     */
-    public function hasRole( $role )
-    {
-        return User::where('role_ids', $role)->get();
     }
 }

@@ -20,6 +20,7 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
         <ul class="nav metismenu" id="side-menu">
+
             <li class="nav-header">
                 <h1 class="profile-element font-bold m-0">
                     <a href="{{ url('/') }}">
@@ -30,12 +31,51 @@
                     {{ config('app.name','Ovic') }}
                 </div>
             </li>
+
             <li @if ( $name == 'dashboard' ) class="active" @endif>
                 <a href="{{ url('/dashboard') }}">
                     <i class="fa fa-tachometer"></i>
                     <span class="nav-label">Dashboard</span>
                 </a>
             </li>
+
+            @if( !empty( $primary_menu['left'][0] ) )
+                @foreach( $primary_menu['left'][0] as $key => $parent )
+                    <li>
+                        @php
+                            $router = json_decode($parent['router'], true);
+                        @endphp
+
+                        <a href="{{ url("/{$parent['slug']}") }}">
+                            <i class="{{ $router['icon'] }}"></i>
+                            <span class="nav-label">{{ $parent['title'] }}</span>
+                            @if( !empty( $primary_menu['left'][$parent['id']] ) )
+                                <span class="fa arrow"></span>
+                            @endif
+                        </a>
+
+                        @if( !empty( $primary_menu['left'][$parent['id']] ) )
+
+                            <ul class="nav nav-second-level collapse">
+                                @foreach ( $primary_menu['left'][$parent['id']] as $children )
+                                    <li>
+                                        @php
+                                            $router = json_decode($children['router'], true);
+                                        @endphp
+
+                                        <a href="{{ url("/{$children['slug']}") }}">
+                                            <i class="{{ $router['icon'] }}"></i>
+                                            <span class="nav-label">{{ $children['title'] }}</span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                        @endif
+                    </li>
+                @endforeach
+            @endif
+
             <li @if ( in_array( $name, $system ) ) class="active" @endif>
                 <a href="#">
                     <i class="fa fa-cogs"></i>

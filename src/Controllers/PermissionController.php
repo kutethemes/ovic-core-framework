@@ -27,37 +27,14 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $menu_left = Ucases::where(
-            [
-                [ 'position', 'left' ],
-                [ 'status', '1' ]
-            ]
-        )->get([ 'id', 'title', 'parent_id', 'ordering', 'router' ])
-            ->collect()
-            ->sortBy('ordering')
-            ->groupBy('parent_id')
-            ->toArray();
-
-        $menu_top = Ucases::where(
-            [
-                [ 'position', 'top' ],
-                [ 'status', '1' ]
-            ]
-        )->get([ 'id', 'title', 'parent_id', 'ordering', 'router' ])
-            ->collect()
-            ->sortBy('ordering')
-            ->groupBy('parent_id')
-            ->toArray();
-
         $roles = Roles::where('status', '1')
-            ->get([ 'id', 'title', 'ucase_ids', 'created_at', 'description' ])
-            ->collect()
-            ->sortBy('ordering')
+            ->orderBy('ordering', 'asc')
+            ->get()
             ->toArray();
 
         $menus = [
-            'menu-left' => $menu_left,
-            'menu-top'  => $menu_top,
+            'menu-left' => Ucases::Menus('left', true),
+            'menu-top'  => Ucases::Menus('top', true),
         ];
 
         return view(ovic_blade('Backend.permission.app'), compact([ 'menus', 'roles' ]));
@@ -147,6 +124,12 @@ class PermissionController extends Controller
             Roles::where('id', $id)->update([
                 'ucase_ids' => $ucase_ids
             ]);
+
+            $user     = auth()->user();
+            $role_ids = json_decode($user->role_ids, true);
+            if ( in_array($id, $role_ids) ) {
+                $request->session()->put('permission', Roles::permission($user));
+            }
 
             return response()->json([
                 'status'  => 200,

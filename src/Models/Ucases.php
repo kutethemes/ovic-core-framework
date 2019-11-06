@@ -4,6 +4,7 @@ namespace Ovic\Framework;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Collection;
 
 class Ucases extends Eloquent
 {
@@ -14,12 +15,30 @@ class Ucases extends Eloquent
      */
     protected $table = 'ucases';
 
-    public static function hasTable()
+    public function scopehasTable( $query )
     {
-        if ( Schema::hasTable('ucases') ) {
+        if ( Schema::hasTable($this->table) ) {
             return true;
         }
 
         return false;
+    }
+
+    public function scopeMenus( $query, $position, $is_active = false )
+    {
+        $args = [
+            [ 'position', $position ]
+        ];
+
+        if ( $is_active == true ) {
+            $args[] = [ 'status', '1' ];
+        }
+
+        return $query->where($args)
+            ->get()
+            ->collect()
+            ->sortBy('ordering')
+            ->groupBy('parent_id')
+            ->toArray();
     }
 }

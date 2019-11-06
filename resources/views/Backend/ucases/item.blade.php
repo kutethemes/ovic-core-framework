@@ -23,7 +23,7 @@
             $status = '';
         break;
     }
-    $router = json_decode($data['router'], true)
+    $router = json_decode($data['router'], true);
 @endphp
 
 <div id="menu-{{ $data['id'] }}" class="dd-handle{{ $status }}">

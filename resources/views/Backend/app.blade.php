@@ -18,7 +18,7 @@
     {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield( 'title','Laravel Ovic' )</title>
+    <title>@yield( 'title','Dashboard' )</title>
 
     {{-- Blade styles --}}
     @stack( 'styles' )

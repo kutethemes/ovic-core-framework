@@ -14,9 +14,9 @@ class Donvi extends Eloquent
      */
     protected $table = 'donvi';
 
-    public static function hasTable()
+    public function scopehasTable( $query )
     {
-        if ( Schema::hasTable('donvi') ) {
+        if ( Schema::hasTable($this->table) ) {
             return true;
         }
 

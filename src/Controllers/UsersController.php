@@ -45,9 +45,18 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $donvis = Donvi::hasTable() ? Donvi::all([ 'id', 'tendonvi' ])->toArray() : [];
-        $roles  = Roles::hasTable() ? Roles::all([ 'id', 'title' ])->toArray() : [];
-        $ucases = Ucases::hasTable() ? Ucases::all([ 'id', 'title' ])->toArray() : [];
+        $roles  = [];
+        $donvis = [];
+        $ucases = [];
+        if ( Donvi::hasTable() ) {
+            $donvis = Donvi::all([ 'id', 'tendonvi' ])->toArray();
+        }
+        if ( Roles::hasTable() ) {
+            $roles = Roles::all([ 'id', 'title' ])->toArray();
+        }
+        if ( Ucases::hasTable() ) {
+            $ucases = Ucases::all([ 'id', 'title' ])->toArray();
+        }
 
         return view(
             ovic_blade('Backend.users.app'),

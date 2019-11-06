@@ -390,6 +390,9 @@
                     }
                     loading.removeClass( 'sk-loading' );
                 },
+                error: function () {
+                    loading.removeClass( 'sk-loading' );
+                }
             } );
         } );
     </script>

@@ -33,22 +33,9 @@ class UcasesController extends Controller
      */
     public function index()
     {
-        $menu_left = Ucases::where('position', 'left')
-            ->get()
-            ->collect()
-            ->sortBy('ordering')
-            ->groupBy('parent_id')
-            ->toArray();
-        $menu_top  = Ucases::where('position', 'top')
-            ->get()
-            ->collect()
-            ->sortBy('ordering')
-            ->groupBy('parent_id')
-            ->toArray();
-
         $menus = [
-            'menu-left' => $menu_left,
-            'menu-top'  => $menu_top,
+            'menu-left' => Ucases::Menus('left'),
+            'menu-top'  => Ucases::Menus('top'),
         ];
 
         return view(ovic_blade('Backend.ucases.app'), compact('menus'));

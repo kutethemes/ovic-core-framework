@@ -28,6 +28,16 @@ class FrameworkServiceProvider extends ServiceProvider
      */
     public function boot( Request $request )
     {
+        /* Load Menu */
+        view()->composer('*', function ( $view ) {
+            $view->with([
+                'primary_menu' => [
+                    'left' => Ucases::Menus('left', true),
+                    'top'  => Ucases::Menus('top', true),
+                ]
+            ]);
+        });
+
         /* Load Migrations */
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 

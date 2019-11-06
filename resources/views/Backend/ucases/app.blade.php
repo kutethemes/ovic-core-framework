@@ -310,7 +310,7 @@
                         },
                         success: function ( response ) {
 
-                            let menu = $( '#menu-' + data.id );
+                            let menu = $( '#menu-' + data.id ).closest('.dd-item');
 
                             if ( response.status === 'success' ) {
                                 menu.remove();
