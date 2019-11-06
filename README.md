@@ -8,18 +8,35 @@ To install through Composer, by run the following command:
 composer require ovic-core/framework
 ```
 
-To create Auth, by run the following command:
+To create Auth, by run the following command ( https://laravel.com/docs/6.x/authentication ):
 
 ``` bash
 php artisan ui vue --auth
 ```
 
-To install nodejs, bootstrap, by run the following command ( require nodejs: https://nodejs.org/):
+To install nodejs, bootstrap, by run the following command:
+
+Require:
+
+- Nodejs: https://nodejs.org/
+- Bootstrap: https://getbootstrap.com/
 
 ``` bash
 npm install
 npm install bootstrap
 npm run dev
+```
+
+To registering HTTP Session, by run the following command ( https://laravel.com/docs/6.x/session ):
+
+``` bash
+php artisan session:table
+```
+
+To registering Events & Listeners, by run the following command ( https://laravel.com/docs/6.x/events ):
+
+``` bash
+php artisan event:generate
 ```
 
 To create migrate, by run the following command:
@@ -47,6 +64,12 @@ To update through Composer, by run the following command:
 
 ``` bash
 composer update ovic-core/framework
+```
+
+To remove through Composer, by run the following command:
+
+``` bash
+composer remove ovic-core/framework
 ```
 
 **Tip: don't forget to run `composer dump-autoload` afterwards.**

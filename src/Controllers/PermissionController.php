@@ -3,7 +3,9 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 
 class PermissionController extends Controller
@@ -118,7 +120,7 @@ class PermissionController extends Controller
     public function update( Request $request, $id )
     {
         $validator = Validator::make($request->all(), [
-            'id' => [ 'required', 'numeric', 'unique:roles,id' ],
+            'id' => [ 'required', 'numeric', 'unique:roles,id,'.$id ],
         ]);
         $data      = $request->except([ '_token', 'id' ]);
 
@@ -145,6 +147,7 @@ class PermissionController extends Controller
             Roles::where('id', $id)->update([
                 'ucase_ids' => $ucase_ids
             ]);
+
             return response()->json([
                 'status'  => 200,
                 'message' => 'Phân quyền thành công.',

@@ -153,12 +153,16 @@
 
     <div class="col-sm-8 full-height">
         <div class="ibox full-height-scroll">
+
             @include( ovic_blade('Backend.roles.list') )
+
         </div>
     </div>
     <div class="col-sm-4 full-height">
         <div class="ibox selected full-height-scroll">
+
             @include( ovic_blade('Backend.roles.edit') )
+
         </div>
     </div>
 

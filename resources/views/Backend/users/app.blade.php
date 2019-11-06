@@ -206,28 +206,23 @@
     </script>
 @endpush
 
-<?php
-$user = Auth::user();
-if ($user->can('create', Post::class)){
-    echo "<pre>";
-    print_r('ok');
-    echo "</pre>";
-}
-?>
-
 @section( 'content-table' )
 
     <div class="col-sm-8 full-height">
         <div class="ibox full-height-scroll">
             <div class="ibox-content">
+
                 @include( ovic_blade('Backend.users.list') )
+
             </div>
         </div>
     </div>
     <div class="col-sm-4 full-height">
         <div class="ibox selected full-height-scroll">
             <div class="ibox-content">
+
                 @include( ovic_blade('Backend.users.edit') )
+
             </div>
         </div>
     </div>

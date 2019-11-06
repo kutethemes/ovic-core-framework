@@ -2,11 +2,8 @@
 
 namespace Ovic\Framework;
 
-use App\Post;
-use App\Policies\PostPolicy;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
 class FrameworkServiceProvider extends ServiceProvider
 {
@@ -15,24 +12,15 @@ class FrameworkServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false;
-
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        'App\Model'  => 'App\Policies\ModelPolicy',
-        Roles::class => RolesPolicy::class,
-    ];
+    protected $defer = true;
 
     /**
      * Register all modules.
      */
     public function register()
     {
-        $this->app['router']->aliasMiddleware('permission', Permission::class);
+        $this->app->register(FrameworkAuthServiceProvider::class);
+        $this->app->register(FrameworkEventServiceProvider::class);
     }
 
     /**
@@ -40,20 +28,6 @@ class FrameworkServiceProvider extends ServiceProvider
      */
     public function boot( Request $request )
     {
-        $this->registerPolicies();
-
-        Gate::define('add', function ( $user ) {
-            return $user->isAdmin;
-        });
-
-        Gate::define('edit', function ( $user ) {
-            return $user->isAdmin;
-        });
-
-        Gate::define('delete', function ( $user, $post ) {
-            return $user->id == $post->user_id;
-        });
-
         /* Load Migrations */
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 

@@ -13,16 +13,18 @@ class CreateUsersTable2 extends Migration
      */
     public function up()
     {
-        if ( Schema::hasTable('users') && !Schema::hasColumn('users', 'role_ids') ) {
-            Schema::table('users',
-                function ( Blueprint $table ) {
-                    $table->integer('avatar')->after('name')->default(0);
-                    $table->text('role_ids')->after('avatar')->nullable();
-                    $table->text('donvi_ids')->after('role_ids')->nullable();
-                    $table->integer('donvi_id')->after('donvi_ids')->default(0);
-                    $table->tinyInteger('status')->after('donvi_id')->default(1);
-                }
-            );
+        if ( Schema::hasTable('users') ) {
+            if ( !Schema::hasColumn('users', 'role_ids') ) {
+                Schema::table('users',
+                    function ( Blueprint $table ) {
+                        $table->integer('avatar')->after('name')->default(0);
+                        $table->text('role_ids')->after('avatar')->nullable();
+                        $table->text('donvi_ids')->after('role_ids')->nullable();
+                        $table->integer('donvi_id')->after('donvi_ids')->default(0);
+                        $table->tinyInteger('status')->after('donvi_id')->default(1);
+                    }
+                );
+            }
         } else {
             Schema::create('users',
                 function ( Blueprint $table ) {

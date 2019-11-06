@@ -271,15 +271,16 @@ class UsersController extends Controller
      */
     public function update( Request $request, $id )
     {
-        $dataTable = [];
+        $dataTable            = [];
+        $this->rules['email'] = '';
         if ( !$request->has('password') ) {
-            unset($this->rules['password']);
+            $this->rules['password'] = '';
         }
-        if ( $request->has('name') ) {
-            unset($this->rules['name']);
+        if ( !$request->has('name') ) {
+            $this->rules['name'] = '';
         }
         if ( $request->has('email') ) {
-            unset($this->rules['email']);
+            $this->rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:users,email,'.$id ];
         }
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);

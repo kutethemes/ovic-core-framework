@@ -288,11 +288,12 @@ class UcasesController extends Controller
      */
     public function update( Request $request, $id )
     {
-        if ( !$request->has('name') ) {
-            unset($this->rules['slug']);
+        $this->rules['slug'] = '';
+        if ( $request->has('name') ) {
+            $this->rules['slug'] = [ 'required', 'string', 'max:100', 'unique:ucases,slug,'.$id ];
         }
         if ( !$request->has('title') ) {
-            unset($this->rules['title']);
+            $this->rules['title'] = '';
         }
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $data      = $request->except([ '_token', 'id' ]);
