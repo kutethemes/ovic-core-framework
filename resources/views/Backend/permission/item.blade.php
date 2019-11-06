@@ -9,13 +9,9 @@
      */
 @endphp
 
-@php
-    $router = json_decode( $data['router'], true );
-@endphp
-
 <div id="menu-{{ $data['id'] }}" class="dd-handle">
     <span class="label label-info">
-        <i class="{{ $router['icon'] }}"></i>
+        <i class="{{ $data['router']['icon'] }}"></i>
     </span>
     <div class="name">
         {{ $data['title'] }}

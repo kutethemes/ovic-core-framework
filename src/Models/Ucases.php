@@ -37,6 +37,9 @@ class Ucases extends Eloquent
         return $query->where($args)
             ->get()
             ->collect()
+            ->each(function ( $item, $key ) {
+                $item->router = json_decode($item->router, true);
+            })
             ->sortBy('ordering')
             ->groupBy('parent_id')
             ->toArray();

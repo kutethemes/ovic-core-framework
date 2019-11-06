@@ -42,12 +42,8 @@
             @if( !empty( $primary_menu['left'][0] ) )
                 @foreach( $primary_menu['left'][0] as $key => $parent )
                     <li>
-                        @php
-                            $router = json_decode($parent['router'], true);
-                        @endphp
-
                         <a href="{{ url("/{$parent['slug']}") }}">
-                            <i class="{{ $router['icon'] }}"></i>
+                            <i class="{{ $parent['router']['icon'] }}"></i>
                             <span class="nav-label">{{ $parent['title'] }}</span>
                             @if( !empty( $primary_menu['left'][$parent['id']] ) )
                                 <span class="fa arrow"></span>
@@ -59,12 +55,8 @@
                             <ul class="nav nav-second-level collapse">
                                 @foreach ( $primary_menu['left'][$parent['id']] as $children )
                                     <li>
-                                        @php
-                                            $router = json_decode($children['router'], true);
-                                        @endphp
-
                                         <a href="{{ url("/{$children['slug']}") }}">
-                                            <i class="{{ $router['icon'] }}"></i>
+                                            <i class="{{ $children['router']['icon'] }}"></i>
                                             <span class="nav-label">{{ $children['title'] }}</span>
                                         </a>
                                     </li>
