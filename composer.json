@@ -28,7 +28,7 @@
             "src/helpers.php"
         ]
     },
-    "require": {
+    "require-dev": {
         "php": ">= 5.6",
         "doctrine/dbal": "*",
         "laravel/ui": "^1.1",
