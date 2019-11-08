@@ -222,7 +222,7 @@ class UcasesController extends Controller
         }
 
         $this->rules['slug'] = '';
-        if ( $request->has('name') ) {
+        if ( $request->has('slug') ) {
             $this->rules['slug'] = [ 'required', 'string', 'max:100', 'unique:ucases,slug,'.$id ];
         }
         if ( !$request->has('title') ) {

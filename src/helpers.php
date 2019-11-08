@@ -21,15 +21,16 @@ function name_blade( $view = null )
 
 function user_can( $can )
 {
+    $key = 0;
     switch ( $can ) {
         case 'add':
-            $can = 0;
+            $key = 0;
             break;
         case 'edit':
-            $can = 1;
+            $key = 1;
             break;
         case 'delete':
-            $can = 2;
+            $key = 2;
             break;
     }
     $route      = Route::currentRouteName();
@@ -44,7 +45,7 @@ function user_can( $can )
         return [ 0, 0, 0 ];
     }
 
-    if ( !empty($permission[$can]) && $permission[$can] == 1 ) {
+    if ( !empty($permission[$key]) && $permission[$key] == 1 ) {
         return true;
     }
 

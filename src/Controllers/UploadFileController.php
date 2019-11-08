@@ -289,9 +289,6 @@ class UploadFileController extends Controller
      */
     public function store( Request $request )
     {
-        echo "<pre>";
-        print_r(Roles::Permission());
-        echo "</pre>";
         if ( !user_can('add') ) {
             return response()->json([
                 'status'      => 'error',

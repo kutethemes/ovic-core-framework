@@ -215,10 +215,19 @@
 
                 $( '#dropzone-previews .content-previews' ).prepend( response.html );
 
-                /* Tạo thư mục */
-                treeFolder( response.directories, true );
+                if ( response.status == 'success' ) {
+                    toastr.info( response.message );
 
-                toastr[response.status]( response.message );
+                    /* Tạo thư mục */
+                    treeFolder( response.directories, true );
+                } else {
+                    swal( {
+                        type: 'error',
+                        title: 'Error!',
+                        text: response.message,
+                        showConfirmButton: true
+                    } );
+                }
             },
             dictDefaultMessage: "<strong>Kéo thả files vào đây để upload lên máy chủ. </strong></br>  (Hoặc click chuột để chọn files upload.)"
         };
