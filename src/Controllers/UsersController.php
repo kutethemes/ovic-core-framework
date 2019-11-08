@@ -286,7 +286,7 @@ class UsersController extends Controller
         if ( !user_can('edit') ) {
             return response()->json([
                 'status'  => 400,
-                'message' => [ 'Bạn không được cấp quyền sửa dữ liệu' ],
+                'message' => [ 'Bạn không được cấp quyền sửa dữ liệu.' ],
                 'data'    => [],
             ]);
         }
@@ -302,15 +302,23 @@ class UsersController extends Controller
             $this->rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:users,email,'.$id ];
         }
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        $data      = $request->except([ '_token', 'id', 'dataTable', 'route_id' ]);
+        $data      = $request->except([ '_token', 'id', 'dataTable' ]);
+
+        if ( User::find($id)->status == 3 ) {
+            $data['status']    = 3;
+            $data['role_ids']  = 0;
+            $data['donvi_id']  = 0;
+            $data['donvi_ids'] = 0;
+            if ( Auth::user()->status != 3 ) {
+                return response()->json([
+                    'status'  => 400,
+                    'message' => [ 'Bạn không có quyền sửa người dùng này.' ],
+                    'data'    => [],
+                ]);
+            }
+        }
 
         if ( $validator->passes() ) {
-            if ( User::find($id)->status == 3 ) {
-                $data['status']    = 3;
-                $data['role_ids']  = 0;
-                $data['donvi_id']  = 0;
-                $data['donvi_ids'] = 0;
-            }
             if ( !empty($data['password']) ) {
                 $data['password'] = Hash::make($data['password']);
             }
