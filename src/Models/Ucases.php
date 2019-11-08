@@ -3,6 +3,8 @@
 namespace Ovic\Framework;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Collection;
 
@@ -24,7 +26,7 @@ class Ucases extends Eloquent
         return false;
     }
 
-    public function scopeMenus( $query, $position, $is_active = false )
+    public function scopeEditMenu( $query, $position, $is_active = false )
     {
         $args = [
             [ 'position', $position ]
@@ -38,10 +40,61 @@ class Ucases extends Eloquent
             ->get()
             ->collect()
             ->each(function ( $item, $key ) {
-                $item->router = json_decode($item->router, true);
+                $item->route = json_decode($item->route, true);
             })
             ->sortBy('ordering')
             ->groupBy('parent_id')
+            ->toArray();
+    }
+
+    public function scopePrimaryMenu( $query, $position )
+    {
+        $permission = Roles::Permission();
+
+        return $query->where(
+            [
+                [ 'status', '1' ],
+                [ 'position', $position ]
+            ]
+        )
+            ->get()
+            ->collect()
+            ->filter(function ( $item, $key ) use ( $permission ) {
+                return ( !empty($permission[$item->slug]) && array_sum($permission[$item->slug]) != 0 );
+            })
+            ->each(function ( $item, $key ) {
+                $item->route = json_decode($item->route, true);
+            })
+            ->sortBy('ordering')
+            ->groupBy('parent_id')
+            ->toArray();
+    }
+
+    public function scopeGetRoute( $query, $access )
+    {
+        switch ( $access ) {
+            case 'backend':
+                $access = 1;
+                break;
+            case 'frontend':
+                $access = 2;
+                break;
+            case 'public':
+                $access = 0;
+                break;
+        }
+
+        return $query->where(
+            [
+                [ 'status', '>', '0' ],
+                [ 'access', $access ],
+            ]
+        )
+            ->get()
+            ->collect()
+            ->each(function ( $item, $key ) {
+                $item->route = json_decode($item->route, true);
+            })
             ->toArray();
     }
 }

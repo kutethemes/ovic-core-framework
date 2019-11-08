@@ -19,7 +19,7 @@ class CreateUcasesTable extends Migration
                 $table->string('slug', 100)->unique();
                 $table->string('title');
                 $table->integer('parent_id')->default(0);
-                $table->text('router'); // Array: description, icon, module, controller, custom_link
+                $table->text('route'); // Array: description, icon, module, controller, custom_link
                 $table->tinyInteger('ordering')->default(99);
                 $table->string('position', 15)->default('left');
                 $table->tinyInteger('access')->default(1);

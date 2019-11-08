@@ -9,7 +9,7 @@
      */
 @endphp
 
-@extends( ovic_blade('Backend.app') )
+@extends( name_blade('Backend.app') )
 
 @section( 'title', 'QUẢN LÝ DỮ LIỆU' )
 
@@ -29,6 +29,6 @@
 
 @section( 'content' )
 
-    @include( ovic_blade('Backend.media.data') )
+    @include( name_blade('Backend.media.data') )
 
 @endsection

@@ -14,7 +14,7 @@
 
     <div class="row m-b-lg">
         <div class="col-lg-12 text-center">
-            @include( ovic_blade('Backend.media.field'), [
+            @include( name_blade('Backend.media.field'), [
                 'name'  =>  'avatar',
                 'value' =>  '0',
                 'alt'   =>  'Ảnh đại diện',
@@ -25,19 +25,18 @@
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-                Tên hiển thị
+                Tên hiển thị *
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="text" name="name" class="form-control" placeholder="Name"
-                           required="" aria-required="true" maxlength="100">
+                    <input type="text" name="name" class="form-control required" placeholder="Name" maxlength="100">
                     <span class="input-group-append">
-                            <select name="status" class="btn btn-white dropdown-toggle">
-                                <option value="1">Kích hoạt</option>
-                                <option value="2">Kích hoạt ẩn</option>
-                                <option value="0">Không kích hoạt</option>
-                            </select>
-                        </span>
+                        <select name="status" class="btn btn-white dropdown-toggle">
+                            <option value="1">Kích hoạt</option>
+                            <option value="2">Kích hoạt ẩn</option>
+                            <option value="0">Không kích hoạt</option>
+                        </select>
+                    </span>
                 </div>
             </div>
         </div>
@@ -45,26 +44,26 @@
 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-                Email
+                Email *
             </label>
             <div class="col-sm-9">
-                <input type="email" name="email" class="form-control"
-                       placeholder="Enter email" maxlength="100"
-                       required="" aria-required="true">
+                <div class="input-group">
+                    <input type="email" name="email" class="form-control required"
+                           placeholder="Enter email" maxlength="100">
+                </div>
             </div>
         </div>
         <div class="hr-line-dashed"></div>
 
         <div class="form-group field-password row">
             <label class="col-sm-3 col-form-label">
-                Mật khẩu
+                Mật khẩu *
             </label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="password" class="form-control"
+                    <input id="password" type="password" class="form-control required"
                            placeholder="Mật khẩu >= 8 ký tự"
-                           name="password" aria-required="true" aria-invalid="false"
-                           minlength="8">
+                           name="password" minlength="8">
                     <span class="input-group-append">
                         <button class="btn btn-info edit-field" type="button">
                             <i class="fa fa-paste"></i> Edit
@@ -77,13 +76,14 @@
 
         <div class="form-group field-password-confirmation row">
             <label class="col-sm-3 col-form-label">
-                Xác nhận
+                Xác nhận *
             </label>
             <div class="col-sm-9">
-                <input type="password" class="form-control"
-                       placeholder="Mật khẩu >= 8 ký tự"
-                       name="password_confirmation" aria-required="true" aria-invalid="false"
-                       minlength="8">
+                <div class="input-group">
+                    <input id="password_confirmation" type="password" class="form-control required"
+                           placeholder="Mật khẩu >= 8 ký tự"
+                           name="password_confirmation" minlength="8">
+                </div>
             </div>
         </div>
         <div class="hr-line-dashed field-password-confirmation"></div>
@@ -124,8 +124,8 @@
             <div class="hr-line-dashed"></div>
         @endif
 
-        @if( !empty( $ucases ) )
-            <div class="form-group row">
+        @if( !empty( $donvis ) )
+            <div class="form-group row d-none">
                 <label class="col-sm-3 col-form-label">
                     Phạm vi quản lý
                 </label>
@@ -133,9 +133,6 @@
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
                         <option value="0">Chọn phạm vi quản lý</option>
-                        @foreach ( $ucases as $ucase )
-                            <option value="{{ $ucase['id'] }}">{{ $ucase['title'] }}</option>
-                        @endforeach
                     </select>
                 </div>
             </div>
@@ -146,18 +143,9 @@
 
     <div class="form-group submit row">
         <div class="col-sm-12">
-            <button type="button" class="btn btn-danger remove-post d-none">
-                <i class="fa fa-trash-o"></i>
-                Xóa
-            </button>
-            <button class="btn btn-primary update-post d-none" type="button">
-                <i class="fa fa-save"></i>
-                Save change
-            </button>
-            <button class="btn btn-primary add-post" type="button">
-                <i class="fa fa-upload"></i>
-                Add user
-            </button>
+            {{ button_set( 'delete', $permission, [ 'class'=>'btn btn-danger d-none' ] ) }}
+            {{ button_set( 'edit', $permission, [ 'class'=>'btn btn-primary d-none' ] ) }}
+            {{ button_set( 'add', $permission ) }}
         </div>
     </div>
 </form>

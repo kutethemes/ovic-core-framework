@@ -9,7 +9,7 @@
      */
 @endphp
 
-@extends( ovic_blade('Backend.app') )
+@extends( name_blade('Backend.app') )
 
 @push( 'styles' )
     <!-- Sweet Alert -->
@@ -48,6 +48,10 @@
             min-width: 90px;
             max-width: 90px;
             text-align: center;
+        }
+
+        td.client-status {
+            text-align: right;
         }
 
         .client-status > * {
@@ -137,6 +141,10 @@
             font-size: 0.9rem;
         }
 
+        .form-group label.error {
+            width: 100%;
+        }
+
         @media (min-width: 1200px) {
             .head-table > * {
                 display: inline-block;
@@ -223,9 +231,9 @@
                 serverSide: true,
                 dom: '<"head-table"fi>rt<"footer-table"p><"clear">',
                 ajax: {
-                    url: main_url + "/list",
+                    url: main_url + "/create",
                     dataType: "json",
-                    type: "POST",
+                    type: "GET",
                     headers: {
                         'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                     },
@@ -438,7 +446,7 @@
         };
         $( document ).on( 'keyup', '#edit-post input, #edit-post select, #edit-post textarea', function ( event ) {
             let form = $( this ).closest( 'form' ),
-                update = form.find( '.update-post' ),
+                update = form.find( '.edit-post' ),
                 add = form.find( '.add-post' );
 
             if ( event.keyCode === 13 ) {

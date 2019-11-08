@@ -61,12 +61,12 @@
 
             <div class="form-group field-name row">
                 <label class="col-sm-3 col-form-label">
-                    Tên router
+                    Tên route
                 </label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <input type="text" name="slug" class="form-control" placeholder="Tên router"
-                               required="" aria-required="true" maxlength="100">
+                        <input type="text" name="slug" class="form-control required" placeholder="Tên route"
+                               maxlength="100">
                         <span class="input-group-append">
                         <select name="status" class="btn btn-white dropdown-toggle">
                             <option value="1">Kích hoạt</option>
@@ -85,8 +85,8 @@
                 </label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <input type="text" name="title" class="form-control" placeholder="Tên hiển thị"
-                               required="" aria-required="true" maxlength="100">
+                        <input type="text" name="title" class="form-control required" placeholder="Tên hiển thị"
+                               maxlength="100">
                     </div>
                 </div>
             </div>
@@ -115,7 +115,7 @@
                 </label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                    <textarea type="text" name="router[description]" class="form-control" placeholder="Mô tả">
+                    <textarea type="text" name="route[description]" class="form-control" placeholder="Mô tả">
                     </textarea>
                     </div>
                 </div>
@@ -128,8 +128,8 @@
                 </label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        @include( ovic_blade('Fields.icon.icon'), [
-                            'name'  =>  'router[icon]',
+                        @include( name_blade('Fields.icon.icon'), [
+                            'name'  =>  'route[icon]',
                             'value' =>  '',
                         ])
                     </div>
@@ -143,8 +143,7 @@
                 </label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <input type="text" name="router[module]" class="form-control" placeholder="Module Name"
-                               required="" aria-required="true">
+                        <input type="text" name="route[module]" class="form-control" placeholder="Module Name">
                     </div>
                 </div>
             </div>
@@ -156,7 +155,7 @@
                 </label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <input type="text" name="router[controller]" class="form-control" placeholder="Controller"
+                        <input type="text" name="route[controller]" class="form-control" placeholder="Controller"
                                required="" aria-required="true">
                     </div>
                 </div>
@@ -169,8 +168,7 @@
                 </label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <input type="text" name="router[custom_link]" class="form-control" placeholder="Custom Link"
-                               required="" aria-required="true">
+                        <input type="text" name="route[custom_link]" class="form-control" placeholder="Custom Link">
                     </div>
                 </div>
             </div>
@@ -180,11 +178,11 @@
 
         <div class="form-group submit row">
             <div class="col-sm-12">
-                <button type="button" class="btn btn-danger remove-post d-none">
+                <button type="button" class="btn btn-danger delete-post d-none">
                     <i class="fa fa-trash-o"></i>
                     Xóa
                 </button>
-                <button class="btn btn-primary update-post d-none" type="button">
+                <button class="btn btn-primary edit-post d-none" type="button">
                     <i class="fa fa-save"></i>
                     Save change
                 </button>

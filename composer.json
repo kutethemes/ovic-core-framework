@@ -18,7 +18,8 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Ovic\\Framework\\": "src/"
+            "Ovic\\Framework\\": "src/",
+            "Ovic\\Framework\\Database\\Seeds": "database/seeds/"
         },
         "classmap": [
             "database/migrations",

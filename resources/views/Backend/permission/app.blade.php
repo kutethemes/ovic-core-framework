@@ -9,7 +9,7 @@
      */
 @endphp
 
-@extends( ovic_blade( 'Backend.app' ) )
+@extends( name_blade( 'Backend.app' ) )
 
 @section( 'title', 'PHÂN QUYỀN CHỨC NĂNG' )
 
@@ -216,7 +216,7 @@
         var getData = function ( handle, data ) {
             handle.find( '.btn-group' ).each( function () {
                 let vars = [],
-                    id = $( this ).closest( '.dd-item' ).data( 'id' );
+                    id = $( this ).closest( '.dd-item' ).data( 'slug' );
 
                 $( this ).find( 'input' ).each( function () {
                     if ( $( this ).is( ':checked' ) ) {
@@ -293,6 +293,7 @@
                 }
             } );
         } );
+        /* chọn nhóm người dùng */
         $( document ).on( 'click', '.client-detail a', function () {
             let button = $( this ),
                 form = $( '#list-posts' ),
@@ -323,6 +324,7 @@
 
             return false;
         } );
+        /* Phân quyền */
         $( document ).on( 'click', 'input[type="checkbox"]', function () {
             let input = $( this ),
                 form = input.closest( 'form' ),
@@ -403,14 +405,14 @@
     <div class="col-sm-4 full-height">
         <div class="ibox selected full-height-scroll">
 
-            @include( ovic_blade('Backend.permission.edit') )
+            @include( name_blade('Backend.permission.edit') )
 
         </div>
     </div>
     <div class="col-sm-8 full-height">
         <div class="ibox full-height-scroll">
 
-            @include( ovic_blade('Backend.permission.list') )
+            @include( name_blade('Backend.permission.list') )
 
         </div>
     </div>

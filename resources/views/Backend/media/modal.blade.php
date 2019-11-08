@@ -93,7 +93,7 @@
 
                         $modal.find( '.sk-spinner' ).show();
 
-                        $.post( "{{ route('upload.modal') }}", {
+                        $.get( "upload/create", {
                             _token: $( 'meta[name="csrf-token"]' ).attr( 'content' )
                         } ).done( function ( response ) {
 
@@ -151,7 +151,7 @@
                 <h4 class="modal-title">Thư viện</h4>
             </div>
             <div class="modal-body row full-height-content">
-                @include( ovic_blade('Backend.media.data'), ['multi' => false] )
+                @include( name_blade('Backend.media.data'), ['multi' => false] )
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>

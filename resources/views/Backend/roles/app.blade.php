@@ -9,7 +9,7 @@
      */
 @endphp
 
-@extends( ovic_blade( 'Components.table' ) )
+@extends( name_blade( 'Components.table' ) )
 
 @section( 'title', 'QUẢN LÝ NHÓM NGƯỜI DÙNG' )
 
@@ -87,7 +87,7 @@
                 } );
 
                 form.find( '.form-group .add-post' ).addClass( 'd-none' );
-                form.find( '.form-group .update-post,.form-group .remove-post' ).removeClass( 'd-none' );
+                form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
 
             } else {
                 $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
@@ -127,7 +127,7 @@
             return false;
         } );
         /* Update post */
-        $( document ).on( 'click', '.wrapper-content .btn.update-post', function () {
+        $( document ).on( 'click', '.wrapper-content .btn.edit-post', function () {
             let button = $( this ),
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
@@ -137,7 +137,7 @@
             return false;
         } );
         /* Remove post */
-        $( document ).on( 'click', '.wrapper-content .btn.remove-post', function () {
+        $( document ).on( 'click', '.wrapper-content .btn.delete-post', function () {
             let button = $( this ),
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
@@ -154,14 +154,14 @@
     <div class="col-sm-8 full-height">
         <div class="ibox full-height-scroll">
 
-            @include( ovic_blade('Backend.roles.list') )
+            @include( name_blade('Backend.roles.list') )
 
         </div>
     </div>
     <div class="col-sm-4 full-height">
         <div class="ibox selected full-height-scroll">
 
-            @include( ovic_blade('Backend.roles.edit') )
+            @include( name_blade('Backend.roles.edit') )
 
         </div>
     </div>

@@ -7,6 +7,8 @@
      *
      * @version 1.0
      */
+    $toggle     = 'none';
+    $top_menu   = $primary_menu['top'];
 @endphp
 
 <div class="row border-bottom">
@@ -18,17 +20,49 @@
             <span class="navbar-minimalize minimalize-styl-2">@yield('title')</span>
         </div>
         <ul class="nav navbar-top-links navbar-right">
-            <li>
-                <span class="m-r-sm text-muted welcome-message">Welcome to {{ config('app.name','Ovic') }} Admin.</span>
-            </li>
-            @include( ovic_blade('Backend.notices.mailbox') )
-            @include( ovic_blade('Backend.notices.notifications') )
+            @if( !empty( $top_menu[0] ) )
+                @foreach( $top_menu[0] as $key => $parent )
+                    <li>
+                        @if( !empty( $top_menu[$parent['id']] ) )
+                            @php
+                                $toggle = 'dropdown';
+                            @endphp
+                        @endif
+
+                        <a href="{{ url( "/{$parent['slug']}" ) }}"
+                           data-toggle="{{ $toggle }}"
+                           class="dropdown-toggle">
+                            <i class="{{ $parent['route']['icon'] }}"></i>
+                            <span class="nav-label">
+                                {{ $parent['title'] }}
+                            </span>
+                        </a>
+
+                        @if( !empty( $top_menu[$parent['id']] ) )
+
+                            <ul class="dropdown-menu animated fadeInUp">
+                                @foreach ( $top_menu[$parent['id']] as $children )
+                                    <li>
+                                        <a href="{{ url( "/{$children['slug']}" ) }}">
+                                            <i class="{{ $children['route']['icon'] }}"></i>
+                                            <span class="nav-label">{{ $children['title'] }}</span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                        @endif
+                    </li>
+                @endforeach
+            @endif
+            @include( name_blade('Backend.notices.mailbox') )
+            @include( name_blade('Backend.notices.notifications') )
             <li>
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                     <i class="fa fa-user-circle-o"></i>
                     Hi, {{ Auth::user()->name }}
                 </a>
-                <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                <ul class="dropdown-menu animated fadeInUp">
                     <li>
                         <a class="dropdown-item"
                            href="{{ route('users.show', \Auth::user()->id ) }}">

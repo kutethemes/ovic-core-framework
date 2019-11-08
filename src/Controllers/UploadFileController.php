@@ -144,7 +144,7 @@ class UploadFileController extends Controller
      */
     public function index()
     {
-        return view(ovic_blade('Backend.media.app'))->with([
+        return view(name_blade('Backend.media.app'))->with([
             'attachments' => $this->attachments,
             'limit'       => $this->limit,
             'offset'      => $this->offset,
@@ -157,30 +157,27 @@ class UploadFileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create( Request $request )
     {
-        //
-    }
+        if ( $request->has('filter') ) {
+            $data = $request->input('form');
 
-    /**
-     * Show the modal data for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function modal( Request $request )
-    {
-        $content = '';
-        $dir     = '';
-        if ( !empty($this->attachments) ) {
-            foreach ( $this->attachments as $attachment ) {
-                $content .= view(ovic_blade('Backend.media.image'), compact([ 'attachment' ]))->toHtml();
+            return $this->filter($data);
+        } else {
+            $content = '';
+            $dir     = '';
+            if ( !empty($this->attachments) ) {
+                foreach ( $this->attachments as $attachment ) {
+                    $content .= view(name_blade('Backend.media.image'), compact([ 'attachment' ]))->toHtml();
+                }
             }
+            $this->init();
+
+            return response()->json([
+                'content'     => $content,
+                'directories' => json_encode($this->directories)
+            ]);
         }
-        $this->init();
-        return response()->json([
-            'content'     => $content,
-            'directories' => json_encode($this->directories)
-        ]);
     }
 
     /**
@@ -188,24 +185,22 @@ class UploadFileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function filter( Request $request )
+    public function filter( $data )
     {
-        $request = $request->toArray();
-
-        if ( !empty($request['_form']) ) {
+        if ( !empty($data) ) {
             $args = [
                 [ 'post_type', '=', 'attachment' ],
                 [ 'status', '=', 'publish' ],
-                'limit'  => $request['_form']['limit'],
-                'offset' => $request['_form']['offset'],
+                'limit'  => $data['limit'],
+                'offset' => $data['offset'],
             ];
 
-            if ( !empty($request['_form']['s']) ) {
-                $args[] = [ "title", "like", "%{$request['_form']['s']}%" ];
+            if ( !empty($data['s']) ) {
+                $args[] = [ "title", "like", "%{$data['s']}%" ];
             }
 
-            if ( !empty($request['_form']['dir']) ) {
-                $args[] = [ "name", "like", "%{$request['_form']['dir']}%" ];
+            if ( !empty($data['dir']) ) {
+                $args[] = [ "name", "like", "%{$data['dir']}%" ];
             }
 
             $attachments = $this->get_attachments($args);
@@ -214,7 +209,7 @@ class UploadFileController extends Controller
                 $mimetype  = $attachment['meta']['_attachment_metadata']['mimetype'];
                 $extension = $attachment['meta']['_attachment_metadata']['extension'];
 
-                switch ( $request['_form']['sort'] ) {
+                switch ( $data['sort'] ) {
                     case 'im':
                         if ( !strstr($mimetype, "image/") ) {
                             unset($attachments[$key]);
@@ -252,7 +247,7 @@ class UploadFileController extends Controller
             $html = '';
 
             foreach ( $attachments as $attachment ) {
-                $html .= view(ovic_blade('Backend.media.image'), compact('attachment'))->toHtml();
+                $html .= view(name_blade('Backend.media.image'), compact('attachment'))->toHtml();
             }
 
             $count  = count($attachments);
@@ -286,13 +281,23 @@ class UploadFileController extends Controller
      */
     public function store( Request $request )
     {
+        if ( !user_can('add') ) {
+            return response()->json([
+                'status'      => 'error',
+                'message'     => 'Bạn không được cấp quyền thêm dữ liệu',
+                'html'        => '',
+                'directories' => []
+            ]);
+        }
+
         if ( !$request->hasFile('file') ) {
             return response()->json(
                 [
-                    'status'  => 'error',
-                    'message' => 'The File do not exits.',
-                    'html'    => '',
-                ], 400
+                    'status'      => 'error',
+                    'message'     => 'The File do not exits.',
+                    'html'        => '',
+                    'directories' => []
+                ]
             );
         }
 
@@ -374,7 +379,7 @@ class UploadFileController extends Controller
 
         $attachment = array_shift($attachment);
 
-        return view(ovic_blade('Backend.media.image'), compact('attachment'));
+        return view(name_blade('Backend.media.image'), compact('attachment'));
     }
 
     /**
@@ -402,52 +407,16 @@ class UploadFileController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $ids
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function remove( Request $request )
+    public function delete( $request, $id, $response = true )
     {
-        $deleted = [];
-        $ids     = $request->input('ids');
-        $ids     = ( strpos($ids, ',') === false ) ? (array) $ids : explode(',', $ids);
-
-        foreach ( $ids as $id ) {
-            $del_id = $this->destroy($request, $id, false);
-            if ( $del_id != 0 ) {
-                $deleted[] = $del_id;
-            }
+        if ( !user_can('delete') ) {
+            return response()->json([
+                'status'  => 'warning',
+                'title'   => 'Bạn không được cấp quyền xóa dữ liệu!',
+                'message' => '',
+            ]);
         }
 
-        if ( !empty($deleted) ) {
-            $this->init();
-            $response = [
-                'status'      => 200,
-                'ids'         => $deleted,
-                'message'     => 'Xóa file thành công.',
-                'directories' => json_encode($this->directories)
-            ];
-        } else {
-            $response = [
-                'status'  => 400,
-                'message' => 'Xóa file không thành công.',
-            ];
-        }
-        return response()->json($response);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy( Request $request, $id, $response = true )
-    {
         $rules    = [
             'id' => [ 'exists:posts,id,'.$id ],
         ];
@@ -485,5 +454,46 @@ class UploadFileController extends Controller
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy( Request $request, $id, $response = true )
+    {
+        if ( $request->has('ids') && $id == 0 ) {
+            $deleted = [];
+            $ids     = $request->input('ids');
+            $ids     = ( strpos($ids, ',') === false ) ? (array) $ids : explode(',', $ids);
+
+            foreach ( $ids as $id ) {
+                $del_id = $this->delete($request, $id, false);
+                if ( $del_id != 0 ) {
+                    $deleted[] = $del_id;
+                }
+            }
+
+            if ( !empty($deleted) ) {
+                $this->init();
+                $response = [
+                    'status'      => 200,
+                    'ids'         => $deleted,
+                    'message'     => 'Xóa file thành công.',
+                    'directories' => json_encode($this->directories)
+                ];
+            } else {
+                $response = [
+                    'status'  => 400,
+                    'message' => 'Xóa file không thành công.',
+                ];
+            }
+            return response()->json($response);
+        }
+
+        $this->delete($request, $id);
     }
 }

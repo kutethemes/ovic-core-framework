@@ -24,6 +24,7 @@ class FrameworkAuthServiceProvider extends ServiceProvider
     protected $policies = [
         'App\Model'  => 'App\Policies\ModelPolicy',
         Roles::class => RolesPolicy::class,
+        Users::class => UsersPolicy::class,
     ];
 
     /**

@@ -27,7 +27,7 @@
 
 <div id="menu-{{ $data['id'] }}" class="dd-handle{{ $status }}">
         <span class="label label-info">
-            <i class="{{ $data['router']['icon'] }}"></i>
+            <i class="{{ $data['route']['icon'] }}"></i>
         </span>
     <div class="name">
         {{ $data['title'] }}

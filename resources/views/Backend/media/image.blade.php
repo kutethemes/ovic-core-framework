@@ -12,7 +12,7 @@
 @endphp
 
 @php
-    $url        = route( 'get_file', explode( '/', $attachment['name'] ) );
+    $url        = route( 'images.build', explode( '/', $attachment['name'] ) );
     $mimetype   = $attachment['meta']['_attachment_metadata']['mimetype'];
     $extension  = $attachment['meta']['_attachment_metadata']['extension'];
 @endphp

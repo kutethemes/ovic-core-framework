@@ -9,50 +9,118 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+use Ovic\Framework\Ucases;
+
+/* Admin routes */
+
 Route::group(
     [
+        'prefix'     => '',
         'middleware' => [ 'web', 'auth', 'permission' ],
     ],
     function () {
+
+        Auth::routes();
+
         /* Dashboard Route */
-        Route::get('dashboard', 'Ovic\Framework\DashboardController@index')->name('dashboard');
+        Route::resource('dashboard', 'Ovic\Framework\DashboardController');
 
-        /* User Route */
-        Route::post('users/list', 'Ovic\Framework\UsersController@users')->name('users.list');
-        Route::resource('users', 'Ovic\Framework\UsersController');
+        /* Backend routes */
 
-        /* Roles Route */
-        Route::post('roles/list', 'Ovic\Framework\RolesController@roles')->name('roles.list');
-        Route::resource('roles', 'Ovic\Framework\RolesController');
+        Route::group([],
+            function () {
 
-        /* Ucases Route */
-        Route::post('ucases/order', 'Ovic\Framework\UcasesController@order')->name('ucases.order');
-        Route::post('ucases/list', 'Ovic\Framework\UcasesController@ucases')->name('ucases.list');
-        Route::resource('ucases', 'Ovic\Framework\UcasesController');
+                $ucases = Ucases::GetRoute('backend');
 
-        /* Permission Route */
-        Route::resource('permission', 'Ovic\Framework\PermissionController', [
-            'only' => [
-                'update', 'index'
-            ]
-        ]);
+                if ( !empty($ucases) ) {
+                    foreach ( $ucases as $ucase ) {
+                        if ( !empty($ucase['route']['custom_link']) ) {
+                            Route::get($ucase['route']['custom_link']);
+                        } else {
+                            $module = "";
+                            if ( !empty($ucase['route']['module']) ) {
+                                $module = "{$ucase['route']['module']}:";
+                            }
+                            Route::resource("{$ucase['slug']}", "{$module}{$ucase['route']['controller']}");
+                        }
+                    }
+                }
+            }
+        );
+
+        /* Frontend routes */
+
+        Route::group([],
+            function () {
+
+                $ucases = Ucases::GetRoute('frontend');
+
+                if ( !empty($ucases) ) {
+                    foreach ( $ucases as $ucase ) {
+                        if ( !empty($ucase['route']['custom_link']) ) {
+                            Route::get($ucase['route']['custom_link']);
+                        } else {
+                            $module = "";
+                            if ( !empty($ucase['route']['module']) ) {
+                                $module = "{$ucase['route']['module']}::";
+                            }
+                            Route::resource($ucase['slug'], "{$module}{$ucase['route']['controller']}");
+                        }
+                    }
+                }
+            }
+        );
+
+//        /* User Route */
+//        Route::resource('users', 'Ovic\Framework\UsersController');
+//
+//        /* Roles Route */
+//        Route::resource('roles', 'Ovic\Framework\RolesController');
+//
+//        /* Ucases Route */
+//        Route::resource('ucases', 'Ovic\Framework\UcasesController');
+//
+//        /* Permission Route */
+//        Route::resource('permission', 'Ovic\Framework\PermissionController');
+//
+//        /* Upload Route */
+//        Route::resource('upload', 'Ovic\Framework\UploadFileController');
 
         /* Post Route */
         Route::resource('post', 'Ovic\Framework\PostsController');
 
-        /* Upload Route */
-        Route::post('upload/modal', 'Ovic\Framework\UploadFileController@modal')->name('upload.modal');
-        Route::post('upload/remove', 'Ovic\Framework\UploadFileController@remove')->name('upload.remove');
-        Route::post('upload/filter', 'Ovic\Framework\UploadFileController@filter')->name('upload.filter');
-        Route::resource('upload', 'Ovic\Framework\UploadFileController');
-
         /* Images */
-        Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index')->name('get_file');
+        Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index')->name('images.build');
 
-        /* Icon */
-        Route::get('get-icons', 'Ovic\Framework\IconController@getIcon')->name('get_icon');
-
-        /* Clear Cache */
-        Route::get('clear-cache', 'Ovic\Framework\DashboardController@clear_cache')->name('clear_cache');
+        /* Icon fonts */
+        Route::get('icon-fonts', 'Ovic\Framework\IconController@getIcon')->name('icon.fonts');
     }
 );
+
+/* Public routes */
+
+Route::group([],
+    function () {
+
+        $ucases = Ucases::GetRoute('public');
+
+        if ( !empty($ucases) ) {
+            foreach ( $ucases as $ucase ) {
+                if ( !empty($ucase['route']['custom_link']) ) {
+                    Route::get($ucase['route']['custom_link']);
+                } else {
+                    $module = "";
+                    if ( !empty($ucase['route']['module']) ) {
+                        $module = "{$ucase['route']['module']}:";
+                    }
+                    Route::resource($ucase['slug'], "{$module}{$ucase['route']['controller']}");
+                }
+            }
+        }
+    }
+);
+
+/* Clear Cache */
+
+Route::get('clear-cache', 'Ovic\Framework\DashboardController@clear_cache')->name('cache.clear');

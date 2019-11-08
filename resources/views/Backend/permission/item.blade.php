@@ -9,32 +9,32 @@
      */
 @endphp
 
-<div id="menu-{{ $data['id'] }}" class="dd-handle">
+<div id="menu-{{ $data['slug'] }}" class="dd-handle">
     <span class="label label-info">
-        <i class="{{ $data['router']['icon'] }}"></i>
+        <i class="{{ $data['route']['icon'] }}"></i>
     </span>
     <div class="name">
         {{ $data['title'] }}
     </div>
     <div class="btn-group">
-        <label class="css-checkbox" for="add-{{ $data['id'] }}"
+        <label class="css-checkbox" for="add-{{ $data['slug'] }}"
                data-trigger="hover" data-toggle="popover"
                data-placement="top" data-content="Thêm">
-            <input id="add-{{ $data['id'] }}" type="checkbox" name="add"
+            <input id="add-{{ $data['slug'] }}" type="checkbox" name="add"
                    value="0">
             <span class="checkmark"></span>
         </label>
-        <label class="css-checkbox" for="edit-{{ $data['id'] }}"
+        <label class="css-checkbox" for="edit-{{ $data['slug'] }}"
                data-trigger="hover" data-toggle="popover"
                data-placement="top" data-content="Sửa">
-            <input id="edit-{{ $data['id'] }}" type="checkbox" name="edit"
+            <input id="edit-{{ $data['slug'] }}" type="checkbox" name="edit"
                    value="0">
             <span class="checkmark"></span>
         </label>
-        <label class="css-checkbox" for="delete-{{ $data['id'] }}"
+        <label class="css-checkbox" for="delete-{{ $data['slug'] }}"
                data-trigger="hover" data-toggle="popover"
                data-placement="top" data-content="Xóa">
-            <input id="delete-{{ $data['id'] }}" type="checkbox" name="delete"
+            <input id="delete-{{ $data['slug'] }}" type="checkbox" name="delete"
                    value="0">
             <span class="checkmark"></span>
         </label>

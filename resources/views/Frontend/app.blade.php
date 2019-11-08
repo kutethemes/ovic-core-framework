@@ -33,11 +33,11 @@
 
 <div id="app">
 
-    @include( ovic_blade('Frontend.header') )
+    @include( name_blade('Frontend.header') )
 
     @yield( 'content' )
 
-    @include( ovic_blade('Frontend.footer') )
+    @include( name_blade('Frontend.footer') )
 
 </div>
 

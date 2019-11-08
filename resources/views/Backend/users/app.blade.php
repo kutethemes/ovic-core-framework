@@ -9,7 +9,7 @@
      */
 @endphp
 
-@extends( ovic_blade('Components.table') )
+@extends( name_blade('Components.table') )
 
 @section( 'title', 'QUẢN LÝ NGƯỜI DÙNG' )
 
@@ -35,8 +35,20 @@
 @push( 'scripts.table' )
     <!-- Chosen -->
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <!-- Jquery Validate -->
+    <script src="{{ asset('js/plugins/validate/jquery.validate.min.js') }}"></script>
 
     <script>
+        $( "#edit-post" ).validate( {
+            errorPlacement: function ( error, element ) {
+                element.before( error );
+            },
+            rules: {
+                password_confirmation: {
+                    equalTo: "#password"
+                }
+            }
+        } );
         $( '#table-posts' ).init_dataTable( "users", {
             columns: [
                 {
@@ -70,6 +82,8 @@
                         let _class = "inactive";
                         let _title = "Người dùng không kích hoạt";
                         let _icon = "<span class='label label-danger'>Inactive</span>";
+
+                        data = data == 3 ? 1 : data;
 
                         switch ( data ) {
                             case 1:
@@ -117,6 +131,9 @@
 
                 $.each( user, function ( index, value ) {
                     if ( form.find( '[name="' + index + '"]' ).length ) {
+                        if ( index === 'status' && value == 3 ) {
+                            value = 1;
+                        }
                         if ( chosen.indexOf( index ) !== -1 ) {
 
                             value = JSON.parse( value );
@@ -138,7 +155,7 @@
                 form.find( '.form-group .add-post' ).addClass( 'd-none' );
                 form.find( '.field-password-confirmation' ).css( 'display', 'none' );
                 form.find( '.field-password .input-group-append' ).css( 'display', 'flex' );
-                form.find( '.form-group .update-post,.form-group .remove-post' ).removeClass( 'd-none' );
+                form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
             } else {
                 $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
             }
@@ -182,7 +199,7 @@
             return false;
         } );
         /* Update post */
-        $( document ).on( 'click', '.wrapper-content .btn.update-post', function () {
+        $( document ).on( 'click', '.wrapper-content .btn.edit-post', function () {
             let button = $( this ),
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
@@ -194,7 +211,7 @@
             return false;
         } );
         /* Remove post */
-        $( document ).on( 'click', '.wrapper-content .btn.remove-post', function () {
+        $( document ).on( 'click', '.wrapper-content .btn.delete-post', function () {
             let button = $( this ),
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
@@ -212,7 +229,7 @@
         <div class="ibox full-height-scroll">
             <div class="ibox-content">
 
-                @include( ovic_blade('Backend.users.list') )
+                @include( name_blade('Backend.users.list') )
 
             </div>
         </div>
@@ -221,7 +238,7 @@
         <div class="ibox selected full-height-scroll">
             <div class="ibox-content">
 
-                @include( ovic_blade('Backend.users.edit') )
+                @include( name_blade('Backend.users.edit') )
 
             </div>
         </div>
@@ -231,7 +248,7 @@
 
 @push( 'after-content' )
 
-    @include( ovic_blade('Backend.media.modal') )
+    @include( name_blade('Backend.media.modal') )
 
 @endpush
 

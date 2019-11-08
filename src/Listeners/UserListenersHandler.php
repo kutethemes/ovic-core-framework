@@ -5,6 +5,7 @@ namespace Ovic\Framework;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 
@@ -31,10 +32,7 @@ class UserListenersHandler
      */
     public function login( Login $event )
     {
-        $user = $event->user;
-        if ( !$this->request->session()->has('permission') ) {
-            $this->request->session()->put('permission', Roles::permission($user));
-        }
+        //
     }
 
     /**
@@ -45,6 +43,6 @@ class UserListenersHandler
      */
     public function logout( Logout $event )
     {
-        $this->request->session()->forget('permission');
+        //
     }
 }

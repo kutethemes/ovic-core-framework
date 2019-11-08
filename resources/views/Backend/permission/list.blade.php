@@ -43,17 +43,17 @@
                                 @if( !empty( $menu[0] ) )
                                     @foreach ( $menu[0] as $parent )
                                         <li class="dd-item{{ !empty( $menu[$parent['id']] ) ? ' has-children' : '' }}"
-                                            data-id="{{ $parent['id'] }}">
+                                            data-slug="{{ $parent['slug'] }}">
 
-                                            @include( ovic_blade('Backend.permission.item'), ['data' => $parent] )
+                                            @include( name_blade('Backend.permission.item'), ['data' => $parent] )
 
                                             @if( !empty( $menu[$parent['id']] ) )
 
                                                 <ol class="dd-list">
                                                     @foreach ( $menu[$parent['id']] as $children )
-                                                        <li class="dd-item" data-id="{{ $children['id'] }}">
+                                                        <li class="dd-item" data-slug="{{ $children['slug'] }}">
 
-                                                            @include( ovic_blade('Backend.permission.item'), ['data' => $children] )
+                                                            @include( name_blade('Backend.permission.item'), ['data' => $children] )
 
                                                         </li>
                                                     @endforeach

@@ -5,12 +5,13 @@ namespace Ovic\Framework;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
-    private $rules    = [
+    private $rules = [
         'name'        => [ 'required', 'string', 'max:100' ],
         'email'       => [ 'required', 'string', 'email', 'max:100', 'unique:users,email' ],
         'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
@@ -19,6 +20,7 @@ class UsersController extends Controller
         'donvi_ids.*' => [ 'string', 'integer' ],
         'role_ids.*'  => [ 'string', 'integer' ],
     ];
+
     private $messages = [
         'name.required'     => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
         'email.required'    => 'Email là trường bắt buộc tối đa 100 kí tự',
@@ -43,8 +45,14 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request )
     {
+        $permission = user_can('all');
+
+        if ( array_sum($permission) == 0 ) {
+            abort(404);
+        }
+
         $roles  = [];
         $donvis = [];
         $ucases = [];
@@ -54,14 +62,11 @@ class UsersController extends Controller
         if ( Roles::hasTable() ) {
             $roles = Roles::all([ 'id', 'title' ])->toArray();
         }
-        if ( Ucases::hasTable() ) {
-            $ucases = Ucases::all([ 'id', 'title' ])->toArray();
-        }
 
         return view(
-            ovic_blade('Backend.users.app'),
+            name_blade('Backend.users.app'),
             compact(
-                [ 'donvis', 'roles', 'ucases' ]
+                [ 'donvis', 'roles', 'permission' ]
             )
         );
     }
@@ -71,17 +76,7 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Show the users list a resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function users( Request $request )
+    public function create( Request $request )
     {
         $columns = [
             0 => 'avatar',
@@ -176,7 +171,7 @@ class UsersController extends Controller
 
         if ( !empty($user['avatar']) && $user['avatar'] > 0 ) {
             $path       = Posts::where('id', '=', $user['avatar'])->value('name');
-            $avatar_url = route('get_file', explode('/', $path));
+            $avatar_url = route('images.build', explode('/', $path));
         } else {
             $user['avatar'] = 0;
         }
@@ -201,6 +196,14 @@ class UsersController extends Controller
      */
     public function store( Request $request )
     {
+        if ( !user_can('add') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền thêm dữ liệu' ],
+                'data'    => [],
+            ]);
+        }
+
         $dataTable = [];
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
 
@@ -255,7 +258,7 @@ class UsersController extends Controller
     {
         $user = \Auth::user();
 
-        return view(ovic_blade('Backend.users.show'), compact('user'));
+        return view(name_blade('Backend.users.show'), compact('user'));
     }
 
     /**
@@ -280,6 +283,13 @@ class UsersController extends Controller
      */
     public function update( Request $request, $id )
     {
+        if ( !user_can('edit') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền sửa dữ liệu' ],
+                'data'    => [],
+            ]);
+        }
         $dataTable            = [];
         $this->rules['email'] = '';
         if ( !$request->has('password') ) {
@@ -292,9 +302,15 @@ class UsersController extends Controller
             $this->rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:users,email,'.$id ];
         }
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        $data      = $request->except([ '_token', 'id', 'dataTable' ]);
+        $data      = $request->except([ '_token', 'id', 'dataTable', 'route_id' ]);
 
         if ( $validator->passes() ) {
+            if ( User::find($id)->status == 3 ) {
+                $data['status']    = 3;
+                $data['role_ids']  = 0;
+                $data['donvi_id']  = 0;
+                $data['donvi_ids'] = 0;
+            }
             if ( !empty($data['password']) ) {
                 $data['password'] = Hash::make($data['password']);
             }
@@ -338,9 +354,26 @@ class UsersController extends Controller
      */
     public function destroy( $id )
     {
+        if ( !user_can('delete') ) {
+            return response()->json([
+                'status'  => 'warning',
+                'title'   => 'Bạn không được cấp quyền xóa dữ liệu!',
+                'message' => '',
+            ]);
+        }
+
+        if ( User::find($id)->status == 3 ) {
+            return response()->json([
+                'status'  => 'warning',
+                'title'   => 'Bạn không thể xóa người dùng này!',
+                'message' => '',
+            ]);
+        }
+
         $delete = User::find($id);
 
         if ( !empty($delete) ) {
+
             $delete->delete();
 
             return response()->json([

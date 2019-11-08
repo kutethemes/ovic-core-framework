@@ -302,8 +302,8 @@
             }, function ( isConfirm ) {
                 if ( isConfirm ) {
                     $.ajax( {
-                        url: "{{ route('upload.remove') }}",
-                        type: 'POST',
+                        url: "upload/0",
+                        type: 'DELETE',
                         dataType: 'json',
                         headers: {
                             'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
@@ -349,14 +349,15 @@
             offset.val( "{{ $offset }}" );
 
             $.ajax( {
-                url: "upload/filter",
-                type: 'POST',
+                url: "upload/create",
+                type: 'GET',
                 dataType: 'json',
                 headers: {
                     'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                 },
                 data: {
-                    _form: $( this ).serializeObject()
+                    form: $( this ).serializeObject(),
+                    filter: true
                 },
                 success: function ( response ) {
 
@@ -553,7 +554,7 @@
             </div>
             <div class="content-previews">
                 @if( !empty( $attachments ) )
-                    @each( ovic_blade('Backend.media.image') , $attachments, 'attachment')
+                    @each( name_blade('Backend.media.image') , $attachments, 'attachment')
                 @endif
             </div>
         </form>

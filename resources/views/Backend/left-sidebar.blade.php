@@ -7,14 +7,10 @@
      *
      * @version 1.0
      */
-    $name = Route::currentRouteName();
-    $system = [
-        'users.index',
-        'roles.index',
-        'ucases.index',
-        'upload.index',
-        'permission.index',
-    ];
+    $name       = Route::currentRouteName();
+    $name       = explode('.', $name, 2);
+    $name       = $name[0];
+    $left_menu  = $primary_menu['left'];
 @endphp
 <!-- Left Sidebar -->
 <nav class="navbar-default navbar-static-side" role="navigation">
@@ -39,24 +35,24 @@
                 </a>
             </li>
 
-            @if( !empty( $primary_menu['left'][0] ) )
-                @foreach( $primary_menu['left'][0] as $key => $parent )
-                    <li>
-                        <a href="{{ url("/{$parent['slug']}") }}">
-                            <i class="{{ $parent['router']['icon'] }}"></i>
+            @if( !empty( $left_menu[0] ) )
+                @foreach( $left_menu[0] as $key => $parent )
+                    <li @if ( $name == $parent['slug'] ) class="active" @endif>
+                        <a href="{{ url( "/{$parent['slug']}" ) }}">
+                            <i class="{{ $parent['route']['icon'] }}"></i>
                             <span class="nav-label">{{ $parent['title'] }}</span>
-                            @if( !empty( $primary_menu['left'][$parent['id']] ) )
+                            @if( !empty( $left_menu[$parent['id']] ) )
                                 <span class="fa arrow"></span>
                             @endif
                         </a>
 
-                        @if( !empty( $primary_menu['left'][$parent['id']] ) )
+                        @if( !empty( $left_menu[$parent['id']] ) )
 
                             <ul class="nav nav-second-level collapse">
-                                @foreach ( $primary_menu['left'][$parent['id']] as $children )
-                                    <li>
-                                        <a href="{{ url("/{$children['slug']}") }}">
-                                            <i class="{{ $children['router']['icon'] }}"></i>
+                                @foreach ( $left_menu[$parent['id']] as $children )
+                                    <li @if ( $name == $children['slug'] ) class="active" @endif>
+                                        <a href="{{ url( "/{$children['slug']}" ) }}">
+                                            <i class="{{ $children['route']['icon'] }}"></i>
                                             <span class="nav-label">{{ $children['title'] }}</span>
                                         </a>
                                     </li>
@@ -68,45 +64,6 @@
                 @endforeach
             @endif
 
-            <li @if ( in_array( $name, $system ) ) class="active" @endif>
-                <a href="#">
-                    <i class="fa fa-cogs"></i>
-                    <span class="nav-label">Hệ thống</span>
-                    <span class="fa arrow"></span>
-                </a>
-                <ul class="nav nav-second-level collapse">
-                    <li @if ( $name == 'users.index' ) class="active" @endif>
-                        <a href="{{ url('/users') }}">
-                            <i class="fa fa-users"></i>
-                            <span class="nav-label">Quản lý người dùng</span>
-                        </a>
-                    </li>
-                    <li @if ( $name == 'roles.index' ) class="active" @endif>
-                        <a href="{{ url('/roles') }}">
-                            <i class="fa fa-user-plus"></i>
-                            <span class="nav-label">Nhóm người dùng</span>
-                        </a>
-                    </li>
-                    <li @if ( $name == 'ucases.index' ) class="active" @endif>
-                        <a href="{{ url('/ucases') }}">
-                            <i class="fa fa-codepen"></i>
-                            <span class="nav-label">Quản lý chức năng</span>
-                        </a>
-                    </li>
-                    <li @if ( $name == 'permission.index' ) class="active" @endif>
-                        <a href="{{ url('/permission') }}">
-                            <i class="fa fa-key"></i>
-                            <span class="nav-label">Phân quyền chức năng</span>
-                        </a>
-                    </li>
-                    <li @if ( $name == 'upload.index' ) class="active" @endif>
-                        <a href="{{ url('/upload') }}">
-                            <i class="fa fa-folder-open"></i>
-                            <span class="nav-label">Quản lý dữ liệu</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
         </ul>
     </div>
 </nav>

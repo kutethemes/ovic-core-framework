@@ -10,7 +10,8 @@
 @endphp
 
 <div class="head-group col-sm-12">
-    <button class="btn btn-primary add-new" type="submit">
+    <button class="btn btn-primary add-new" type="submit"
+            @if( empty( $permission[0] ) || $permission[0] == false ) style="display: none" @endif>
         <i class="fa fa-plus"></i>
         Add new
     </button>

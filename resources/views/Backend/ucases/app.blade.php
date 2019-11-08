@@ -9,7 +9,7 @@
      */
 @endphp
 
-@extends( ovic_blade( 'Backend.app' ) )
+@extends( name_blade( 'Backend.app' ) )
 
 @section( 'title', 'QUẢN LÝ CHỨC NĂNG' )
 
@@ -217,6 +217,9 @@
     <script src="{{ asset('js/plugins/nestable/jquery.nestable.js') }}"></script>
 
     <script>
+        toastr.options = {
+            "preventDuplicates": true,
+        };
         var updateMenu = function ( e ) {
                 var list = e.length ? e : $( e.target ),
                     data = list.nestable( 'serialize' ),
@@ -225,8 +228,8 @@
                 loading.addClass( 'sk-loading' );
 
                 $.ajax( {
-                    url: "ucases/order",
-                    type: 'POST',
+                    url: "ucases/create",
+                    type: 'GET',
                     dataType: 'json',
                     data: {
                         data: data,
@@ -236,6 +239,7 @@
                         'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                     },
                     success: function ( response ) {
+                        toastr[response.status]( response.message );
                         loading.removeClass( 'sk-loading' );
                     }
                 } );
@@ -310,7 +314,7 @@
                         },
                         success: function ( response ) {
 
-                            let menu = $( '#menu-' + data.id ).closest('.dd-item');
+                            let menu = $( '#menu-' + data.id ).closest( '.dd-item' );
 
                             if ( response.status === 'success' ) {
                                 menu.remove();
@@ -356,6 +360,7 @@
                 form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
                 form.find( '.field-position' ).removeClass( 'd-none' );
                 $( '.dd .dd-item' ).removeClass( 'active' );
+                $( '.ibox-title a.hide' ).trigger( 'click' );
             }
 
             return false;
@@ -384,9 +389,9 @@
                 if ( !module.hasClass( 'hidden' ) ) module.addClass( 'hidden' );
                 if ( !controller.hasClass( 'hidden' ) ) controller.addClass( 'hidden' );
 
-                form.find( '[name="router[custom_link]"]' ).val( '' ).trigger( 'change' );
-                form.find( '[name="router[module]"]' ).val( '' ).trigger( 'change' );
-                form.find( '[name="router[controller]"]' ).val( '' ).trigger( 'change' );
+                form.find( '[name="route[custom_link]"]' ).val( '' ).trigger( 'change' );
+                form.find( '[name="route[module]"]' ).val( '' ).trigger( 'change' );
+                form.find( '[name="route[controller]"]' ).val( '' ).trigger( 'change' );
             }
             if ( button.hasClass( 'controller' ) ) {
 
@@ -394,7 +399,7 @@
                 if ( module.hasClass( 'hidden' ) ) module.removeClass( 'hidden' );
                 if ( controller.hasClass( 'hidden' ) ) controller.removeClass( 'hidden' );
 
-                form.find( '[name="router[custom_link]"]' ).val( '' ).trigger( 'change' );
+                form.find( '[name="route[custom_link]"]' ).val( '' ).trigger( 'change' );
             }
             if ( button.hasClass( 'custom_link' ) ) {
 
@@ -402,8 +407,8 @@
                 if ( !module.hasClass( 'hidden' ) ) module.addClass( 'hidden' );
                 if ( !controller.hasClass( 'hidden' ) ) controller.addClass( 'hidden' );
 
-                form.find( '[name="router[module]"]' ).val( '' ).trigger( 'change' );
-                form.find( '[name="router[controller]"]' ).val( '' ).trigger( 'change' );
+                form.find( '[name="route[module]"]' ).val( '' ).trigger( 'change' );
+                form.find( '[name="route[controller]"]' ).val( '' ).trigger( 'change' );
             }
 
             return false;
@@ -466,7 +471,8 @@
                             menu.find( '.dd-item' ).not( item ).removeClass( 'active' );
                             form.find( '.form-group .add-post' ).addClass( 'd-none' );
                             form.find( '.field-position' ).addClass( 'd-none' );
-                            form.find( '.form-group .update-post,.form-group .remove-post' ).removeClass( 'd-none' );
+                            form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
+                            loading.prev( '.ibox-title' ).find( 'a.controller' ).trigger( 'click' );
                         } else {
                             swal( {
                                 type: response.status,
@@ -506,7 +512,7 @@
                     if ( response.status === 200 ) {
 
                         data.id = response.id;
-                        data.icon = form.find( 'input[name="router[icon]"]' ).val();
+                        data.icon = form.find( 'input[name="route[icon]"]' ).val();
                         let html = template( data, true );
 
                         if ( data.position === 'left' ) {
@@ -537,7 +543,7 @@
             } );
         } );
         /* Update post */
-        $( document ).on( 'click', '#edit-post .btn.update-post', function () {
+        $( document ).on( 'click', '#edit-post .btn.edit-post', function () {
             let button = $( this ),
                 form = button.closest( '#edit-post' ),
                 loading = $( '.ibox-content.ibox-list' ),
@@ -556,7 +562,7 @@
                 success: function ( response ) {
                     if ( response.status === 200 ) {
 
-                        data.icon = form.find( 'input[name="router[icon]"]' ).val();
+                        data.icon = form.find( 'input[name="route[icon]"]' ).val();
                         let html = template( data );
 
                         $( '#menu-' + data.id ).replaceWith( html );
@@ -584,7 +590,7 @@
             return false;
         } );
         /* Remove post */
-        $( document ).on( 'click', '#edit-post .btn.remove-post', function () {
+        $( document ).on( 'click', '#edit-post .btn.delete-post', function () {
             let button = $( this ),
                 form = button.closest( '#edit-post' ),
                 data = form.serializeObject();
@@ -616,14 +622,14 @@
     <div class="col-sm-4 full-height">
         <div class="ibox selected full-height-scroll">
 
-            @include( ovic_blade('Backend.ucases.edit') )
+            @include( name_blade('Backend.ucases.edit') )
 
         </div>
     </div>
     <div class="col-sm-8 full-height">
         <div class="ibox full-height-scroll">
 
-            @include( ovic_blade('Backend.ucases.list') )
+            @include( name_blade('Backend.ucases.list') )
 
         </div>
     </div>
@@ -632,6 +638,6 @@
 
 @push( 'after-content' )
 
-    @include( ovic_blade('Fields.icon.modal') )
+    @include( name_blade('Fields.icon.modal') )
 
 @endpush

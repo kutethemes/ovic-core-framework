@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
 {
-    private $rules    = [
+    private $rules = [
         'name'        => [ 'required', 'string', 'max:100', 'unique:roles,name' ],
         'title'       => [ 'required', 'string', 'max:100' ],
         'description' => [ 'string' ],
         'ordering'    => [ 'numeric', 'min:0' ],
         'status'      => [ 'numeric', 'min:0', 'max:1' ],
     ];
+
     private $messages = [
         'name.required'  => 'Tên là trường bắt buộc tối đa 100 kí tự',
         'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
@@ -25,16 +26,34 @@ class RolesController extends Controller
     ];
 
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        // Người dùng hiện tại
-        $user = auth()->user();
+        $permission = user_can('all');
 
-        return view(ovic_blade('Backend.roles.app'));
+        if ( array_sum($permission) == 0 ) {
+            abort(404);
+        }
+
+        return view(
+            name_blade('Backend.roles.app'),
+            compact(
+                [ 'permission' ]
+            )
+        );
     }
 
     /**
@@ -42,17 +61,7 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Show the role list a resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function roles( Request $request )
+    public function create( Request $request )
     {
         $totalData = Roles::count();
 
@@ -145,6 +154,13 @@ class RolesController extends Controller
      */
     public function store( Request $request )
     {
+        if ( !user_can('add') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền thêm dữ liệu' ],
+            ]);
+        }
+
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
 
         if ( $validator->passes() ) {
@@ -210,6 +226,14 @@ class RolesController extends Controller
      */
     public function update( Request $request, $id )
     {
+        if ( !user_can('edit') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền sửa dữ liệu' ],
+                'data'    => [],
+            ]);
+        }
+
         $dataTable = [];
 
         $this->rules['name'] = '';
@@ -261,6 +285,14 @@ class RolesController extends Controller
      */
     public function destroy( $id )
     {
+        if ( !user_can('delete') ) {
+            return response()->json([
+                'status'  => 'warning',
+                'title'   => 'Bạn không được cấp quyền xóa dữ liệu!',
+                'message' => '',
+            ]);
+        }
+
         $delete = Roles::find($id);
 
         if ( !empty($delete) ) {

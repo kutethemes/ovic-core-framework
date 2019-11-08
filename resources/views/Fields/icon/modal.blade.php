@@ -262,7 +262,7 @@
 
                         $modal.find( '.ovic-modal-loading' ).show();
 
-                        $.get( 'get-icons', {
+                        $.get( 'icon-fonts', {
                             _token: $( 'meta[name="csrf-token"]' ).attr( 'content' )
                         } ).done( function ( response ) {
 

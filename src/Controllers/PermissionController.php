@@ -5,6 +5,7 @@ namespace Ovic\Framework;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,7 +18,7 @@ class PermissionController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission');
+        $this->middleware('auth');
     }
 
     /**
@@ -27,63 +28,23 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        $permission = user_can('all');
+
+        if ( array_sum($permission) == 0 ) {
+            abort(404);
+        }
+
         $roles = Roles::where('status', '1')
             ->orderBy('ordering', 'asc')
             ->get()
             ->toArray();
 
         $menus = [
-            'menu-left' => Ucases::Menus('left', true),
-            'menu-top'  => Ucases::Menus('top', true),
+            'menu-left' => Ucases::EditMenu('left', true),
+            'menu-top'  => Ucases::EditMenu('top', true),
         ];
 
-        return view(ovic_blade('Backend.permission.app'), compact([ 'menus', 'roles' ]));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store( Request $request )
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show( $id )
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit( $id )
-    {
-        //
+        return view(name_blade('Backend.permission.app'), compact([ 'menus', 'roles', 'permission' ]));
     }
 
     /**
@@ -96,6 +57,14 @@ class PermissionController extends Controller
      */
     public function update( Request $request, $id )
     {
+        if ( !user_can('edit') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền sửa dữ liệu' ],
+                'data'    => [],
+            ]);
+        }
+
         $validator = Validator::make($request->all(), [
             'id' => [ 'required', 'numeric', 'unique:roles,id,'.$id ],
         ]);
@@ -109,10 +78,12 @@ class PermissionController extends Controller
 
             if ( !empty($data) ) {
                 foreach ( $data as $key => $value ) {
-                    if ( count(array_keys($value, '0')) == count($value) ) {
-                        unset($ucase_ids[$key]);
-                    } else {
-                        $ucase_ids[$key] = $value;
+                    if ( is_array($value) ) {
+                        if ( array_sum($value) == 0 ) {
+                            unset($ucase_ids[$key]);
+                        } else {
+                            $ucase_ids[$key] = $value;
+                        }
                     }
                 }
             }
@@ -124,12 +95,6 @@ class PermissionController extends Controller
             Roles::where('id', $id)->update([
                 'ucase_ids' => $ucase_ids
             ]);
-
-            $user     = auth()->user();
-            $role_ids = json_decode($user->role_ids, true);
-            if ( in_array($id, $role_ids) ) {
-                $request->session()->put('permission', Roles::permission($user));
-            }
 
             return response()->json([
                 'status'  => 200,
@@ -143,17 +108,5 @@ class PermissionController extends Controller
             'status'  => 400,
             'message' => $validator->errors()->all(),
         ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy( $id )
-    {
-        //
     }
 }

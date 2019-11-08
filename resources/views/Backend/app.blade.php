@@ -29,6 +29,10 @@
     <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
 
     <style>
+        .navbar-top-links li {
+            position: relative;
+        }
+
         .navbar-default .nav > li > a {
             font-weight: 400;
             font-size: 12px;
@@ -102,11 +106,11 @@
 
     @stack( 'before-content' )
 
-    @include( ovic_blade('Backend.left-sidebar') )
+    @include( name_blade('Backend.left-sidebar') )
 
     <div id="page-wrapper" class="gray-bg">
 
-        @include( ovic_blade('Backend.nav-bar') )
+        @include( name_blade('Backend.nav-bar') )
 
         <div class="row full-height-content wrapper wrapper-content animated fadeInUp">
 
@@ -114,11 +118,11 @@
 
         </div>
 
-        @include( ovic_blade('Backend.footer') )
+        @include( name_blade('Backend.footer') )
 
     </div>
 
-    @include( ovic_blade('Backend.right-sidebar') )
+    @include( name_blade('Backend.right-sidebar') )
 
     @stack( 'after-content' )
 

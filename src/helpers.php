@@ -1,166 +1,103 @@
 <?php
+
+use Illuminate\Support\Facades\Route;
+use Ovic\Framework\Roles;
+
 /**
  * Get the evaluated view contents for the given view.
  *
- * @param string|null $view
+ * @param  string|null  $view
  *
  * @return string
  */
-function ovic_blade( $view = null )
+function name_blade( $view = null )
 {
-	if ( !view()->exists( $view ) ) {
-		$view = "ovic::{$view}";
-	}
+    if ( !view()->exists($view) ) {
+        $view = "ovic::{$view}";
+    }
 
-	return $view;
+    return $view;
 }
 
-/**
- * Unserialize value only if it was serialized.
- *
- * @param string $original Maybe unserialized original, if is needed.
- *
- * @return mixed Unserialized data can be any type.
- * @since 2.0.0
- *
- */
-function maybe_unserialize( $original )
+function user_can( $can )
 {
-	if ( is_serialized( $original ) ) { // don't attempt to unserialize data that wasn't serialized going in
-		return @unserialize( $original );
-	}
+    switch ( $can ) {
+        case 'add':
+            $can = 0;
+            break;
+        case 'edit':
+            $can = 1;
+            break;
+        case 'delete':
+            $can = 2;
+            break;
+    }
+    $route      = Route::currentRouteName();
+    $route      = explode('.', $route, 2);
+    $route      = $route[0];
+    $permission = Roles::Permission($route);
 
-	return $original;
+    if ( $can == 'all' ) {
+        if ( !empty($permission) ) {
+            return $permission;
+        }
+        return [ 0, 0, 0 ];
+    }
+
+    if ( !empty($permission[$can]) && $permission[$can] == 1 ) {
+        return true;
+    }
+
+    return false;
 }
 
-/**
- * Check value to find if it was serialized.
- *
- * If $data is not an string, then returned value will always be false.
- * Serialized data is always a string.
- *
- * @param string $data Value to check to see if was serialized.
- * @param bool   $strict Optional. Whether to be strict about the end of the string. Default true.
- *
- * @return bool False if not serialized and true if it was.
- * @since 2.0.5
- *
- */
-function is_serialized( $data, $strict = true )
+function button_set( $button, $permission, $attr = [] )
 {
-	// if it isn't a string, it isn't serialized.
-	if ( !is_string( $data ) ) {
-		return false;
-	}
-	$data = trim( $data );
-	if ( 'N;' == $data ) {
-		return true;
-	}
-	if ( strlen( $data ) < 4 ) {
-		return false;
-	}
-	if ( ':' !== $data[1] ) {
-		return false;
-	}
-	if ( $strict ) {
-		$lastc = substr( $data, -1 );
-		if ( ';' !== $lastc && '}' !== $lastc ) {
-			return false;
-		}
-	} else {
-		$semicolon = strpos( $data, ';' );
-		$brace     = strpos( $data, '}' );
-		// Either ; or } must exist.
-		if ( false === $semicolon && false === $brace ) {
-			return false;
-		}
-		// But neither must be in the first X characters.
-		if ( false !== $semicolon && $semicolon < 3 ) {
-			return false;
-		}
-		if ( false !== $brace && $brace < 4 ) {
-			return false;
-		}
-	}
-	$token = $data[0];
-	switch ( $token ) {
-		case 's':
-			if ( $strict ) {
-				if ( '"' !== substr( $data, -2, 1 ) ) {
-					return false;
-				}
-			} elseif ( false === strpos( $data, '"' ) ) {
-				return false;
-			}
-		// or else fall through
-		case 'a':
-		case 'O':
-			return (bool)preg_match( "/^{$token}:[0-9]+:/s", $data );
-		case 'b':
-		case 'i':
-		case 'd':
-			$end = $strict ? '$' : '';
+    switch ( $button ) {
+        case 'add':
+            $key     = 0;
+            $class   = ' add-post';
+            $default = [
+                'text'  => 'Thêm',
+                'type'  => 'button',
+                'icon'  => 'fa fa-upload',
+                'class' => 'btn-primary',
+            ];
+            break;
+        case 'edit':
+            $key     = 1;
+            $class   = ' edit-post';
+            $default = [
+                'text'  => 'Sửa',
+                'type'  => 'button',
+                'icon'  => 'fa fa-save',
+                'class' => 'btn-primary',
+            ];
+            break;
+        case 'delete':
+            $key     = 2;
+            $class   = ' delete-post';
+            $default = [
+                'text'  => 'Xóa',
+                'type'  => 'button',
+                'icon'  => 'fa fa-trash-o',
+                'class' => 'btn-danger',
+            ];
+            break;
+    }
+    $attr = ovic_parse_args($attr, $default);
 
-			return (bool)preg_match( "/^{$token}:[0-9.E-]+;$end/", $data );
-	}
+    if ( !empty($permission[$key]) && $permission[$key] == true ) {
 
-	return false;
-}
-
-/**
- * Check whether serialized data is of string type.
- *
- * @param string $data Serialized data.
- *
- * @return bool False if not a serialized string, true if it is.
- * @since 2.0.5
- *
- */
-function is_serialized_string( $data )
-{
-	// if it isn't a string, it isn't a serialized string.
-	if ( !is_string( $data ) ) {
-		return false;
-	}
-	$data = trim( $data );
-	if ( strlen( $data ) < 4 ) {
-		return false;
-	} elseif ( ':' !== $data[1] ) {
-		return false;
-	} elseif ( ';' !== substr( $data, -1 ) ) {
-		return false;
-	} elseif ( $data[0] !== 's' ) {
-		return false;
-	} elseif ( '"' !== substr( $data, -2, 1 ) ) {
-		return false;
-	} else {
-		return true;
-	}
-}
-
-/**
- * Serialize data, if needed.
- *
- * @param string|array|object $data Data that might be serialized.
- *
- * @return mixed A scalar data
- * @since 2.0.5
- *
- */
-function maybe_serialize( $data )
-{
-	if ( is_array( $data ) || is_object( $data ) ) {
-		return serialize( $data );
-	}
-
-	// Double serialization is required for backward compatibility.
-	// See https://core.trac.wordpress.org/ticket/12930
-	// Also the world will end. See WP 3.6.1.
-	if ( is_serialized( $data, false ) ) {
-		return serialize( $data );
-	}
-
-	return $data;
+        return view(
+            name_blade('Components.button'))
+            ->with([
+                'text'  => $attr['text'],
+                'type'  => $attr['type'],
+                'icon'  => $attr['icon'],
+                'class' => $attr['class'].$class,
+            ]);
+    }
 }
 
 /**
@@ -169,18 +106,18 @@ function maybe_serialize( $data )
  * Uses {@link https://secure.php.net/parse_str parse_str()} and stripslashes if
  * {@link https://secure.php.net/magic_quotes magic_quotes_gpc} is on.
  *
- * @param string $string The string to be parsed.
- * @param array  $array Variables will be stored in this array.
+ * @param  string  $string  The string to be parsed.
+ * @param  array  $array  Variables will be stored in this array.
  *
  * @since 2.2.1
  *
  */
 function ovic_parse_str( $string, &$array )
 {
-	parse_str( $string, $array );
-	if ( get_magic_quotes_gpc() ) {
-		$array = stripslashes_deep( $array );
-	}
+    ovic_parse_str($string, $array);
+    if ( get_magic_quotes_gpc() ) {
+        $array = stripslashes_deep($array);
+    }
 }
 
 /**
@@ -189,8 +126,8 @@ function ovic_parse_str( $string, &$array )
  * This function is used throughout WordPress to allow for both string or array
  * to be merged into another array.
  *
- * @param string|array|object $args Value to merge with $defaults.
- * @param array               $defaults Optional. Array that serves as the defaults. Default empty.
+ * @param  string|array|object  $args  Value to merge with $defaults.
+ * @param  array  $defaults  Optional. Array that serves as the defaults. Default empty.
  *
  * @return array Merged user defined values with defaults.
  * @since 2.3.0 `$args` can now also be an object.
@@ -199,25 +136,173 @@ function ovic_parse_str( $string, &$array )
  */
 function ovic_parse_args( $args, $defaults = '' )
 {
-	if ( is_object( $args ) ) {
-		$r = get_object_vars( $args );
-	} elseif ( is_array( $args ) ) {
-		$r =& $args;
-	} else {
-		ovic_parse_str( $args, $r );
-	}
+    if ( is_object($args) ) {
+        $r = get_object_vars($args);
+    } elseif ( is_array($args) ) {
+        $r =& $args;
+    } else {
+        ovic_parse_str($args, $r);
+    }
 
-	if ( is_array( $defaults ) ) {
-		return array_merge( $defaults, $r );
-	}
+    if ( is_array($defaults) ) {
+        return array_merge($defaults, $r);
+    }
 
-	return $r;
+    return $r;
+}
+
+/**
+ * Unserialize value only if it was serialized.
+ *
+ * @param  string  $original  Maybe unserialized original, if is needed.
+ *
+ * @return mixed Unserialized data can be any type.
+ * @since 2.0.0
+ *
+ */
+function maybe_unserialize( $original )
+{
+    if ( is_serialized($original) ) { // don't attempt to unserialize data that wasn't serialized going in
+        return @unserialize($original);
+    }
+
+    return $original;
+}
+
+/**
+ * Check value to find if it was serialized.
+ *
+ * If $data is not an string, then returned value will always be false.
+ * Serialized data is always a string.
+ *
+ * @param  string  $data  Value to check to see if was serialized.
+ * @param  bool  $strict  Optional. Whether to be strict about the end of the string. Default true.
+ *
+ * @return bool False if not serialized and true if it was.
+ * @since 2.0.5
+ *
+ */
+function is_serialized( $data, $strict = true )
+{
+    // if it isn't a string, it isn't serialized.
+    if ( !is_string($data) ) {
+        return false;
+    }
+    $data = trim($data);
+    if ( 'N;' == $data ) {
+        return true;
+    }
+    if ( strlen($data) < 4 ) {
+        return false;
+    }
+    if ( ':' !== $data[1] ) {
+        return false;
+    }
+    if ( $strict ) {
+        $lastc = substr($data, -1);
+        if ( ';' !== $lastc && '}' !== $lastc ) {
+            return false;
+        }
+    } else {
+        $semicolon = strpos($data, ';');
+        $brace     = strpos($data, '}');
+        // Either ; or } must exist.
+        if ( false === $semicolon && false === $brace ) {
+            return false;
+        }
+        // But neither must be in the first X characters.
+        if ( false !== $semicolon && $semicolon < 3 ) {
+            return false;
+        }
+        if ( false !== $brace && $brace < 4 ) {
+            return false;
+        }
+    }
+    $token = $data[0];
+    switch ( $token ) {
+        case 's':
+            if ( $strict ) {
+                if ( '"' !== substr($data, -2, 1) ) {
+                    return false;
+                }
+            } elseif ( false === strpos($data, '"') ) {
+                return false;
+            }
+        // or else fall through
+        case 'a':
+        case 'O':
+            return (bool) preg_match("/^{$token}:[0-9]+:/s", $data);
+        case 'b':
+        case 'i':
+        case 'd':
+            $end = $strict ? '$' : '';
+
+            return (bool) preg_match("/^{$token}:[0-9.E-]+;$end/", $data);
+    }
+
+    return false;
+}
+
+/**
+ * Check whether serialized data is of string type.
+ *
+ * @param  string  $data  Serialized data.
+ *
+ * @return bool False if not a serialized string, true if it is.
+ * @since 2.0.5
+ *
+ */
+function is_serialized_string( $data )
+{
+    // if it isn't a string, it isn't a serialized string.
+    if ( !is_string($data) ) {
+        return false;
+    }
+    $data = trim($data);
+    if ( strlen($data) < 4 ) {
+        return false;
+    } elseif ( ':' !== $data[1] ) {
+        return false;
+    } elseif ( ';' !== substr($data, -1) ) {
+        return false;
+    } elseif ( $data[0] !== 's' ) {
+        return false;
+    } elseif ( '"' !== substr($data, -2, 1) ) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
+ * Serialize data, if needed.
+ *
+ * @param  string|array|object  $data  Data that might be serialized.
+ *
+ * @return mixed A scalar data
+ * @since 2.0.5
+ *
+ */
+function maybe_serialize( $data )
+{
+    if ( is_array($data) || is_object($data) ) {
+        return serialize($data);
+    }
+
+    // Double serialization is required for backward compatibility.
+    // See https://core.trac.wordpress.org/ticket/12930
+    // Also the world will end. See WP 3.6.1.
+    if ( is_serialized($data, false) ) {
+        return serialize($data);
+    }
+
+    return $data;
 }
 
 /**
  * Convert a value to non-negative integer.
  *
- * @param mixed $maybeint Data you wish to have converted to a non-negative integer.
+ * @param  mixed  $maybeint  Data you wish to have converted to a non-negative integer.
  *
  * @return int A non-negative integer.
  * @since 2.5.0
@@ -225,14 +310,14 @@ function ovic_parse_args( $args, $defaults = '' )
  */
 function absint( $maybeint )
 {
-	return abs( intval( $maybeint ) );
+    return abs(intval($maybeint));
 }
 
 /**
  * Convert float number to format based on the locale.
  *
- * @param float      $number The number to convert based on locale.
- * @param int        $decimals Optional. Precision of the number of decimal places. Default 0.
+ * @param  float  $number  The number to convert based on locale.
+ * @param  int  $decimals  Optional. Precision of the number of decimal places. Default 0.
  *
  * @return string Converted number in string format.
  * @global WP_Locale $wp_locale
@@ -242,20 +327,20 @@ function absint( $maybeint )
  */
 function number_format_i18n( $number, $decimals = 0 )
 {
-	$formatted = number_format( $number, absint( $decimals ) );
+    $formatted = number_format($number, absint($decimals));
 
-	/**
-	 * Filters the number formatted based on the locale.
-	 *
-	 * @param string $formatted Converted number in string format.
-	 * @param float  $number The number to convert based on locale.
-	 * @param int    $decimals Precision of the number of decimal places.
-	 *
-	 * @since 4.9.0 The `$number` and `$decimals` parameters were added.
-	 *
-	 * @since 2.8.0
-	 */
-	return $formatted;
+    /**
+     * Filters the number formatted based on the locale.
+     *
+     * @param  string  $formatted  Converted number in string format.
+     * @param  float  $number  The number to convert based on locale.
+     * @param  int  $decimals  Precision of the number of decimal places.
+     *
+     * @since 4.9.0 The `$number` and `$decimals` parameters were added.
+     *
+     * @since 2.8.0
+     */
+    return $formatted;
 }
 
 /**
@@ -272,8 +357,8 @@ function number_format_i18n( $number, $decimals = 0 )
  *
  * Technically the correct unit names for powers of 1024 are KiB, MiB etc.
  *
- * @param int|string $bytes Number of bytes. Note max integer size for integers.
- * @param int        $decimals Optional. Precision of number of decimal places. Default 0.
+ * @param  int|string  $bytes  Number of bytes. Note max integer size for integers.
+ * @param  int  $decimals  Optional. Precision of number of decimal places. Default 0.
  *
  * @return string|false False on failure. Number string on success.
  * @since 2.3.0
@@ -281,30 +366,30 @@ function number_format_i18n( $number, $decimals = 0 )
  */
 function size_format( $bytes, $decimals = 0 )
 {
-	$KB_IN_BYTES = 1024;
-	$MB_IN_BYTES = 1024 * $KB_IN_BYTES;
-	$GB_IN_BYTES = 1024 * $MB_IN_BYTES;
-	$TB_IN_BYTES = 1024 * $GB_IN_BYTES;
+    $KB_IN_BYTES = 1024;
+    $MB_IN_BYTES = 1024 * $KB_IN_BYTES;
+    $GB_IN_BYTES = 1024 * $MB_IN_BYTES;
+    $TB_IN_BYTES = 1024 * $GB_IN_BYTES;
 
-	$quant = array(
-		'TB' => $TB_IN_BYTES,
-		'GB' => $GB_IN_BYTES,
-		'MB' => $MB_IN_BYTES,
-		'KB' => $KB_IN_BYTES,
-		'B'  => 1,
-	);
+    $quant = array(
+        'TB' => $TB_IN_BYTES,
+        'GB' => $GB_IN_BYTES,
+        'MB' => $MB_IN_BYTES,
+        'KB' => $KB_IN_BYTES,
+        'B'  => 1,
+    );
 
-	if ( 0 === $bytes ) {
-		return number_format_i18n( 0, $decimals ) . ' B';
-	}
+    if ( 0 === $bytes ) {
+        return number_format_i18n(0, $decimals).' B';
+    }
 
-	foreach ( $quant as $unit => $mag ) {
-		if ( doubleval( $bytes ) >= $mag ) {
-			return number_format_i18n( $bytes / $mag, $decimals ) . ' ' . $unit;
-		}
-	}
+    foreach ( $quant as $unit => $mag ) {
+        if ( doubleval($bytes) >= $mag ) {
+            return number_format_i18n($bytes / $mag, $decimals).' '.$unit;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 /**
@@ -313,8 +398,8 @@ function size_format( $bytes, $decimals = 0 )
  * The difference is returned in a human readable format such as "1 hour",
  * "5 mins", "2 days".
  *
- * @param int $from Unix timestamp from which the difference begins.
- * @param int $to Optional. Unix timestamp to end the time difference. Default becomes time() if not set.
+ * @param  int  $from  Unix timestamp from which the difference begins.
+ * @param  int  $to  Optional. Unix timestamp to end the time difference. Default becomes time() if not set.
  *
  * @return string Human readable time difference.
  * @since 1.5.0
@@ -322,73 +407,73 @@ function size_format( $bytes, $decimals = 0 )
  */
 function human_time_diff( $from, $to = '' )
 {
-	$MINUTE_IN_SECONDS = 60;
-	$HOUR_IN_SECONDS   = 60 * $MINUTE_IN_SECONDS;
-	$DAY_IN_SECONDS    = 24 * $HOUR_IN_SECONDS;
-	$WEEK_IN_SECONDS   = 7 * $DAY_IN_SECONDS;
-	$MONTH_IN_SECONDS  = 30 * $DAY_IN_SECONDS;
-	$YEAR_IN_SECONDS   = 365 * $DAY_IN_SECONDS;
+    $MINUTE_IN_SECONDS = 60;
+    $HOUR_IN_SECONDS   = 60 * $MINUTE_IN_SECONDS;
+    $DAY_IN_SECONDS    = 24 * $HOUR_IN_SECONDS;
+    $WEEK_IN_SECONDS   = 7 * $DAY_IN_SECONDS;
+    $MONTH_IN_SECONDS  = 30 * $DAY_IN_SECONDS;
+    $YEAR_IN_SECONDS   = 365 * $DAY_IN_SECONDS;
 
-	if ( empty( $to ) ) {
-		$to = time();
-	}
+    if ( empty($to) ) {
+        $to = time();
+    }
 
-	$diff = (int)abs( $to - $from );
+    $diff = (int) abs($to - $from);
 
-	if ( $diff < $HOUR_IN_SECONDS ) {
-		$mins = round( $diff / $MINUTE_IN_SECONDS );
-		if ( $mins <= 1 ) {
-			$mins = 1;
-		}
-		/* translators: Time difference between two dates, in minutes (min=minute). %s: Number of minutes */
-		$since = sprintf( _n( '%s min', '%s mins', $mins ), $mins );
-	} elseif ( $diff < $DAY_IN_SECONDS && $diff >= $HOUR_IN_SECONDS ) {
-		$hours = round( $diff / $HOUR_IN_SECONDS );
-		if ( $hours <= 1 ) {
-			$hours = 1;
-		}
-		/* translators: Time difference between two dates, in hours. %s: Number of hours */
-		$since = sprintf( _n( '%s hour', '%s hours', $hours ), $hours );
-	} elseif ( $diff < $WEEK_IN_SECONDS && $diff >= $DAY_IN_SECONDS ) {
-		$days = round( $diff / $DAY_IN_SECONDS );
-		if ( $days <= 1 ) {
-			$days = 1;
-		}
-		/* translators: Time difference between two dates, in days. %s: Number of days */
-		$since = sprintf( _n( '%s day', '%s days', $days ), $days );
-	} elseif ( $diff < $MONTH_IN_SECONDS && $diff >= $WEEK_IN_SECONDS ) {
-		$weeks = round( $diff / $WEEK_IN_SECONDS );
-		if ( $weeks <= 1 ) {
-			$weeks = 1;
-		}
-		/* translators: Time difference between two dates, in weeks. %s: Number of weeks */
-		$since = sprintf( _n( '%s week', '%s weeks', $weeks ), $weeks );
-	} elseif ( $diff < $YEAR_IN_SECONDS && $diff >= $MONTH_IN_SECONDS ) {
-		$months = round( $diff / $MONTH_IN_SECONDS );
-		if ( $months <= 1 ) {
-			$months = 1;
-		}
-		/* translators: Time difference between two dates, in months. %s: Number of months */
-		$since = sprintf( _n( '%s month', '%s months', $months ), $months );
-	} elseif ( $diff >= $YEAR_IN_SECONDS ) {
-		$years = round( $diff / $YEAR_IN_SECONDS );
-		if ( $years <= 1 ) {
-			$years = 1;
-		}
-		/* translators: Time difference between two dates, in years. %s: Number of years */
-		$since = sprintf( _n( '%s year', '%s years', $years ), $years );
-	}
+    if ( $diff < $HOUR_IN_SECONDS ) {
+        $mins = round($diff / $MINUTE_IN_SECONDS);
+        if ( $mins <= 1 ) {
+            $mins = 1;
+        }
+        /* translators: Time difference between two dates, in minutes (min=minute). %s: Number of minutes */
+        $since = sprintf(_n('%s min', '%s mins', $mins), $mins);
+    } elseif ( $diff < $DAY_IN_SECONDS && $diff >= $HOUR_IN_SECONDS ) {
+        $hours = round($diff / $HOUR_IN_SECONDS);
+        if ( $hours <= 1 ) {
+            $hours = 1;
+        }
+        /* translators: Time difference between two dates, in hours. %s: Number of hours */
+        $since = sprintf(_n('%s hour', '%s hours', $hours), $hours);
+    } elseif ( $diff < $WEEK_IN_SECONDS && $diff >= $DAY_IN_SECONDS ) {
+        $days = round($diff / $DAY_IN_SECONDS);
+        if ( $days <= 1 ) {
+            $days = 1;
+        }
+        /* translators: Time difference between two dates, in days. %s: Number of days */
+        $since = sprintf(_n('%s day', '%s days', $days), $days);
+    } elseif ( $diff < $MONTH_IN_SECONDS && $diff >= $WEEK_IN_SECONDS ) {
+        $weeks = round($diff / $WEEK_IN_SECONDS);
+        if ( $weeks <= 1 ) {
+            $weeks = 1;
+        }
+        /* translators: Time difference between two dates, in weeks. %s: Number of weeks */
+        $since = sprintf(_n('%s week', '%s weeks', $weeks), $weeks);
+    } elseif ( $diff < $YEAR_IN_SECONDS && $diff >= $MONTH_IN_SECONDS ) {
+        $months = round($diff / $MONTH_IN_SECONDS);
+        if ( $months <= 1 ) {
+            $months = 1;
+        }
+        /* translators: Time difference between two dates, in months. %s: Number of months */
+        $since = sprintf(_n('%s month', '%s months', $months), $months);
+    } elseif ( $diff >= $YEAR_IN_SECONDS ) {
+        $years = round($diff / $YEAR_IN_SECONDS);
+        if ( $years <= 1 ) {
+            $years = 1;
+        }
+        /* translators: Time difference between two dates, in years. %s: Number of years */
+        $since = sprintf(_n('%s year', '%s years', $years), $years);
+    }
 
-	/**
-	 * Filters the human readable difference between two timestamps.
-	 *
-	 * @param string $since The difference in human readable text.
-	 * @param int    $diff The difference in seconds.
-	 * @param int    $from Unix timestamp from which the difference begins.
-	 * @param int    $to Unix timestamp to end the time difference.
-	 *
-	 * @since 4.0.0
-	 *
-	 */
-	return $since;
+    /**
+     * Filters the human readable difference between two timestamps.
+     *
+     * @param  string  $since  The difference in human readable text.
+     * @param  int  $diff  The difference in seconds.
+     * @param  int  $from  Unix timestamp from which the difference begins.
+     * @param  int  $to  Unix timestamp to end the time difference.
+     *
+     * @since 4.0.0
+     *
+     */
+    return $since;
 }

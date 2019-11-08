@@ -17,14 +17,24 @@ class UcasesController extends Controller
         'parent_id' => [ 'numeric', 'min:0' ],
         'access'    => [ 'numeric', 'min:0', 'max:2' ],
         'status'    => [ 'numeric', 'min:0', 'max:2' ],
-        'router.*'  => [ 'string', 'nullable' ],
+        'route.*'   => [ 'string', 'nullable' ],
     ];
     private $messages = [
-        'slug.required'  => 'Tên router là trường bắt buộc tối đa 100 kí tự',
+        'slug.required'  => 'Tên route là trường bắt buộc tối đa 100 kí tự',
         'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
         'access.max'     => 'Quyền truy cập chấp nhận 3 ký tự số 0, 1 và 2',
         'status.max'     => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
     ];
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Display a listing of the resource.
@@ -33,12 +43,18 @@ class UcasesController extends Controller
      */
     public function index()
     {
+        $permission = user_can('all');
+
+        if ( array_sum($permission) == 0 ) {
+            abort(404);
+        }
+
         $menus = [
-            'menu-left' => Ucases::Menus('left'),
-            'menu-top'  => Ucases::Menus('top'),
+            'menu-left' => Ucases::EditMenu('left'),
+            'menu-top'  => Ucases::EditMenu('top'),
         ];
 
-        return view(ovic_blade('Backend.ucases.app'), compact('menus'));
+        return view(name_blade('Backend.ucases.app'), compact([ 'menus', 'permission' ]));
     }
 
     /**
@@ -46,96 +62,48 @@ class UcasesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create( Request $request )
     {
-        //
-    }
-
-    /**
-     * Show the ucase list a resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function ucases( Request $request )
-    {
-        $totalData = Ucases::count();
-
-        $totalFiltered = $totalData;
-
-        $limit  = $request->input('length');
-        $start  = $request->input('start');
-        $sort   = $request->input('sorting');
-        $search = $request->input('search.value');
-        $status = $request->input('columns.1.search.value');
-
-        $sorting = [
-            [ 'id', '>', 0 ],
-        ];
-
-        if ( $status != '' ) {
-            $sorting = [
-                [ 'status', '=', $status ],
-            ];
-        } elseif ( $sort != '' && !empty($search) ) {
-            $sorting = [
-                [ 'status', '=', $sort ],
-            ];
+        if ( !user_can('edit') ) {
+            return response()->json([
+                'status'  => 'warning',
+                'message' => 'Bạn không được cấp quyền sửa dữ liệu',
+            ]);
         }
 
-        if ( empty($search) ) {
-            $ucases = Ucases::where($sorting)
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy('ordering', 'asc')
-                ->get()
-                ->toArray();
-        } else {
-            $ucases = Ucases::where($sorting)
-                ->where(
-                    function ( $query ) use ( $search ) {
-                        $query->where('title', 'LIKE', "%{$search}%")
-                            ->orWhere('slug', 'LIKE', "%{$search}%");
+        $request  = $request->toArray();
+        $position = !empty($request['position']) ? $request['position'] : 'left';
+
+        if ( !empty($request['data']) ) {
+            foreach ( $request['data'] as $key => $data ) {
+                $update = [
+                    'ordering'  => $key,
+                    'parent_id' => 0,
+                    'position'  => $position
+                ];
+                Ucases::where('id', $data['id'])
+                    ->update($update);
+
+                if ( !empty($data['children']) ) {
+                    foreach ( $data['children'] as $key => $children ) {
+                        $update = [
+                            'ordering'  => $key,
+                            'parent_id' => $data['id'],
+                            'position'  => $position
+                        ];
+                        Ucases::where('id', $children['id'])
+                            ->update($update);
                     }
-                )
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy('ordering', 'asc')
-                ->get()
-                ->toArray();
-
-            $totalFiltered = Ucases::where($sorting)
-                ->where(
-                    function ( $query ) use ( $search ) {
-                        $query->where('title', 'LIKE', "%{$search}%")
-                            ->orWhere('slug', 'LIKE', "%{$search}%");
-                    }
-                )
-                ->count();
-        }
-
-        $data = [];
-
-        if ( !empty($ucases) ) {
-            foreach ( $ucases as $ucase ) {
-                $data[] = $this->ucase_data($ucase);
+                }
             }
         }
 
-        $json_data = [
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data,
-        ];
-
-        return response()->json($json_data);
-    }
-
-    public function ucase_data( $ucase )
-    {
-        $ucase['router'] = json_decode($ucase['router'], true);
-
-        return $ucase;
+        return response()->json(
+            [
+                'status'  => 'info',
+                'message' => 'Cập nhật menu thành công.',
+            ]
+        );
     }
 
     /**
@@ -147,13 +115,20 @@ class UcasesController extends Controller
      */
     public function store( Request $request )
     {
+        if ( !user_can('add') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền thêm dữ liệu' ],
+            ]);
+        }
+
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
 
         if ( $validator->passes() ) {
-            $data           = $request->toArray();
-            $router         = array_map('htmlentities', $data['router']);
-            $data['router'] = html_entity_decode(json_encode($router));
-            $ordering       = Ucases::where([
+            $data          = $request->toArray();
+            $route         = array_map('htmlentities', $data['route']);
+            $data['route'] = html_entity_decode(json_encode($route));
+            $ordering      = Ucases::where([
                 [ 'parent_id', 0 ],
                 [ 'position', $data['position'] ],
             ])->count();
@@ -164,7 +139,7 @@ class UcasesController extends Controller
             $ucase->title     = $data['title'];
             $ucase->ordering  = $ordering;
             $ucase->parent_id = 0;
-            $ucase->router    = !empty($data['router']) ? $data['router'] : '';
+            $ucase->route     = !empty($data['route']) ? $data['route'] : '';
             $ucase->position  = !empty($data['position']) ? $data['position'] : 'left';
             $ucase->access    = !empty($data['access']) ? $data['access'] : 1;
             $ucase->status    = !empty($data['status']) ? $data['status'] : 1;
@@ -177,7 +152,7 @@ class UcasesController extends Controller
                 'status'  => 200,
                 'message' => 'Tạo chức năng thành công.',
                 'id'      => $ucase_id,
-                'icon'    => $router['icon'],
+                'icon'    => $route['icon'],
             ]);
         }
 
@@ -211,7 +186,7 @@ class UcasesController extends Controller
         $edit = Ucases::find($id);
 
         if ( !empty($edit) ) {
-            $edit['router'] = json_decode($edit['router'], true);
+            $edit['route'] = json_decode($edit['route'], true);
             return response()->json(
                 [
                     'status' => 'success',
@@ -229,42 +204,6 @@ class UcasesController extends Controller
         );
     }
 
-    public function order( Request $request )
-    {
-        $request  = $request->toArray();
-        $position = !empty($request['position']) ? $request['position'] : 'left';
-
-        if ( !empty($request['data']) ) {
-            foreach ( $request['data'] as $key => $data ) {
-                $update = [
-                    'ordering'  => $key,
-                    'parent_id' => 0,
-                    'position'  => $position
-                ];
-                Ucases::where('id', $data['id'])
-                    ->update($update);
-
-                if ( !empty($data['children']) ) {
-                    foreach ( $data['children'] as $key => $children ) {
-                        $update = [
-                            'ordering'  => $key,
-                            'parent_id' => $data['id'],
-                            'position'  => $position
-                        ];
-                        Ucases::where('id', $children['id'])
-                            ->update($update);
-                    }
-                }
-            }
-        }
-
-        return response()->json(
-            [
-                'message' => 'Cập nhật ordering thành công.',
-            ]
-        );
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -275,6 +214,13 @@ class UcasesController extends Controller
      */
     public function update( Request $request, $id )
     {
+        if ( !user_can('edit') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền sửa dữ liệu' ],
+            ]);
+        }
+
         $this->rules['slug'] = '';
         if ( $request->has('name') ) {
             $this->rules['slug'] = [ 'required', 'string', 'max:100', 'unique:ucases,slug,'.$id ];
@@ -286,9 +232,9 @@ class UcasesController extends Controller
         $data      = $request->except([ '_token', 'id' ]);
 
         if ( $validator->passes() ) {
-            if ( !empty($data['router']) ) {
-                $router         = array_map('htmlentities', $data['router']);
-                $data['router'] = html_entity_decode(json_encode($router));
+            if ( !empty($data['route']) ) {
+                $route         = array_map('htmlentities', $data['route']);
+                $data['route'] = html_entity_decode(json_encode($route));
             }
 
             Ucases::where('id', $id)->update($data);
@@ -314,6 +260,13 @@ class UcasesController extends Controller
      */
     public function destroy( $id )
     {
+        if ( !user_can('delete') ) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Bạn không được cấp quyền xóa dữ liệu!',
+            ]);
+        }
+
         $delete = Ucases::where('id', $id)->orwhere('parent_id', $id);
 
         if ( !empty($delete) ) {

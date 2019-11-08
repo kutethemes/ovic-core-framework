@@ -11,7 +11,7 @@
     $user_name = ucfirst($user->name);
 @endphp
 
-@extends( ovic_blade('Backend.app') )
+@extends( name_blade('Backend.app') )
 
 @section( 'title', $user_name )
 
