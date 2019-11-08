@@ -32,10 +32,12 @@
 
         .checkbox label::after {
             top: 1px;
+            left: 3px;
         }
 
         .checkbox label::before {
             top: 2px;
+            left: 4px;
         }
 
         .file .image {
@@ -272,6 +274,8 @@
                     } );
                 }
             } );
+
+            return false;
         } );
         /* Xóa nhiều file */
         $( document ).on( 'selected_images', function ( event ) {
@@ -405,14 +409,15 @@
                 limit = form.find( '[name="limit"]' );
 
             $.ajax( {
-                url: "upload/filter",
-                type: 'POST',
+                url: "upload/create",
+                type: 'GET',
                 dataType: 'json',
                 headers: {
                     'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                 },
                 data: {
-                    _form: form.serializeObject()
+                    form: form.serializeObject(),
+                    filter: true
                 },
                 success: function ( response ) {
                     if ( response.count > 0 ) {
@@ -536,8 +541,10 @@
                 <div class="hr-line-dashed"></div>
                 <div class="clearfix"></div>
                 <button type="submit" class="btn btn-outline btn-info reset-filter">Reset filter</button>
-                @if( $check == true )
-                    <button type="button" class="btn btn-w-m btn-danger btn-del-select">Xóa</button>
+                @if( !empty( $permission[2] ) && $permission[2] == true )
+                    @if( $check == true )
+                        <button type="button" class="btn btn-w-m btn-danger btn-del-select">Xóa</button>
+                    @endif
                 @endif
                 <button type="button" class="btn btn-block btn-outline btn-primary m-t load_more">Tải thêm file</button>
             </form>

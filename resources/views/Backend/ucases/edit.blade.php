@@ -178,18 +178,9 @@
 
         <div class="form-group submit row">
             <div class="col-sm-12">
-                <button type="button" class="btn btn-danger delete-post d-none">
-                    <i class="fa fa-trash-o"></i>
-                    Xóa
-                </button>
-                <button class="btn btn-primary edit-post d-none" type="button">
-                    <i class="fa fa-save"></i>
-                    Save change
-                </button>
-                <button class="btn btn-primary add-post" type="button">
-                    <i class="fa fa-upload"></i>
-                    Thêm chức năng
-                </button>
+                {{ button_set( 'delete', $permission, [ 'class'=>'btn btn-danger d-none' ] ) }}
+                {{ button_set( 'edit', $permission, [ 'class'=>'btn btn-primary d-none' ] ) }}
+                {{ button_set( 'add', $permission, [ 'text'=>'Thêm chức năng' ] ) }}
             </div>
         </div>
     </form>

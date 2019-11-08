@@ -19,9 +19,11 @@
 
 <div class="file-box image-{{ $attachment['id'] }}" data-id="{{ $attachment['id'] }}">
     <div class="file">
-        <a href="#" class="btn-del-file" title="Xóa file">
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
-        </a>
+        @if( !empty( $permission[2] ) && $permission[2] == true )
+            <a href="#" class="btn-del-file" title="Xóa file">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </a>
+        @endif
         <label class="btn btn-info btn-circle">
             <i class="fa fa-check"></i>
         </label>

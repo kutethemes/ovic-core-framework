@@ -10,9 +10,17 @@
 |
 */
 
-use Ovic\Framework\Ucases;
-
 /* Admin routes */
+
+
+use Illuminate\Support\Facades\Schema;
+
+if ( !Schema::hasTable('ucases') ) {
+    echo 'Không tồn tại bảng ucase.';
+    die();
+}
+
+use Ovic\Framework\Ucases;
 
 Route::group(
     [

@@ -144,11 +144,18 @@ class UploadFileController extends Controller
      */
     public function index()
     {
+        $permission = user_can('all');
+
+        if ( array_sum($permission) == 0 ) {
+            abort(404);
+        }
+
         return view(name_blade('Backend.media.app'))->with([
             'attachments' => $this->attachments,
             'limit'       => $this->limit,
             'offset'      => $this->offset,
-            'directories' => json_encode($this->directories)
+            'directories' => json_encode($this->directories),
+            'permission'  => $permission
         ]);
     }
 
@@ -164,6 +171,8 @@ class UploadFileController extends Controller
 
             return $this->filter($data);
         } else {
+            $this->init();
+
             $content = '';
             $dir     = '';
             if ( !empty($this->attachments) ) {
@@ -171,7 +180,6 @@ class UploadFileController extends Controller
                     $content .= view(name_blade('Backend.media.image'), compact([ 'attachment' ]))->toHtml();
                 }
             }
-            $this->init();
 
             return response()->json([
                 'content'     => $content,
@@ -281,6 +289,9 @@ class UploadFileController extends Controller
      */
     public function store( Request $request )
     {
+        echo "<pre>";
+        print_r(Roles::Permission());
+        echo "</pre>";
         if ( !user_can('add') ) {
             return response()->json([
                 'status'      => 'error',
@@ -465,6 +476,13 @@ class UploadFileController extends Controller
      */
     public function destroy( Request $request, $id, $response = true )
     {
+        if ( !user_can('delete') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền xóa dữ liệu!' ],
+            ]);
+        }
+
         if ( $request->has('ids') && $id == 0 ) {
             $deleted = [];
             $ids     = $request->input('ids');
@@ -488,12 +506,12 @@ class UploadFileController extends Controller
             } else {
                 $response = [
                     'status'  => 400,
-                    'message' => 'Xóa file không thành công.',
+                    'message' => [ 'Xóa file không thành công.' ],
                 ];
             }
             return response()->json($response);
         }
 
-        $this->delete($request, $id);
+        return $this->delete($request, $id);
     }
 }
