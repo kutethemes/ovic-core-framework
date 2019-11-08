@@ -54,8 +54,8 @@
         }
     ],
     "scripts": {
-        "post-package-install": [
-            "@php artisan ui vue --auth"
+        "post-install-cmd": [
+            "php artisan ui vue --auth"
         ]
     },
     "support": {
