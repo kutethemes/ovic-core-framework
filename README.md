@@ -28,18 +28,6 @@ npm install bootstrap
 npm run dev
 ```
 
-To registering HTTP Session, by run the following command ( https://laravel.com/docs/6.x/session ):
-
-``` bash
-php artisan session:table
-```
-
-To registering Events & Listeners, by run the following command ( https://laravel.com/docs/6.x/events ):
-
-``` bash
-php artisan event:generate
-```
-
 To create migrate, by run the following command:
 
 ``` bash
@@ -77,6 +65,18 @@ To clear cache Composer, by run the following command:
 
 ``` bash
 composer clear-cache
+```
+
+To registering HTTP Session, by run the following command ( https://laravel.com/docs/6.x/session ):
+
+``` bash
+php artisan session:table
+```
+
+To registering Events & Listeners, by run the following command ( https://laravel.com/docs/6.x/events ):
+
+``` bash
+php artisan event:generate
 ```
 
 **Tip: don't forget to run `composer dump-autoload` afterwards.**
