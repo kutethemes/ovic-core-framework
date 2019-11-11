@@ -53,11 +53,6 @@
             "url": "https://github.com/kutethemes/ovic-core-framework"
         }
     ],
-    "scripts": {
-        "post-install-cmd": [
-            "php artisan ui vue --auth"
-        ]
-    },
     "support": {
         "issues": "https://kutethemes.com/supports/"
     },
