@@ -11,6 +11,7 @@ composer require ovic-core/framework
 To create Auth, by run the following command ( https://laravel.com/docs/6.x/authentication ):
 
 ``` bash
+composer require laravel/ui
 php artisan ui vue --auth
 ```
 
