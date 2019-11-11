@@ -224,7 +224,7 @@
         toastr.options = {
             "preventDuplicates": true,
         };
-        var updateMenu = function ( e ) {
+        var updateMenu = function ( e, item, source, destination, position ) {
                 var list = e.length ? e : $( e.target ),
                     data = list.nestable( 'serialize' ),
                     loading = list.closest( '.ibox-content' );
@@ -342,8 +342,8 @@
             } );
         }
         // activate Nestable for list menu
-        $( '#menu-left' ).nestable( { maxDepth: 2 } ).on( 'change', updateMenu );
-        $( '#menu-top' ).nestable( { maxDepth: 2 } ).on( 'change', updateMenu );
+        $( '#menu-left' ).nestable( { maxDepth: 2 } ).on( 'dragEnd', updateMenu );
+        $( '#menu-top' ).nestable( { maxDepth: 2 } ).on( 'dragEnd', updateMenu );
 
         // action Nestable for list menu
         $( document ).on( 'click', '#nestable-menu', function ( e ) {

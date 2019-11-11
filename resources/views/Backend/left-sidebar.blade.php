@@ -35,7 +35,7 @@
                 </a>
             </li>
 
-            @if( Route::has('ucases.show') )
+            @if( Route::has('ucases.show') && \Auth::user()->status == 3 )
                 <li @if ( $name == 'ucases' ) class="active" @endif>
                     <a href="{{ url('/ucases') }}">
                         <i class="fa fa-codepen"></i>

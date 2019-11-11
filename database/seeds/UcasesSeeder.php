@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Seeder;
 
 class UcasesSeeder extends Seeder
@@ -16,7 +15,7 @@ class UcasesSeeder extends Seeder
                 'slug'      => 'users',
                 'title'     => 'Quản lý người dùng',
                 'parent_id' => 0,
-                'route'     => json_encode([
+                'route'     => maybe_serialize([
                     'icon'        => 'fa fa-users',
                     'module'      => '',
                     'controller'  => 'Ovic\Framework\UsersController',
@@ -32,7 +31,7 @@ class UcasesSeeder extends Seeder
                 'slug'      => 'roles',
                 'title'     => 'Nhóm người dùng',
                 'parent_id' => 0,
-                'route'     => json_encode([
+                'route'     => maybe_serialize([
                     'icon'        => 'fa fa-user-plus',
                     'module'      => '',
                     'controller'  => 'Ovic\Framework\RolesController',
@@ -48,7 +47,7 @@ class UcasesSeeder extends Seeder
                 'slug'      => 'ucases',
                 'title'     => 'Quản lý chức năng',
                 'parent_id' => 0,
-                'route'     => json_encode([
+                'route'     => maybe_serialize([
                     'icon'        => 'fa fa-codepen',
                     'module'      => '',
                     'controller'  => 'Ovic\Framework\UcasesController',
@@ -64,7 +63,7 @@ class UcasesSeeder extends Seeder
                 'slug'      => 'permission',
                 'title'     => 'Phân quyền chức năng',
                 'parent_id' => 0,
-                'route'     => json_encode([
+                'route'     => maybe_serialize([
                     'icon'        => 'fa fa-key',
                     'module'      => '',
                     'controller'  => 'Ovic\Framework\PermissionController',
@@ -80,7 +79,7 @@ class UcasesSeeder extends Seeder
                 'slug'      => 'post',
                 'title'     => 'Post',
                 'parent_id' => 0,
-                'route'     => json_encode([
+                'route'     => maybe_serialize([
                     'icon'        => '',
                     'module'      => '',
                     'controller'  => 'Ovic\Framework\PostsController',
@@ -96,7 +95,7 @@ class UcasesSeeder extends Seeder
                 'slug'      => 'upload',
                 'title'     => 'Quản lý dữ liệu',
                 'parent_id' => 0,
-                'route'     => json_encode([
+                'route'     => maybe_serialize([
                     'icon'        => 'fa fa-folder-open',
                     'module'      => '',
                     'controller'  => 'Ovic\Framework\UploadFileController',

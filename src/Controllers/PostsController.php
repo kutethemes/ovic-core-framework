@@ -46,20 +46,7 @@ class PostsController extends Controller
 	 */
 	public function store( Request $request )
 	{
-		if ( !$request->has( [ 'title', 'post_type' ] ) ) {
-			return response()->json(
-				[
-					'status'  => 'error',
-					'message' => 'required Title, Post Type',
-				], 400
-			);
-		}
-
-		$request = $request->toArray();
-
-		$created = Posts::add_post( $request );
-
-		return response()->json( $created, $created['code'] );
+		//
 	}
 
 	/**
@@ -96,11 +83,7 @@ class PostsController extends Controller
 	 */
 	public function update( Request $request, $id )
 	{
-		$request = $request->toArray();
-
-		$updated = Posts::update_post( $request, $id );
-
-		return response()->json( $updated, $updated['code'] );
+		//
 	}
 
 	/**
@@ -112,8 +95,6 @@ class PostsController extends Controller
 	 */
 	public function destroy( $id )
 	{
-		$removed = Posts::remove_post( $id );
-
-		return response()->json( $removed, $removed['code'] );
+		//
 	}
 }

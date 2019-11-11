@@ -1,6 +1,15 @@
 /*!
  * Nestable jQuery Plugin - Copyright (c) 2012 David Bushell - http://dbushell.com/
  * Dual-licensed under the BSD or MIT licenses
+ *
+ * Modified :
+ * 		Added a few callbacks
+ * 			afterInit
+ * 			beforeDragStart
+ *			dragStart
+ *			beforeDragEnd
+ *			dragEnd
+ *			dragMove
  */
 ;(function($, window, document, undefined)
 {
@@ -42,7 +51,9 @@
         collapseBtnHTML : '<button data-action="collapse" type="button">Collapse</button>',
         group           : 0,
         maxDepth        : 5,
-        threshold       : 20
+        threshold       : 20,
+        /* callback */
+        afterInit: null,
     };
 
     function Plugin(element, options)
@@ -87,6 +98,10 @@
             var onStartEvent = function(e)
             {
                 var handle = $(e.target);
+
+                /* callback for beforeDragStart */
+                list.el.trigger('beforeDragStart', [handle]);
+
                 if (!handle.hasClass(list.options.handleClass)) {
                     if (handle.closest('.' + list.options.noDragClass).length) {
                         return;
@@ -105,6 +120,13 @@
 
                 e.preventDefault();
                 list.dragStart(e.touches ? e.touches[0] : e);
+
+                /* callback for dragStart */
+                var item = list.dragEl.find('.'+list.options.itemClass);
+                list.dragRootEl.trigger('dragStart', [
+                    item,           // List item
+                    list.el        // Source list
+                ]);
             };
 
             var onMoveEvent = function(e)
@@ -112,15 +134,46 @@
                 if (list.dragEl) {
                     e.preventDefault();
                     list.dragMove(e.touches ? e.touches[0] : e);
+                    /* callback for dragMove */
+                    var item = list.dragEl.find('.'+list.options.itemClass);
+                    list.dragRootEl.trigger('dragMove', [
+                        item,           // List item
+                        list.el,       // Source list
+                        list.dragRootEl // Destination
+                    ]);
                 }
             };
 
             var onEndEvent = function(e)
             {
-                if (list.dragEl) {
-                    e.preventDefault();
-                    list.dragStop(e.touches ? e.touches[0] : e);
-                }
+                if (!list.dragEl) return;
+                e.preventDefault();
+
+                var feedback = {abort: false};
+
+                var item = list.dragEl.find('.'+list.options.itemClass);
+                var sourceList = list.el;
+                var destinationList = list.dragRootEl;
+                var position = list.placeEl.index();
+
+                destinationList.trigger('beforeDragEnd', [
+                    item,               // List item
+                    sourceList,         // Source list
+                    destinationList,    // Destination list
+                    position,           // Position
+                    feedback
+                ]);
+
+                if (feedback.abort) return;
+
+                list.dragStop(e.touches ? e.touches[0] : e);
+
+                destinationList.trigger('dragEnd', [
+                    item,               // List item
+                    sourceList,         // Source list
+                    destinationList,    // Destination list
+                    position            // Position
+                ]);
             };
 
             if (hasTouch) {
@@ -134,6 +187,10 @@
             list.w.on('mousemove', onMoveEvent);
             list.w.on('mouseup', onEndEvent);
 
+            /* callback for afterInit */
+            if (typeof list.options.afterInit == 'function') {
+                list.options.afterInit.call(window, this);
+            }
         },
 
         serialize: function()

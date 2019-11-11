@@ -23,37 +23,21 @@ Route::group(
 
         Auth::routes();
 
-        /* Dashboard Route */
-        Route::resource('dashboard', 'Ovic\Framework\DashboardController');
-
-        /* Ucases Route */
-        Route::resource('ucases', 'Ovic\Framework\UcasesController');
-
         /* Backend routes */
-
         Route::group([],
             function () {
-
                 if ( Ucases::hasTable() ) {
-
                     Ucases::GetRoute('backend');
-
                 }
-
             }
         );
 
         /* Frontend routes */
-
         Route::group([],
             function () {
-
                 if ( Ucases::hasTable() ) {
-
                     Ucases::GetRoute('frontend');
-
                 }
-
             }
         );
 
@@ -69,26 +53,28 @@ Route::group(
 //        /* Upload Route */
 //        Route::resource('upload', 'Ovic\Framework\UploadFileController');
 
+        /* Dashboard Route */
+        Route::resource('dashboard', 'Ovic\Framework\DashboardController');
+
+        /* Ucases Route */
+        Route::resource('ucases', 'Ovic\Framework\UcasesController');
+
         /* Post Route */
         Route::resource('post', 'Ovic\Framework\PostsController');
 
-        /* Images */
-        Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index')->name('images.build');
-
         /* Icon fonts */
         Route::get('icon-fonts', 'Ovic\Framework\IconController@getIcon')->name('icon.fonts');
+
+        /* Images */
+        Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index')->name('images.build');
     }
 );
 
 /* Public routes */
-
 Route::group([],
     function () {
-
         if ( Ucases::hasTable() ) {
-
             Ucases::GetRoute('public');
-
         }
 
     }

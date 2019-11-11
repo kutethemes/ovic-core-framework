@@ -3,6 +3,7 @@
 namespace Ovic\Framework;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Facades\Auth;
 
 class Postmeta extends Eloquent
 {
@@ -27,20 +28,33 @@ class Postmeta extends Eloquent
         return $this->belongsTo(Posts::class);
     }
 
-    public static function get_meta( $post_id )
+    public function setMetaValueAttribute( $value )
+    {
+        $this->attributes['meta_value'] = maybe_serialize($value);
+    }
+
+    public function getMetaValueAttribute( $value )
+    {
+        return maybe_unserialize($value);
+    }
+
+    public function scopeget_meta( $query, $post_id )
     {
         $meta_data = [];
-        $postmeta  = Postmeta::where('post_id', $post_id)->get()->toArray();
+        $postmeta  = $query->where('post_id', $post_id)
+            ->get([ 'meta_key', 'meta_value' ])
+            ->toArray();
+
         if ( !empty($postmeta) ) {
             foreach ( $postmeta as $meta ) {
-                $meta_data[$meta['meta_key']] = maybe_unserialize($meta['meta_value']);
+                $meta_data[$meta['meta_key']] = $meta['meta_value'];
             }
         }
 
         return $meta_data;
     }
 
-    public static function get_post_meta( $post_id, $meta_key )
+    public function scopeget_post_meta( $query, $post_id, $meta_key )
     {
         $post_id = abs(intval($post_id));
         if ( !$post_id ) {
@@ -50,14 +64,12 @@ class Postmeta extends Eloquent
             return false;
         }
 
-        $meta_value = Postmeta::where('post_id', $post_id)
+        return $query->where('post_id', $post_id)
             ->where('meta_key', $meta_key)
             ->value('meta_value');
-
-        return maybe_unserialize($meta_value);
     }
 
-    public static function update_post_meta( $post_id, $meta_key, $meta_value )
+    public static function scopeupdate_post_meta( $query, $post_id, $meta_key, $meta_value )
     {
         $post_id = abs(intval($post_id));
         if ( !$post_id ) {
@@ -67,7 +79,7 @@ class Postmeta extends Eloquent
             return false;
         }
 
-        Postmeta::where('meta_key', $meta_key)
+        $query->where('meta_key', $meta_key)
             ->where('post_id', $post_id)
             ->update(
                 [

@@ -39,11 +39,8 @@ class UploadFileController extends Controller
             $offset = $args['offset'];
             unset($args['offset']);
         }
-        $user = Auth::user();
-        if ( $user->status != 3 ) {
-            $args[] = [ 'user_id', $user->id ];
-        }
-        $posts = Posts::where($args)
+        $posts = Posts::Owner()
+            ->where($args)
             ->latest()
             ->offset($offset)
             ->limit($limit)
@@ -357,7 +354,7 @@ class UploadFileController extends Controller
                 [
                     'status'      => 'success',
                     'message'     => 'Lưu file thành công.',
-                    'html'        => $this->show($post_id)->toHtml(),
+                    'html'        => $this->image($post_id)->toHtml(),
                     'directories' => json_encode($this->directories)
                 ]
             );
@@ -390,6 +387,36 @@ class UploadFileController extends Controller
                 [ 'status', '=', 'publish' ],
             ]
         );
+
+        if ( empty($attachment) ) {
+            return 'Không có ảnh.';
+        }
+
+        $attachment = array_shift($attachment);
+
+        return view(name_blade('Backend.media.show'), compact('attachment'));
+    }
+
+    /**
+     * Display the specified image resource.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function image( $id )
+    {
+        $attachment = $this->get_attachments(
+            [
+                [ 'id', '=', $id ],
+                [ 'post_type', '=', 'attachment' ],
+                [ 'status', '=', 'publish' ],
+            ]
+        );
+
+        if ( empty($attachment) ) {
+            return 'Không có ảnh.';
+        }
 
         $attachment = array_shift($attachment);
 

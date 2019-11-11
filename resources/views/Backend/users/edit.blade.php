@@ -96,7 +96,6 @@
                 <div class="col-sm-9">
                     <select name="donvi_id" class="form-control chosen-select"
                             data-placeholder="Chọn đơn vị">
-                        <option value="0">Chọn đơn vị</option>
                         @foreach ( $donvis as $donvi )
                             <option value="{{ $donvi['id'] }}">{{ $donvi['tendonvi'] }}</option>
                         @endforeach
@@ -132,7 +131,6 @@
                 <div class="col-sm-9">
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
-                        <option value="0">Chọn phạm vi quản lý</option>
                     </select>
                 </div>
             </div>
