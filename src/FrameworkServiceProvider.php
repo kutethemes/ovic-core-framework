@@ -30,10 +30,16 @@ class FrameworkServiceProvider extends ServiceProvider
     {
         /* Load Menu */
         view()->composer('*', function ( $view ) {
+            $menu_left = [];
+            $menu_top  = [];
+            if ( Ucases::hasTable() ) {
+                $menu_left = Ucases::PrimaryMenu('left');
+                $menu_top  = Ucases::PrimaryMenu('top');
+            }
             $view->with([
                 'primary_menu' => [
-                    'left' => Ucases::PrimaryMenu('left'),
-                    'top'  => Ucases::PrimaryMenu('top'),
+                    'left' => $menu_left,
+                    'top'  => $menu_top,
                 ]
             ]);
         });

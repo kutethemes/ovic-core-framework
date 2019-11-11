@@ -9,18 +9,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use Ovic\Framework\Ucases;
 
 /* Admin routes */
-
-
-use Illuminate\Support\Facades\Schema;
-
-if ( !Schema::hasTable('ucases') ) {
-    echo 'Không tồn tại bảng ucase.';
-    die();
-}
-
-use Ovic\Framework\Ucases;
 
 Route::group(
     [
@@ -39,21 +30,26 @@ Route::group(
         Route::group([],
             function () {
 
-                $ucases = Ucases::GetRoute('backend');
+                if ( Ucases::hasTable() ) {
 
-                if ( !empty($ucases) ) {
-                    foreach ( $ucases as $ucase ) {
-                        if ( !empty($ucase['route']['custom_link']) ) {
-                            Route::get($ucase['route']['custom_link']);
-                        } else {
-                            $module = "";
-                            if ( !empty($ucase['route']['module']) ) {
-                                $module = "{$ucase['route']['module']}:";
+                    $ucases = Ucases::GetRoute('backend');
+
+                    if ( !empty($ucases) ) {
+                        foreach ( $ucases as $ucase ) {
+                            if ( !empty($ucase['route']['custom_link']) ) {
+                                Route::get($ucase['route']['custom_link']);
+                            } else {
+                                $module = "";
+                                if ( !empty($ucase['route']['module']) ) {
+                                    $module = "{$ucase['route']['module']}:";
+                                }
+                                Route::resource("{$ucase['slug']}", "{$module}{$ucase['route']['controller']}");
                             }
-                            Route::resource("{$ucase['slug']}", "{$module}{$ucase['route']['controller']}");
                         }
                     }
+
                 }
+
             }
         );
 
@@ -62,21 +58,26 @@ Route::group(
         Route::group([],
             function () {
 
-                $ucases = Ucases::GetRoute('frontend');
+                if ( Ucases::hasTable() ) {
 
-                if ( !empty($ucases) ) {
-                    foreach ( $ucases as $ucase ) {
-                        if ( !empty($ucase['route']['custom_link']) ) {
-                            Route::get($ucase['route']['custom_link']);
-                        } else {
-                            $module = "";
-                            if ( !empty($ucase['route']['module']) ) {
-                                $module = "{$ucase['route']['module']}::";
+                    $ucases = Ucases::GetRoute('frontend');
+
+                    if ( !empty($ucases) ) {
+                        foreach ( $ucases as $ucase ) {
+                            if ( !empty($ucase['route']['custom_link']) ) {
+                                Route::get($ucase['route']['custom_link']);
+                            } else {
+                                $module = "";
+                                if ( !empty($ucase['route']['module']) ) {
+                                    $module = "{$ucase['route']['module']}::";
+                                }
+                                Route::resource($ucase['slug'], "{$module}{$ucase['route']['controller']}");
                             }
-                            Route::resource($ucase['slug'], "{$module}{$ucase['route']['controller']}");
                         }
                     }
+
                 }
+
             }
         );
 
@@ -111,21 +112,26 @@ Route::group(
 Route::group([],
     function () {
 
-        $ucases = Ucases::GetRoute('public');
+        if ( Ucases::hasTable() ) {
 
-        if ( !empty($ucases) ) {
-            foreach ( $ucases as $ucase ) {
-                if ( !empty($ucase['route']['custom_link']) ) {
-                    Route::get($ucase['route']['custom_link']);
-                } else {
-                    $module = "";
-                    if ( !empty($ucase['route']['module']) ) {
-                        $module = "{$ucase['route']['module']}:";
+            $ucases = Ucases::GetRoute('public');
+
+            if ( !empty($ucases) ) {
+                foreach ( $ucases as $ucase ) {
+                    if ( !empty($ucase['route']['custom_link']) ) {
+                        Route::get($ucase['route']['custom_link']);
+                    } else {
+                        $module = "";
+                        if ( !empty($ucase['route']['module']) ) {
+                            $module = "{$ucase['route']['module']}:";
+                        }
+                        Route::resource($ucase['slug'], "{$module}{$ucase['route']['controller']}");
                     }
-                    Route::resource($ucase['slug'], "{$module}{$ucase['route']['controller']}");
                 }
             }
+
         }
+
     }
 );
 
