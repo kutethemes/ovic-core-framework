@@ -63,13 +63,15 @@
                     Hi, {{ Auth::user()->name }}
                 </a>
                 <ul class="dropdown-menu animated fadeInUp">
-                    <li>
-                        <a class="dropdown-item"
-                           href="{{ route('users.show', \Auth::user()->id ) }}">
-                            Profile
-                        </a>
-                    </li>
-                    <li class="dropdown-divider"></li>
+                    @if( Route::has('users.show') )
+                        <li>
+                            <a class="dropdown-item"
+                               href="{{ route('users.show', \Auth::user()->id ) }}">
+                                Profile
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                    @endif
                     <li>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">

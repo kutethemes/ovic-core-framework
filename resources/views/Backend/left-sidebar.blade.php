@@ -35,6 +35,15 @@
                 </a>
             </li>
 
+            @if( Route::has('ucases.show') )
+                <li @if ( $name == 'ucases' ) class="active" @endif>
+                    <a href="{{ url('/ucases') }}">
+                        <i class="fa fa-codepen"></i>
+                        <span class="nav-label">Quản lý chức năng</span>
+                    </a>
+                </li>
+            @endif
+
             @if( !empty( $left_menu[0] ) )
                 @foreach( $left_menu[0] as $key => $parent )
                     <li @if ( $name == $parent['slug'] ) class="active" @endif>

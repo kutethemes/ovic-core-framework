@@ -31,19 +31,21 @@ class Roles extends Eloquent
         $permission = [];
         $user       = Auth::user();
         if ( $user['status'] == 3 ) {
+
+            if ( $route != null ) {
+                return [ 1, 1, 1 ];
+            }
+
             $roles = Ucases::all('slug')->toArray();
 
             if ( !empty($roles) ) {
                 foreach ( $roles as $role ) {
-                    if ( $route != null ) {
-                        if ( $role['slug'] == $route ) {
-                            return [ 1, 1, 1 ];
-                        }
-                    } else {
-                        $permission[$role['slug']] = [ 1, 1, 1 ];
-                    }
+                    $permission[$role['slug']] = [ 1, 1, 1 ];
                 }
             }
+
+            $permission['ucases']    = [ 1, 1, 1 ];
+            $permission['dashboard'] = [ 1, 1, 1 ];
 
             return $permission;
         }
@@ -80,6 +82,7 @@ class Roles extends Eloquent
                     }
                 }
             }
+            $permission['dashboard'] = [ 1, 1, 1 ];
         }
 
         return $permission;

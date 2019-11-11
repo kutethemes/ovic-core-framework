@@ -25,6 +25,9 @@ Route::group(
         /* Dashboard Route */
         Route::resource('dashboard', 'Ovic\Framework\DashboardController');
 
+        /* Ucases Route */
+        Route::resource('ucases', 'Ovic\Framework\UcasesController');
+
         /* Backend routes */
 
         Route::group([],
@@ -86,9 +89,6 @@ Route::group(
 //
 //        /* Roles Route */
 //        Route::resource('roles', 'Ovic\Framework\RolesController');
-//
-//        /* Ucases Route */
-//        Route::resource('ucases', 'Ovic\Framework\UcasesController');
 //
 //        /* Permission Route */
 //        Route::resource('permission', 'Ovic\Framework\PermissionController');
