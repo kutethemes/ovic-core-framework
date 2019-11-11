@@ -33,9 +33,10 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "doctrine/dbal": "*",
-        "laravel/ui": "*",
-        "nwidart/laravel-modules": "*",
+        "doctrine/dbal": "2.*",
+        "laravel/ui": "1.*",
+        "nwidart/laravel-modules": "6.*",
+        "laravel/framework": "6.0.*",
     },
     "extra": {
         "laravel": {
