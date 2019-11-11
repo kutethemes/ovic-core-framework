@@ -72,6 +72,12 @@ To remove through Composer, by run the following command:
 composer remove ovic-core/framework
 ```
 
+To clear cache Composer, by run the following command:
+
+``` bash
+composer clear-cache
+```
+
 **Tip: don't forget to run `composer dump-autoload` afterwards.**
 
 ## Documentation
