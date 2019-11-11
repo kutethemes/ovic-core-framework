@@ -36,15 +36,21 @@ class PermissionController extends Controller
 
         $roles = Roles::where('status', '1')
             ->orderBy('ordering', 'asc')
-            ->get()
-            ->toArray();
+            ->get();
 
         $menus = [
             'menu-left' => Ucases::EditMenu('left', true),
             'menu-top'  => Ucases::EditMenu('top', true),
         ];
 
-        return view(name_blade('Backend.permission.app'), compact([ 'menus', 'roles', 'permission' ]));
+        return view(
+            name_blade('Backend.permission.app'),
+            compact([
+                'menus',
+                'roles',
+                'permission'
+            ])
+        );
     }
 
     /**
@@ -74,8 +80,6 @@ class PermissionController extends Controller
             $ucase_ids = Roles::where('id', $id)
                 ->value('ucase_ids');
 
-            $ucase_ids = !empty($ucase_ids) ? json_decode($ucase_ids, true) : [];
-
             if ( !empty($data) ) {
                 foreach ( $data as $key => $value ) {
                     if ( is_array($value) ) {
@@ -88,19 +92,16 @@ class PermissionController extends Controller
                 }
             }
 
-            $count     = count($ucase_ids);
-            $ucase_ids = json_encode($ucase_ids);
-
             /* update */
-            Roles::where('id', $id)->update([
-                'ucase_ids' => $ucase_ids
-            ]);
+            $roles            = Roles::find($id);
+            $roles->ucase_ids = $ucase_ids;
+            $roles->save();
 
             return response()->json([
                 'status'  => 200,
                 'message' => 'Phân quyền thành công.',
                 'data'    => $ucase_ids,
-                'count'   => $count,
+                'count'   => count($ucase_ids),
             ]);
         }
 

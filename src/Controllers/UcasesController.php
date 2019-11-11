@@ -54,7 +54,13 @@ class UcasesController extends Controller
             'menu-top'  => Ucases::EditMenu('top'),
         ];
 
-        return view(name_blade('Backend.ucases.app'), compact([ 'menus', 'permission' ]));
+        return view(
+            name_blade('Backend.ucases.app'),
+            compact([
+                'menus',
+                'permission'
+            ])
+        );
     }
 
     /**
@@ -125,10 +131,8 @@ class UcasesController extends Controller
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
 
         if ( $validator->passes() ) {
-            $data          = $request->toArray();
-            $route         = array_map('htmlentities', $data['route']);
-            $data['route'] = html_entity_decode(json_encode($route));
-            $ordering      = Ucases::where([
+            $data     = $request->toArray();
+            $ordering = Ucases::where([
                 [ 'parent_id', 0 ],
                 [ 'position', $data['position'] ],
             ])->count();
@@ -139,7 +143,7 @@ class UcasesController extends Controller
             $ucase->title     = $data['title'];
             $ucase->ordering  = $ordering;
             $ucase->parent_id = 0;
-            $ucase->route     = !empty($data['route']) ? $data['route'] : '';
+            $ucase->route     = $data['route'];
             $ucase->position  = !empty($data['position']) ? $data['position'] : 'left';
             $ucase->access    = !empty($data['access']) ? $data['access'] : 1;
             $ucase->status    = !empty($data['status']) ? $data['status'] : 1;
@@ -152,7 +156,7 @@ class UcasesController extends Controller
                 'status'  => 200,
                 'message' => 'Tạo chức năng thành công.',
                 'id'      => $ucase_id,
-                'icon'    => $route['icon'],
+                'icon'    => $data['route']['icon'],
             ]);
         }
 
@@ -186,7 +190,7 @@ class UcasesController extends Controller
         $edit = Ucases::find($id);
 
         if ( !empty($edit) ) {
-            $edit['route'] = json_decode($edit['route'], true);
+            $edit['route'] = maybe_unserialize($edit['route']);
             return response()->json(
                 [
                     'status' => 'success',
@@ -232,9 +236,24 @@ class UcasesController extends Controller
         $data      = $request->except([ '_token', 'id' ]);
 
         if ( $validator->passes() ) {
+            if ( $request->has('slug') ) {
+                $slug = Ucases::where('id', $id)->value('slug');
+                if ( $data['slug'] != $slug ) {
+                    $roles = Roles::where('ucase_ids', 'LIKE', '%'.$slug.'%')->get([ 'id', 'ucase_ids' ]);
+                    if ( !empty($roles) ) {
+                        foreach ( $roles as $role ) {
+                            $ucase_ids                = $role['ucase_ids'];
+                            $ucase_ids[$data['slug']] = $ucase_ids[$slug];
+                            unset($ucase_ids[$slug]);
+                            Roles::where('id', $role['id'])->update([
+                                'ucase_ids' => maybe_serialize($ucase_ids)
+                            ]);
+                        }
+                    }
+                }
+            }
             if ( !empty($data['route']) ) {
-                $route         = array_map('htmlentities', $data['route']);
-                $data['route'] = html_entity_decode(json_encode($route));
+                $data['route'] = maybe_serialize($data['route']);
             }
 
             Ucases::where('id', $id)->update($data);
@@ -258,7 +277,7 @@ class UcasesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $id )
+    public function destroy( Request $request, $id )
     {
         if ( !user_can('delete') ) {
             return response()->json([
@@ -267,11 +286,23 @@ class UcasesController extends Controller
             ]);
         }
 
-        $delete = Ucases::where('id', $id)->orwhere('parent_id', $id);
+        $slug   = $request->input('slug');
+        $ucases = Ucases::where('id', $id)->orwhere('parent_id', $id);
+        $roles  = Roles::where('ucase_ids', 'LIKE', '%'.$slug.'%')->get([ 'id', 'ucase_ids' ]);
 
-        if ( !empty($delete) ) {
+        if ( !empty($ucases) ) {
             /* Deleted */
-            $delete->delete();
+            $ucases->delete();
+
+            if ( !empty($roles) ) {
+                foreach ( $roles as $role ) {
+                    $ucase_ids = $role['ucase_ids'];
+                    unset($ucase_ids[$slug]);
+                    Roles::where('id', $role['id'])->update([
+                        'ucase_ids' => maybe_serialize($ucase_ids)
+                    ]);
+                }
+            }
 
             return response()->json(
                 [

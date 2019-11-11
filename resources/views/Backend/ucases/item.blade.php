@@ -25,10 +25,10 @@
     }
 @endphp
 
-<div id="menu-{{ $data['id'] }}" class="dd-handle{{ $status }}">
-        <span class="label label-info">
-            <i class="{{ $data['route']['icon'] }}"></i>
-        </span>
+<div id="menu-{{ $data['id'] }}" class="dd-handle{{ $status }}" data-slug="{{ $data['slug'] }}">
+    <span class="label label-info">
+        <i class="{{ $data['route']['icon'] }}"></i>
+    </span>
     <div class="name">
         {{ $data['title'] }}
     </div>

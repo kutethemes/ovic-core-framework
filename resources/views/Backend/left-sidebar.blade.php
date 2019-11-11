@@ -48,7 +48,9 @@
                 @foreach( $left_menu[0] as $key => $parent )
                     <li @if ( $name == $parent['slug'] ) class="active" @endif>
                         <a href="{{ url( "/{$parent['slug']}" ) }}">
-                            <i class="{{ $parent['route']['icon'] }}"></i>
+                            @if( !empty($parent['route']['icon']) )
+                                <i class="{{ $parent['route']['icon'] }}"></i>
+                            @endif
                             <span class="nav-label">{{ $parent['title'] }}</span>
                             @if( !empty( $left_menu[$parent['id']] ) )
                                 <span class="fa arrow"></span>
@@ -61,7 +63,9 @@
                                 @foreach ( $left_menu[$parent['id']] as $children )
                                     <li @if ( $name == $children['slug'] ) class="active" @endif>
                                         <a href="{{ url( "/{$children['slug']}" ) }}">
-                                            <i class="{{ $children['route']['icon'] }}"></i>
+                                            @if( !empty($children['route']['icon']) )
+                                                <i class="{{ $children['route']['icon'] }}"></i>
+                                            @endif
                                             <span class="nav-label">{{ $children['title'] }}</span>
                                         </a>
                                     </li>

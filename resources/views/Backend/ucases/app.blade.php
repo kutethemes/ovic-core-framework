@@ -106,10 +106,6 @@
             font-family: Fontawesome;
         }
 
-        #nestable-menu > .btn:not(.add-new) {
-            float: right;
-        }
-
         .dd-item.active > .dd-handle {
             background-color: #2c937e !important;
             color: #fff;
@@ -190,6 +186,14 @@
             height: calc(100% - 50px);
         }
 
+        .ibox-title h5 {
+            margin: 0 0 12px;
+        }
+
+        .ibox-title .add-new {
+            margin-right: 20px;
+        }
+
         @media (max-width: 1400px) {
             .client-detail .form-group {
                 display: block;
@@ -256,7 +260,7 @@
                     status = 'hidden';
                 }
 
-                item += '<div id="menu-' + data.id + '" class="dd-handle ' + status + '">';
+                item += '<div id="menu-' + data.id + '" class="dd-handle ' + status + '" data-slug="' + data.slug + '">';
                 item += '   <span class="label label-info"><i class="' + data.icon + '"></i></span>';
                 item += '   <div class="name">' + data.title + '</div>';
                 item += '   <div class="dd-nodrag btn-group">';
@@ -312,6 +316,9 @@
                         headers: {
                             'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                         },
+                        data: {
+                            slug: data.slug
+                        },
                         success: function ( response ) {
 
                             let menu = $( '#menu-' + data.id ).closest( '.dd-item' );
@@ -327,7 +334,7 @@
                                 showConfirmButton: true,
                             } );
 
-                            menu.closest( '.dd' ).find( '.add-new' ).trigger( 'click' );
+                            $( '.ibox-title .add-new' ).trigger( 'click' );
                         },
                     } );
 
@@ -339,7 +346,7 @@
         $( '#menu-top' ).nestable( { maxDepth: 2 } ).on( 'change', updateMenu );
 
         // action Nestable for list menu
-        $( '#nestable-menu' ).on( 'click', function ( e ) {
+        $( document ).on( 'click', '#nestable-menu', function ( e ) {
             var target = $( e.target ),
                 action = target.data( 'action' );
 
@@ -349,24 +356,27 @@
             if ( action === 'collapse-all' ) {
                 $( '.dd' ).nestable( 'collapseAll' );
             }
-            if ( action === 'add-new' ) {
-                let form = $( '#edit-post' );
 
-                form.trigger( 'reset' );
-                form.find( '.ovic-icon-remove' ).trigger( 'click' );
-                form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
-                form.find( 'input[name="access"]' ).val( 1 ).trigger( 'change' );
-                form.find( 'input[name="position"]' ).val( 'left' ).trigger( 'change' );
-                form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
-                form.find( '.field-position' ).removeClass( 'd-none' );
-                $( '.dd .dd-item' ).removeClass( 'active' );
-                $( '.ibox-title a.hide' ).trigger( 'click' );
-            }
+            return false;
+        } );
+        /* add new */
+        $( document ).on( 'click', '.ibox-title .add-new', function () {
+            let form = $( '#edit-post' );
+
+            form.trigger( 'reset' );
+            form.find( '.ovic-icon-remove' ).trigger( 'click' );
+            form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
+            form.find( 'input[name="access"]' ).val( 1 ).trigger( 'change' );
+            form.find( 'input[name="position"]' ).val( 'left' ).trigger( 'change' );
+            form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
+            form.find( '.field-position' ).removeClass( 'd-none' );
+            $( '.dd .dd-item' ).removeClass( 'active' );
+            $( '.ibox-title a.hide' ).trigger( 'click' );
 
             return false;
         } );
         /* select button */
-        $( '.form-group .btn-group' ).on( 'click', function ( e ) {
+        $( document ).on( 'click', '.form-group .btn-group', function ( e ) {
             var target = $( e.target ),
                 form = target.closest( 'form' ),
                 name = target.data( 'name' ),
@@ -487,7 +497,7 @@
                 } );
 
             } else {
-                $( '#nestable-menu .add-new' ).trigger( 'click' );
+                $( '.ibox-title .add-new' ).trigger( 'click' );
             }
         } );
         /* Add post */
@@ -607,6 +617,7 @@
 
             data.id = handle.closest( '.dd-item' ).data( 'id' );
             data.title = title;
+            data.slug = handle.data( 'slug' );
 
             button.removeMenu( data );
 

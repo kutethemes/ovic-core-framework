@@ -183,6 +183,8 @@ class UsersController extends Controller
         $user['avatar_url'] = $avatar_url;
         $user['donvi_text'] = $donvi;
         $user['status']     = $user['status'] < 0 ? 0 : $user['status'];
+        $user['role_ids']   = maybe_unserialize($user['role_ids']);
+        $user['donvi_ids']  = maybe_unserialize($user['donvi_ids']);
 
         return $user;
     }
@@ -217,8 +219,8 @@ class UsersController extends Controller
             $user->avatar    = $data['avatar'];
             $user->password  = Hash::make($data['password']);
             $user->donvi_id  = !empty($data['donvi_id']) ? $data['donvi_id'] : 0;
-            $user->donvi_ids = !empty($data['donvi_ids']) ? json_encode($data['donvi_ids']) : 0;
-            $user->role_ids  = !empty($data['role_ids']) ? json_encode($data['role_ids']) : 0;
+            $user->donvi_ids = !empty($data['donvi_ids']) ? maybe_serialize($data['donvi_ids']) : 0;
+            $user->role_ids  = !empty($data['role_ids']) ? maybe_serialize($data['role_ids']) : 0;
             $user->status    = $data['status'];
 
             $user->save();
@@ -323,10 +325,10 @@ class UsersController extends Controller
                 $data['password'] = Hash::make($data['password']);
             }
             if ( !empty($data['role_ids']) ) {
-                $data['role_ids'] = json_encode($data['role_ids'], JSON_NUMERIC_CHECK);
+                $data['role_ids'] = maybe_serialize($data['role_ids']);
             }
             if ( !empty($data['donvi_ids']) ) {
-                $data['donvi_ids'] = json_encode($data['donvi_ids'], JSON_NUMERIC_CHECK);
+                $data['donvi_ids'] = maybe_serialize($data['donvi_ids']);
             }
 
             User::where('id', $id)->update($data);

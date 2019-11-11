@@ -265,6 +265,7 @@
 
             return false;
         } );
+        /* chọn nhiều quyền */
         $( document ).on( 'click', '.dd-item > .dd-handle .name', function () {
             $( this ).closest( '.dd-handle' ).find( 'input' ).trigger( 'click' );
         } );
@@ -325,7 +326,7 @@
             return false;
         } );
         /* Phân quyền */
-        $( document ).on( 'click', 'input[type="checkbox"]', function () {
+        $( document ).on( 'click', '.dd-handle input[type="checkbox"]', function () {
             let input = $( this ),
                 form = input.closest( 'form' ),
                 roleID = form.find( 'input[name="id"]' ).val(),
@@ -368,7 +369,7 @@
                 },
                 success: function ( response ) {
                     if ( response.status === 200 ) {
-                        role.data( 'ucase', JSON.parse( response.data ) );
+                        role.data( 'ucase', response.data );
                         role.find( '.label' ).html( response.count );
 
                         toastr.options = {

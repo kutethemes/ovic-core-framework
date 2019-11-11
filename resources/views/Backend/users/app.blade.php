@@ -136,8 +136,6 @@
                         }
                         if ( chosen.indexOf( index ) !== -1 ) {
 
-                            value = JSON.parse( value );
-
                             if ( Array.isArray( value ) ) {
                                 value = value.map( Number );
                             }

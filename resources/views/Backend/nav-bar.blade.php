@@ -32,7 +32,9 @@
                         <a href="{{ url( "/{$parent['slug']}" ) }}"
                            data-toggle="{{ $toggle }}"
                            class="dropdown-toggle">
-                            <i class="{{ $parent['route']['icon'] }}"></i>
+                            @if( !empty($parent['route']['icon']) )
+                                <i class="{{ $parent['route']['icon'] }}"></i>
+                            @endif
                             <span class="nav-label">
                                 {{ $parent['title'] }}
                             </span>
@@ -44,7 +46,9 @@
                                 @foreach ( $top_menu[$parent['id']] as $children )
                                     <li>
                                         <a href="{{ url( "/{$children['slug']}" ) }}">
-                                            <i class="{{ $children['route']['icon'] }}"></i>
+                                            @if( !empty($children['route']['icon']) )
+                                                <i class="{{ $children['route']['icon'] }}"></i>
+                                            @endif
                                             <span class="nav-label">{{ $children['title'] }}</span>
                                         </a>
                                     </li>

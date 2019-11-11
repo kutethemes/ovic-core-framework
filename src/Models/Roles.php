@@ -16,7 +16,6 @@ class Roles extends Eloquent
      */
     protected $table = 'roles';
 
-
     public function scopehasTable( $query )
     {
         if ( Schema::hasTable($this->table) ) {
@@ -24,6 +23,16 @@ class Roles extends Eloquent
         }
 
         return false;
+    }
+
+    public function setUcaseIdsAttribute( $value )
+    {
+        $this->attributes['ucase_ids'] = maybe_serialize($value);
+    }
+
+    public function getUcaseIdsAttribute( $value )
+    {
+        return maybe_unserialize($value);
     }
 
     public function scopePermission( $query, $route = null )
@@ -50,14 +59,10 @@ class Roles extends Eloquent
             return $permission;
         }
         if ( !empty($user['role_ids']) ) {
-            $role_ids = !is_array($user['role_ids']) ? json_decode($user['role_ids'], true) : $user['role_ids'];
+            $role_ids = maybe_unserialize($user['role_ids']);
             $roles    = $query->where('status', '1')
                 ->findMany($role_ids, 'ucase_ids')
-                ->collect()
-                ->each(function ( $item, $key ) {
-                    $item->ucase_ids = json_decode($item->ucase_ids, true);
-                })
-                ->toArray();
+                ->get();
 
             if ( !empty($roles) ) {
                 foreach ( $roles as $role ) {

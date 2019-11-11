@@ -32,17 +32,16 @@
                 <ul class="list-group elements-list">
                     @foreach( $roles as $role )
                         @php
-                            $ucase_ids  = json_decode($role['ucase_ids'], true);
-                            $count      = is_array($ucase_ids) ? count($ucase_ids) : 0;
+                            $count  = is_array($role->ucase_ids) ? count($role->ucase_ids) : 0;
                         @endphp
                         <li class="list-group-item">
-                            <a href="#" class="nav-link" id="role-{{ $role['id'] }}" data-id="{{ $role['id'] }}"
-                               data-ucase={{ $role['ucase_ids'] }}>
-                                <small class="float-right text-muted">{{ $role['created_at'] }}</small>
-                                <strong>{{ $role['title'] }}</strong>
+                            <a href="#" class="nav-link" id="role-{{ $role->id }}" data-id="{{ $role->id }}"
+                               data-ucase=@json($role->ucase_ids)>
+                                <small class="float-right text-muted">{{ $role->created_at }}</small>
+                                <strong>{{ $role->title }}</strong>
                                 <div class="small m-t-xs">
                                     <p class="m-b-xs">
-                                        {{ $role['description'] }}
+                                        {{ $role->description }}
                                         <br>
                                     </p>
                                     <p class="m-b-none">

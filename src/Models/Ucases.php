@@ -5,6 +5,7 @@ namespace Ovic\Framework;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Collection;
 
@@ -26,6 +27,16 @@ class Ucases extends Eloquent
         return false;
     }
 
+    public function setRouteAttribute( $value )
+    {
+        $this->attributes['route'] = maybe_serialize($value);
+    }
+
+    public function getRouteAttribute( $value )
+    {
+        return maybe_unserialize($value);
+    }
+
     public function scopeEditMenu( $query, $position, $is_active = false )
     {
         $args = [
@@ -39,9 +50,6 @@ class Ucases extends Eloquent
         return $query->where($args)
             ->get()
             ->collect()
-            ->each(function ( $item, $key ) {
-                $item->route = json_decode($item->route, true);
-            })
             ->sortBy('ordering')
             ->groupBy('parent_id')
             ->toArray();
@@ -62,9 +70,6 @@ class Ucases extends Eloquent
             ->filter(function ( $item, $key ) use ( $permission ) {
                 return ( !empty($permission[$item->slug]) && array_sum($permission[$item->slug]) != 0 );
             })
-            ->each(function ( $item, $key ) {
-                $item->route = json_decode($item->route, true);
-            })
             ->sortBy('ordering')
             ->groupBy('parent_id')
             ->toArray();
@@ -84,17 +89,25 @@ class Ucases extends Eloquent
                 break;
         }
 
-        return $query->where(
+        $ucases = $query->where(
             [
                 [ 'status', '>', '0' ],
                 [ 'access', $access ],
             ]
-        )
-            ->get()
-            ->collect()
-            ->each(function ( $item, $key ) {
-                $item->route = json_decode($item->route, true);
-            })
-            ->toArray();
+        )->get();
+
+        if ( !empty($ucases) ) {
+            foreach ( $ucases as $ucase ) {
+                if ( !empty($ucase->route['custom_link']) ) {
+                    Route::get($ucase->route['custom_link']);
+                } elseif ( !empty($ucase->route['controller']) ) {
+                    $module = "";
+                    if ( !empty($ucase->route['module']) ) {
+                        $module = "{$ucase->route['module']}::";
+                    }
+                    Route::resource("{$ucase->slug}", "{$module}{$ucase->route['controller']}");
+                }
+            }
+        }
     }
 }

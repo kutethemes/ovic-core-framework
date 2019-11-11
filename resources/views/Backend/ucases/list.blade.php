@@ -10,6 +10,7 @@
 @endphp
 
 <div class="ibox-title">
+    <a href="#" data-action="add-new" class="btn btn-primary btn-xs add-new">Add New</a>
     <h5>Danh sách menu <small>Menu Left / Menu Top</small></h5>
     <div class="ibox-tools">
         <a class="collapse-link">
@@ -21,8 +22,6 @@
         <ul id="nestable-menu" class="dropdown-menu dropdown-menu-right dropdown-order" x-placement="bottom-start">
             <li><a href="#" data-action="expand-all" class="dropdown-item">Expand All</a></li>
             <li><a href="#" data-action="collapse-all" class="dropdown-item">Collapse All</a></li>
-            <li class="dropdown-divider"></li>
-            <li><a href="#" data-action="add-new" class="dropdown-item add-new">Add New</a></li>
         </ul>
     </div>
 </div>
@@ -34,39 +33,39 @@
         <div class="sk-rect4"></div>
         <div class="sk-rect5"></div>
     </div>
-    @if( !empty( $menus ) )
-        <div class="row">
-            @foreach( $menus as $key => $menu )
-                <div class="col-sm-6{{ $key == 'menu-left' ? ' b-r' : '' }}">
-                    <div id="{{ $key }}" class="dd">
+    <div class="row">
+        @foreach( $menus as $key => $menu )
+            <div class="col-sm-6{{ $key == 'menu-left' ? ' b-r' : '' }}">
+                <div id="{{ $key }}" class="dd">
+                    @if( !empty( $menu[0] ) )
                         <ol class="dd-list">
-                            @if( !empty( $menu[0] ) )
-                                @foreach ( $menu[0] as $parent )
-                                    <li class="dd-item{{ !empty( $menu[$parent['id']] ) ? ' has-children' : '' }}"
-                                        data-id="{{ $parent['id'] }}">
+                            @foreach ( $menu[0] as $parent )
+                                <li class="dd-item{{ !empty( $menu[$parent['id']] ) ? ' has-children' : '' }}"
+                                    data-id="{{ $parent['id'] }}">
 
-                                        @include( name_blade('Backend.ucases.item'), ['data' => $parent] )
+                                    @include( name_blade('Backend.ucases.item'), ['data' => $parent] )
 
-                                        @if( !empty( $menu[$parent['id']] ) )
+                                    @if( !empty( $menu[$parent['id']] ) )
 
-                                            <ol class="dd-list">
-                                                @foreach ( $menu[$parent['id']] as $children )
-                                                    <li class="dd-item" data-id="{{ $children['id'] }}">
+                                        <ol class="dd-list">
+                                            @foreach ( $menu[$parent['id']] as $children )
+                                                <li class="dd-item" data-id="{{ $children['id'] }}">
 
-                                                        @include( name_blade('Backend.ucases.item'), ['data' => $children] )
+                                                    @include( name_blade('Backend.ucases.item'), ['data' => $children] )
 
-                                                    </li>
-                                                @endforeach
-                                            </ol>
+                                                </li>
+                                            @endforeach
+                                        </ol>
 
-                                        @endif
-                                    </li>
-                                @endforeach
-                            @endif
+                                    @endif
+                                </li>
+                            @endforeach
                         </ol>
-                    </div>
+                    @else
+                        <div class="dd-empty"></div>
+                    @endif
                 </div>
-            @endforeach
-        </div>
-    @endif
+            </div>
+        @endforeach
+    </div>
 </div>
