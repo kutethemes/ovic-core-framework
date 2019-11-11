@@ -15,6 +15,14 @@
 
 @section( 'title', 'Attachment Detail' )
 
+@push( 'styles' )
+    <style>
+        div.icon {
+            font-size: 200px;
+        }
+    </style>
+@endpush
+
 @section( 'content' )
 
     @php
@@ -84,12 +92,32 @@
                     </div>
                     <div class="col-sm-5">
                         <a href="{{ $url }}" class="text-center" target="_blank">
-                            @if ( strstr( $mimetype, "image/" ) )
+                            @if ( strstr( $mimetype, "video/" ) )
+                                <div class="icon">
+                                    <i class="img-fluid fa fa-film"></i>
+                                </div>
+                            @elseif ( strstr( $mimetype, "image/" ) )
                                 <div class="image">
                                     <img alt="image" class="img-fluid" src="{{ $url }}"/>
                                 </div>
+                            @elseif ( strstr( $mimetype, "audio/" ) )
+                                <div class="icon">
+                                    <i class="fa fa-music"></i>
+                                </div>
+                            @elseif ( in_array( $extension, [ 'doc','docx' ] ) )
+                                <div class="icon">
+                                    <i class="fa fa-file-word-o"></i>
+                                </div>
+                            @elseif ( in_array( $extension, [ 'xls','xlsx' ] ) )
+                                <div class="icon">
+                                    <i class="fa fa-bar-chart-o"></i>
+                                </div>
+                            @elseif ( strstr( $mimetype, "pdf" ) )
+                                <div class="icon">
+                                    <i class="fa fa-file-pdf-o"></i>
+                                </div>
                             @else
-                                <div class="icon" style="font-size: 200px">
+                                <div class="icon">
                                     <i class="fa fa-file-archive-o"></i>
                                 </div>
                             @endif
