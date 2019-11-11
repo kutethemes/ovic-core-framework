@@ -86,7 +86,7 @@ class UsersController extends Controller
             4 => 'status',
         ];
 
-        $totalData = User::count();
+        $totalData = Users::count();
 
         $totalFiltered = $totalData;
 
@@ -115,7 +115,7 @@ class UsersController extends Controller
         }
 
         if ( empty($search) ) {
-            $users = User::where($sorting)
+            $users = Users::where($sorting)
                 ->offset($start)
                 ->limit($limit)
                 /* ->orderBy( $order, $dir ) */
@@ -123,7 +123,7 @@ class UsersController extends Controller
                 ->get()
                 ->toArray();
         } else {
-            $users = User::where($sorting)
+            $users = Users::where($sorting)
                 ->where(
                     function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
@@ -137,7 +137,7 @@ class UsersController extends Controller
                 ->get()
                 ->toArray();
 
-            $totalFiltered = User::where($sorting)
+            $totalFiltered = Users::where($sorting)
                 ->where(
                     function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
@@ -170,8 +170,7 @@ class UsersController extends Controller
         $donvi      = "Bảng đơn vị không tồn tại";
 
         if ( !empty($user['avatar']) && $user['avatar'] > 0 ) {
-            $path       = Posts::where('id', '=', $user['avatar'])->value('name');
-            $avatar_url = route('images.build', explode('/', $path));
+            $avatar_url = get_attachment_url($user['avatar']);
         } else {
             $user['avatar'] = 0;
         }
@@ -183,8 +182,6 @@ class UsersController extends Controller
         $user['avatar_url'] = $avatar_url;
         $user['donvi_text'] = $donvi;
         $user['status']     = $user['status'] < 0 ? 0 : $user['status'];
-        $user['role_ids']   = maybe_unserialize($user['role_ids']);
-        $user['donvi_ids']  = maybe_unserialize($user['donvi_ids']);
 
         return $user;
     }
@@ -219,8 +216,8 @@ class UsersController extends Controller
             $user->avatar    = $data['avatar'];
             $user->password  = Hash::make($data['password']);
             $user->donvi_id  = !empty($data['donvi_id']) ? $data['donvi_id'] : 0;
-            $user->donvi_ids = !empty($data['donvi_ids']) ? maybe_serialize($data['donvi_ids']) : 0;
-            $user->role_ids  = !empty($data['role_ids']) ? maybe_serialize($data['role_ids']) : 0;
+            $user->donvi_ids = !empty($data['donvi_ids']) ? $data['donvi_ids'] : 0;
+            $user->role_ids  = !empty($data['role_ids']) ? $data['role_ids'] : 0;
             $user->status    = $data['status'];
 
             $user->save();
@@ -228,7 +225,7 @@ class UsersController extends Controller
             $user_id = $user->getAttributeValue('id');
 
             if ( $request->has('dataTable') ) {
-                $user = User::where('id', $user_id)->get()->first();
+                $user = Users::where('id', $user_id)->get()->first();
 
                 if ( !empty($user) ) {
                     $dataTable = $this->user_data($user);
@@ -306,7 +303,7 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
-        if ( User::find($id)->status == 3 ) {
+        if ( Users::find($id)->status == 3 ) {
             $data['status']    = 3;
             $data['role_ids']  = 0;
             $data['donvi_id']  = 0;
@@ -331,10 +328,10 @@ class UsersController extends Controller
                 $data['donvi_ids'] = maybe_serialize($data['donvi_ids']);
             }
 
-            User::where('id', $id)->update($data);
+            Users::where('id', $id)->update($data);
 
             if ( $request->has('dataTable') ) {
-                $user = User::where('id', $id)->get()->first();
+                $user = Users::where('id', $id)->get()->first();
 
                 if ( !empty($user) ) {
                     $dataTable = $this->user_data($user);
@@ -372,7 +369,7 @@ class UsersController extends Controller
             ]);
         }
 
-        if ( User::find($id)->status == 3 ) {
+        if ( Users::find($id)->status == 3 ) {
             return response()->json([
                 'status'  => 'warning',
                 'title'   => 'Bạn không thể xóa người dùng này!',
@@ -380,7 +377,7 @@ class UsersController extends Controller
             ]);
         }
 
-        $delete = User::find($id);
+        $delete = Users::find($id);
 
         if ( !empty($delete) ) {
 

@@ -25,7 +25,6 @@ class UploadFileController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->init();
     }
 
     public function get_attachments( $args )
@@ -40,11 +39,16 @@ class UploadFileController extends Controller
             $offset = $args['offset'];
             unset($args['offset']);
         }
+        $user = Auth::user();
+        if ( $user->status != 3 ) {
+            $args[] = [ 'user_id', $user->id ];
+        }
         $posts = Posts::where($args)
             ->latest()
             ->offset($offset)
             ->limit($limit)
-            ->get()->toArray();
+            ->get()
+            ->toArray();
 
         return $posts;
     }
@@ -81,7 +85,7 @@ class UploadFileController extends Controller
         return $post_id;
     }
 
-    public function init()
+    public function setup()
     {
         $this->attachments = $this->get_attachments(
             [
@@ -100,7 +104,7 @@ class UploadFileController extends Controller
         $year        = '';
         $directories = [];
         if ( !empty($attachments) ) {
-            foreach ( $this->attachments as $attachment ) {
+            foreach ( $attachments as $attachment ) {
                 $dir_year = explode('/', $attachment['name']);
                 $dir_year = array_shift($dir_year);
                 $dir      = str_replace($attachment['title'], '', $attachment['name']);
@@ -150,6 +154,8 @@ class UploadFileController extends Controller
             abort(404);
         }
 
+        $this->setup();
+
         return view(name_blade('Backend.media.app'))->with([
             'attachments' => $this->attachments,
             'limit'       => $this->limit,
@@ -171,7 +177,7 @@ class UploadFileController extends Controller
 
             return $this->filter($data);
         } else {
-            $this->init();
+            $this->setup();
 
             $content = '';
             $dir     = '';
@@ -345,7 +351,7 @@ class UploadFileController extends Controller
 
         if ( $post_id > 0 ) {
 
-            $this->init();
+            $this->setup();
 
             return response()->json(
                 [
@@ -444,7 +450,9 @@ class UploadFileController extends Controller
             Posts::destroy($id);
 
             if ( $response ) {
-                $this->init();
+
+                $this->setup();
+
                 return response()->json([
                     'status'      => 200,
                     'message'     => 'Xóa file thành công.',
@@ -493,7 +501,9 @@ class UploadFileController extends Controller
             }
 
             if ( !empty($deleted) ) {
-                $this->init();
+
+                $this->setup();
+
                 $response = [
                     'status'      => 200,
                     'ids'         => $deleted,

@@ -22,4 +22,24 @@ class Users extends User
 
         return false;
     }
+
+    public function setRoleIdsAttribute( $value )
+    {
+        $this->attributes['role_ids'] = maybe_serialize($value);
+    }
+
+    public function setDonviIdsAttribute( $value )
+    {
+        $this->attributes['donvi_ids'] = maybe_serialize($value);
+    }
+
+    public function getRoleIdsAttribute( $value )
+    {
+        return maybe_unserialize($value);
+    }
+
+    public function getDonviIdsAttribute( $value )
+    {
+        return maybe_unserialize($value);
+    }
 }

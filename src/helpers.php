@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Ovic\Framework\Roles;
+use Ovic\Framework\Posts;
 
 /**
  * Get the evaluated view contents for the given view.
@@ -99,6 +100,13 @@ function button_set( $button, $permission, $attr = [] )
                 'class' => $attr['class'].$class,
             ]);
     }
+}
+
+function get_attachment_url( $id, $is_path = false )
+{
+    $path = !$is_path ? Posts::where('id', '=', $id)->value('name') : $id;
+
+    return route('images.build', explode('/', $path));
 }
 
 /**

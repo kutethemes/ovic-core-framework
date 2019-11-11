@@ -61,8 +61,7 @@ class Roles extends Eloquent
         if ( !empty($user['role_ids']) ) {
             $role_ids = maybe_unserialize($user['role_ids']);
             $roles    = $query->where('status', '1')
-                ->findMany($role_ids, 'ucase_ids')
-                ->get();
+                ->findMany($role_ids, 'ucase_ids');
 
             if ( !empty($roles) ) {
                 foreach ( $roles as $role ) {
