@@ -27,7 +27,7 @@
     <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/animate.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.min.css') }}" rel="stylesheet">
-
+    {{-- App style --}}
     <style>
         .navbar-top-links li {
             position: relative;

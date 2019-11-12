@@ -32,13 +32,37 @@ class DashboardController extends Controller
         return view(name_blade('Backend.dashboard.config'));
     }
 
-    public function clear_cache()
+    public function update_assets( Request $request )
+    {
+        Artisan::call('vendor:publish --tag=ovic-assets --force');
+
+        if ( $request->ajax() ) {
+            return response()->json([
+                'message' => 'Thư viện đã được cập nhật thành công.',
+            ]);
+        }
+        return 'Thư viện đã được cập nhật thành công.';
+    }
+
+    public function clear_cache( Request $request )
     {
         Artisan::call('cache:clear');
-        Artisan::call('route:cache');
         Artisan::call('route:clear');
-        Artisan::call('config:cache');
+        Artisan::call('config:clear');
+        Artisan::call('event:clear');
+        Artisan::call('view:clear');
+        Artisan::call('optimize:clear');
 
-        return 'Clear All cleared';
+        Artisan::call('config:cache');
+        Artisan::call('event:cache');
+        /* Artisan::call('route:cache'); */
+        Artisan::call('view:cache');
+
+        if ( $request->ajax() ) {
+            return response()->json([
+                'message' => 'Xóa cache thành công.',
+            ]);
+        }
+        return 'Xóa cache thành công.';
     }
 }

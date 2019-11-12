@@ -14,6 +14,7 @@
 @section( 'title', 'QUẢN LÝ NHÓM NGƯỜI DÙNG' )
 
 @push( 'styles.table' )
+    {{-- style roles --}}
     <style>
         .client-order {
             max-width: 45px;
@@ -28,6 +29,7 @@
 @endpush
 
 @push( 'scripts.table' )
+    {{-- script roles --}}
     <script>
         $( '#table-posts' ).init_dataTable( "roles", {
             columns: [

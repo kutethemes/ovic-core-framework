@@ -16,6 +16,7 @@
 @section( 'title', 'Attachment Detail' )
 
 @push( 'styles' )
+    <!-- style show media -->
     <style>
         div.icon {
             font-size: 200px;

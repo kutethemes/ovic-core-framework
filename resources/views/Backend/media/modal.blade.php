@@ -10,6 +10,7 @@
 @endphp
 
 @push( 'styles' )
+    {{-- style modal media --}}
     <style>
         div.modal-content {
             width: 100vw !important;
@@ -69,6 +70,7 @@
 @endpush
 
 @push( 'scripts' )
+    {{-- script modal media --}}
     <script>
 
         var imageVar = {};

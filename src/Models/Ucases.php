@@ -39,62 +39,83 @@ class Ucases extends Eloquent
 
     public function scopeEditMenu( $query, $position, $is_active = false )
     {
-        $args = [
-            [ 'position', $position ]
-        ];
+        $user      = Auth::user();
+        $activeTXT = $is_active ? 'active' : 'inactive';
 
-        if ( $is_active == true ) {
-            $args[] = [ 'status', '=', '1' ];
-            $args[] = [ 'access', '<>', '0' ];
-        }
+        return Cache::rememberForever(
+            name_cache("edit_menu_{$position}_{$activeTXT}", $user),
+            function () use ( $query, $position, $is_active ) {
+                $args = [
+                    [ 'position', $position ]
+                ];
 
-        return $query->where($args)
-            ->get()
-            ->collect()
-            ->sortBy('ordering')
-            ->groupBy('parent_id')
-            ->toArray();
+                if ( $is_active == true ) {
+                    $args[] = [ 'status', '=', '1' ];
+                    $args[] = [ 'access', '<>', '0' ];
+                }
+
+                return $query->where($args)
+                    ->get()
+                    ->collect()
+                    ->sortBy('ordering')
+                    ->groupBy('parent_id')
+                    ->toArray();
+            }
+        );
     }
 
     public function scopePrimaryMenu( $query, $position )
     {
+        $user       = Auth::user();
         $permission = Roles::Permission();
 
-        return $query->where(
-            [
-                [ 'status', '1' ],
-                [ 'position', $position ]
-            ])
-            ->get()
-            ->collect()
-            ->filter(function ( $item, $key ) use ( $permission ) {
-                return ( !empty($permission[$item->slug]) && array_sum($permission[$item->slug]) != 0 );
-            })
-            ->sortBy('ordering')
-            ->groupBy('parent_id')
-            ->toArray();
+        return Cache::rememberForever(
+            name_cache("primary_menu_{$position}", $user),
+            function () use ( $query, $position, $permission ) {
+                return $query->where(
+                    [
+                        [ 'status', '1' ],
+                        [ 'position', $position ]
+                    ])
+                    ->get()
+                    ->collect()
+                    ->filter(function ( $item, $key ) use ( $permission ) {
+                        return ( !empty($permission[$item->slug]) && array_sum($permission[$item->slug]) != 0 );
+                    })
+                    ->sortBy('ordering')
+                    ->groupBy('parent_id')
+                    ->toArray();
+            }
+        );
     }
 
     public function scopeGetRoute( $query, $access )
     {
-        switch ( $access ) {
-            case 'backend':
-                $access = 1;
-                break;
-            case 'frontend':
-                $access = 2;
-                break;
-            case 'public':
-                $access = 0;
-                break;
-        }
+        $user   = Auth::user();
+        $ucases = Cache::rememberForever(
+            name_cache("get_route_{$access}", $user),
+            function () use ( $query, $access ) {
 
-        $ucases = $query->where(
-            [
-                [ 'status', '>', '0' ],
-                [ 'access', $access ],
-            ]
-        )->get();
+                switch ( $access ) {
+                    case 'backend':
+                        $access = 1;
+                        break;
+                    case 'frontend':
+                        $access = 2;
+                        break;
+                    case 'public':
+                        $access = 0;
+                        break;
+                }
+
+                return $query->where(
+                    [
+                        [ 'status', '>', '0' ],
+                        [ 'access', $access ],
+                    ]
+                )->get();
+            }
+        );
 
         if ( !empty($ucases) ) {
             foreach ( $ucases as $ucase ) {

@@ -12,11 +12,11 @@
 @extends( name_blade('Backend.app') )
 
 @push( 'styles' )
-    <!-- Sweet Alert -->
+    {{-- Sweet Alert --}}
     <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
-    <!-- Toastr style -->
+    {{-- Toastr style --}}
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
-
+    {{-- style dataTable --}}
     <style>
         .client-avatar {
             max-width: 42px;
@@ -187,14 +187,14 @@
 @endpush
 
 @push( 'scripts' )
-    <!-- Sweet alert -->
+    {{-- Sweet alert --}}
     <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
-    <!-- Toastr script -->
+    {{-- Toastr script --}}
     <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
-    <!-- dataTables -->
+    {{-- dataTables --}}
     <script src="{{ asset('js/plugins/dataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('js/plugins/dataTables/dataTables.bootstrap4.min.js') }}"></script>
-
+    {{-- script dataTable --}}
     <script>
 
         var OvicTable = null;

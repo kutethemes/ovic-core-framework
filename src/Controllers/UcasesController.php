@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class UcasesController extends Controller
 {
@@ -104,6 +106,8 @@ class UcasesController extends Controller
             }
         }
 
+        Cache::flush();
+
         return response()->json(
             [
                 'status'  => 'info',
@@ -139,7 +143,7 @@ class UcasesController extends Controller
 
             $ucase = new Ucases();
 
-            $ucase->slug      = $data['slug'];
+            $ucase->slug      = Str::slug($data['slug'], '-');
             $ucase->title     = $data['title'];
             $ucase->ordering  = $ordering;
             $ucase->parent_id = 0;
@@ -151,6 +155,8 @@ class UcasesController extends Controller
             $ucase->save();
 
             $ucase_id = $ucase->getAttributeValue('id');
+
+            Cache::flush();
 
             return response()->json([
                 'status'  => 200,
@@ -191,6 +197,9 @@ class UcasesController extends Controller
 
         if ( !empty($edit) ) {
             $edit['route'] = maybe_unserialize($edit['route']);
+
+            Cache::flush();
+
             return response()->json(
                 [
                     'status' => 'success',
@@ -255,8 +264,13 @@ class UcasesController extends Controller
             if ( !empty($data['route']) ) {
                 $data['route'] = maybe_serialize($data['route']);
             }
+            if ( !empty($data['slug']) ) {
+                $data['slug'] = Str::slug($data['slug'], '-');
+            }
 
             Ucases::where('id', $id)->update($data);
+
+            Cache::flush();
 
             return response()->json([
                 'status'  => 200,
@@ -303,6 +317,8 @@ class UcasesController extends Controller
                     ]);
                 }
             }
+
+            Cache::flush();
 
             return response()->json(
                 [

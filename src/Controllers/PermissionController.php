@@ -97,6 +97,8 @@ class PermissionController extends Controller
             $roles->ucase_ids = $ucase_ids;
             $roles->save();
 
+            Cache::flush();
+
             return response()->json([
                 'status'  => 200,
                 'message' => 'Phân quyền thành công.',

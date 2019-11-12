@@ -14,11 +14,11 @@
 @section( 'title', 'QUẢN LÝ CHỨC NĂNG' )
 
 @push( 'styles' )
-    <!-- Sweet Alert -->
+    {{-- Sweet Alert --}}
     <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
-    <!-- Toastr style -->
+    {{-- Toastr style --}}
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
-
+    {{-- style ucases --}}
     <style>
         .ibox {
             background-color: #fff;
@@ -213,13 +213,13 @@
 @endpush
 
 @push( 'scripts' )
-    <!-- Sweet alert -->
+    {{-- Sweet alert --}}
     <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
-    <!-- Toastr script -->
+    {{-- Toastr script --}}
     <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
-    <!-- Nestable List -->
+    {{-- Nestable List --}}
     <script src="{{ asset('js/plugins/nestable/jquery.nestable.js') }}"></script>
-
+    {{-- script ucases --}}
     <script>
         toastr.options = {
             "preventDuplicates": true,

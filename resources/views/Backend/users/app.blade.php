@@ -14,9 +14,9 @@
 @section( 'title', 'QUẢN LÝ NGƯỜI DÙNG' )
 
 @push( 'styles.table' )
-    <!-- Chosen -->
+    {{-- Chosen --}}
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
-
+    {{-- style users --}}
     <style>
         .client-avatar img {
             max-width: 28px;
@@ -33,11 +33,11 @@
 @endpush
 
 @push( 'scripts.table' )
-    <!-- Chosen -->
+    {{-- Chosen --}}
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
-    <!-- Jquery Validate -->
+    {{-- Jquery Validate --}}
     <script src="{{ asset('js/plugins/validate/jquery.validate.min.js') }}"></script>
-
+    {{-- script users --}}
     <script>
         $( "#edit-post" ).validate( {
             errorPlacement: function ( error, element ) {

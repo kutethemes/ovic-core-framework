@@ -38,11 +38,19 @@ class Roles extends Eloquent
     public function scopePermission( $query, $route = null )
     {
         $permission = [];
+
         if ( !Auth::check() ) {
             if ( $route != null ) {
                 return [ 1, 1, 1 ];
             }
-            $ucases = Ucases::where('access', 0)->get('slug')->toArray();
+            $ucases = Cache::rememberForever(
+                name_cache('permission_public'),
+                function () use ( $query ) {
+                    return Ucases::where('access', 0)
+                        ->get('slug')
+                        ->toArray();
+                }
+            );
             if ( !empty($ucases) ) {
                 foreach ( $ucases as $ucase ) {
                     $permission[$ucase['slug']] = [ 1, 1, 1 ];
@@ -57,7 +65,13 @@ class Roles extends Eloquent
             if ( $route != null ) {
                 return [ 1, 1, 1 ];
             }
-            $ucases = Ucases::all('slug')->toArray();
+            $ucases = Cache::rememberForever(
+                name_cache('permission_supper_admin', $user),
+                function () use ( $query ) {
+                    return Ucases::all('slug')
+                        ->toArray();
+                }
+            );
             if ( !empty($ucases) ) {
                 foreach ( $ucases as $ucase ) {
                     $permission[$ucase['slug']] = [ 1, 1, 1 ];
@@ -69,9 +83,16 @@ class Roles extends Eloquent
             return $permission;
         }
         if ( !empty($user['role_ids']) ) {
-            $role_ids = maybe_unserialize($user['role_ids']);
-            $roles    = $query->where('status', '1')
-                ->findMany($role_ids, 'ucase_ids');
+
+            $roles = Cache::rememberForever(
+                name_cache('permission_admin', $user),
+                function () use ( $query, $user ) {
+                    $role_ids = maybe_unserialize($user['role_ids']);
+
+                    return $query->where('status', '1')
+                        ->findMany($role_ids, 'ucase_ids');
+                }
+            );
 
             if ( !empty($roles) ) {
                 foreach ( $roles as $role ) {

@@ -67,8 +67,10 @@ Route::group(
         /* Images */
         Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index')->name('images.build');
 
-        /* Clear Cache */
-        Route::get('clear-cache', 'Ovic\Framework\DashboardController@clear_cache')->name('system.cache');
+        /* Cache */
+        Route::get('clear-cache', 'Ovic\Framework\DashboardController@clear_cache')->name('clear.cache');
+        Route::get('create-cache', 'Ovic\Framework\DashboardController@create_cache')->name('create.cache');
+        Route::get('update-assets', 'Ovic\Framework\DashboardController@update_assets')->name('update.assets');
 
         /* System config */
         Route::get('config', 'Ovic\Framework\DashboardController@config')->name('config');

@@ -20,6 +20,11 @@ class FrameworkServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        /* Load Schedule */
+        $this->app->booted(function () {
+            $this->app->make(FrameworkSchedule::class);
+        });
+        /* Load Service Provider */
         $this->app->register(FrameworkAuthServiceProvider::class);
         $this->app->register(FrameworkEventServiceProvider::class);
     }

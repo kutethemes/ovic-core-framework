@@ -14,16 +14,16 @@
 @section( 'title', 'QUẢN LÝ DỮ LIỆU' )
 
 @push( 'styles' )
-    <!-- Toastr style -->
+    {{-- Toastr style --}}
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
-    <!-- Sweet Alert -->
+    {{-- Sweet Alert --}}
     <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
 @endpush
 
 @push( 'scripts' )
-    <!-- Sweet alert -->
+    {{-- Sweet Alert --}}
     <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
-    <!-- Toastr script -->
+    {{-- Toastr script --}}
     <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
 @endpush
 

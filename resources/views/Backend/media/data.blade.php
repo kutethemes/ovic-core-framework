@@ -17,13 +17,13 @@
 @endphp
 
 @push( 'styles' )
-    <!-- dropzone -->
+    {{-- dropzone --}}
     <link href="{{ asset('css/plugins/dropzone/dropzone.min.css') }}" rel="stylesheet">
-    <!-- jsTree -->
+    {{-- jsTree --}}
     <link href="{{ asset('css/plugins/jsTree/style.min.css') }}" rel="stylesheet">
-    <!-- Awesome Bootstrap Checkbox -->
+    {{-- Awesome Bootstrap Checkbox --}}
     <link href="{{ asset('css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
-
+    {{-- style media --}}
     <style>
         .checkbox.checkbox-danger {
             padding-left: 0;
@@ -160,11 +160,11 @@
 @endpush
 
 @push( 'scripts' )
-    <!-- dropzone -->
+    {{-- dropzone --}}
     <script src="{{ asset('js/plugins/dropzone/dropzone.min.js') }}"></script>
-    <!-- jsTree -->
+    {{-- jsTree --}}
     <script src="{{ asset('js/plugins/jsTree/jstree.min.js') }}"></script>
-
+    {{-- script media --}}
     <script>
         var treeFolder = function ( directories, reload = false ) {
             if ( reload ) {

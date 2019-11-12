@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Ovic\Framework\Roles;
 use Ovic\Framework\Posts;
 
@@ -18,6 +20,13 @@ function name_blade( $view = null )
     }
 
     return $view;
+}
+
+function name_cache( $name, $user = false )
+{
+    $auth = $user ? "_{$user->id}" : '';
+
+    return "_ovic{$auth}_{$name}";
 }
 
 function user_can( $can )
