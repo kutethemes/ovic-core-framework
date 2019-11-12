@@ -24,7 +24,7 @@ class UploadFileController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //
     }
 
     public function get_attachments( $args )
@@ -72,8 +72,8 @@ class UploadFileController extends Controller
             foreach ( $request['meta'] as $meta_key => $meta_value ) {
                 $meta             = new Postmeta();
                 $meta->post_id    = $post_id;
-                $meta->meta_key   = maybe_serialize($meta_key);
-                $meta->meta_value = maybe_serialize($meta_value);
+                $meta->meta_key   = $meta_key;
+                $meta->meta_value = $meta_value;
 
                 $meta->save();
             }
@@ -82,7 +82,7 @@ class UploadFileController extends Controller
         return $post_id;
     }
 
-    public function setup()
+    public function install()
     {
         $this->attachments = $this->get_attachments(
             [
@@ -151,7 +151,7 @@ class UploadFileController extends Controller
             abort(404);
         }
 
-        $this->setup();
+        $this->install();
 
         return view(name_blade('Backend.media.app'))->with([
             'attachments' => $this->attachments,
@@ -174,7 +174,7 @@ class UploadFileController extends Controller
 
             return $this->filter($data);
         } else {
-            $this->setup();
+            $this->install();
 
             $content = '';
             $dir     = '';
@@ -348,7 +348,7 @@ class UploadFileController extends Controller
 
         if ( $post_id > 0 ) {
 
-            $this->setup();
+            $this->install();
 
             return response()->json(
                 [
@@ -478,7 +478,7 @@ class UploadFileController extends Controller
 
             if ( $response ) {
 
-                $this->setup();
+                $this->install();
 
                 return response()->json([
                     'status'      => 200,
@@ -529,7 +529,7 @@ class UploadFileController extends Controller
 
             if ( !empty($deleted) ) {
 
-                $this->setup();
+                $this->install();
 
                 $response = [
                     'status'      => 200,

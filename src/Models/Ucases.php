@@ -44,7 +44,8 @@ class Ucases extends Eloquent
         ];
 
         if ( $is_active == true ) {
-            $args[] = [ 'status', '1' ];
+            $args[] = [ 'status', '=', '1' ];
+            $args[] = [ 'access', '<>', '0' ];
         }
 
         return $query->where($args)
@@ -63,8 +64,7 @@ class Ucases extends Eloquent
             [
                 [ 'status', '1' ],
                 [ 'position', $position ]
-            ]
-        )
+            ])
             ->get()
             ->collect()
             ->filter(function ( $item, $key ) use ( $permission ) {

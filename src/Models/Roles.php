@@ -38,21 +38,31 @@ class Roles extends Eloquent
     public function scopePermission( $query, $route = null )
     {
         $permission = [];
-        $user       = Auth::user();
-        if ( $user['status'] == 3 ) {
-
+        if ( !Auth::check() ) {
             if ( $route != null ) {
                 return [ 1, 1, 1 ];
             }
-
-            $roles = Ucases::all('slug')->toArray();
-
-            if ( !empty($roles) ) {
-                foreach ( $roles as $role ) {
-                    $permission[$role['slug']] = [ 1, 1, 1 ];
+            $ucases = Ucases::where('access', 0)->get('slug')->toArray();
+            if ( !empty($ucases) ) {
+                foreach ( $ucases as $ucase ) {
+                    $permission[$ucase['slug']] = [ 1, 1, 1 ];
                 }
             }
+            $permission['dashboard'] = [ 1, 1, 1 ];
 
+            return $permission;
+        }
+        $user = Auth::user();
+        if ( $user['status'] == 3 ) {
+            if ( $route != null ) {
+                return [ 1, 1, 1 ];
+            }
+            $ucases = Ucases::all('slug')->toArray();
+            if ( !empty($ucases) ) {
+                foreach ( $ucases as $ucase ) {
+                    $permission[$ucase['slug']] = [ 1, 1, 1 ];
+                }
+            }
             $permission['ucases']    = [ 1, 1, 1 ];
             $permission['dashboard'] = [ 1, 1, 1 ];
 

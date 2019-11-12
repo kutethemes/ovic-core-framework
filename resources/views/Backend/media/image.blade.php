@@ -27,7 +27,8 @@
         <label class="btn btn-info btn-circle">
             <i class="fa fa-check"></i>
         </label>
-        <a href="{{ route('upload.show', $attachment['id']) }}" target="_blank">
+        <a href="{{ route('upload.show', $attachment['id']) }}" target="_blank" data-trigger="hover"
+           data-toggle="popover" data-placement="top" data-content="{{ $attachment['title'] }}">
             <span class="corner"></span>
             @if ( strstr( $mimetype, "video/" ) )
                 <div class="icon">

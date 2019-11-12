@@ -11,6 +11,10 @@
     $name       = explode('.', $name, 2);
     $name       = $name[0];
     $left_menu  = $primary_menu['left'];
+    $config     = [
+        'ucases',
+        'config'
+    ];
 @endphp
 <!-- Left Sidebar -->
 <nav class="navbar-default navbar-static-side" role="navigation">
@@ -35,32 +39,39 @@
                 </a>
             </li>
 
-            @if( Route::has('ucases.show') && \Auth::user()->status == 3 )
-                <li @if ( $name == 'ucases' ) class="active" @endif>
-                    <a href="{{ url('/ucases') }}">
-                        <i class="fa fa-codepen"></i>
-                        <span class="nav-label">Quản lý chức năng</span>
-                    </a>
-                </li>
-            @endif
-
             @if( !empty( $left_menu[0] ) )
                 @foreach( $left_menu[0] as $key => $parent )
-                    <li @if ( $name == $parent['slug'] ) class="active" @endif>
+
+                    @php
+                        $active     = '';
+                        $childrens  = !empty( $left_menu[$parent['id']] ) ? $left_menu[$parent['id']] : [];
+                        if ( $name == $parent['slug'] ){
+                            $active = 'active';
+                        }
+                        if ( $childrens ){
+                            foreach ( $childrens as $children ) {
+                                if ( $name == $children['slug'] ){
+                                    $active = 'active';
+                                }
+                            }
+                        }
+                    @endphp
+
+                    <li class="{{ $active }}">
                         <a href="{{ url( "/{$parent['slug']}" ) }}">
                             @if( !empty($parent['route']['icon']) )
                                 <i class="{{ $parent['route']['icon'] }}"></i>
                             @endif
                             <span class="nav-label">{{ $parent['title'] }}</span>
-                            @if( !empty( $left_menu[$parent['id']] ) )
+                            @if( !empty( $childrens ) )
                                 <span class="fa arrow"></span>
                             @endif
                         </a>
 
-                        @if( !empty( $left_menu[$parent['id']] ) )
+                        @if( !empty( $childrens ) )
 
                             <ul class="nav nav-second-level collapse">
-                                @foreach ( $left_menu[$parent['id']] as $children )
+                                @foreach ( $childrens as $children )
                                     <li @if ( $name == $children['slug'] ) class="active" @endif>
                                         <a href="{{ url( "/{$children['slug']}" ) }}">
                                             @if( !empty($children['route']['icon']) )
@@ -77,6 +88,31 @@
                 @endforeach
             @endif
 
+            @auth
+                <li @if ( in_array( $name, $config ) ) class="active" @endif>
+                    <a href="#">
+                        <i class="fa fa-cogs"></i>
+                        <span class="nav-label">Settings</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse">
+                        @if( Route::has('ucases.show') && Auth::user()->status == 3 )
+                            <li @if ( $name == 'ucases' ) class="active" @endif>
+                                <a href="{{ url('/ucases') }}">
+                                    <i class="fa fa-codepen"></i>
+                                    <span class="nav-label">Quản lý chức năng</span>
+                                </a>
+                            </li>
+                        @endif
+                        <li @if ( $name == 'config' ) class="active" @endif>
+                            <a href="{{ url('/config') }}">
+                                <i class="fa fa-wrench"></i>
+                                <span class="nav-label">Cài đặt hệ thống</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endauth
         </ul>
     </div>
 </nav>

@@ -12,8 +12,10 @@
 
 use Ovic\Framework\Ucases;
 
-/* Admin routes */
+/* Dashboard Route */
+Route::get('dashboard', 'Ovic\Framework\DashboardController@index');
 
+/* Admin routes */
 Route::group(
     [
         'prefix'     => '',
@@ -53,9 +55,6 @@ Route::group(
 //        /* Upload Route */
 //        Route::resource('upload', 'Ovic\Framework\UploadFileController');
 
-        /* Dashboard Route */
-        Route::resource('dashboard', 'Ovic\Framework\DashboardController');
-
         /* Ucases Route */
         Route::resource('ucases', 'Ovic\Framework\UcasesController');
 
@@ -67,6 +66,12 @@ Route::group(
 
         /* Images */
         Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index')->name('images.build');
+
+        /* Clear Cache */
+        Route::get('clear-cache', 'Ovic\Framework\DashboardController@clear_cache')->name('system.cache');
+
+        /* System config */
+        Route::get('config', 'Ovic\Framework\DashboardController@config')->name('config');
     }
 );
 
@@ -76,10 +81,5 @@ Route::group([],
         if ( Ucases::hasTable() ) {
             Ucases::GetRoute('public');
         }
-
     }
 );
-
-/* Clear Cache */
-
-Route::get('clear-cache', 'Ovic\Framework\DashboardController@clear_cache')->name('cache.clear');

@@ -14,9 +14,9 @@ class DashboardController extends Controller
      *
      * @return void
      */
-    public function __construct( Request $request )
+    public function __construct()
     {
-        $this->middleware('auth');
+        //
     }
 
     /**
@@ -25,6 +25,11 @@ class DashboardController extends Controller
     public function index()
     {
         return view(name_blade('Backend.dashboard.app'));
+    }
+
+    public function config()
+    {
+        return view(name_blade('Backend.dashboard.config'));
     }
 
     public function clear_cache()

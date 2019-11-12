@@ -22,7 +22,6 @@ function name_blade( $view = null )
 
 function user_can( $can )
 {
-    $key = 0;
     switch ( $can ) {
         case 'add':
             $key = 0;

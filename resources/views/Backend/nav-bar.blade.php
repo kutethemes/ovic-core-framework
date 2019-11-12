@@ -64,27 +64,42 @@
             <li>
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                     <i class="fa fa-user-circle-o"></i>
-                    Hi, {{ Auth::user()->name }}
+                    Hi, @auth {{ Auth::user()->name }} @else Guest @endauth
                 </a>
                 <ul class="dropdown-menu animated fadeInUp">
-                    @if( Route::has('users.show') )
+                    @auth
+                        @if( Route::has('users.show') )
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('users.show', Auth::user()->id ) }}">
+                                    Profile
+                                </a>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                        @endif
                         <li>
-                            <a class="dropdown-item"
-                               href="{{ route('users.show', \Auth::user()->id ) }}">
-                                Profile
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                               onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                Đăng xuất
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+                    @else
+                        <li>
+                            <a href="{{ route('login') }}" class="dropdown-item">
+                                Đăng nhập
                             </a>
                         </li>
-                        <li class="dropdown-divider"></li>
-                    @endif
-                    <li>
-                        <a class="dropdown-item" href="{{ route('logout') }}"
-                           onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </li>
+                        @if (Route::has('register'))
+                            <li>
+                                <a href="{{ route('register') }}" class="dropdown-item">
+                                    Đăng kí
+                                </a>
+                            </li>
+                        @endif
+                    @endauth
                 </ul>
             </li>
         </ul>

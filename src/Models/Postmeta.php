@@ -69,7 +69,7 @@ class Postmeta extends Eloquent
             ->value('meta_value');
     }
 
-    public static function scopeupdate_post_meta( $query, $post_id, $meta_key, $meta_value )
+    public function scopeupdate_post_meta( $query, $post_id, $meta_key, $meta_value )
     {
         $post_id = abs(intval($post_id));
         if ( !$post_id ) {
