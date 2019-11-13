@@ -22,11 +22,11 @@ function name_blade( $view = null )
     return $view;
 }
 
-function name_cache( $name, $user = false )
+function name_cache( $name )
 {
-    $auth = $user ? "_{$user->id}" : '';
+    $auth = Auth::check() ? Auth::user()->id : 'public';
 
-    return "_ovic{$auth}_{$name}";
+    return "_ovic_{$auth}_{$name}";
 }
 
 function user_can( $can )

@@ -39,11 +39,10 @@ class Ucases extends Eloquent
 
     public function scopeEditMenu( $query, $position, $is_active = false )
     {
-        $user      = Auth::user();
         $activeTXT = $is_active ? 'active' : 'inactive';
 
         return Cache::rememberForever(
-            name_cache("edit_menu_{$position}_{$activeTXT}", $user),
+            name_cache("edit_menu_{$position}_{$activeTXT}"),
             function () use ( $query, $position, $is_active ) {
                 $args = [
                     [ 'position', $position ]
@@ -66,11 +65,10 @@ class Ucases extends Eloquent
 
     public function scopePrimaryMenu( $query, $position )
     {
-        $user       = Auth::user();
         $permission = Roles::Permission();
 
         return Cache::rememberForever(
-            name_cache("primary_menu_{$position}", $user),
+            name_cache("primary_menu_{$position}"),
             function () use ( $query, $position, $permission ) {
                 return $query->where(
                     [
@@ -91,9 +89,8 @@ class Ucases extends Eloquent
 
     public function scopeGetRoute( $query, $access )
     {
-        $user   = Auth::user();
         $ucases = Cache::rememberForever(
-            name_cache("get_route_{$access}", $user),
+            name_cache("get_route_{$access}"),
             function () use ( $query, $access ) {
 
                 switch ( $access ) {

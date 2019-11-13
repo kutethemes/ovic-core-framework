@@ -32,12 +32,14 @@
                 </div>
             </li>
 
-            <li @if ( $name == 'dashboard' ) class="active" @endif>
-                <a href="{{ url('/dashboard') }}">
-                    <i class="fa fa-tachometer"></i>
-                    <span class="nav-label">Dashboard</span>
-                </a>
-            </li>
+            @auth
+                <li @if ( $name == 'dashboard' ) class="active" @endif>
+                    <a href="{{ url('/dashboard') }}">
+                        <i class="fa fa-tachometer"></i>
+                        <span class="nav-label">Dashboard</span>
+                    </a>
+                </li>
+            @endauth
 
             @if( !empty( $left_menu[0] ) )
                 @foreach( $left_menu[0] as $key => $parent )
