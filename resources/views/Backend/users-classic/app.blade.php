@@ -9,17 +9,20 @@
      */
 @endphp
 
-@extends( name_blade('Components.table') )
+@extends( name_blade('Components.table-classic') )
 
 @section( 'title', 'QUẢN LÝ NGƯỜI DÙNG' )
 
-@push( 'styles.table' )
+@push( 'styles.table.classic' )
     {{-- Chosen --}}
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     {{-- style users --}}
     <style>
         @if( empty( $permission[0] ) || $permission[0] == false )
-            .btn.add-new {display: none !important;}
+            .btn.add-new {
+            display: none !important;
+        }
+
         @endif
 
         .client-avatar img {
@@ -30,13 +33,14 @@
             margin: 5px 0 3px 5px;
         }
 
+        UsersClassicController
         .field-password .input-group-append {
             display: none;
         }
     </style>
 @endpush
 
-@push( 'scripts.table' )
+@push( 'scripts.table.classic' )
     {{-- Chosen --}}
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
     {{-- Jquery Validate --}}
@@ -53,8 +57,16 @@
                 }
             }
         } );
-        $( '#table-posts' ).init_dataTable( "users", {
+        $( '#table-posts' ).init_dataTable( "users-classic", {
             columns: [
+                {
+                    className: "client-id",
+                    data: "id",
+                    sortable: false,
+                    render: function ( data, type, row, meta ) {
+                        return '<input id="select-' + data + '" class="select-items" type="checkbox" name="ids[]" value="' + data + '">';
+                    }
+                },
                 {
                     className: "client-avatar",
                     data: "avatar_url",
@@ -126,7 +138,8 @@
             let row = $( this ),
                 form = $( '#edit-post' ),
                 user = OvicTable.row( this ).data(),
-                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
+                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ],
+                wrapper = form.closest( '.wrapper-content' );
 
             if ( !row.hasClass( 'active' ) ) {
                 /* active */
@@ -154,9 +167,12 @@
                     }
                 } );
 
+                wrapper.children( '.col-sm-3.full-height' ).show();
+                wrapper.children( '.col-sm-9.full-height' ).removeClass( 'hide-sidebar' );
+
                 form.find( '.form-group .add-post' ).addClass( 'd-none' );
                 form.find( '.field-password-confirmation' ).css( 'display', 'none' );
-                form.find( '.field-password .input-group-append' ).css( 'display', 'flex' );
+                form.find( '.field-password .input-group-append' ).css( 'display', 'block' );
                 form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
             } else {
                 $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
@@ -166,7 +182,7 @@
         $( document ).on( 'click', '#table-posts .status', function () {
 
             $( this ).update_status(
-                "users",
+                "users-classic",
                 "Tắt kích hoạt thành công",
                 "Kích hoạt thành công"
             );
@@ -176,17 +192,22 @@
         /* Add new */
         $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
             let form = $( '#edit-post' ),
-                table = $( '#table-posts' );
+                table = $( '#table-posts' ),
+                wrapper = form.closest( '.wrapper-content' );
+
+            form.find( '.ovic-field-image .ovic-image-remove' ).trigger( 'click' );
+            form.find( '.field-password input' ).removeAttr( 'disabled' ).attr( 'name', 'password' );
+            form.find( '.chosen-select' ).val( '' ).trigger( 'chosen:updated' );
+            form.find( '.field-password-confirmation' ).css( 'display', 'block' ).find( 'input' ).attr( 'name', 'password_confirmation' );
+            form.find( '.field-password .input-group-append' ).css( 'display', 'none' );
 
             table.find( 'tbody > tr' ).removeClass( 'active' );
             form.trigger( 'reset' );
             form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
-            form.find( '.ovic-field-image .ovic-image-remove' ).trigger( 'click' );
-            form.find( '.field-password input' ).removeAttr( 'disabled' ).attr( 'name', 'password' );
-            form.find( '.chosen-select' ).val( '' ).trigger( 'chosen:updated' );
-            form.find( '.field-password-confirmation' ).css( 'display', 'flex' ).find( 'input' ).attr( 'name', 'password_confirmation' );
-            form.find( '.field-password .input-group-append' ).css( 'display', 'none' );
             form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
+
+            wrapper.children( '.col-sm-3.full-height' ).toggle();
+            wrapper.children( '.col-sm-9.full-height' ).toggleClass( 'hide-sidebar' );
 
             return false;
         } );
@@ -196,7 +217,7 @@
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
 
-            button.add_new( "users", data );
+            button.add_new( "users-classic", data );
 
             return false;
         } );
@@ -208,7 +229,7 @@
 
             data.dataTable = true;
 
-            button.update_post( "users", data, "#table-posts" );
+            button.update_post( "users-classic", data, "#table-posts" );
 
             return false;
         } );
@@ -218,29 +239,29 @@
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
 
-            button.remove_post( "users", data );
+            button.remove_post( "users-classic", data );
 
             return false;
         } );
     </script>
 @endpush
 
-@section( 'content-table' )
+@section( 'content-table-classic' )
 
-    <div class="col-sm-8 full-height">
-        <div class="ibox full-height-scroll">
+    <div class="col-sm-3 full-height">
+        <div class="ibox selected full-height-scroll">
             <div class="ibox-content">
 
-                @include( name_blade('Backend.users.list') )
+                @include( name_blade('Backend.users-classic.edit') )
 
             </div>
         </div>
     </div>
-    <div class="col-sm-4 full-height">
-        <div class="ibox selected full-height-scroll">
+    <div class="col-sm-9 full-height hide-sidebar">
+        <div class="ibox full-height-scroll">
             <div class="ibox-content">
 
-                @include( name_blade('Backend.users.edit') )
+                @include( name_blade('Backend.users-classic.list') )
 
             </div>
         </div>

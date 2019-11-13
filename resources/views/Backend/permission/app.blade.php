@@ -267,19 +267,30 @@
         } );
         /* chọn nhiều quyền */
         $( document ).on( 'click', '.dd-item > .dd-handle .name', function () {
-            $( this ).closest( '.dd-handle' ).find( 'input' ).trigger( 'click' );
+            $( this ).closest( '.dd-handle' ).find( 'input' ).each( function ( key, value ) {
+                $( value ).trigger( 'click' );
+            } );
         } );
-        $( document ).on( 'click', '.dd-item > .dd-handle input', function () {
-            let input = $( this ),
-                items = input.closest( '.dd-item' ),
-                child = items.find( '.dd-list input[name="' + input.attr( 'name' ) + '"]' );
 
-            if ( input.is( ':checked' ) ) {
-                child.prop( 'checked', true );
+        $( document ).on( 'change', '.dd-item > .dd-handle input', function ( e ) {
+            var self = $( this ),
+                items = self.closest( '.dd-item' );
+
+            var item_id = items.find( '.dd-list input[name="' + self.attr( 'name' ) + '"]' );
+
+            if ( self.is( ':checked' ) ) {
+                item_id.each( function ( key, value ) {
+                    var item = $( value );
+                    item.prop( 'checked', 'checked' );
+                } );
             } else {
-                child.prop( 'checked', false );
+                item_id.each( function ( key, value ) {
+                    $( value ).prop( 'checked', '' );
+                } );
             }
         } );
+
+
         $( document ).on( 'click', '.dd-item.has-children > .dd-list input', function () {
             let input = $( this ),
                 name = input.attr( 'name' ),

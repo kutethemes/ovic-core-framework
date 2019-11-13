@@ -448,7 +448,7 @@ class UploadFileController extends Controller
         //
     }
 
-    public function delete( $request, $id, $response = true )
+    public function delete( $id, $response = true )
     {
         if ( !user_can('delete') ) {
             return response()->json([
@@ -458,16 +458,9 @@ class UploadFileController extends Controller
             ]);
         }
 
-        $rules    = [
-            'id' => [ 'exists:posts,id,'.$id ],
-        ];
-        $messages = [
-            'id' => 'File không tồn tại'
-        ];
+        $delete = Posts::find($id);
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if ( $validator->passes() ) {
+        if ( !empty($delete) ) {
             $path = Posts::where('id', $id)->value('name');
             $path = str_replace('//', '/', "{$this->folder}{$path}");
 
@@ -492,7 +485,7 @@ class UploadFileController extends Controller
         if ( $response ) {
             return response()->json([
                 'status'  => 400,
-                'message' => $validator->errors()->all(),
+                'message' => 'Xóa file không thành công.',
             ]);
         } else {
             return 0;
@@ -506,24 +499,23 @@ class UploadFileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy( Request $request, $id, $response = true )
+    public function destroy( $id )
     {
         if ( !user_can('delete') ) {
             return response()->json([
                 'status'  => 400,
-                'message' => [ 'Bạn không được cấp quyền xóa dữ liệu!' ],
+                'message' => 'Bạn không được cấp quyền xóa dữ liệu!',
             ]);
         }
 
-        if ( $request->has('ids') && $id == 0 ) {
+        if ( !is_numeric($id) ) {
             $deleted = [];
-            $ids     = $request->input('ids');
-            $ids     = ( strpos($ids, ',') === false ) ? (array) $ids : explode(',', $ids);
+            $ids     = explode(',', $id);
 
             foreach ( $ids as $id ) {
-                $del_id = $this->delete($request, $id, false);
-                if ( $del_id != 0 ) {
-                    $deleted[] = $del_id;
+                $delete = $this->delete($id, false);
+                if ( $delete != 0 ) {
+                    $deleted[] = $delete;
                 }
             }
 
@@ -540,7 +532,7 @@ class UploadFileController extends Controller
             } else {
                 $response = [
                     'status'  => 400,
-                    'message' => [ 'Xóa file không thành công.' ],
+                    'message' => 'Xóa file không thành công.',
                 ];
             }
             return response()->json($response);

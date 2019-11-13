@@ -266,16 +266,10 @@
                                     showConfirmButton: true
                                 } );
                             } else {
-                                let html = '';
-                                $.each( response.message, function ( index, value ) {
-                                    html += "<p class='text-danger'>" + value + "</p>";
-                                } );
-
                                 swal( {
-                                    html: true,
                                     type: 'error',
                                     title: 'Error!',
-                                    text: html,
+                                    text: response.message,
                                     showConfirmButton: true
                                 } );
                             }
@@ -315,14 +309,11 @@
             }, function ( isConfirm ) {
                 if ( isConfirm ) {
                     $.ajax( {
-                        url: "upload/0",
+                        url: "upload/" + ids,
                         type: 'DELETE',
                         dataType: 'json',
                         headers: {
                             'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
-                        },
-                        data: {
-                            ids: ids
                         },
                         success: function ( response ) {
                             if ( response.status === 200 ) {

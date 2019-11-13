@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 
 class UcasesController extends Controller
 {
@@ -106,7 +106,7 @@ class UcasesController extends Controller
             }
         }
 
-        Cache::flush();
+        Artisan::call('cache:clear');
 
         return response()->json(
             [
@@ -156,7 +156,7 @@ class UcasesController extends Controller
 
             $ucase_id = $ucase->getAttributeValue('id');
 
-            Cache::flush();
+            Artisan::call('cache:clear');
 
             return response()->json([
                 'status'  => 200,
@@ -197,8 +197,6 @@ class UcasesController extends Controller
 
         if ( !empty($edit) ) {
             $edit['route'] = maybe_unserialize($edit['route']);
-
-            Cache::flush();
 
             return response()->json(
                 [
@@ -245,8 +243,12 @@ class UcasesController extends Controller
         $data      = $request->except([ '_token', 'id' ]);
 
         if ( $validator->passes() ) {
-            if ( $request->has('slug') ) {
-                $slug = Ucases::where('id', $id)->value('slug');
+            if ( !empty($data['route']) ) {
+                $data['route'] = maybe_serialize($data['route']);
+            }
+            if ( !empty($data['slug']) ) {
+                $data['slug'] = Str::slug($data['slug'], '-');
+                $slug         = Ucases::where('id', $id)->value('slug');
                 if ( $data['slug'] != $slug ) {
                     $roles = Roles::where('ucase_ids', 'LIKE', '%'.$slug.'%')->get([ 'id', 'ucase_ids' ]);
                     if ( !empty($roles) ) {
@@ -261,16 +263,10 @@ class UcasesController extends Controller
                     }
                 }
             }
-            if ( !empty($data['route']) ) {
-                $data['route'] = maybe_serialize($data['route']);
-            }
-            if ( !empty($data['slug']) ) {
-                $data['slug'] = Str::slug($data['slug'], '-');
-            }
 
             Ucases::where('id', $id)->update($data);
 
-            Cache::flush();
+            Artisan::call('cache:clear');
 
             return response()->json([
                 'status'  => 200,
@@ -318,7 +314,7 @@ class UcasesController extends Controller
                 }
             }
 
-            Cache::flush();
+            Artisan::call('cache:clear');
 
             return response()->json(
                 [

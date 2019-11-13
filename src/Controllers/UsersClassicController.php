@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class UsersController extends Controller
+class UsersClassicController extends Controller
 {
     private $rules = [
         'name'        => [ 'required', 'string', 'max:100' ],
@@ -53,9 +53,10 @@ class UsersController extends Controller
             abort(404);
         }
 
-        $roles  = [];
-        $donvis = [];
-        $ucases = [];
+        $roles     = [];
+        $donvis    = [];
+        $ucases    = [];
+        $dataTable = 'hide-sidebar'; // hide-sidebar, show-sidebar
         if ( Donvi::hasTable() ) {
             $donvis = Donvi::all([ 'id', 'tendonvi' ]);
         }
@@ -64,9 +65,9 @@ class UsersController extends Controller
         }
 
         return view(
-            name_blade('Backend.users.app'),
+            name_blade('Backend.users-classic.app'),
             compact(
-                [ 'donvis', 'roles', 'permission' ]
+                [ 'donvis', 'roles', 'permission', 'dataTable' ]
             )
         );
     }
@@ -108,6 +109,20 @@ class UsersController extends Controller
         } elseif ( $sort != '' && !empty($search) ) {
             $args = [
                 [ 'status', '=', $sort ],
+            ];
+        }
+
+        /* filter */
+        $filter = $request->input('filter');
+        $donvi  = $request->input('columns.2.search.value');
+
+        if ( $donvi != '' ) {
+            $args = [
+                [ 'donvi_id', '=', $donvi ],
+            ];
+        } elseif ( $filter != '' && !empty($search) ) {
+            $args = [
+                [ 'donvi_id', '=', $filter ],
             ];
         }
 
@@ -246,7 +261,7 @@ class UsersController extends Controller
     {
         $user = \Auth::user();
 
-        return view(name_blade('Backend.users.show'), compact('user'));
+        return view(name_blade('Backend.users-classic.show'), compact('user'));
     }
 
     /**

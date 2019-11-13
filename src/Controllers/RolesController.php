@@ -6,6 +6,7 @@ use Ovic\Framework\Roles;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Artisan;
 
 class RolesController extends Controller
 {
@@ -63,37 +64,41 @@ class RolesController extends Controller
      */
     public function create( Request $request )
     {
+        $args = [
+            [ 'id', '>', 0 ],
+        ];
+
         $totalData = Roles::count();
 
         $totalFiltered = $totalData;
 
         $limit  = $request->input('length');
         $start  = $request->input('start');
-        $sort   = $request->input('sorting');
         $search = $request->input('search.value');
+
+        /* sorting */
+        $sort   = $request->input('sorting');
         $status = $request->input('columns.1.search.value');
 
-        $sorting = [
-            [ 'id', '>', 0 ],
-        ];
-
         if ( $status != '' ) {
-            $sorting = [
+            $args = [
                 [ 'status', '=', $status ],
             ];
         } elseif ( $sort != '' && !empty($search) ) {
-            $sorting = [
+            $args = [
                 [ 'status', '=', $sort ],
             ];
         }
 
         if ( empty($search) ) {
-            $roles = Roles::where($sorting)
+            $roles = Roles::where($args)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('ordering', 'asc')
                 ->get()
                 ->toArray();
+
+            $totalFiltered = count($roles);
         } else {
             $roles = Roles::where($sorting)
                 ->where(
@@ -109,15 +114,7 @@ class RolesController extends Controller
                 ->get()
                 ->toArray();
 
-            $totalFiltered = Roles::where($sorting)
-                ->where(
-                    function ( $query ) use ( $search ) {
-                        $query->where('name', 'LIKE', "%{$search}%")
-                            ->orWhere('title', 'LIKE', "%{$search}%")
-                            ->orWhere('description', 'LIKE', "%{$search}%");
-                    }
-                )
-                ->count();
+            $totalFiltered = count($roles);
         }
 
         $data = [];
@@ -259,6 +256,8 @@ class RolesController extends Controller
                 }
             }
 
+            Artisan::call('cache:clear');
+
             return response()->json(
                 [
                     'status'  => 200,
@@ -296,7 +295,10 @@ class RolesController extends Controller
         $delete = Roles::find($id);
 
         if ( !empty($delete) ) {
+
             $delete->delete();
+
+            Artisan::call('cache:clear');
 
             return response()->json(
                 [

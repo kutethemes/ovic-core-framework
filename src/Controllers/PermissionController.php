@@ -5,9 +5,9 @@ namespace Ovic\Framework;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Artisan;
 
 class PermissionController extends Controller
 {
@@ -97,7 +97,7 @@ class PermissionController extends Controller
             $roles->ucase_ids = $ucase_ids;
             $roles->save();
 
-            Cache::flush();
+            Artisan::call('cache:clear');
 
             return response()->json([
                 'status'  => 200,

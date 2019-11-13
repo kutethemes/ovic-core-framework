@@ -1,6 +1,6 @@
 {
     "sProcessing": "<div class=\"sk-spinner sk-spinner-wave\">\n<div class=\"sk-rect1\"></div>\n<div class=\"sk-rect2\"></div>\n<div class=\"sk-rect3\"></div>\n<div class=\"sk-rect4\"></div>\n<div class=\"sk-rect5\"></div>\n</div>",
-    "sLengthMenu": "Xem: _MENU_",
+    "sLengthMenu": "Hiển thị: _MENU_",
     "sZeroRecords": "Không tìm thấy dữ liệu.",
     "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
     "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
