@@ -79,8 +79,6 @@
                 <form id="config" action="" method="POST">
                     @csrf
 
-                    {{ clear_cache() }}
-
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">
                             Thư viện
