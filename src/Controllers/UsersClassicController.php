@@ -53,10 +53,9 @@ class UsersClassicController extends Controller
             abort(404);
         }
 
-        $roles     = [];
-        $donvis    = [];
-        $ucases    = [];
-        $dataTable = 'hide-sidebar'; // hide-sidebar, show-sidebar
+        $roles  = [];
+        $donvis = [];
+        $ucases = [];
         if ( Donvi::hasTable() ) {
             $donvis = Donvi::all([ 'id', 'tendonvi' ]);
         }
@@ -65,9 +64,9 @@ class UsersClassicController extends Controller
         }
 
         return view(
-            name_blade('Backend.users-classic.app'),
+            name_blade('Backend.users-classic.app2'),
             compact(
-                [ 'donvis', 'roles', 'permission', 'dataTable' ]
+                [ 'donvis', 'roles', 'permission' ]
             )
         );
     }

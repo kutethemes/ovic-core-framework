@@ -29,7 +29,7 @@ function name_cache( $name )
     return "_ovic_{$auth}_{$name}";
 }
 
-function user_can( $can )
+function user_can( $can, $data = null )
 {
     switch ( $can ) {
         case 'add':
@@ -42,10 +42,16 @@ function user_can( $can )
             $key = 2;
             break;
     }
-    $route      = Route::currentRouteName();
-    $route      = explode('.', $route, 2);
-    $route      = $route[0];
-    $permission = Roles::Permission($route);
+    if ( $data == null ) {
+        $route      = Route::currentRouteName();
+        $route      = explode('.', $route, 2);
+        $route      = $route[0];
+        $permission = Roles::Permission($route);
+    } elseif ( is_array($data) ) {
+        $permission = $data;
+    } elseif ( is_string($data) ) {
+        $permission = Roles::Permission($data);
+    }
 
     if ( $can == 'all' ) {
         if ( !empty($permission) ) {

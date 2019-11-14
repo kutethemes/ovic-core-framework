@@ -195,6 +195,8 @@
                 return o;
             };
         }
+
+        @if( user_can( 'add', 'upload' ) )
         /* Tạo file */
         Dropzone.options.dropzoneForm = {
             url: "upload",
@@ -231,6 +233,9 @@
             },
             dictDefaultMessage: "<strong>Kéo thả files vào đây để upload lên máy chủ. </strong></br>  (Hoặc click chuột để chọn files upload.)"
         };
+        @endif
+
+        @if( user_can( 'delete', 'upload' ) )
         /* Xóa file */
         $( document ).on( 'click', '.btn-del-file', function () {
             let parent = $( this ).closest( '.file-box' );
@@ -344,6 +349,7 @@
                 }
             } );
         } );
+        @endif
         /* Lọc */
         $( document ).on( 'submit', '.filter-control', function () {
             let form = $( this ),
@@ -507,12 +513,16 @@
                 </div>
             </div>
             <div class="clearfix"></div>
-            <form action="upload" class="dropzone" id="dropzoneForm" method="POST"
-                  enctype="multipart/form-data">
-                <div class="fallback">
-                    <input name="file" type="file" multiple/>
-                </div>
-            </form>
+
+            @if( user_can( 'add', 'upload' ) )
+                <form action="upload" class="dropzone" id="dropzoneForm" method="POST"
+                      enctype="multipart/form-data">
+                    <div class="fallback">
+                        <input name="file" type="file" multiple/>
+                    </div>
+                </form>
+            @endif
+
             <form method="post" class="file-manager filter-control">
                 <input type="hidden" name="dir" value=""/>
                 <input type="hidden" name="sort" value="all"/>
@@ -541,7 +551,7 @@
                 <div class="hr-line-dashed"></div>
                 <div class="clearfix"></div>
                 <button type="submit" class="btn btn-outline btn-info reset-filter">Reset filter</button>
-                @if( !empty( $permission[2] ) && $permission[2] == true )
+                @if( user_can( 'delete', 'upload' ) )
                     @if( $check == true )
                         <button type="button" class="btn btn-w-m btn-danger btn-del-select">Xóa</button>
                     @endif

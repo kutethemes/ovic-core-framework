@@ -174,17 +174,6 @@
                 $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
             }
         } );
-        /* Status */
-        $( document ).on( 'click', '#table-posts .status', function () {
-
-            $( this ).update_status(
-                "users-classic",
-                "Tắt kích hoạt thành công",
-                "Kích hoạt thành công"
-            );
-
-            return false;
-        } );
         /* Add new */
         $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
             let form = $( '#edit-post' ),
@@ -203,8 +192,10 @@
 
             return false;
         } );
+
+        @if( user_can('add', $permission) )
         /* Add post */
-        $( document ).on( 'click', '.wrapper-content .btn.add-post', function () {
+        $( document ).on( 'click', '#edit-post .btn.add-post', function () {
             let button = $( this ),
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
@@ -213,8 +204,11 @@
 
             return false;
         } );
+        @endif
+
+        @if( user_can('edit', $permission) )
         /* Update post */
-        $( document ).on( 'click', '.wrapper-content .btn.edit-post', function () {
+        $( document ).on( 'click', '#edit-post .btn.edit-post', function () {
             let button = $( this ),
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
@@ -225,8 +219,22 @@
 
             return false;
         } );
+        /* Status */
+        $( document ).on( 'click', '#table-posts .status', function () {
+
+            $( this ).update_status(
+                "users-classic",
+                "Tắt kích hoạt thành công",
+                "Kích hoạt thành công"
+            );
+
+            return false;
+        } );
+        @endif
+
+        @if( user_can('delete', $permission) )
         /* Remove post */
-        $( document ).on( 'click', '.wrapper-content .btn.delete-post', function () {
+        $( document ).on( 'click', '#edit-post .btn.delete-post', function () {
             let button = $( this ),
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
@@ -235,6 +243,7 @@
 
             return false;
         } );
+        @endif
     </script>
 @endpush
 

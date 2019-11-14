@@ -22,8 +22,12 @@
             background-color: #fff;
         }
 
+        #edit-post {
+            position: relative;
+        }
+
         .ibox .head-group {
-            padding: 15px 40px;
+            padding: 15px 35px 0 35px;
         }
 
         .btn-danger {
@@ -73,7 +77,6 @@
 
         .footer-table {
             margin-top: 1rem;
-            display: flex;
         }
 
         .clients-list table tr td {
@@ -93,10 +96,6 @@
         .clients-list table tbody > tr.active {
             background-color: #1ab394;
             color: #fff;
-        }
-
-        .clients-list table tbody > tr.active td {
-            border-color: #1ab394;
         }
 
         div.client-detail {
@@ -145,6 +144,10 @@
             margin-bottom: 15px;
         }
 
+        .head-table > *:not(:last-child) {
+            margin-right: 10px;
+        }
+
         .ibox-content {
             background: #f3f3f4;
         }
@@ -153,16 +156,25 @@
             margin-top: 0;
         }
 
-        .table-filter {
-            text-align: right;
-        }
-
         .table-filter .input-control {
+            display: inline-block;
             text-align: left;
         }
 
         .table-filter > * {
             display: inline-block;
+            -webkit-box-flex: 0;
+            -webkit-flex: 0 1 auto;
+            -ms-flex: 0 1 auto;
+            flex: 0 1 auto;
+        }
+
+        .table-filter > .form-group.filter-select {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1 1 auto;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            text-align: right;
         }
 
         .table-filter .chosen-container-single .chosen-single {
@@ -189,7 +201,8 @@
             border-color: #aaa;
         }
 
-        .dataTables_length {
+        .dataTables_length,
+        .dataTables_paginate {
             -webkit-box-flex: 0;
             -webkit-flex: 0 1 auto;
             -ms-flex: 0 1 auto;
@@ -223,6 +236,7 @@
             border-radius: 50px;
             border-color: #aaa;
             padding-left: 30px;
+            height: 100%;
         }
 
         .dataTables_filter label {
@@ -230,6 +244,7 @@
             line-height: 0;
             position: relative;
             margin-bottom: 0;
+            height: 100%;
         }
 
         .dataTables_filter label::before {
@@ -248,23 +263,48 @@
             text-align: right;
         }
 
-        .dataTables_info {
-            padding-left: 20px;
-            line-height: 30px;
+        .head-table > .dataTables_info {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        ul.pagination > li > a,
+        ul.pagination > li > span {
+            padding: 6px 12px;
         }
 
         @media (min-width: 1200px) {
-            .head-table > * {
-                display: inline-block;
-                width: 50%;
-                vertical-align: middle;
-            }
-
             .dataTables_filter {
                 text-align: right;
             }
 
             .dataTables_info {
+                text-align: right;
+            }
+        }
+
+        @media (min-width: 600px) {
+            .footer-table,
+            .table-filter,
+            .head-table {
+                display: flex;
+            }
+
+            .head-table > * {
+                display: inline-block;
+                vertical-align: middle;
+                -webkit-box-flex: 0;
+                -webkit-flex: 0 1 auto;
+                -ms-flex: 0 1 auto;
+                flex: 0 1 auto;
+            }
+
+            .head-table > .dataTables_filter {
+                -webkit-box-flex: 1;
+                -webkit-flex: 1 1 auto;
+                -ms-flex: 1 1 auto;
+                flex: 1 1 auto;
                 text-align: right;
             }
         }
@@ -336,7 +376,8 @@
             options = $.extend( {
                 processing: true,
                 serverSide: true,
-                dom: '<"head-table"Bf>rt<"footer-table"lip><"clear">',
+                autoWidth: false,
+                dom: '<"head-table"Bif>rt<"footer-table"lp><"clear">',
                 buttons: [
                     {
                         text: 'Thêm mới',
@@ -439,9 +480,9 @@
         $( document ).on( 'change_select_all', '#select-all', function ( e ) {
             var self = $( this );
             if ( self.is( ':checked' ) ) {
-                $( '.btn.delete-select' ).removeClass('disabled');
+                $( '.btn.delete-select' ).removeClass( 'disabled' );
             } else {
-                $( '.btn.delete-select' ).addClass('disabled');
+                $( '.btn.delete-select' ).addClass( 'disabled' );
             }
         } );
         $( document ).on( 'change', '#select-all', function ( e ) {
@@ -479,6 +520,8 @@
                 }
             }
         } );
+
+        @if( user_can('add', $permission) )
         /* Add Post */
         $.fn.add_new = function ( main_url, data ) {
             $.ajax( {
@@ -514,6 +557,9 @@
                 },
             } );
         };
+        @endif
+
+        @if( user_can('delete', $permission) )
         /* Remove Post */
         $.fn.remove_post = function ( main_url, data ) {
             swal( {
@@ -554,6 +600,9 @@
                 }
             } );
         };
+        @endif
+
+        @if( user_can('edit', $permission) )
         /* Update Post */
         $.fn.update_post = function ( main_url, data, table ) {
 
@@ -644,6 +693,7 @@
                 },
             } );
         };
+        @endif
     </script>
 
     @stack( 'scripts.table.classic' )

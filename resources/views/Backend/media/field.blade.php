@@ -20,14 +20,16 @@
         <div class="image-preview" data-placeholder="{{ $placeholder }}">
             <img alt="{{ $alt }}" class="rounded-circle img-thumbnail" src="{{ $image }}">
         </div>
-        <div class="group-button">
-            <a href="#" class="btn btn-primary ovic-image-add">
-                Add Image
-            </a>
-            <a href="#" class="btn btn-danger ovic-image-remove">
-                Remove Image
-            </a>
-        </div>
-        <input type="hidden" name="{{ $name }}" value="{{ $value }}"/>
+        @if( user_can( 'add', 'upload' ) )
+            <div class="group-button">
+                <a href="#" class="btn btn-primary ovic-image-add">
+                    Add Image
+                </a>
+                <a href="#" class="btn btn-danger ovic-image-remove">
+                    Remove Image
+                </a>
+            </div>
+            <input type="hidden" name="{{ $name }}" value="{{ $value }}"/>
+        @endif
     </div>
 </div>

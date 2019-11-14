@@ -233,8 +233,14 @@ class RolesController extends Controller
 
         $dataTable           = [];
         $this->rules['name'] = [ 'required', 'string', 'max:100', 'unique:roles,name,'.$id ];
-        $validator           = Validator::make($request->all(), $this->rules, $this->messages);
-        $data                = $request->except([ '_token', 'id', 'dataTable' ]);
+        if ( !$request->has('name') ) {
+            $this->rules['name'] = '';
+        }
+        if ( !$request->has('title') ) {
+            $this->rules['title'] = '';
+        }
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
+        $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
         if ( $validator->passes() ) {
             /* update */

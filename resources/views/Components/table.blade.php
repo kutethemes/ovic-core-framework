@@ -279,6 +279,8 @@
                 OvicTable.column( 1 ).search( '' ).draw();
             }
         } );
+
+        @if( user_can('add', $permission) )
         /* Add Post */
         $.fn.add_new = function ( main_url, data ) {
             $.ajax( {
@@ -314,6 +316,9 @@
                 },
             } );
         };
+        @endif
+
+        @if( user_can('delete', $permission) )
         /* Remove Post */
         $.fn.remove_post = function ( main_url, data ) {
             swal( {
@@ -354,6 +359,9 @@
                 }
             } );
         };
+        @endif
+
+        @if( user_can('edit', $permission) )
         /* Update Post */
         $.fn.update_post = function ( main_url, data, table ) {
 
@@ -444,6 +452,8 @@
                 },
             } );
         };
+        @endif
+
         $( document ).on( 'keyup', '#edit-post input, #edit-post select, #edit-post textarea', function ( event ) {
             let form = $( this ).closest( 'form' ),
                 update = form.find( '.edit-post' ),

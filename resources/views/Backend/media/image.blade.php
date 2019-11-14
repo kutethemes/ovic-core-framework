@@ -19,7 +19,7 @@
 
 <div class="file-box image-{{ $attachment['id'] }}" data-id="{{ $attachment['id'] }}">
     <div class="file">
-        @if( !empty( $permission[2] ) && $permission[2] == true )
+        @if( user_can( 'delete', 'upload' ) )
             <a href="#" class="btn-del-file" title="Xóa file">
                 <i class="fa fa-trash-o" aria-hidden="true"></i>
             </a>

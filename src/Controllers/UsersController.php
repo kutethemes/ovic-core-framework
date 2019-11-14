@@ -283,6 +283,12 @@ class UsersController extends Controller
         if ( !$request->has('password') ) {
             $this->rules['password'] = '';
         }
+        if ( !$request->has('name') ) {
+            $this->rules['name'] = '';
+        }
+        if ( !$request->has('email') ) {
+            $this->rules['email'] = '';
+        }
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 

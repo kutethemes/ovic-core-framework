@@ -12,7 +12,7 @@
 @push( 'styles' )
     {{-- style modal media --}}
     <style>
-        div.modal-content {
+        #modal-media .modal-content {
             width: 100vw !important;
             height: calc(100vh - 50px) !important;
             border: none;
@@ -21,28 +21,28 @@
             display: block;
         }
 
-        div.modal-footer {
+        #modal-media .modal-footer {
             box-shadow: none;
             border-radius: 0;
             border-top: 1px solid #e7eaec;
         }
 
-        div.inmodal .modal-header {
+        #modal-media.inmodal .modal-header {
             padding: 10px;
             border-bottom: 1px solid #e7eaec;
         }
 
-        .modal-footer {
+        #modal-media .modal-footer {
             background-color: #fff;
         }
 
-        .modal.show .modal-dialog {
+        #modal-media.modal.show .modal-dialog {
             transform: none;
             max-width: inherit;
             margin: 0;
         }
 
-        .modal-open .modal {
+        .modal-open #modal-media.modal {
             padding: 0 !important;
         }
 
@@ -52,6 +52,7 @@
 
         .ovic-field-image .image-preview {
             margin-bottom: 10px;
+            display: inline-block;
         }
 
         .ovic-field-image .group-button > * {
@@ -60,7 +61,8 @@
 
         .ovic-field-image img {
             border-width: 3px;
-            max-width: 96px;
+            height: 96px;
+            width: 96px;
         }
 
         .ovic-field-image img:hover {
@@ -69,96 +71,100 @@
     </style>
 @endpush
 
-@push( 'scripts' )
-    {{-- script modal media --}}
-    <script>
+@if( user_can( 'add', 'upload' ) )
 
-        var imageVar = {};
+    @push( 'scripts' )
+        {{-- script modal media --}}
+        <script>
 
-        $( document ).ready( function () {
+            var imageVar = {};
 
-            $( '.ovic-field-image' ).each( function () {
+            $( document ).ready( function () {
 
-                var $this = $( this );
+                $( '.ovic-field-image' ).each( function () {
 
-                $this.on( 'click', '.ovic-image-add', function ( e ) {
+                    var $this = $( this );
 
-                    e.preventDefault();
+                    $this.on( 'click', '.ovic-image-add', function ( e ) {
 
-                    var $button = $( this ),
-                        $modal = $( '#modal-media' );
+                        e.preventDefault();
 
-                    $modal.modal( 'show' );
-                    imageVar.$image_target = $this;
+                        var $button = $( this ),
+                            $modal = $( '#modal-media' );
 
-                    if ( !imageVar.image_modal_loaded ) {
+                        $modal.modal( 'show' );
+                        imageVar.$image_target = $this;
 
-                        $modal.find( '.sk-spinner' ).show();
+                        if ( !imageVar.image_modal_loaded ) {
 
-                        $.get( "upload/create", {
-                            _token: $( 'meta[name="csrf-token"]' ).attr( 'content' )
-                        } ).done( function ( response ) {
+                            $modal.find( '.sk-spinner' ).show();
 
-                            $modal.find( '.sk-spinner' ).hide();
+                            $.get( "upload/create", {
+                                _token: $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                            } ).done( function ( response ) {
 
-                            imageVar.image_modal_loaded = true;
+                                $modal.find( '.sk-spinner' ).hide();
 
-                            var $load = $modal.find( '.content-previews' ).html( response.content );
+                                imageVar.image_modal_loaded = true;
 
-                            /* Tạo thư mục */
-                            treeFolder( response.directories );
+                                var $load = $modal.find( '.content-previews' ).html( response.content );
 
-                            $modal.on( 'click', '.btn-primary.selected', function () {
+                                /* Tạo thư mục */
+                                treeFolder( response.directories );
 
-                                let file_box = $load.find( '.file-box.active' );
+                                $modal.on( 'click', '.btn-primary.selected', function () {
 
-                                if ( file_box.length && file_box.find( 'img' ).length ) {
-                                    let id = file_box.data( 'id' );
-                                    let src = file_box.find( 'img' ).attr( 'src' );
+                                    let file_box = $load.find( '.file-box.active' );
 
-                                    imageVar.$image_target.find( 'input' ).val( id ).trigger( 'change' );
-                                    imageVar.$image_target.find( 'img' ).attr( 'src', src );
-                                }
+                                    if ( file_box.length && file_box.find( 'img' ).length ) {
+                                        let id = file_box.data( 'id' );
+                                        let src = file_box.find( 'img' ).attr( 'src' );
 
-                                $modal.modal( 'hide' );
+                                        imageVar.$image_target.find( 'input' ).val( id ).trigger( 'change' );
+                                        imageVar.$image_target.find( 'img' ).attr( 'src', src );
+                                    }
 
+                                    $modal.modal( 'hide' );
+
+                                } );
+
+                            } ).fail( function ( response ) {
+                                $modal.find( '.sk-spinner' ).hide();
+                                $modal.find( '.content-previews' ).html( response );
                             } );
+                        }
 
-                        } ).fail( function ( response ) {
-                            $modal.find( '.sk-spinner' ).hide();
-                            $modal.find( '.content-previews' ).html( response );
-                        } );
-                    }
+                    } );
+
+                    $this.on( 'click', '.ovic-image-remove', function ( e ) {
+                        e.preventDefault();
+                        let preview = $this.find( '.image-preview' );
+                        let placeholder = preview.data( 'placeholder' );
+
+                        preview.find( 'img' ).attr( 'src', placeholder );
+                        $this.find( 'input' ).val( '0' ).trigger( 'change' );
+                    } );
 
                 } );
-
-                $this.on( 'click', '.ovic-image-remove', function ( e ) {
-                    e.preventDefault();
-                    let preview = $this.find( '.image-preview' );
-                    let placeholder = preview.data( 'placeholder' );
-
-                    preview.find( 'img' ).attr( 'src', placeholder );
-                    $this.find( 'input' ).val( '0' ).trigger( 'change' );
-                } );
-
             } );
-        } );
-    </script>
-@endpush
+        </script>
+    @endpush
 
-<div class="modal inmodal" id="modal-media" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Thư viện</h4>
-            </div>
-            <div class="modal-body row full-height-content">
-                @include( name_blade('Backend.media.data'), ['multi' => false] )
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary selected" data-dismiss="modal">Chọn ảnh</button>
+    <div class="modal inmodal" id="modal-media" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Thư viện</h4>
+                </div>
+                <div class="modal-body row full-height-content">
+                    @include( name_blade('Backend.media.data'), ['multi' => false] )
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary selected" data-dismiss="modal">Chọn ảnh</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+@endif

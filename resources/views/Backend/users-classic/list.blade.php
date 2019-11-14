@@ -11,19 +11,21 @@
 
 <div class="head-group">
     <div class="table-filter">
-        <div class="input-control">
-            <select class="chosen-select">
-                <option value="">== Lọc theo đơn vị ==</option>
-                @if( !empty( $donvis) )
-                    @foreach ( $donvis as $donvi )
-                        <option value="{{ $donvi->id }}">{{ $donvi->tendonvi }}</option>
-                    @endforeach
-                @endif
-            </select>
+        <div class="form-group filter-select">
+            <div class="input-control">
+                <select class="chosen-select">
+                    <option value="">== Lọc theo đơn vị ==</option>
+                    @if( !empty( $donvis) )
+                        @foreach ( $donvis as $donvi )
+                            <option value="{{ $donvi->id }}">{{ $donvi->tendonvi }}</option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+            <button class="btn btn-white" type="button" value="0">
+                Lọc
+            </button>
         </div>
-        <button class="btn btn-white" type="button" value="0">
-            Lọc
-        </button>
     </div>
 </div>
 <div class="ibox-content">

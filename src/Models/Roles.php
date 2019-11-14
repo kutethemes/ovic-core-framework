@@ -60,7 +60,9 @@ class Roles extends Eloquent
 
             return $permission;
         }
+
         $user = Auth::user();
+
         if ( $user['status'] == 3 ) {
             if ( $route != null ) {
                 return [ 1, 1, 1 ];
