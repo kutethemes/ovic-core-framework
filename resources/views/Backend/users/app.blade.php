@@ -187,7 +187,7 @@
         /* Add post */
         $( document ).on( 'click', '#edit-post .btn.add-post', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
+                form = button.closest( 'form' ),
                 data = form.serializeObject();
 
             button.add_new( "users", data );
@@ -200,7 +200,7 @@
         /* Update post */
         $( document ).on( 'click', '#edit-post .btn.edit-post', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
+                form = button.closest( 'form' ),
                 data = form.serializeObject();
 
             data.dataTable = true;
@@ -226,7 +226,7 @@
         /* Remove post */
         $( document ).on( 'click', '#edit-post .btn.delete-post', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
+                form = button.closest( 'form' ),
                 data = form.serializeObject();
 
             button.remove_post( "users", data );

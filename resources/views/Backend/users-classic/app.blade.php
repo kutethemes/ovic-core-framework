@@ -116,6 +116,18 @@
                         return "<a href='#' title='" + _title + "' class='status " + _class + "'>" + _icon + "</a>";
                     }
                 },
+                {
+                    className: "client-options",
+                    sortable: false,
+                    render: function ( data, type, row, meta ) {
+                        let html = '';
+
+                        html += '<button class="btn btn-info edit" type="button"><i class="fa fa-edit"></i></button>';
+                        html += '<button class="btn btn-danger delete" type="button"><i class="fa fa-trash-o"></i></button>';
+
+                        return html;
+                    }
+                },
             ]
         } );
         $( '.chosen-select' ).chosen( {
@@ -134,10 +146,11 @@
             }
         } );
         /* Edit */
-        $( document ).on( 'click', '#table-posts tbody > tr', function () {
-            let row = $( this ),
+        $( document ).on( 'click', '#table-posts .btn.edit', function () {
+            let button = $( this ),
+                row = button.closest( 'tr' ),
                 form = $( '#edit-post' ),
-                user = OvicTable.row( this ).data(),
+                user = OvicTable.row( row ).data(),
                 chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
 
             if ( !row.hasClass( 'active' ) ) {
@@ -197,7 +210,7 @@
         /* Add post */
         $( document ).on( 'click', '#edit-post .btn.add-post', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
+                form = button.closest( 'form' ),
                 data = form.serializeObject();
 
             button.add_new( "users-classic", data );
@@ -210,7 +223,7 @@
         /* Update post */
         $( document ).on( 'click', '#edit-post .btn.edit-post', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
+                form = button.closest( 'form' ),
                 data = form.serializeObject();
 
             data.dataTable = true;
@@ -234,10 +247,10 @@
 
         @if( user_can('delete', $permission) )
         /* Remove post */
-        $( document ).on( 'click', '#edit-post .btn.delete-post', function () {
+        $( document ).on( 'click', '#table-posts .btn.delete', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
-                data = form.serializeObject();
+                row = button.closest( 'tr' ),
+                data = OvicTable.row( row ).data();
 
             button.remove_post( "users-classic", data );
 

@@ -43,6 +43,7 @@
                 <th class="client-donvi">Đơn vị</th>
                 <th class="client-email">Email</th>
                 <th class="client-status">Trạng thái</th>
+                <th class="client-options">Thao tác</th>
             </tr>
             </thead>
         </table>

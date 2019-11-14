@@ -22,10 +22,6 @@
             background-color: #fff;
         }
 
-        #edit-post {
-            position: relative;
-        }
-
         .ibox .head-group {
             padding: 15px 35px 0 35px;
         }
@@ -272,6 +268,23 @@
         ul.pagination > li > a,
         ul.pagination > li > span {
             padding: 6px 12px;
+        }
+
+        .client-options {
+            text-align: center;
+        }
+
+        .client-options .btn {
+            margin-bottom: 5px !important;
+            padding: 0;
+            line-height: 15px;
+            float: none;
+            width: 30px;
+            height: 30px;
+        }
+
+        .client-options .btn:not(:last-child) {
+            margin-right: 10px !important;
         }
 
         @media (min-width: 1200px) {

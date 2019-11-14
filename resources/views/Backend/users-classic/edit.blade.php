@@ -135,7 +135,6 @@
 
     <div class="form-group submit row">
         <div class="col-sm-12">
-            {{ button_set( 'delete', $permission, [ 'class'=>'btn btn-danger d-none' ] ) }}
             {{ button_set( 'edit', $permission, [ 'class'=>'btn btn-primary d-none' ] ) }}
             {{ button_set( 'add', $permission ) }}
         </div>
