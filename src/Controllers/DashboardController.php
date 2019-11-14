@@ -53,11 +53,6 @@ class DashboardController extends Controller
         Artisan::call('view:clear');
         Artisan::call('optimize:clear');
 
-        Artisan::call('config:cache');
-        Artisan::call('event:cache');
-        /* Artisan::call('route:cache'); */
-        Artisan::call('view:cache');
-
         if ( $request->ajax() ) {
             return response()->json([
                 'message' => 'Xóa cache thành công.',

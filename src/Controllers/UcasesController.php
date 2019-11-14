@@ -232,15 +232,9 @@ class UcasesController extends Controller
             ]);
         }
 
-        $this->rules['slug'] = '';
-        if ( $request->has('slug') ) {
-            $this->rules['slug'] = [ 'required', 'string', 'max:100', 'unique:ucases,slug,'.$id ];
-        }
-        if ( !$request->has('title') ) {
-            $this->rules['title'] = '';
-        }
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        $data      = $request->except([ '_token', 'id' ]);
+        $this->rules['slug'] = [ 'required', 'string', 'max:100', 'unique:ucases,slug,'.$id ];
+        $validator           = Validator::make($request->all(), $this->rules, $this->messages);
+        $data                = $request->except([ '_token', 'id' ]);
 
         if ( $validator->passes() ) {
             if ( !empty($data['route']) ) {

@@ -138,8 +138,7 @@
             let row = $( this ),
                 form = $( '#edit-post' ),
                 user = OvicTable.row( this ).data(),
-                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ],
-                wrapper = form.closest( '.wrapper-content' );
+                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
 
             if ( !row.hasClass( 'active' ) ) {
                 /* active */
@@ -167,9 +166,6 @@
                     }
                 } );
 
-                wrapper.children( '.col-sm-3.full-height' ).show();
-                wrapper.children( '.col-sm-9.full-height' ).removeClass( 'hide-sidebar' );
-
                 form.find( '.form-group .add-post' ).addClass( 'd-none' );
                 form.find( '.field-password-confirmation' ).css( 'display', 'none' );
                 form.find( '.field-password .input-group-append' ).css( 'display', 'block' );
@@ -192,8 +188,7 @@
         /* Add new */
         $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
             let form = $( '#edit-post' ),
-                table = $( '#table-posts' ),
-                wrapper = form.closest( '.wrapper-content' );
+                table = $( '#table-posts' );
 
             form.find( '.ovic-field-image .ovic-image-remove' ).trigger( 'click' );
             form.find( '.field-password input' ).removeAttr( 'disabled' ).attr( 'name', 'password' );
@@ -205,9 +200,6 @@
             form.trigger( 'reset' );
             form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
             form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
-
-            wrapper.children( '.col-sm-3.full-height' ).toggle();
-            wrapper.children( '.col-sm-9.full-height' ).toggleClass( 'hide-sidebar' );
 
             return false;
         } );
@@ -259,11 +251,9 @@
     </div>
     <div class="col-sm-9 full-height hide-sidebar">
         <div class="ibox full-height-scroll">
-            <div class="ibox-content">
 
-                @include( name_blade('Backend.users-classic.list') )
+            @include( name_blade('Backend.users-classic.list') )
 
-            </div>
         </div>
     </div>
 

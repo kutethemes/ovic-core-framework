@@ -17,21 +17,13 @@
     {{-- Toastr style --}}
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     {{-- style dataTable --}}
-    @if ( $dataTable == 'hide-sidebar' )
-        <style>
-            .wrapper-content > .col-sm-3.full-height {
-                display: none;
-            }
-
-            .wrapper-content > .col-sm-9.full-height.hide-sidebar {
-                max-width: 100%;
-                flex: 0 0 100%;
-            }
-        </style>
-    @endif
     <style>
         .ibox {
             background-color: #fff;
+        }
+
+        .ibox .head-group {
+            padding: 15px 40px;
         }
 
         .btn-danger {
@@ -132,7 +124,7 @@
 
         .clients-list table.dataTable thead th,
         .clients-list table.dataTable tr td {
-            border: 1px solid #000;
+            border: 1px solid #aaa;
         }
 
         .clients-list table.dataTable thead tr {
@@ -146,10 +138,10 @@
         }
 
         .dataTables_scrollHead .table {
-            border-top: 1px solid #000;
+            border-top: 1px solid #aaa;
         }
 
-        .head-table {
+        .head-table > * {
             margin-bottom: 15px;
         }
 
@@ -158,7 +150,7 @@
         }
 
         .ibox-content .clients-list {
-            margin-top: 15px;
+            margin-top: 0;
         }
 
         .table-filter {
@@ -223,7 +215,6 @@
         }
 
         .head-table .btn-group > a.btn.delete-select {
-            display: none;
             margin-left: 10px;
             border-color: #ed5565;;
         }
@@ -353,7 +344,7 @@
                     },
                     {
                         text: '<i class="fa fa-trash"></i> Xóa',
-                        className: 'btn btn-danger delete-select',
+                        className: 'btn btn-danger delete-select disabled',
                         titleAttr: 'Xóa tất cả mục đã chọn.',
                         action: function ( e, dt, node, config ) {
                             let ids = [],
@@ -448,9 +439,9 @@
         $( document ).on( 'change_select_all', '#select-all', function ( e ) {
             var self = $( this );
             if ( self.is( ':checked' ) ) {
-                $( '.btn.delete-select' ).show();
+                $( '.btn.delete-select' ).removeClass('disabled');
             } else {
-                $( '.btn.delete-select' ).hide();
+                $( '.btn.delete-select' ).addClass('disabled');
             }
         } );
         $( document ).on( 'change', '#select-all', function ( e ) {
