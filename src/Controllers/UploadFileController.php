@@ -176,11 +176,17 @@ class UploadFileController extends Controller
         } else {
             $this->install();
 
-            $content = '';
-            $dir     = '';
+            $content    = '';
+            $dir        = '';
+            $permission = user_can('all');
             if ( !empty($this->attachments) ) {
                 foreach ( $this->attachments as $attachment ) {
-                    $content .= view(name_blade('Backend.media.image'), compact([ 'attachment' ]))->toHtml();
+                    $content .= view(name_blade('Backend.media.image'),
+                        compact([
+                            'attachment',
+                            'permission'
+                        ]))
+                        ->toHtml();
                 }
             }
 
@@ -255,10 +261,16 @@ class UploadFileController extends Controller
                 }
             }
 
-            $html = '';
+            $html       = '';
+            $permission = user_can('all');
 
             foreach ( $attachments as $attachment ) {
-                $html .= view(name_blade('Backend.media.image'), compact('attachment'))->toHtml();
+                $html .= view(name_blade('Backend.media.image'),
+                    compact([
+                        'attachment',
+                        'permission'
+                    ]))
+                    ->toHtml();
             }
 
             $count  = count($attachments);
@@ -448,50 +460,6 @@ class UploadFileController extends Controller
         //
     }
 
-    public function delete( $id, $response = true )
-    {
-        if ( !user_can('delete') ) {
-            return response()->json([
-                'status'  => 'warning',
-                'title'   => 'Bạn không được cấp quyền xóa dữ liệu!',
-                'message' => '',
-            ]);
-        }
-
-        $delete = Posts::find($id);
-
-        if ( !empty($delete) ) {
-            $path = Posts::where('id', $id)->value('name');
-            $path = str_replace('//', '/', "{$this->folder}{$path}");
-
-            Storage::delete($path);
-
-            Postmeta::where('post_id', $id)->delete();
-            Posts::destroy($id);
-
-            if ( $response ) {
-
-                $this->install();
-
-                return response()->json([
-                    'status'      => 200,
-                    'message'     => 'Xóa file thành công.',
-                    'directories' => json_encode($this->directories),
-                ]);
-            } else {
-                return $id;
-            }
-        }
-        if ( $response ) {
-            return response()->json([
-                'status'  => 400,
-                'message' => 'Xóa file không thành công.',
-            ]);
-        } else {
-            return 0;
-        }
-    }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -508,36 +476,23 @@ class UploadFileController extends Controller
             ]);
         }
 
-        if ( !is_numeric($id) ) {
-            $deleted = [];
-            $ids     = explode(',', $id);
+        $deleted = Posts::destroy($id);
 
-            foreach ( $ids as $id ) {
-                $delete = $this->delete($id, false);
-                if ( $delete != 0 ) {
-                    $deleted[] = $delete;
-                }
-            }
+        if ( $deleted['count'] > 0 ) {
 
-            if ( !empty($deleted) ) {
+            $this->install();
 
-                $this->install();
-
-                $response = [
-                    'status'      => 200,
-                    'ids'         => $deleted,
-                    'message'     => 'Xóa file thành công.',
-                    'directories' => json_encode($this->directories)
-                ];
-            } else {
-                $response = [
-                    'status'  => 400,
-                    'message' => 'Xóa file không thành công.',
-                ];
-            }
-            return response()->json($response);
+            return response()->json([
+                'status'      => 200,
+                'ids'         => $deleted['ids'],
+                'message'     => 'Đã xóa '.$deleted['count'].' file!',
+                'directories' => json_encode($this->directories)
+            ]);
         }
 
-        return $this->delete($request, $id);
+        return response()->json([
+            'status'  => 400,
+            'message' => 'Xóa file không thành công.',
+        ]);
     }
 }

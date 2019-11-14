@@ -316,9 +316,6 @@
                         headers: {
                             'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                         },
-                        data: {
-                            slug: data.slug
-                        },
                         success: function ( response ) {
 
                             let menu = $( '#menu-' + data.id ).closest( '.dd-item' );
@@ -617,7 +614,6 @@
 
             data.id = handle.closest( '.dd-item' ).data( 'id' );
             data.title = title;
-            data.slug = handle.data( 'slug' );
 
             button.removeMenu( data );
 

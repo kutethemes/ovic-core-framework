@@ -128,4 +128,44 @@ class Ucases extends Eloquent
             }
         }
     }
+
+    /**
+     * Destroy the models for the given IDs.
+     *
+     * @param  \Illuminate\Support\Collection|int  $id
+     * @return int
+     */
+    public static function destroy( $id )
+    {
+        // We'll initialize a count here so we will return the total number of deletes
+        // for the operation. The developers can then check this number as a boolean
+        // type value or get this total count of records deleted for logging, etc.
+        $count = 0;
+
+        // We will actually pull the models from the database table and call delete on
+        // each of them individually so that their events get fired properly with a
+        // correct set of attributes in case the developers wants to check these.
+        $key = ( $instance = new static )->getKeyName();
+
+        foreach ( $instance->where($key, $id)->orwhere('parent_id', $id)->get() as $model ) {
+
+            $roles = Roles::where('ucase_ids', 'LIKE', '%'.$model->slug.'%')->get([ 'id', 'ucase_ids' ]);
+
+            if ( !empty($roles) ) {
+                foreach ( $roles as $role ) {
+                    $ucase_ids = $role['ucase_ids'];
+                    unset($ucase_ids[$model->slug]);
+                    Roles::where('id', $role['id'])->update([
+                        'ucase_ids' => maybe_serialize($ucase_ids)
+                    ]);
+                }
+            }
+
+            if ( $model->delete() ) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
 }

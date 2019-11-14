@@ -68,4 +68,47 @@ class Posts extends Eloquent
             }
         )->toArray();
     }
+
+    /**
+     * Destroy the models for the given IDs.
+     *
+     * @param  \Illuminate\Support\Collection|array|int  $ids
+     * @return int
+     */
+    public static function destroy( $ids )
+    {
+        // We'll initialize a count here so we will return the total number of deletes
+        // for the operation. The developers can then check this number as a boolean
+        // type value or get this total count of records deleted for logging, etc.
+        $count   = 0;
+        $deleted = [];
+
+        if ( !is_numeric($ids) && !is_array($ids) && is_string($ids) ) {
+            $ids = explode(',', $ids);
+        }
+
+        if ( $ids instanceof BaseCollection ) {
+            $ids = $ids->all();
+        }
+
+        $ids = is_array($ids) ? $ids : func_get_args();
+
+        // We will actually pull the models from the database table and call delete on
+        // each of them individually so that their events get fired properly with a
+        // correct set of attributes in case the developers wants to check these.
+        $key = ( $instance = new static )->getKeyName();
+
+        foreach ( $instance->whereIn($key, $ids)->get() as $model ) {
+            Postmeta::where('post_id', $model->$key)->delete();
+            if ( $model->delete() ) {
+                $deleted[] = $model->$key;
+                $count++;
+            }
+        }
+
+        return [
+            'ids'   => $deleted,
+            'count' => $count
+        ];
+    }
 }

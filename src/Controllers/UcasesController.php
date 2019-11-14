@@ -291,46 +291,28 @@ class UcasesController extends Controller
     {
         if ( !user_can('delete') ) {
             return response()->json([
-                'status'  => 'error',
+                'status'  => 'warning',
+                'title'   => 'Cảnh báo!',
                 'message' => 'Bạn không được cấp quyền xóa dữ liệu!',
             ]);
         }
 
-        $slug   = $request->input('slug');
-        $ucases = Ucases::where('id', $id)->orwhere('parent_id', $id);
-        $roles  = Roles::where('ucase_ids', 'LIKE', '%'.$slug.'%')->get([ 'id', 'ucase_ids' ]);
+        $count = Ucases::destroy($id);
 
-        if ( !empty($ucases) ) {
-            /* Deleted */
-            $ucases->delete();
-
-            if ( !empty($roles) ) {
-                foreach ( $roles as $role ) {
-                    $ucase_ids = $role['ucase_ids'];
-                    unset($ucase_ids[$slug]);
-                    Roles::where('id', $role['id'])->update([
-                        'ucase_ids' => maybe_serialize($ucase_ids)
-                    ]);
-                }
-            }
+        if ( $count > 0 ) {
 
             Artisan::call('cache:clear');
 
-            return response()->json(
-                [
-                    'status'  => 'success',
-                    'title'   => 'Đã xóa!',
-                    'message' => 'Xóa chức năng thành công.',
-                ]
-            );
+            return response()->json([
+                'status'  => 'success',
+                'title'   => 'Đã xóa!',
+                'message' => 'Đã xóa chức năng!',
+            ]);
         }
-
-        return response()->json(
-            [
-                'status'  => 'error',
-                'title'   => 'Lỗi!',
-                'message' => 'Xóa chức năng không thành công.',
-            ]
-        );
+        return response()->json([
+            'status'  => 'error',
+            'title'   => 'Lỗi!',
+            'message' => 'Xóa chức năng không thành công!',
+        ]);
     }
 }

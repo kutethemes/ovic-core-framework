@@ -350,63 +350,27 @@ class UsersController extends Controller
      */
     public function destroy( $id )
     {
-        $response = [
-            'status'  => 'success',
-            'title'   => 'Đã xóa!',
-            'message' => 'Xóa người dùng thành công.',
-        ];
         if ( !user_can('delete') ) {
-            $response['status']  = 'warning';
-            $response['title']   = 'Bạn không được cấp quyền xóa dữ liệu!';
-            $response['message'] = '';
-
-            return response()->json($response);
+            return response()->json([
+                'status'  => 'warning',
+                'title'   => 'Cảnh báo!',
+                'message' => 'Bạn không được cấp quyền xóa dữ liệu!',
+            ]);
         }
 
-        if ( !is_numeric($id) ) {
-            $deleted = [];
-            $ids     = explode(',', $id);
+        $count = Users::destroy($id);
 
-            foreach ( $ids as $id ) {
-                $delete = Users::find($id);
-                if ( !empty($delete) && $delete->status != 3 ) {
-                    $delete->delete();
-                    $deleted[] = $id;
-                }
-            }
-
-            if ( !empty($deleted) ) {
-                return response()->json($response);
-            }
-
-            $response['status']  = 'error';
-            $response['title']   = 'Lỗi!';
-            $response['message'] = 'Xóa người dùng không thành công.';
-
-            return response()->json($response);
+        if ( $count > 0 ) {
+            return response()->json([
+                'status'  => 'success',
+                'title'   => 'Đã xóa!',
+                'message' => 'Đã xóa '.$count.' người dùng!',
+            ]);
         }
-
-        if ( Users::find($id)->status == 3 ) {
-            $response['status']  = 'warning';
-            $response['title']   = 'Bạn không thể xóa người dùng này!';
-            $response['message'] = '';
-
-            return response()->json($response);
-        }
-
-        $delete = Users::find($id);
-
-        if ( !empty($delete) ) {
-
-            $delete->delete();
-
-            return response()->json($response);
-        }
-
-        $response['status']  = 'error';
-        $response['title']   = 'Lỗi!';
-        $response['message'] = 'Xóa người dùng không thành công.';
-
-        return response()->json($response);
+        return response()->json([
+            'status'  => 'error',
+            'title'   => 'Lỗi!',
+            'message' => 'Xóa người dùng không thành công!',
+        ]);
     }
 }

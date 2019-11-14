@@ -287,34 +287,27 @@ class RolesController extends Controller
         if ( !user_can('delete') ) {
             return response()->json([
                 'status'  => 'warning',
-                'title'   => 'Bạn không được cấp quyền xóa dữ liệu!',
-                'message' => '',
+                'title'   => 'Cảnh báo!',
+                'message' => 'Bạn không được cấp quyền xóa dữ liệu!',
             ]);
         }
 
-        $delete = Roles::find($id);
+        $count = Roles::destroy($id);
 
-        if ( !empty($delete) ) {
-
-            $delete->delete();
+        if ( $count > 0 ) {
 
             Artisan::call('cache:clear');
 
-            return response()->json(
-                [
-                    'status'  => 'success',
-                    'title'   => 'Đã xóa!',
-                    'message' => 'Xóa nhóm thành công.',
-                ]
-            );
+            return response()->json([
+                'status'  => 'success',
+                'title'   => 'Đã xóa!',
+                'message' => 'Đã xóa '.$count.' nhóm người dùng!',
+            ]);
         }
-
-        return response()->json(
-            [
-                'status'  => 'error',
-                'title'   => 'Lỗi!',
-                'message' => 'Xóa nhóm không thành công.',
-            ]
-        );
+        return response()->json([
+            'status'  => 'error',
+            'title'   => 'Lỗi!',
+            'message' => 'Xóa nhóm người dùng không thành công!',
+        ]);
     }
 }
