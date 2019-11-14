@@ -81,19 +81,6 @@
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">
-                            Update core
-                        </label>
-                        <div class="col-sm-10">
-                            <button class="btn btn-primary action-config" data-action="update-core" type="button">
-                                <i class="fa fa-download"></i>
-                                Update
-                            </button>
-                        </div>
-                    </div>
-                    <div class="hr-line-dashed"></div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">
                             Thư viện
                             <br>
                             <small class="text-navy">Cập nhật thư viện assets.</small>

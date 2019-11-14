@@ -65,7 +65,6 @@ Route::group(
         /* Cache */
         Route::get('clear-cache', 'Ovic\Framework\DashboardController@clear_cache')->name('clear.cache');
         Route::get('create-cache', 'Ovic\Framework\DashboardController@create_cache')->name('create.cache');
-        Route::get('update-core', 'Ovic\Framework\DashboardController@update_core')->name('update.core');
         Route::get('update-assets', 'Ovic\Framework\DashboardController@update_assets')->name('update.assets');
 
         /* System config */

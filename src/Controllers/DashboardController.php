@@ -33,19 +33,6 @@ class DashboardController extends Controller
         return view(name_blade('Backend.dashboard.config'));
     }
 
-    public function update_core( Request $request )
-    {
-        shell_exec('composer clear-cache');
-        shell_exec('composer update ovic-core/framework');
-
-        if ( $request->ajax() ) {
-            return response()->json([
-                'message' => 'Core đã được cập nhật thành công.',
-            ]);
-        }
-        return 'Core đã được cập nhật thành công.';
-    }
-
     public function update_assets( Request $request )
     {
         Artisan::call('vendor:publish --tag=ovic-assets --force');
