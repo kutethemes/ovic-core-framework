@@ -497,6 +497,8 @@
                 $( '.ibox-title .add-new' ).trigger( 'click' );
             }
         } );
+
+        @if( user_can('add', $permission) )
         /* Add post */
         $( document ).on( 'click', '#edit-post .btn.add-post', function () {
             let button = $( this ),
@@ -549,6 +551,9 @@
                 },
             } );
         } );
+        @endif
+
+        @if( user_can('edit', $permission) )
         /* Update post */
         $( document ).on( 'click', '#edit-post .btn.edit-post', function () {
             let button = $( this ),
@@ -596,6 +601,9 @@
 
             return false;
         } );
+        @endif
+
+        @if( user_can('delete', $permission) )
         /* Remove post */
         $( document ).on( 'click', '#edit-post .btn.delete-post', function () {
             let button = $( this ),
@@ -619,7 +627,7 @@
 
             return false;
         } );
-
+        @endif
     </script>
 
 @endpush

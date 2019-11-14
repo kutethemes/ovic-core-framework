@@ -243,16 +243,12 @@ class RolesController extends Controller
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
         if ( $validator->passes() ) {
-            /* update */
-            Roles::where('id', $id)->update($data);
 
-            if ( $request->has('dataTable') ) {
-                $role = Roles::where('id', $id)->get()->first();
-
-                if ( !empty($role) ) {
-                    $dataTable = $this->role_data($role);
-                }
+            if ( !empty($data['ucase_ids']) ) {
+                $data['ucase_ids'] = maybe_serialize($data['ucase_ids']);
             }
+
+            Roles::where('id', $id)->update($data);
 
             Artisan::call('cache:clear');
 

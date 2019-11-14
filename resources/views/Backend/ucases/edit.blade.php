@@ -37,6 +37,7 @@
         <input type="hidden" name="id" value="">
         <input type="hidden" name="position" value="left">
         <input type="hidden" name="access" value="1">
+        <input type="hidden" name="_slug" value="">
 
         <div class="client-detail">
 

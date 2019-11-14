@@ -196,7 +196,7 @@ class UcasesController extends Controller
         $edit = Ucases::find($id);
 
         if ( !empty($edit) ) {
-            $edit['route'] = maybe_unserialize($edit['route']);
+            $edit['_slug'] = $edit['slug'];
 
             return response()->json(
                 [
@@ -234,28 +234,37 @@ class UcasesController extends Controller
 
         $this->rules['slug'] = [ 'required', 'string', 'max:100', 'unique:ucases,slug,'.$id ];
         $validator           = Validator::make($request->all(), $this->rules, $this->messages);
-        $data                = $request->except([ '_token', 'id' ]);
+        $data                = $request->except([ '_token', '_slug', 'id' ]);
+        $_slug               = $request->input('_slug');
 
         if ( $validator->passes() ) {
-            if ( !empty($data['route']) ) {
-                $data['route'] = maybe_serialize($data['route']);
-            }
+
             if ( !empty($data['slug']) ) {
-                $data['slug'] = Str::slug($data['slug'], '-');
-                $slug         = Ucases::where('id', $id)->value('slug');
-                if ( $data['slug'] != $slug ) {
-                    $roles = Roles::where('ucase_ids', 'LIKE', '%'.$slug.'%')->get([ 'id', 'ucase_ids' ]);
+
+                $slug = Str::slug($data['slug'], '-');
+
+                if ( $slug != $_slug ) {
+
+                    $roles = Roles::where('ucase_ids', 'LIKE', '%'.$_slug.'%')
+                        ->get([ 'id', 'ucase_ids' ]);
+
                     if ( !empty($roles) ) {
                         foreach ( $roles as $role ) {
-                            $ucase_ids                = $role['ucase_ids'];
-                            $ucase_ids[$data['slug']] = $ucase_ids[$slug];
-                            unset($ucase_ids[$slug]);
+                            $ucase_ids        = $role['ucase_ids'];
+                            $ucase_ids[$slug] = $ucase_ids[$_slug];
+
+                            unset($ucase_ids[$_slug]);
+
                             Roles::where('id', $role['id'])->update([
                                 'ucase_ids' => maybe_serialize($ucase_ids)
                             ]);
                         }
                     }
                 }
+            }
+
+            if ( !empty($data['route']) ) {
+                $data['route'] = maybe_serialize($data['route']);
             }
 
             Ucases::where('id', $id)->update($data);

@@ -117,7 +117,7 @@ class Ucases extends Eloquent
         if ( !empty($ucases) ) {
             foreach ( $ucases as $ucase ) {
                 if ( !empty($ucase->route['custom_link']) ) {
-                    Route::get($ucase->route['custom_link']);
+                    Route::get("{$ucase->slug}", $ucase->route['custom_link']);
                 } elseif ( !empty($ucase->route['controller']) ) {
                     $module = "";
                     if ( !empty($ucase->route['module']) ) {

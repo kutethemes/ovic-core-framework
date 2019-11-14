@@ -175,7 +175,10 @@
                 $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
             }
 
-            modal.modal( 'show' );
+            modal.modal( {
+                backdrop: 'static',
+                keyboard: false,
+            } );
         } );
         /* Add new */
         $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
@@ -194,7 +197,10 @@
             form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
             form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
 
-            modal.modal( 'show' );
+            modal.modal( {
+                backdrop: 'static',
+                keyboard: false,
+            } );
 
             return false;
         } );
@@ -270,9 +276,9 @@
 
     @include( name_blade('Backend.media.modal') )
 
-    <div id="modal-edit-post" class="modal" tabindex="-1" role="dialog">
+    <div id="modal-edit-post" class="modal inmodal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
+            <div class="modal-content animated fadeInLeft">
                 <div class="modal-header">
                     <h5 class="modal-title">Modal title</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

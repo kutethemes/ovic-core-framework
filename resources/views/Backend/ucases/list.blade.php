@@ -38,7 +38,7 @@
             <div class="col-sm-6{{ $key == 'menu-left' ? ' b-r' : '' }}">
                 <div id="{{ $key }}" class="dd">
                     @if( !empty( $menu[0] ) )
-                        <ol class="dd-list">
+                        <ol class="dd-list {{ !user_can('edit', $permission) ? 'dd-nodrag' : '' }}">
                             @foreach ( $menu[0] as $parent )
                                 <li class="dd-item{{ !empty( $menu[$parent['id']] ) ? ' has-children' : '' }}"
                                     data-id="{{ $parent['id'] }}">
