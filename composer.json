@@ -36,6 +36,8 @@
     "require-dev": {
         "doctrine/dbal": "2.*",
         "laravel/ui": "1.*",
+        "nesbot/carbon": "2.*",
+        "maatwebsite/excel": "3.*",
         "nwidart/laravel-modules": "6.*",
         "laravel/framework": "6.0.*"
     },
