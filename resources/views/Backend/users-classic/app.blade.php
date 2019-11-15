@@ -58,6 +58,38 @@
             }
         } );
         $( '#table-posts' ).init_dataTable( "users-classic", {
+            dom: '<"head-table"Bif>rt<"footer-table"lp><"clear">',
+            buttons: [
+                {
+                    text: 'Thêm mới',
+                    className: 'btn btn-primary add-new',
+                },
+                {
+                    text: '<i class="fa fa-trash"></i> Xóa',
+                    className: 'btn btn-danger delete-select disabled',
+                    titleAttr: 'Xóa tất cả mục đã chọn.',
+                    action: function ( e, dt, node, config ) {
+                        let ids = [],
+                            data = [],
+                            items = table.find( '.select-items' );
+
+                        data.id = 0;
+                        data.name = 'Các mục đã chọn';
+                        items.each( function ( index, value ) {
+                            if ( $( this ).is( ':checked' ) ) {
+                                ids.push(
+                                    $( this ).val()
+                                );
+                            }
+                        } );
+                        data.id = ids;
+
+                        $( this ).remove_post( main_url, data );
+
+                        return false;
+                    }
+                }
+            ],
             columns: [
                 {
                     className: "client-id",
@@ -226,19 +258,17 @@
                 form = button.closest( 'form' ),
                 data = form.serializeObject();
 
-            data.dataTable = true;
-
-            button.update_post( "users-classic", data, "#table-posts" );
+            button.update_post( "users-classic", data, true );
 
             return false;
         } );
         /* Status */
         $( document ).on( 'click', '#table-posts .status', function () {
 
-            $( this ).update_status(
-                "users-classic",
+            $( this ).update_status( "users-classic",
                 "Tắt kích hoạt thành công",
-                "Kích hoạt thành công"
+                "Kích hoạt thành công",
+                true
             );
 
             return false;

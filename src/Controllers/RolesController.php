@@ -250,6 +250,14 @@ class RolesController extends Controller
 
             Roles::where('id', $id)->update($data);
 
+            if ( $request->has('dataTable') ) {
+                $role = Roles::where('id', $id)->get()->first();
+
+                if ( !empty($role) ) {
+                    $dataTable = $this->role_data($role);
+                }
+            }
+
             Artisan::call('cache:clear');
 
             return response()->json(

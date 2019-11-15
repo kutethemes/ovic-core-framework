@@ -128,17 +128,17 @@
                 form = $( '#edit-post' ),
                 data = form.serializeObject();
 
-            button.update_post( "roles", data, "#table-users" );
+            button.update_post( "roles", data );
 
             return false;
         } );
         /* Status */
         $( document ).on( 'click', '#table-posts .status', function () {
 
-            $( this ).update_status(
-                "roles",
+            $( this ).update_status( "roles",
                 "Tắt nhóm thành công",
-                "Kích hoạt nhóm thành công"
+                "Kích hoạt nhóm thành công",
+                true
             );
 
             return false;

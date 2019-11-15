@@ -97,12 +97,21 @@ body.full-height-layout #app {
     background-color: #fff;
     box-shadow: none;
     border-radius: 0;
-    border-top: 1px solid
-    #e7eaec;
+    border-top: 1px solid #e7eaec;
 }
 
 #modal-media {
     z-index: 3050 !important;
+}
+
+.modal.fade {
+    opacity: 1;
+}
+
+.modal.fade .modal-dialog {
+    -webkit-transform: translate(0);
+    -moz-transform: translate(0);
+    transform: translate(0);
 }
 
 @media (max-width: 1024px) {

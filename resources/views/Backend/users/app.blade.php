@@ -203,19 +203,17 @@
                 form = button.closest( 'form' ),
                 data = form.serializeObject();
 
-            data.dataTable = true;
-
-            button.update_post( "users", data, "#table-posts" );
+            button.update_post( "users", data, true );
 
             return false;
         } );
         /* Status */
         $( document ).on( 'click', '#table-posts .status', function () {
 
-            $( this ).update_status(
-                "users",
+            $( this ).update_status( "users",
                 "Tắt kích hoạt thành công",
-                "Kích hoạt thành công"
+                "Kích hoạt thành công",
+                true
             );
 
             return false;
