@@ -225,7 +225,7 @@
             "preventDuplicates": true,
         };
         var updateMenu = function ( e, item, source, destination, position ) {
-                var list = e.length ? e : $( e.target ),
+                var list = item.closest('.dd'),
                     data = list.nestable( 'serialize' ),
                     loading = list.closest( '.ibox-content' );
 
@@ -318,10 +318,15 @@
                         },
                         success: function ( response ) {
 
-                            let menu = $( '#menu-' + data.id ).closest( '.dd-item' );
+                            let menu = $( '#menu-' + data.id ).closest( '.dd-item' ),
+                                mainmenu = menu.closest('.dd');
 
                             if ( response.status === 'success' ) {
                                 menu.remove();
+                            }
+
+                            if ( !mainmenu.find('.dd-item').length ) {
+                                mainmenu.html('<div class="dd-empty"></div>');
                             }
 
                             swal( {
@@ -337,7 +342,7 @@
 
                 }
             } );
-        }
+        };
         // activate Nestable for list menu
         $( '#menu-left' ).nestable( { maxDepth: 2 } ).on( 'dragEnd', updateMenu );
         $( '#menu-top' ).nestable( { maxDepth: 2 } ).on( 'dragEnd', updateMenu );
@@ -504,7 +509,9 @@
             let button = $( this ),
                 form = button.closest( '#edit-post' ),
                 loading = form.closest( '.ibox-content' ),
-                data = form.serializeObject();
+                data = form.serializeObject(),
+                menuLeft = $( '#menu-left' ),
+                menuTop = $( '#menu-top' );
 
             loading.addClass( 'sk-loading' );
 
@@ -525,9 +532,11 @@
                         let html = template( data, true );
 
                         if ( data.position === 'left' ) {
-                            $( '#menu-left' ).append( html );
+                            menuLeft.append( html );
+                            menuLeft.find( '.dd-empty' ).remove();
                         } else {
-                            $( '#menu-top' ).append( html );
+                            menuTop.append( html );
+                            menuTop.find( '.dd-empty' ).remove();
                         }
 
                         toastr.info( response.message );
