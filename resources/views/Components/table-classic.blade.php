@@ -1,6 +1,6 @@
 @php
     /**
-     * The table classic for our theme
+     * The table classic template for our theme
      *
      * @package Ovic
      * @subpackage Framework
@@ -157,6 +157,10 @@
             text-align: left;
         }
 
+        .client-id {
+            width: 30px;
+        }
+
         .table-filter > * {
             display: inline-block;
             -webkit-box-flex: 0;
@@ -272,6 +276,8 @@
 
         .client-options {
             text-align: center;
+            width: 90px;
+            min-width: 90px;
         }
 
         .client-options .btn {
@@ -285,6 +291,29 @@
 
         .client-options .btn:not(:last-child) {
             margin-right: 10px !important;
+        }
+
+        .client-status {
+            width: 80px !important;
+            min-width: 80px;
+        }
+
+        .modal form {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .modal-body {
+            position: relative;
+        }
+
+        .modal .form-group.submit {
+            left: 30px;
+            right: 30px;
+            background-color: #fff;
+            z-index: 3;
+            padding: 15px;
         }
 
         @media (min-width: 1200px) {
@@ -389,7 +418,7 @@
             options = $.extend( {
                 processing: true,
                 serverSide: true,
-                autoWidth: false,
+                responsive: true,
                 dom: '<"head-table"Bif>rt<"footer-table"lp><"clear">',
                 buttons: [
                     {
@@ -453,7 +482,7 @@
                         } );
                     },
                 },
-                scrollX: true,
+                // scrollX: true,
                 createdRow: function ( row, data, dataIndex ) {
                     // Set the data-status attribute, and add a class
                     $( row ).addClass( 'row-' + data.id );
@@ -685,7 +714,11 @@
 
                     if ( response.status === 200 ) {
 
-                        OvicTable.row( tr ).data( response.data );
+                        if ( data.dataTable === undefined ) {
+                            OvicTable.ajax.reload( null, false );
+                        } else if ( $.isPlainObject( response.data ) ) {
+                            OvicTable.row( tr ).data( response.data );
+                        }
 
                         toastr.info( message );
 

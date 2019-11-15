@@ -1,6 +1,6 @@
 @php
     /**
-     * The button for our theme
+     * The button template for our theme
      *
      * @package Ovic
      * @subpackage Framework

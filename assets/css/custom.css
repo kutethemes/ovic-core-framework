@@ -1,0 +1,129 @@
+.navbar-top-links li {
+    position: relative;
+}
+
+.navbar-default .nav > li > a {
+    font-weight: 400;
+    font-size: 12px;
+    padding: 12px 20px 12px 10px;
+}
+
+.navbar-default .nav-second-level li a {
+    padding: 6px 10px 6px 10px;
+    padding-left: 20px;
+}
+
+.navbar-default .nav > li.active {
+    border-left-width: 2px;
+}
+
+.navbar.navbar-static-top {
+    background-color: #fff;
+}
+
+body.full-height-layout #app {
+    height: 100%;
+}
+
+#app {
+    width: 100%;
+    overflow-x: hidden;
+    display: -ms-flex;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.full-height-content {
+    height: calc(100% - 85px);
+    position: relative;
+}
+
+.normal-scroll-content {
+    overflow-x: hidden;
+    height: 100%;
+}
+
+.modal-open .modal {
+    padding: 0 !important;
+}
+
+.modal .modal-header {
+    position: relative;
+    padding: 10px;
+    border-bottom: 1px solid #e7eaec;
+}
+
+.modal .modal-header button {
+    position: absolute;
+    right: 15px;
+    top: calc(50% - 18px);
+    padding: 10px 12px;
+    margin: 0;
+    font-size: 30px;
+    line-height: 15px;
+    font-family: initial;
+    font-weight: bold;
+}
+
+.modal .modal-content {
+    width: 100vw !important;
+    height: calc(100vh - 50px) !important;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    display: block;
+}
+
+.modal.no-footer .modal-content {
+    height: 100vh !important;
+}
+
+.modal.no-footer .modal-body {
+    height: calc(100% - 70px);
+}
+
+.modal.show .modal-dialog {
+    transform: none;
+    max-width: inherit;
+    margin: 0;
+}
+
+.modal .modal-header {
+    padding: 10px;
+    border-bottom: 1px solid #e7eaec;
+}
+
+.modal .modal-footer {
+    background-color: #fff;
+    box-shadow: none;
+    border-radius: 0;
+    border-top: 1px solid
+    #e7eaec;
+}
+
+#modal-media {
+    z-index: 3050 !important;
+}
+
+@media (max-width: 1024px) {
+    body.full-height-layout #app {
+        display: block;
+    }
+
+    .wrapper-content {
+        display: block;
+        padding-bottom: 60px;
+    }
+
+    .wrapper-content > * {
+        max-width: inherit;
+        float: none;
+    }
+
+    .wrapper-content,
+    .wrapper-content > *,
+    .full-height-layout #wrapper,
+    .full-height-layout #page-wrapper {
+        height: auto !important;
+    }
+}

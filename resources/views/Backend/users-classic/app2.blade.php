@@ -18,7 +18,7 @@
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     {{-- style users --}}
     <style>
-        @if( empty( $permission[0] ) || $permission[0] == false )
+        @if( !user_can('add', $permission) )
             .btn.add-new {
             display: none !important;
         }
@@ -153,39 +153,35 @@
                 user = OvicTable.row( row ).data(),
                 chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
 
-            if ( !row.hasClass( 'active' ) ) {
-                /* active */
-                row.addClass( 'active' ).siblings().removeClass( 'active' );
-                form.find( '.ovic-field-image img' ).attr( 'src', user.avatar_url );
+            /* active */
+            form.find( '.ovic-field-image img' ).attr( 'src', user.avatar_url );
 
-                $.each( user, function ( index, value ) {
-                    if ( form.find( '[name="' + index + '"]' ).length ) {
-                        if ( index === 'status' && value == 3 ) {
-                            value = 1;
-                        }
-                        if ( chosen.indexOf( index ) !== -1 ) {
-
-                            if ( Array.isArray( value ) ) {
-                                value = value.map( Number );
-                            }
-
-                            form.find( '[name="' + index + '"]' ).val( value ).trigger( 'chosen:updated' );
-                        } else if ( index === 'password' ) {
-                            form.find( '[name="' + index + '"]' ).val( value ).attr( 'disabled', 'disabled' ).removeAttr( 'name' ).trigger( 'change' );
-                            form.find( '[name="password_confirmation"]' ).removeAttr( 'name' );
-                        } else {
-                            form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
-                        }
+            $.each( user, function ( index, value ) {
+                if ( form.find( '[name="' + index + '"]' ).length ) {
+                    if ( index === 'status' && value == 3 ) {
+                        value = 1;
                     }
-                } );
+                    if ( chosen.indexOf( index ) !== -1 ) {
 
-                form.find( '.form-group .add-post' ).addClass( 'd-none' );
-                form.find( '.field-password-confirmation' ).css( 'display', 'none' );
-                form.find( '.field-password .input-group-append' ).css( 'display', 'block' );
-                form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
-            } else {
-                $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
-            }
+                        if ( Array.isArray( value ) ) {
+                            value = value.map( Number );
+                        }
+
+                        form.find( '[name="' + index + '"]' ).val( value ).trigger( 'chosen:updated' );
+                    } else if ( index === 'password' ) {
+                        form.find( '[name="' + index + '"]' ).val( value ).attr( 'disabled', 'disabled' ).removeAttr( 'name' ).trigger( 'change' );
+                        form.find( '[name="password_confirmation"]' ).removeAttr( 'name' );
+                    } else {
+                        form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
+                    }
+                }
+            } );
+
+            modal.find( '.modal-title' ).text( user.name );
+            form.find( '.form-group .add-post' ).addClass( 'd-none' );
+            form.find( '.field-password-confirmation' ).css( 'display', 'none' );
+            form.find( '.field-password .input-group-append' ).css( 'display', 'block' );
+            form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
 
             modal.modal( {
                 backdrop: 'static',
@@ -195,7 +191,6 @@
         /* Add new */
         $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
             let form = $( '#edit-post' ),
-                table = $( '#table-posts' ),
                 modal = $( '#modal-edit-post' );
 
             form.find( '.ovic-field-image .ovic-image-remove' ).trigger( 'click' );
@@ -204,11 +199,11 @@
             form.find( '.field-password-confirmation' ).css( 'display', 'block' ).find( 'input' ).attr( 'name', 'password_confirmation' );
             form.find( '.field-password .input-group-append' ).css( 'display', 'none' );
 
-            table.find( 'tbody > tr' ).removeClass( 'active' );
             form.trigger( 'reset' );
             form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
             form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
 
+            modal.find( '.modal-title' ).text( 'Thêm mới' );
             modal.modal( {
                 backdrop: 'static',
                 keyboard: false,
@@ -216,6 +211,7 @@
 
             return false;
         } );
+
         @if( user_can('add', $permission) )
         /* Add post */
         $( document ).on( 'click', '#edit-post .btn.add-post', function () {
@@ -293,29 +289,14 @@
 
 @push( 'after-content' )
 
-    {{-- https://getbootstrap.com/docs/4.1/components/modal/ --}}
-
     @include( name_blade('Backend.media.modal') )
 
-    <div id="modal-edit-post" class="modal inmodal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content animated fadeInLeft">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                @include( name_blade('Backend.users-classic.edit') )
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include( name_blade('Components.modal'), [
+       'title'      => 'Edit',
+       'id'         => 'modal-edit-post',
+       'footer'     => false,
+       'content'    => name_blade('Backend.users-classic.edit2'),
+    ])
 
 @endpush
 

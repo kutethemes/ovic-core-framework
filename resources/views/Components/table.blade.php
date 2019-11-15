@@ -1,6 +1,6 @@
 @php
     /**
-     * The table for our theme
+     * The table template for our theme
      *
      * @package Ovic
      * @subpackage Framework
@@ -229,6 +229,7 @@
                 processing: true,
                 lengthChange: false,
                 serverSide: true,
+                responsive: true,
                 dom: '<"head-table"fi>rt<"footer-table"p><"clear">',
                 ajax: {
                     url: main_url + "/create",
@@ -431,7 +432,11 @@
 
                     if ( response.status === 200 ) {
 
-                        OvicTable.row( tr ).data( response.data );
+                        if ( data.dataTable === undefined ) {
+                            OvicTable.ajax.reload( null, false );
+                        } else if ( $.isPlainObject( response.data ) ) {
+                            OvicTable.row( tr ).data( response.data );
+                        }
 
                         toastr.info( message );
 

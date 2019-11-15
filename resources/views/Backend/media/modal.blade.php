@@ -12,40 +12,6 @@
 @push( 'styles' )
     {{-- style modal media --}}
     <style>
-        #modal-media .modal-content {
-            width: 100vw !important;
-            height: calc(100vh - 50px) !important;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-            display: block;
-        }
-
-        #modal-media .modal-footer {
-            box-shadow: none;
-            border-radius: 0;
-            border-top: 1px solid #e7eaec;
-        }
-
-        #modal-media.inmodal .modal-header {
-            padding: 10px;
-            border-bottom: 1px solid #e7eaec;
-        }
-
-        #modal-media .modal-footer {
-            background-color: #fff;
-        }
-
-        #modal-media.modal.show .modal-dialog {
-            transform: none;
-            max-width: inherit;
-            margin: 0;
-        }
-
-        .modal-open #modal-media.modal {
-            padding: 0 !important;
-        }
-
         .ovic-field-image .image-select {
             display: inline-block;
         }
@@ -112,7 +78,7 @@
                                 /* Tạo thư mục */
                                 treeFolder( response.directories );
 
-                                $modal.on( 'click', '.btn-primary.selected', function () {
+                                $modal.on( 'click', '.btn-primary.save-modal', function () {
 
                                     let file_box = $load.find( '.file-box.active' );
 
@@ -150,21 +116,13 @@
         </script>
     @endpush
 
-    <div class="modal inmodal" id="modal-media" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Thư viện</h4>
-                </div>
-                <div class="modal-body row full-height-content">
-                    @include( name_blade('Backend.media.data'), ['multi' => false] )
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary selected" data-dismiss="modal">Chọn ảnh</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include( name_blade('Components.modal'), [
+       'title'         => 'Thư viện',
+       'id'            => 'modal-media',
+       'text_close'    => 'Đóng',
+       'text_save'     => 'Chọn ảnh',
+       'content'       => name_blade('Backend.media.data'),
+       'attribute'     => ['multi' => false],
+    ])
 
 @endif
