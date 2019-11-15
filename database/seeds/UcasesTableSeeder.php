@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Database\Seeder;
 
-class UcasesSeeder extends Seeder
+class UcasesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -108,8 +108,5 @@ class UcasesSeeder extends Seeder
                 'status'    => 1,
             ],
         ];
-        foreach ( $ucases as $ucase ) {
-            DB::table('ucases')->insert($ucase);
-        }
     }
 }
