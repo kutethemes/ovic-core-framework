@@ -17,7 +17,7 @@
     $attribute  = !empty( $attribute ) ? $attribute : [];
 @endphp
 
-<div id="{{ $id }}" class="modal inmodal fade {{ !$footer ? ' no-footer' : '' }}"
+<div id="{{ $id }}" class="modal inmodal fade animated {{ !$footer ? ' no-footer' : '' }}"
      data-in="{{ !empty( $animated_in ) ? $animated_in : 'slideInLeft' }}"
      data-out="{{ !empty( $animated_out ) ? $animated_out : 'slideOutLeft' }}"
      tabindex="-1"
@@ -31,9 +31,13 @@
                 </button>
             </div>
 
-            <div class="modal-body row full-height-content">
+            <div class="modal-body full-height-content">
 
-                @include( $content, $attribute )
+                <div class="row full-height">
+
+                    @include( $content, $attribute )
+
+                </div>
 
             </div>
 

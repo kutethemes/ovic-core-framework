@@ -7,14 +7,20 @@
 
 $.fn.animateCSS = function ( animate ) {
     var modal = $( this ),
-        animate_in = modal.data( animate );
+        animate_in = modal.data( 'in' ),
+        animate_out = modal.data( 'out' );
 
-    modal.find( '.modal-dialog' ).attr( 'class', 'modal-dialog  ' + animate_in + '  animated' );
+    if ( animate == 'in' ) {
+        modal.removeClass( animate_out ).addClass( animate_in );
+    } else {
+        modal.removeClass( animate_in ).addClass( animate_out );
+    }
 };
 
 $( document ).on( 'show.bs.modal', '.modal', function ( e ) {
     $( this ).animateCSS( 'in' );
 } );
+
 $( document ).on( 'hide.bs.modal', '.modal', function ( e ) {
     $( this ).animateCSS( 'out' );
 } );
