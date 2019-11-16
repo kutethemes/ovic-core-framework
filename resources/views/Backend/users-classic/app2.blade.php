@@ -71,7 +71,7 @@
                     action: function ( e, dt, node, config ) {
                         let ids = [],
                             data = [],
-                            items = table.find( '.select-items' );
+                            items = $( '#table-posts' ).find( '.select-items' );
 
                         data.id = 0;
                         data.name = 'Các mục đã chọn';
@@ -84,7 +84,7 @@
                         } );
                         data.id = ids;
 
-                        $( this ).remove_post( main_url, data );
+                        $( this ).remove_post( "users-classic", data );
 
                         return false;
                     }

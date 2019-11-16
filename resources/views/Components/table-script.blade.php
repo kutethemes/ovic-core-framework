@@ -236,8 +236,6 @@
                             text: response.message,
                             showConfirmButton: true,
                         } );
-
-                        $( '.btn-primary.add-new' ).trigger( 'click' );
                     },
                     error: function () {
                         swal( {
