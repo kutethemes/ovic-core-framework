@@ -191,6 +191,14 @@
                     } );
                 }
             },
+            error: function () {
+                swal( {
+                    type: 'error',
+                    title: "Error!",
+                    text: "Hệ thống không phản hồi.",
+                    showConfirmButton: true
+                } );
+            },
         } );
     };
     @endif
@@ -230,6 +238,14 @@
                         } );
 
                         $( '.btn-primary.add-new' ).trigger( 'click' );
+                    },
+                    error: function () {
+                        swal( {
+                            type: 'error',
+                            title: "Error!",
+                            text: "Hệ thống không phản hồi.",
+                            showConfirmButton: true
+                        } );
                     },
                 } );
 
@@ -280,6 +296,14 @@
                         showConfirmButton: true
                     } );
                 }
+            },
+            error: function () {
+                swal( {
+                    type: 'error',
+                    title: "Error!",
+                    text: "Hệ thống không phản hồi.",
+                    showConfirmButton: true
+                } );
             },
         } );
     };
@@ -338,6 +362,14 @@
                         showConfirmButton: true
                     } );
                 }
+            },
+            error: function () {
+                swal( {
+                    type: 'error',
+                    title: "Error!",
+                    text: "Hệ thống không phản hồi.",
+                    showConfirmButton: true
+                } );
             },
         } );
     };

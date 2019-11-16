@@ -297,7 +297,7 @@ class UsersController extends Controller
             $data['role_ids']  = 0;
             $data['donvi_id']  = 0;
             $data['donvi_ids'] = 0;
-            if ( Auth::user()->status != 3 ) {
+            if ( !Auth::check() || Auth::user()->status != 3 ) {
                 return response()->json([
                     'status'  => 400,
                     'message' => [ 'Bạn không có quyền sửa người dùng này.' ],

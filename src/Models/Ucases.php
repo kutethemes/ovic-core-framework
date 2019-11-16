@@ -117,13 +117,21 @@ class Ucases extends Eloquent
         if ( !empty($ucases) ) {
             foreach ( $ucases as $ucase ) {
                 if ( !empty($ucase->route['custom_link']) ) {
-                    Route::get("{$ucase->slug}", $ucase->route['custom_link']);
+
+                    $method = !empty($ucase->route['method']) ? $ucase->route['method'] : 'get';
+                    if ( class_exists($ucase->route['custom_link']) ) {
+                        Route::match([ $method ], "{$ucase->slug}", $ucase->route['custom_link']);
+                    }
+
                 } elseif ( !empty($ucase->route['controller']) ) {
+
                     $module = "";
                     if ( !empty($ucase->route['module']) ) {
                         $module = "{$ucase->route['module']}::";
                     }
-                    Route::resource("{$ucase->slug}", "{$module}{$ucase->route['controller']}");
+                    if ( class_exists("{$module}{$ucase->route['controller']}") ) {
+                        Route::resource("{$ucase->slug}", "{$module}{$ucase->route['controller']}");
+                    }
                 }
             }
         }

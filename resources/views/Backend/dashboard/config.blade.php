@@ -98,7 +98,7 @@
                         <label class="col-sm-2 col-form-label">
                             Cache
                             <br>
-                            <small class="text-navy">Xóa và cập nhật cache.</small>
+                            <small class="text-navy">Xóa tất cả cache.</small>
                         </label>
                         <div class="col-sm-10">
                             <button class="btn btn-danger action-config" data-action="clear-cache" type="button">
