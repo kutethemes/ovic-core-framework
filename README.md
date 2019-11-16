@@ -15,16 +15,6 @@ composer require laravel/ui ( if do not exits )
 php artisan ui vue --auth
 ```
 
-To create "super admin" user, by run the following command:
-
-``` bash
-php artisan db:seed --class=UsersTableSeeder
-
-username    : Super Admin
-user        : admin@laravel.com
-pass        : 12345678
-```
-
 To install nodejs, bootstrap, by run the following command:
 
 Require:
@@ -43,6 +33,16 @@ To create migrate, by run the following command:
 ``` bash
 All         : php artisan migrate
 Only vendor : php artisan migrate --path=\vendor\ovic-core\framework\database
+```
+
+To create "super admin" user, by run the following command:
+
+``` bash
+php artisan db:seed --class=UsersTableSeeder
+
+username    : Super Admin
+user        : admin@laravel.com
+pass        : 12345678
 ```
 
 The package will automatically register a service provider and alias.
