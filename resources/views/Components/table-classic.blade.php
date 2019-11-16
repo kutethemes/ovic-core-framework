@@ -309,8 +309,8 @@
         }
 
         .modal .form-group.submit {
-            left: 30px;
-            right: 30px;
+            left: 0;
+            right: 0;
             background-color: #fff;
             z-index: 3;
             padding: 15px;
