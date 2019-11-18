@@ -8,13 +8,6 @@ To install through Composer, by run the following command:
 composer require ovic-core/framework
 ```
 
-To create Auth, by run the following command ( https://laravel.com/docs/6.x/authentication ):
-
-``` bash
-composer require laravel/ui ( if do not exits )
-php artisan ui vue --auth
-```
-
 To install nodejs, bootstrap, by run the following command:
 
 Require:
@@ -26,6 +19,13 @@ Require:
 npm install
 npm install bootstrap
 npm run dev
+```
+
+To create Auth, by run the following command ( https://laravel.com/docs/6.x/authentication ):
+
+``` bash
+composer require laravel/ui ( if do not exits )
+php artisan ui vue --auth
 ```
 
 To create migrate, by run the following command:
