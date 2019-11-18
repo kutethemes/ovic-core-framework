@@ -267,9 +267,7 @@
         } );
         /* chọn nhiều quyền */
         $( document ).on( 'click', '.dd-item > .dd-handle .name', function () {
-            $( this ).closest( '.dd-handle' ).find( 'input' ).each( function ( key, value ) {
-                $( value ).trigger( 'click' );
-            } );
+            $( this ).closest( '.dd-handle' ).find( 'input' ).trigger( 'click' );
         } );
 
         $( document ).on( 'change', '.dd-item > .dd-handle input', function ( e ) {
@@ -403,6 +401,7 @@
                         } );
                     }
                     loading.removeClass( 'sk-loading' );
+                    $( 'a#role-' + roleID ).trigger( 'click' );
                 },
                 error: function () {
                     loading.removeClass( 'sk-loading' );
