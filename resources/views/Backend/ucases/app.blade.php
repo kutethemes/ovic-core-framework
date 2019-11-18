@@ -190,8 +190,9 @@
             margin: 0 0 12px;
         }
 
-        .ibox-title .add-new {
-            margin-right: 20px;
+        .ibox-title .add-new,
+        .ibox-title .reload-page {
+            margin-right: 10px;
         }
 
         @media (max-width: 1400px) {

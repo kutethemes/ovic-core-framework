@@ -11,6 +11,7 @@
 
 <div class="ibox-title">
     <a href="#" data-action="add-new" class="btn btn-primary btn-xs add-new">Add New</a>
+    <a href="#" class="btn btn-warning btn-xs reload-page" onclick="javascript:window.location.reload();return false;">Reload page</a>
     <h5>Danh sách menu <small>Menu Left / Menu Top</small></h5>
     <div class="ibox-tools">
         <a class="collapse-link">
