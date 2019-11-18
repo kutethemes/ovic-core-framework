@@ -299,7 +299,7 @@
         }
         $.fn.removeMenu = function ( data ) {
             swal( {
-                title: "Bạn có chắc muốn xóa \"" + data.title + "\"?",
+                title: "Bạn có chắc muốn xóa \n\"" + data.title + "\"?",
                 text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
                 type: "warning",
                 showCancelButton: true,
@@ -627,7 +627,7 @@
             let data = [],
                 button = $( this ),
                 handle = button.closest( '.dd-handle' ),
-                title = handle.find( '.name' ).text();
+                title = handle.find( '.name' ).html();
 
             data.id = handle.closest( '.dd-item' ).data( 'id' );
             data.title = title;

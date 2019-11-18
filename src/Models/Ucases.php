@@ -162,7 +162,9 @@ class Ucases extends Eloquent
             if ( !empty($roles) ) {
                 foreach ( $roles as $role ) {
                     $ucase_ids = $role['ucase_ids'];
-                    unset($ucase_ids[$model->slug]);
+                    if ( isset($ucase_ids[$model->slug]) ) {
+                        unset($ucase_ids[$model->slug]);
+                    }
                     Roles::where('id', $role['id'])->update([
                         'ucase_ids' => maybe_serialize($ucase_ids)
                     ]);

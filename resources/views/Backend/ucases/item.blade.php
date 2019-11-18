@@ -27,11 +27,9 @@
 
 <div id="menu-{{ $data['id'] }}" class="dd-handle{{ $status }}" data-slug="{{ $data['slug'] }}">
     <span class="label label-info">
-        <i class="{{ $data['route']['icon'] }}"></i>
+        <i class="{{ isset( $data['route']['icon'] ) ? $data['route']['icon'] : '' }}"></i>
     </span>
-    <div class="name">
-        {{ $data['title'] }}
-    </div>
+    <div class="name">{{ $data['title'] }}</div>
     <div class="dd-nodrag btn-group">
         @if( user_can('edit', $permission) )
             <button class="btn btn-outline btn-primary edit">
