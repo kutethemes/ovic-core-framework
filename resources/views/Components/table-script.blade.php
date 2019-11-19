@@ -173,14 +173,16 @@
             },
             success: function ( response ) {
 
-                button.trigger( 'add_post_success', [ response ] );
-
                 if ( response.status === 200 ) {
+
+                    button.trigger( 'add_post_success', [ response ] );
 
                     OvicTable.ajax.reload( null, false );
 
                     toastr.info( response.message );
                 } else {
+
+                    button.trigger( 'add_post_error' );
 
                     let html = '';
                     $.each( response.message, function ( index, value ) {
@@ -237,10 +239,16 @@
                     },
                     success: function ( response ) {
 
-                        button.trigger( 'remove_post_success', [ response ] );
-
                         if ( response.status === 'success' ) {
+
+                            button.trigger( 'remove_post_success', [ response ] );
+
                             OvicTable.ajax.reload( null, false );
+
+                        } else {
+
+                            button.trigger( 'remove_post_error' );
+
                         }
 
                         swal( {
@@ -289,9 +297,9 @@
             },
             success: function ( response ) {
 
-                button.trigger( 'update_post_success', [ response ] );
-
                 if ( response.status === 200 ) {
+
+                    button.trigger( 'update_post_success', [ response ] );
 
                     if ( data.dataTable === undefined ) {
                         OvicTable.ajax.reload( null, false );
@@ -300,7 +308,11 @@
                     }
 
                     toastr.info( response.message );
+
                 } else {
+
+                    button.trigger( 'update_post_error' );
+
                     let html = '';
                     $.each( response.message, function ( index, value ) {
                         html += "<p class='text-danger'>" + value + "</p>";
@@ -359,9 +371,9 @@
             },
             success: function ( response ) {
 
-                button.trigger( 'update_status_success', [ response ] );
-
                 if ( response.status === 200 ) {
+
+                    button.trigger( 'update_status_success', [ response ] );
 
                     if ( config.dataTable === undefined ) {
                         OvicTable.ajax.reload( null, false );
@@ -372,6 +384,9 @@
                     toastr.info( message );
 
                 } else {
+
+                    button.trigger( 'update_status_error' );
+
                     let html = '';
                     $.each( response.message, function ( index, value ) {
                         html += "<p class='text-danger'>" + value + "</p>";
