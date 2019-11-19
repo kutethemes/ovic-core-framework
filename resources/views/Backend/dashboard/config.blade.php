@@ -90,28 +90,6 @@
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">
-                            Site Title
-                        </label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="text" name="title" value="{{ config('app.name') }}">
-                        </div>
-                    </div>
-                    <div class="hr-line-dashed"></div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">
-                            Timezone
-                        </label>
-                        <div class="col-sm-10">
-                            <select class="form-control chosen-select" name="timezone">
-                                {{ ovic_timezone_choice( config('app.timezone') ) }}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="hr-line-dashed"></div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">
                             Thư viện
                             <br>
                             <small class="text-navy">Cập nhật thư viện assets.</small>
@@ -135,6 +113,10 @@
                             <button class="btn btn-danger action-config" data-action="clear-cache" type="button">
                                 <i class="fa fa-warning"></i>
                                 Xóa cache
+                            </button>
+                            <button class="btn btn-danger action-config" data-action="dump-autoload" type="button">
+                                <i class="fa fa-warning"></i>
+                                Dump Autoload
                             </button>
                         </div>
                     </div>

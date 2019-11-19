@@ -22,4 +22,9 @@ class Donvi extends Eloquent
 
         return false;
     }
+
+    public function scopeTableName( $query )
+    {
+        return $this->table;
+    }
 }

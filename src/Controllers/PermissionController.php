@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Artisan;
 
 class PermissionController extends Controller
 {
+    private $table = '';
+
     /**
      * Create a new controller instance.
      *
@@ -18,7 +20,7 @@ class PermissionController extends Controller
      */
     public function __construct()
     {
-        //
+        $this->table = Roles::TableName();
     }
 
     /**
@@ -72,7 +74,7 @@ class PermissionController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'id' => [ 'required', 'numeric', 'unique:roles,id,'.$id ],
+            'id' => [ 'required', 'numeric', 'unique:'.$this->table.',id,'.$id ],
         ]);
         $data      = $request->except([ '_token', 'id' ]);
 

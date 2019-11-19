@@ -12,21 +12,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class UcasesController extends Controller
 {
-    private $rules    = [
-        'slug'      => [ 'required', 'string', 'max:100', 'unique:ucases,slug' ],
-        'title'     => [ 'required', 'string', 'max:100' ],
-        'ordering'  => [ 'numeric', 'min:0' ],
-        'parent_id' => [ 'numeric', 'min:0' ],
-        'access'    => [ 'numeric', 'min:0', 'max:2' ],
-        'status'    => [ 'numeric', 'min:0', 'max:2' ],
-        'route.*'   => [ 'string', 'nullable' ],
-    ];
-    private $messages = [
-        'slug.required'  => 'Tên route là trường bắt buộc tối đa 100 kí tự',
-        'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
-        'access.max'     => 'Quyền truy cập chấp nhận 3 ký tự số 0, 1 và 2',
-        'status.max'     => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
-    ];
+    private $table = '';
 
     /**
      * Create a new controller instance.
@@ -35,7 +21,35 @@ class UcasesController extends Controller
      */
     public function __construct()
     {
-        //
+        $this->table = Ucases::TableName();
+    }
+
+    public function rules( $id = null )
+    {
+        $rules = [
+            'slug'      => [ 'required', 'string', 'max:100', 'unique:'.$this->table.',slug' ],
+            'title'     => [ 'required', 'string', 'max:100' ],
+            'ordering'  => [ 'numeric', 'min:0' ],
+            'parent_id' => [ 'numeric', 'min:0' ],
+            'access'    => [ 'numeric', 'min:0', 'max:2' ],
+            'status'    => [ 'numeric', 'min:0', 'max:2' ],
+            'route.*'   => [ 'string', 'nullable' ],
+        ];
+        if ( $id != null ) {
+            $rules['slug'] = [ 'required', 'string', 'max:100', 'unique:'.$this->table.',slug,'.$id ];
+        }
+
+        return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'slug.required'  => 'Tên route là trường bắt buộc tối đa 100 kí tự',
+            'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
+            'access.max'     => 'Quyền truy cập chấp nhận 3 ký tự số 0, 1 và 2',
+            'status.max'     => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
+        ];
     }
 
     /**
@@ -132,7 +146,7 @@ class UcasesController extends Controller
             ]);
         }
 
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
+        $validator = Validator::make($request->all(), $this->rules(), $this->messages());
 
         if ( $validator->passes() ) {
             $data     = $request->toArray();
@@ -232,10 +246,9 @@ class UcasesController extends Controller
             ]);
         }
 
-        $this->rules['slug'] = [ 'required', 'string', 'max:100', 'unique:ucases,slug,'.$id ];
-        $validator           = Validator::make($request->all(), $this->rules, $this->messages);
-        $data                = $request->except([ '_token', '_slug', 'id' ]);
-        $_slug               = $request->input('_slug');
+        $validator = Validator::make($request->all(), $this->rules($id), $this->messages());
+        $data      = $request->except([ '_token', '_slug', 'id' ]);
+        $_slug     = $request->input('_slug');
 
         if ( $validator->passes() ) {
 

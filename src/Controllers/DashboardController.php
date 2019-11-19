@@ -37,6 +37,18 @@ class DashboardController extends Controller
         );
     }
 
+    public function dump_autoload( Request $request )
+    {
+        shell_exec('composer dump-autoload');
+
+        if ( $request->ajax() ) {
+            return response()->json([
+                'message' => 'Autoload đã được cập nhật thành công.',
+            ]);
+        }
+        return 'Autoload đã được cập nhật thành công.';
+    }
+
     public function update_assets( Request $request )
     {
         Artisan::call('vendor:publish --tag=ovic-assets --force');
@@ -57,6 +69,7 @@ class DashboardController extends Controller
         Artisan::call('event:clear');
         Artisan::call('view:clear');
         Artisan::call('optimize:clear');
+        Artisan::call('clear-compiled');
 
         if ( $request->ajax() ) {
             return response()->json([

@@ -16,6 +16,13 @@ class Roles extends Eloquent
      */
     protected $table = 'roles';
 
+    public function __construct( array $attributes = [] )
+    {
+        $this->table = config('ovic.table.roles.name', 'roles');
+
+        parent::__construct($attributes);
+    }
+
     public function scopehasTable( $query )
     {
         if ( Schema::hasTable($this->table) ) {
@@ -23,6 +30,11 @@ class Roles extends Eloquent
         }
 
         return false;
+    }
+
+    public function scopeTableName( $query )
+    {
+        return $this->table;
     }
 
     public function setUcaseIdsAttribute( $value )

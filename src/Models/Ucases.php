@@ -18,6 +18,13 @@ class Ucases extends Eloquent
      */
     protected $table = 'ucases';
 
+    public function __construct( array $attributes = [] )
+    {
+        $this->table = config('ovic.table.ucases.name', 'ucases');
+
+        parent::__construct($attributes);
+    }
+
     public function scopehasTable( $query )
     {
         if ( Schema::hasTable($this->table) ) {
@@ -25,6 +32,11 @@ class Ucases extends Eloquent
         }
 
         return false;
+    }
+
+    public function scopeTableName( $query )
+    {
+        return $this->table;
     }
 
     public function setRouteAttribute( $value )

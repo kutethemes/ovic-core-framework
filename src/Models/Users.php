@@ -23,6 +23,11 @@ class Users extends User
         return false;
     }
 
+    public function scopeTableName( $query )
+    {
+        return $this->table;
+    }
+
     public function setRoleIdsAttribute( $value )
     {
         $this->attributes['role_ids'] = maybe_serialize($value);

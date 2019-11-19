@@ -50,6 +50,9 @@ class FrameworkServiceProvider extends ServiceProvider
             ]);
         });
 
+        /* Load Config */
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'ovic');
+
         /* Load Migrations */
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
@@ -63,10 +66,18 @@ class FrameworkServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'ovic');
 
         /* Publishes */
+        $this->publishes_config();
         $this->publishes_assets();
         $this->publishes_views();
         $this->publishes_lang();
         $this->publishes_auth();
+    }
+
+    public function publishes_config()
+    {
+        $this->publishes([
+            __DIR__.'/../config/config.php' => config_path('ovic.php')
+        ], 'ovic-config');
     }
 
     public function publishes_assets()
