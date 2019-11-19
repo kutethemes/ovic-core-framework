@@ -16,7 +16,7 @@ class Users extends User
 
     public function __construct( array $attributes = [] )
     {
-        $this->table = config('ovic.table.users.name', 'users');
+        $this->table = config('ovic.table.users', 'users');
 
         parent::__construct($attributes);
     }

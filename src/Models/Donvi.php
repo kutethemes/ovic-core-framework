@@ -16,7 +16,7 @@ class Donvi extends Eloquent
 
     public function __construct( array $attributes = [] )
     {
-        $this->table = config('ovic.table.donvi.name', 'donvi');
+        $this->table = config('ovic.table.donvi', 'donvi');
 
         parent::__construct($attributes);
     }

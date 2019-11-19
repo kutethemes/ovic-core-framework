@@ -15,7 +15,7 @@ class Usermeta extends Eloquent
 
     public function __construct( array $attributes = [] )
     {
-        $this->table = config('ovic.table.usermeta.name', 'usermeta');
+        $this->table = config('ovic.table.usermeta', 'usermeta');
 
         parent::__construct($attributes);
     }

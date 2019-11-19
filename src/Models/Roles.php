@@ -18,7 +18,7 @@ class Roles extends Eloquent
 
     public function __construct( array $attributes = [] )
     {
-        $this->table = config('ovic.table.roles.name', 'roles');
+        $this->table = config('ovic.table.roles', 'roles');
 
         parent::__construct($attributes);
     }

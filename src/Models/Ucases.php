@@ -20,7 +20,7 @@ class Ucases extends Eloquent
 
     public function __construct( array $attributes = [] )
     {
-        $this->table = config('ovic.table.ucases.name', 'ucases');
+        $this->table = config('ovic.table.ucases', 'ucases');
 
         parent::__construct($attributes);
     }
