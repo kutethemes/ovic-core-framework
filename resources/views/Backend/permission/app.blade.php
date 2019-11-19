@@ -247,10 +247,10 @@
                 } );
                 return o;
             };
-        }
+        };
         // activate Nestable for list menu
-        $( '#menu-left' ).nestable( { maxDepth: 2 } );
-        $( '#menu-top' ).nestable( { maxDepth: 2 } );
+        $( '#menu-left' ).nestable( { maxDepth: 2 } ).nestable( 'collapseAll' );
+        $( '#menu-top' ).nestable( { maxDepth: 2 }.nestable( 'collapseAll' ) );
         // action Nestable for list menu
         $( '#nestable-menu' ).on( 'click', function ( e ) {
             var target = $( e.target ),

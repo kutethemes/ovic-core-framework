@@ -31,7 +31,9 @@ class IconController extends Controller
             $html .= '<div class="ovic-text-error">No data provided by developer</div>';
         }
 
-        return response()->json([ 'content' => $html ]);
+        return response()->json([
+            'content' => $html
+        ]);
     }
 
     public function default_icons()
