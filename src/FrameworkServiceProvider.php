@@ -103,7 +103,7 @@ class FrameworkServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                __DIR__.'/../resources/views/backend/auth' => resource_path('views/auth'),
+                __DIR__.'/../resources/views/auth' => resource_path('views/auth'),
             ],
             'ovic-auth'
         );

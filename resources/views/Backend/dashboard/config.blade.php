@@ -20,6 +20,8 @@
     <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
     {{-- Ladda style --}}
     <link href="{{ asset('css/plugins/ladda/ladda-themeless.min.css') }}" rel="stylesheet">
+    {{-- Chosen --}}
+    <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
 @endpush
 
 @push( 'scripts' )
@@ -31,8 +33,15 @@
     <script src="{{ asset('js/plugins/ladda/spin.min.js') }}"></script>
     <script src="{{ asset('js/plugins/ladda/ladda.min.js') }}"></script>
     <script src="{{ asset('js/plugins/ladda/ladda.jquery.min.js') }}"></script>
+    {{-- Chosen --}}
+    <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
     {{-- script config --}}
     <script>
+        $( '.chosen-select' ).chosen( {
+            width: "100%",
+            no_results_text: "Oops, nothing found!",
+            disable_search_threshold: 5
+        } );
         $( document ).on( 'click', 'button.action-config', function () {
             let button = $( this ),
                 action = button.data( 'action' ),
@@ -81,6 +90,28 @@
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">
+                            Site Title
+                        </label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" name="title" value="{{ config('app.name') }}">
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">
+                            Timezone
+                        </label>
+                        <div class="col-sm-10">
+                            <select class="form-control chosen-select" name="timezone">
+                                {{ ovic_timezone_choice( config('app.timezone') ) }}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">
                             Thư viện
                             <br>
                             <small class="text-navy">Cập nhật thư viện assets.</small>
@@ -108,6 +139,15 @@
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
+
+                    <div class="form-group submit row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary action-config" data-action="save-change" type="button">
+                                <i class="fa fa-save"></i>
+                                Save change
+                            </button>
+                        </div>
+                    </div>
 
                 </form>
             </div>

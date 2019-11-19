@@ -25,12 +25,16 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view(name_blade('Backend.dashboard.app'));
+        return view(
+            name_blade('Backend.dashboard.app')
+        );
     }
 
     public function config()
     {
-        return view(name_blade('Backend.dashboard.config'));
+        return view(
+            name_blade('Backend.dashboard.config')
+        );
     }
 
     public function update_assets( Request $request )

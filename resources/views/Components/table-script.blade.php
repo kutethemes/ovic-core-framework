@@ -160,6 +160,9 @@
     @if( user_can('add', $permission) )
     /* Add Post */
     $.fn.add_new = function ( main_url, data ) {
+
+        let button = $( this );
+
         $.ajax( {
             url: main_url,
             type: 'POST',
@@ -169,6 +172,8 @@
                 'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
             },
             success: function ( response ) {
+
+                button.trigger( 'add_post_success', [ response ] );
 
                 if ( response.status === 200 ) {
 
@@ -192,6 +197,9 @@
                 }
             },
             error: function () {
+
+                button.trigger( 'add_post_error' );
+
                 swal( {
                     type: 'error',
                     title: "Error!",
@@ -206,6 +214,9 @@
     @if( user_can('delete', $permission) )
     /* Remove Post */
     $.fn.remove_post = function ( main_url, data ) {
+
+        let button = $( this );
+
         swal( {
             title: "Bạn có chắc muốn xóa \"" + data.name + "\"?",
             text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
@@ -226,6 +237,8 @@
                     },
                     success: function ( response ) {
 
+                        button.trigger( 'remove_post_success', [ response ] );
+
                         if ( response.status === 'success' ) {
                             OvicTable.ajax.reload( null, false );
                         }
@@ -238,6 +251,9 @@
                         } );
                     },
                     error: function () {
+
+                        button.trigger( 'remove_post_error' );
+
                         swal( {
                             type: 'error',
                             title: "Error!",
@@ -256,7 +272,8 @@
     /* Update Post */
     $.fn.update_post = function ( main_url, data, reload = false ) {
 
-        let tr = $( "#table-posts" ).find( '.row-' + data.id );
+        let button = $( this ),
+            tr = $( "#table-posts" ).find( '.row-' + data.id );
 
         if ( reload ) {
             data.dataTable = true;
@@ -271,6 +288,9 @@
                 'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
             },
             success: function ( response ) {
+
+                button.trigger( 'update_post_success', [ response ] );
+
                 if ( response.status === 200 ) {
 
                     if ( data.dataTable === undefined ) {
@@ -296,6 +316,9 @@
                 }
             },
             error: function () {
+
+                button.trigger( 'update_post_error' );
+
                 swal( {
                     type: 'error',
                     title: "Error!",
@@ -336,6 +359,8 @@
             },
             success: function ( response ) {
 
+                button.trigger( 'update_status_success', [ response ] );
+
                 if ( response.status === 200 ) {
 
                     if ( config.dataTable === undefined ) {
@@ -362,6 +387,9 @@
                 }
             },
             error: function () {
+
+                button.trigger( 'update_status_error' );
+
                 swal( {
                     type: 'error',
                     title: "Error!",

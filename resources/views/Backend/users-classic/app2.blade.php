@@ -255,6 +255,9 @@
 
             return false;
         } );
+        $( document ).on( 'add_post_success', function ( event, response ) {
+            $( '#modal-edit-post' ).modal('hide');
+        } );
         @endif
 
         @if( user_can('edit', $permission) )
@@ -267,6 +270,9 @@
             button.update_post( "users-classic", data, true );
 
             return false;
+        } );
+        $( document ).on( 'update_post_success', function ( event, response ) {
+            $( '#modal-edit-post' ).modal('hide');
         } );
         /* Status */
         $( document ).on( 'click', '#table-posts .status', function () {
