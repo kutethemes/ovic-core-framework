@@ -2,14 +2,20 @@
 
 return [
     'table' => [
-        'roles'  => [
+        'roles'    => [
             'name' => 'roles'
         ],
-        'ucases' => [
+        'ucases'   => [
             'name' => 'ucases'
         ],
-        'donvi' => [
+        'donvi'    => [
             'name' => 'donvi'
+        ],
+        'usermeta' => [
+            'name' => 'usermeta'
+        ],
+        'users'    => [
+            'name' => 'users'
         ],
     ]
 ];

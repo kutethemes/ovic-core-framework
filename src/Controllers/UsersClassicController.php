@@ -11,24 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersClassicController extends Controller
 {
-    private $rules = [
-        'name'        => [ 'required', 'string', 'max:100' ],
-        'email'       => [ 'required', 'string', 'email', 'max:100', 'unique:users,email' ],
-        'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
-        'donvi_id'    => [ 'numeric' ],
-        'status'      => [ 'numeric', 'min:0', 'max:2' ],
-        'donvi_ids.*' => [ 'string', 'integer' ],
-        'role_ids.*'  => [ 'string', 'integer' ],
-    ];
-
-    private $messages = [
-        'name.required'     => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
-        'email.required'    => 'Email là trường bắt buộc tối đa 100 kí tự',
-        'email.email'       => 'Email không đúng định dạng',
-        'password.required' => 'Mật khẩu là trường bắt buộc',
-        'password.min'      => 'Mật khẩu phải chứa ít nhất 8 ký tự',
-        'status.max'        => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
-    ];
+    private $table = '';
 
     /**
      * Create a new controller instance.
@@ -37,7 +20,47 @@ class UsersClassicController extends Controller
      */
     public function __construct()
     {
-        //
+        $this->table = Users::TableName();
+    }
+
+    public function rules( $id = null, $request = null )
+    {
+        $rules = [
+            'name'        => [ 'required', 'string', 'max:100' ],
+            'email'       => [ 'required', 'string', 'email', 'max:100', 'unique:'.$this->table.',email' ],
+            'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
+            'donvi_id'    => [ 'numeric' ],
+            'status'      => [ 'numeric', 'min:0', 'max:2' ],
+            'donvi_ids.*' => [ 'string', 'integer' ],
+            'role_ids.*'  => [ 'string', 'integer' ],
+        ];
+
+        if ( $id != null ) {
+            $rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:'.$this->table.',email,'.$id ];
+            if ( !$request->has('password') ) {
+                $rules['password'] = '';
+            }
+            if ( !$request->has('name') ) {
+                $rules['name'] = '';
+            }
+            if ( !$request->has('email') ) {
+                $rules['email'] = '';
+            }
+        }
+
+        return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required'     => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
+            'email.required'    => 'Email là trường bắt buộc tối đa 100 kí tự',
+            'email.email'       => 'Email không đúng định dạng',
+            'password.required' => 'Mật khẩu là trường bắt buộc',
+            'password.min'      => 'Mật khẩu phải chứa ít nhất 8 ký tự',
+            'status.max'        => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
+        ];
     }
 
     /**
@@ -207,7 +230,7 @@ class UsersClassicController extends Controller
         }
 
         $dataTable = [];
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
+        $validator = Validator::make($request->all(), $this->rules(), $this->messages());
 
         if ( $validator->passes() ) {
             $data = $request->toArray();
@@ -292,18 +315,8 @@ class UsersClassicController extends Controller
                 'data'    => [],
             ]);
         }
-        $dataTable            = [];
-        $this->rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:users,email,'.$id ];
-        if ( !$request->has('password') ) {
-            $this->rules['password'] = '';
-        }
-        if ( !$request->has('name') ) {
-            $this->rules['name'] = '';
-        }
-        if ( !$request->has('email') ) {
-            $this->rules['email'] = '';
-        }
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
+        $dataTable = [];
+        $validator = Validator::make($request->all(), $this->rules($id, $request), $this->messages());
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
         if ( Users::find($id)->status == 3 ) {

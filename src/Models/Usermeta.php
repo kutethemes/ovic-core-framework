@@ -12,6 +12,14 @@ class Usermeta extends Eloquent
 	 * @var string
 	 */
 	protected $table = 'usermeta';
+
+    public function __construct( array $attributes = [] )
+    {
+        $this->table = config('ovic.table.usermeta.name', 'usermeta');
+
+        parent::__construct($attributes);
+    }
+
 	/**
 	 * The primary key for the model.
 	 *

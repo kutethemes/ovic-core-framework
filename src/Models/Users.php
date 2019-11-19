@@ -14,6 +14,13 @@ class Users extends User
      */
     protected $table = 'users';
 
+    public function __construct( array $attributes = [] )
+    {
+        $this->table = config('ovic.table.users.name', 'users');
+
+        parent::__construct($attributes);
+    }
+
     public function scopehasTable( $query )
     {
         if ( Schema::hasTable($this->table) ) {
