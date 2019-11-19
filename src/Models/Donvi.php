@@ -14,6 +14,13 @@ class Donvi extends Eloquent
      */
     protected $table = 'donvi';
 
+    public function __construct( array $attributes = [] )
+    {
+        $this->table = config('ovic.table.donvi.name', 'donvi');
+
+        parent::__construct($attributes);
+    }
+
     public function scopehasTable( $query )
     {
         if ( Schema::hasTable($this->table) ) {

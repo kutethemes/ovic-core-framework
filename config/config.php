@@ -8,5 +8,8 @@ return [
         'ucases' => [
             'name' => 'ucases'
         ],
+        'donvi' => [
+            'name' => 'donvi'
+        ],
     ]
 ];
