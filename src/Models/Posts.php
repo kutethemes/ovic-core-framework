@@ -5,6 +5,7 @@ namespace Ovic\Framework;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class Posts extends Eloquent
 {
@@ -102,6 +103,9 @@ class Posts extends Eloquent
             Postmeta::where('post_id', $model->$key)->delete();
             if ( $model->delete() ) {
                 $deleted[] = $model->$key;
+                if ( $model->post_type = 'attachment' ) {
+                    Storage::delete("/uploads/{$model->name}");
+                }
                 $count++;
             }
         }
