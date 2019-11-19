@@ -18,7 +18,7 @@ class CreateRolesTable extends Migration
                 $table->bigIncrements('id');
                 $table->string('name', 100)->unique();
                 $table->string('title', 100);
-                $table->text('description');
+                $table->text('description')->nullable();
                 $table->text('ucase_ids')->nullable();
                 $table->integer('ordering')->default(99);
                 $table->tinyInteger('status')->default(1);

@@ -25,11 +25,10 @@ class RolesController extends Controller
     public function rules( $id = null, $request = null )
     {
         $rules = [
-            'name'        => [ 'required', 'string', 'max:100', 'unique:'.$this->table.',name' ],
-            'title'       => [ 'required', 'string', 'max:100' ],
-            'description' => [ 'string' ],
-            'ordering'    => [ 'numeric', 'min:0' ],
-            'status'      => [ 'numeric', 'min:0', 'max:1' ],
+            'name'     => [ 'required', 'string', 'max:100', 'unique:'.$this->table.',name' ],
+            'title'    => [ 'required', 'string', 'max:100' ],
+            'ordering' => [ 'numeric', 'min:0' ],
+            'status'   => [ 'numeric', 'min:0', 'max:1' ],
         ];
         if ( $id != null ) {
             $rules['name'] = [ 'required', 'string', 'max:100', 'unique:'.$this->table.',name,'.$id ];
@@ -49,7 +48,6 @@ class RolesController extends Controller
         return [
             'name.required'  => 'Tên là trường bắt buộc tối đa 100 kí tự',
             'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
-            'description'    => 'Mô tả chỉ nhận định dạng chuỗi',
             'ordering.min'   => 'Order nhận giá trị số lớn hơn 0',
             'status.max'     => 'Trạng thái chấp nhận 2 ký tự số 0 và 1',
         ];
@@ -116,10 +114,8 @@ class RolesController extends Controller
                 ->orderBy('ordering', 'asc')
                 ->get()
                 ->toArray();
-
-            $totalFiltered = count($roles);
         } else {
-            $roles = Roles::where($sorting)
+            $roles = Roles::where($args)
                 ->where(
                     function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
