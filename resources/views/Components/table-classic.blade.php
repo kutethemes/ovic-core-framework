@@ -137,6 +137,10 @@
             width: 100% !important;
         }
 
+        .dataTables_scrollHeadInner {
+            width: 100% !important;
+        }
+
         .head-table > * {
             margin-bottom: 15px;
         }
@@ -194,12 +198,26 @@
             flex: inherit;
         }
 
+        .table-filter input {
+            height: 35px;
+        }
+
+        .table-filter input,
         .dataTables_length select,
         .table-filter .btn.btn-white,
         .head-table .btn-group > a.btn.btn-default,
         .table-filter .chosen-container-single .chosen-single {
             border-radius: 5px;
             border-color: #aaa;
+        }
+
+        .table-filter .input-control label {
+            vertical-align: bottom;
+            margin-bottom: 0;
+        }
+
+        .table-filter .form-group button {
+            vertical-align: bottom;
         }
 
         .dataTables_length,
