@@ -27,7 +27,7 @@ class UsersClassicController extends Controller
     {
         $rules = [
             'name'        => [ 'required', 'string', 'max:100' ],
-            'email'       => [ 'required', 'string', 'email', 'max:100', 'unique:'.$this->table.',email' ],
+            'email'       => [ 'required', 'string', 'email', 'max:100', 'unique:' . $this->table . ',email' ],
             'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
             'donvi_id'    => [ 'numeric' ],
             'status'      => [ 'numeric', 'min:0', 'max:2' ],
@@ -36,7 +36,7 @@ class UsersClassicController extends Controller
         ];
 
         if ( $id != null ) {
-            $rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:'.$this->table.',email,'.$id ];
+            $rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:' . $this->table . ',email,' . $id ];
             if ( !$request->has('password') ) {
                 $rules['password'] = '';
             }
@@ -136,16 +136,9 @@ class UsersClassicController extends Controller
 
         /* filter */
         $filter = $request->input('filter');
-        $donvi  = $request->input('columns.2.search.value');
 
-        if ( $donvi != '' ) {
-            $args = [
-                [ 'donvi_id', '=', $donvi ],
-            ];
-        } elseif ( $filter != '' && !empty($search) ) {
-            $args = [
-                [ 'donvi_id', '=', $filter ],
-            ];
+        if ( !empty($filter['donvi_id']) ) {
+            $args[] = [ 'donvi_id', '=', $filter['donvi_id'] ];
         }
 
         if ( empty($search) ) {
@@ -391,7 +384,7 @@ class UsersClassicController extends Controller
             return response()->json([
                 'status'  => 'success',
                 'title'   => 'Đã xóa!',
-                'message' => 'Đã xóa '.$count.' người dùng!',
+                'message' => 'Đã xóa ' . $count . ' người dùng!',
             ]);
         }
         return response()->json([

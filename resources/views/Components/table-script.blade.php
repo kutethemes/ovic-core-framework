@@ -53,18 +53,13 @@
                 },
                 data: function ( data ) {
                     let sorting_value = '',
-                        filter_value = '',
-                        button = $( '.btn-group.sorting .btn-primary' ),
-                        filter = $( '.table-filter .select' );
+                        button = $( '.btn-group.sorting .btn-primary' );
 
                     if ( button.length ) {
                         sorting_value = button.val();
                     }
-                    if ( filter.length ) {
-                        filter_value = filter.val();
-                    }
                     data.sorting = sorting_value;
-                    data.filter = filter_value;
+                    data.filter = $( '.table-filter' ).serializeObject();
                 },
                 error: function () {
                     swal( {
@@ -89,12 +84,7 @@
     };
     /* lọc bảng */
     $( document ).on( 'click', '.table-filter button', function () {
-        let button = $( this ),
-            wrapper = button.closest( '.table-filter' ),
-            select = wrapper.find( 'select' ),
-            value = select.val();
-
-        OvicTable.column( 2 ).search( value ).draw();
+        OvicTable.ajax.reload( null, false );
     } );
     /* sắp xếp bảng */
     $( document ).on( 'click', '.btn-group.sorting button', function () {

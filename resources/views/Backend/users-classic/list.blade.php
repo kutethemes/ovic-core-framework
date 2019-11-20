@@ -10,10 +10,10 @@
 @endphp
 
 <div class="head-group">
-    <div class="table-filter">
+    <form class="table-filter">
         <div class="form-group filter-select">
             <div class="input-control">
-                <select class="chosen-select">
+                <select class="chosen-select" name="donvi_id">
                     <option value="">== Lọc theo đơn vị ==</option>
                     @if( !empty( $donvis) )
                         @foreach ( $donvis as $donvi )
@@ -26,7 +26,7 @@
                 Lọc
             </button>
         </div>
-    </div>
+    </form>
 </div>
 <div class="ibox-content">
     <div class="clients-list">

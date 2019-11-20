@@ -164,7 +164,8 @@
         $( '.chosen-select' ).chosen( {
             width: "100%",
             no_results_text: "Oops, nothing found!",
-            disable_search_threshold: 5
+            disable_search_threshold: 5,
+            allow_single_deselect: true
         } );
         $( document ).on( 'click', 'button.edit-field', function () {
             let group = $( this ).closest( '.input-group' );
