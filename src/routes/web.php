@@ -69,7 +69,7 @@ Route::group(
         Route::get('dump-autoload', 'Ovic\Framework\DashboardController@dump_autoload')->name('dump.autoload');
 
         /* System config */
-        Route::get('config', 'Ovic\Framework\DashboardController@config')->name('config');
+        Route::get('configs', 'Ovic\Framework\DashboardController@configs')->name('configs');
 
         /* Dashboard Route */
         Route::get('dashboard', 'Ovic\Framework\DashboardController@index')->name('dashboard');

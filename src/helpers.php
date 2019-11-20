@@ -111,7 +111,7 @@ function button_set( $button, $permission, $attr = [] )
                 'text'  => $attr['text'],
                 'type'  => $attr['type'],
                 'icon'  => $attr['icon'],
-                'class' => $attr['class'].$class,
+                'class' => $attr['class'] . $class,
             ]);
     }
 }
@@ -403,12 +403,12 @@ function size_format( $bytes, $decimals = 0 )
     );
 
     if ( 0 === $bytes ) {
-        return number_format_i18n(0, $decimals).' B';
+        return number_format_i18n(0, $decimals) . ' B';
     }
 
     foreach ( $quant as $unit => $mag ) {
         if ( doubleval($bytes) >= $mag ) {
-            return number_format_i18n($bytes / $mag, $decimals).' '.$unit;
+            return number_format_i18n($bytes / $mag, $decimals) . ' ' . $unit;
         }
     }
 
@@ -615,7 +615,7 @@ function ovic_timezone_choice( $selected_zone, $locale = null )
             // Continent optgroup
             if ( !isset($zonen[$key - 1]) || $zonen[$key - 1]['continent'] !== $zone['continent'] ) {
                 $label       = $zone['t_continent'];
-                $structure[] = '<optgroup label="'.$label.'">';
+                $structure[] = '<optgroup label="' . $label . '">';
             }
 
             // Add the city to the value
@@ -625,7 +625,7 @@ function ovic_timezone_choice( $selected_zone, $locale = null )
             if ( !empty($zone['subcity']) ) {
                 // Add the subcity to the value
                 $value[] = $zone['subcity'];
-                $display .= ' - '.$zone['t_subcity'];
+                $display .= ' - ' . $zone['t_subcity'];
             }
         }
 
@@ -635,7 +635,7 @@ function ovic_timezone_choice( $selected_zone, $locale = null )
         if ( $value === $selected_zone ) {
             $selected = 'selected="selected" ';
         }
-        $structure[] = '<option '.$selected.'value="'.$value.'">'.$display.'</option>';
+        $structure[] = '<option ' . $selected . 'value="' . $value . '">' . $display . '</option>';
 
         // Close continent optgroup
         if ( !empty($zone['city']) && ( !isset($zonen[$key + 1]) || ( isset($zonen[$key + 1]) && $zonen[$key + 1]['continent'] !== $zone['continent'] ) ) ) {
@@ -649,7 +649,7 @@ function ovic_timezone_choice( $selected_zone, $locale = null )
     if ( 'UTC' === $selected_zone ) {
         $selected = 'selected="selected" ';
     }
-    $structure[] = '<option '.$selected.'value="UTC">UTC</option>';
+    $structure[] = '<option ' . $selected . 'value="UTC">UTC</option>';
     $structure[] = '</optgroup>';
 
     // Do manual UTC offsets
@@ -713,23 +713,91 @@ function ovic_timezone_choice( $selected_zone, $locale = null )
     );
     foreach ( $offset_range as $offset ) {
         if ( 0 <= $offset ) {
-            $offset_name = '+'.$offset;
+            $offset_name = '+' . $offset;
         } else {
             $offset_name = (string) $offset;
         }
 
         $offset_value = $offset_name;
         $offset_name  = str_replace(array( '.25', '.5', '.75' ), array( ':15', ':30', ':45' ), $offset_name);
-        $offset_name  = 'UTC'.$offset_name;
-        $offset_value = 'UTC'.$offset_value;
+        $offset_name  = 'UTC' . $offset_name;
+        $offset_value = 'UTC' . $offset_value;
         $selected     = '';
         if ( $offset_value === $selected_zone ) {
             $selected = 'selected="selected" ';
         }
-        $structure[] = '<option '.$selected.'value="'.$offset_value.'">'.$offset_name.'</option>';
+        $structure[] = '<option ' . $selected . 'value="' . $offset_value . '">' . $offset_name . '</option>';
 
     }
     $structure[] = '</optgroup>';
 
     echo join("\n", $structure);
+}
+
+/**
+ * @uses : https://laravel.com/docs/master/collections#method-groupby
+ * @atts['type']: dropdown, list, group
+ * @example:
+ *  _menu_tree( $donvi, ['title' => 'tendonvi', 'type' => 'group','groupBy' => 1] )
+ *
+ * */
+function _menu_tree( $resource, $atts, $parent_id = 0, $level = 0 )
+{
+    $atts       = ovic_parse_args($atts, [
+        'id'      => 'id',
+        'title'   => 'title',
+        'type'    => 'list',
+        'groupBy' => 0,
+    ]);
+    $html       = '';
+    $before     = '';
+    $after      = '';
+    $sub_before = '';
+    $sub_after  = '';
+    foreach ( $resource[$parent_id] as $parent ) {
+        $class = '';
+        $title = $parent[$atts['title']];
+        switch ( $atts['type'] ) {
+
+            case 'list':
+
+                if ( isset($resource[$parent[$atts['id']]]) ) {
+                    $class = ' has-children';
+                }
+                $before     = "<li id='menu-{$parent[$atts['id']]}' class='menu-item{$class}'>";
+                $after      = "</li>";
+                $sub_before = "<ul class='sub-menu'>";
+                $sub_after  = "</ul>";
+
+                break;
+
+            case 'dropdown':
+
+                $title = str_repeat('-', $level) . " {$title}";
+                $title = "<option value='{$parent[$atts['id']]}'>{$title}</option>";
+
+                break;
+
+            case 'group':
+
+                if ( $level <= $atts['groupBy'] ) {
+                    $before = "<optgroup label='{$title}'>";
+                    $after  = "</optgroup>";
+                }
+
+                $title = "<option value='{$parent[$atts['id']]}'>{$title}</option>";
+
+                break;
+        }
+        $html .= $before;
+        $html .= $title;
+        if ( isset($resource[$parent[$atts['id']]]) ) {
+            $html .= $sub_before;
+            $html .= _menu_tree($resource, $atts, $parent[$atts['id']], $level + 1);
+            $html .= $sub_after;
+        }
+        $html .= $after;
+    }
+
+    return $html;
 }

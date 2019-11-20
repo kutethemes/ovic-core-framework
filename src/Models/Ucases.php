@@ -137,12 +137,13 @@ class Ucases extends Eloquent
 
                 } elseif ( !empty($ucase->route['controller']) ) {
 
-                    $module = "";
+                    $ClassRoute = $ucase->route['controller'];
+
                     if ( !empty($ucase->route['module']) ) {
-                        $module = "{$ucase->route['module']}::";
+                        $ClassRoute = 'Modules\\'.$ucase->route['module'].'\Http\Controllers\\'.$ClassRoute;
                     }
-                    if ( class_exists("{$module}{$ucase->route['controller']}") ) {
-                        Route::resource("{$ucase->slug}", "{$module}{$ucase->route['controller']}");
+                    if ( class_exists("$ClassRoute") ) {
+                        Route::resource("{$ucase->slug}", "{$ClassRoute}");
                     }
                 }
             }

@@ -13,7 +13,7 @@
     $left_menu  = $primary_menu['left'];
     $config     = [
         'ucases',
-        'config'
+        'configs'
     ];
 @endphp
 <!-- Left Sidebar -->
@@ -106,8 +106,8 @@
                                 </a>
                             </li>
                         @endif
-                        <li @if ( $name == 'config' ) class="active" @endif>
-                            <a href="{{ url('/config') }}">
+                        <li @if ( $name == 'configs' ) class="active" @endif>
+                            <a href="{{ url('/configs') }}">
                                 <i class="fa fa-wrench"></i>
                                 <span class="nav-label">Cài đặt hệ thống</span>
                             </a>

@@ -30,10 +30,10 @@ class DashboardController extends Controller
         );
     }
 
-    public function config()
+    public function configs()
     {
         return view(
-            name_blade('Backend.dashboard.config')
+            name_blade('Backend.dashboard.configs')
         );
     }
 
