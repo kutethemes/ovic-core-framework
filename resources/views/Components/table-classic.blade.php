@@ -134,6 +134,7 @@
 
         .dataTables_scrollHead .table {
             border-top: 1px solid #aaa;
+            width: 100% !important;
         }
 
         .head-table > * {

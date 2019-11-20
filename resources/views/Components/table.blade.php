@@ -145,6 +145,11 @@
             width: 100%;
         }
 
+        .dataTables_scrollHeadInner,
+        .dataTables_scrollHead .table {
+            width: 100% !important;
+        }
+
         @media (min-width: 1200px) {
             .head-table > * {
                 display: inline-block;
