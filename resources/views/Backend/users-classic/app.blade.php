@@ -33,7 +33,6 @@
             margin: 5px 0 3px 5px;
         }
 
-        UsersClassicController
         .field-password .input-group-append {
             display: none;
         }
