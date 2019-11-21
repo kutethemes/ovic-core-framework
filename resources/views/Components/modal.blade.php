@@ -10,26 +10,28 @@
 @endphp
 
 @php
-    $footer = true;
+    $footer     = true;
+    $attribute  = !empty( $attribute ) ? $attribute : [];
     if ( empty( $text_close ) && empty( $text_save ) ){
         $footer = false;
     }
-    $attribute  = !empty( $attribute ) ? $attribute : [];
 @endphp
 
-<div id="{{ $id }}" class="modal inmodal fade animated {{ !$footer ? ' no-footer' : '' }}"
+<div id="{{ $id }}" class="modal inmodal fade animated{{ !$footer ? ' no-footer' : '' }}{{ empty( $title ) ? ' no-header' : '' }}"
      data-in="{{ !empty( $animated_in ) ? $animated_in : 'slideInLeft' }}"
      data-out="{{ !empty( $animated_out ) ? $animated_out : 'slideOutLeft' }}"
      tabindex="-1"
      role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{ !empty( $title ) ? $title : 'Modal title' }}</h5>
-                <button class="btn btn-danger close-modal" type="button" data-dismiss="modal" aria-label="Close">
-                    &times;
-                </button>
-            </div>
+            @if ( !empty( $title ) )
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ !empty( $title ) ? $title : 'Modal title' }}</h5>
+                    <button class="btn btn-danger close-modal" type="button" data-dismiss="modal" aria-label="Close">
+                        &times;
+                    </button>
+                </div>
+            @endif
 
             <div class="modal-body full-height-content">
 

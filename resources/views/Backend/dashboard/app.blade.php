@@ -12,3 +12,7 @@
 @extends( name_blade('Backend.app') )
 
 @section( 'title', 'Dashboard' )
+
+@section( 'content' )
+
+@endsection

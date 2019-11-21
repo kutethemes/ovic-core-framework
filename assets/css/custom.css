@@ -76,10 +76,12 @@ body.full-height-layout #app {
     overflow: hidden;
 }
 
+.modal.no-header .modal-content,
 .modal.no-footer .modal-content {
     height: 100vh;
 }
 
+.modal.no-header .modal-body,
 .modal.no-footer .modal-body {
     height: calc(100% - 70px);
 }
