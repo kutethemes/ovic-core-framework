@@ -141,6 +141,10 @@
             font-size: 0.9rem;
         }
 
+        .chosen-container.chosen-container-multi .chosen-choices {
+            padding: 0 10px;
+        }
+
         .form-group label.error {
             width: 100%;
         }

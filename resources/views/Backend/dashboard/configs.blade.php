@@ -37,11 +37,6 @@
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
     {{-- script config --}}
     <script>
-        $( '.chosen-select' ).chosen( {
-            width: "100%",
-            no_results_text: "Oops, nothing found!",
-            disable_search_threshold: 5
-        } );
         $( document ).on( 'click', 'button.action-config', function () {
             let button = $( this ),
                 action = button.data( 'action' ),

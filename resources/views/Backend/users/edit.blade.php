@@ -89,16 +89,21 @@
         <div class="hr-line-dashed field-password-confirmation"></div>
 
         @if( !empty( $donvis) )
-            <div class="form-group row">
+            <div class="form-group row donvi">
                 <label class="col-sm-3 col-form-label">
                     Đơn vị
                 </label>
                 <div class="col-sm-9">
                     <select name="donvi_id" class="form-control chosen-select"
                             data-placeholder="Chọn đơn vị">
-                        @foreach ( $donvis as $donvi )
-                            <option value="{{ $donvi->id }}">{{ $donvi->tendonvi }}</option>
-                        @endforeach
+                        <option value=""></option>
+                        {!!
+                            _menu_tree( $donvis, [
+                               'title'  =>  'tendonvi',
+                               'type'   =>  'dropdown',
+                               'groupBy'=>  1,
+                            ]);
+                        !!}
                     </select>
                 </div>
             </div>
@@ -113,7 +118,7 @@
                 <div class="col-sm-9">
                     <select name="role_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn nhóm quyền">
-                        <option value="0">Chọn nhóm quyền</option>
+                        <option value=""></option>
                         @foreach ( $roles as $role )
                             <option value="{{ $role->id }}">{{ $role->title }}</option>
                         @endforeach
@@ -124,13 +129,14 @@
         @endif
 
         @if( !empty( $donvis ) )
-            <div class="form-group row d-none">
+            <div class="form-group row phamvi">
                 <label class="col-sm-3 col-form-label">
                     Phạm vi quản lý
                 </label>
                 <div class="col-sm-9">
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
+                        <option value=""></option>
                     </select>
                 </div>
             </div>

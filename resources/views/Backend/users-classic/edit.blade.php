@@ -85,16 +85,21 @@
         </div>
 
         @if( !empty( $donvis) )
-            <div class="form-group">
+            <div class="form-group donvi">
                 <label>
                     Đơn vị
                 </label>
                 <div>
                     <select name="donvi_id" class="form-control chosen-select"
                             data-placeholder="Chọn đơn vị">
-                        @foreach ( $donvis as $donvi )
-                            <option value="{{ $donvi->id }}">{{ $donvi->tendonvi }}</option>
-                        @endforeach
+                        <option value=""></option>
+                        {!!
+                            _menu_tree( $donvis, [
+                               'title'  =>  'tendonvi',
+                               'type'   =>  'dropdown',
+                               'groupBy'=>  1,
+                            ]);
+                        !!}
                     </select>
                 </div>
             </div>
@@ -109,7 +114,7 @@
                 <div>
                     <select name="role_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn nhóm quyền">
-                        <option value="0">Chọn nhóm quyền</option>
+                        <option value=""></option>
                         @foreach ( $roles as $role )
                             <option value="{{ $role->id }}">{{ $role->title }}</option>
                         @endforeach
@@ -119,13 +124,14 @@
         @endif
 
         @if( !empty( $donvis ) )
-            <div class="form-group">
+            <div class="form-group phamvi">
                 <label>
                     Phạm vi quản lý
                 </label>
                 <div>
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
+                        <option value=""></option>
                     </select>
                 </div>
             </div>

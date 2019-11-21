@@ -27,7 +27,7 @@ class UsersController extends Controller
     {
         $rules = [
             'name'        => [ 'required', 'string', 'max:100' ],
-            'email'       => [ 'required', 'string', 'email', 'max:100', 'unique:'.$this->table.',email' ],
+            'email'       => [ 'required', 'string', 'email', 'max:100', 'unique:' . $this->table . ',email' ],
             'password'    => [ 'required', 'string', 'min:8', 'confirmed' ],
             'donvi_id'    => [ 'numeric' ],
             'status'      => [ 'numeric', 'min:0', 'max:2' ],
@@ -36,7 +36,7 @@ class UsersController extends Controller
         ];
 
         if ( $id != null ) {
-            $rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:'.$this->table.',email,'.$id ];
+            $rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:' . $this->table . ',email,' . $id ];
             if ( !$request->has('password') ) {
                 $rules['password'] = '';
             }
@@ -80,7 +80,10 @@ class UsersController extends Controller
         $donvis = [];
         $ucases = [];
         if ( Donvi::hasTable() ) {
-            $donvis = Donvi::all([ 'id', 'tendonvi' ]);
+            $donvis = Donvi::all([ 'id', 'tendonvi', 'parent_id' ])
+                ->collect()
+                ->groupBy('parent_id')
+                ->toArray();
         }
         if ( Roles::hasTable() ) {
             $roles = Roles::all([ 'id', 'title' ]);
@@ -377,7 +380,7 @@ class UsersController extends Controller
             return response()->json([
                 'status'  => 'success',
                 'title'   => 'Đã xóa!',
-                'message' => 'Đã xóa '.$count.' người dùng!',
+                'message' => 'Đã xóa ' . $count . ' người dùng!',
             ]);
         }
         return response()->json([

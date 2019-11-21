@@ -46,6 +46,10 @@
     <script src="{{ asset('js/plugins/validate/jquery.validate.min.js') }}"></script>
     {{-- script users --}}
     <script>
+        var donvidata = JSON.parse(
+            JSON.stringify( @json( $donvis ) )
+        );
+
         $( "#edit-post" ).validate( {
             errorPlacement: function ( error, element ) {
                 element.before( error );
@@ -55,6 +59,26 @@
                     equalTo: "#password"
                 }
             }
+        } );
+        $( '.chosen-select' ).chosen( {
+            width: "100%",
+            no_results_text: "Không tìm thấy kết quả!",
+            disable_search_threshold: 5,
+            allow_single_deselect: true
+        } );
+        $( '.form-group.donvi .chosen-select' ).chosen().change( function ( event, data ) {
+            let html = '',
+                donvi = $( this ),
+                phamvi = $( '.form-group.phamvi .chosen-select' );
+
+            phamvi.html( '' ).trigger( 'chosen:updated' );
+            if ( data !== undefined ) {
+                $.each( donvidata[data.selected], function ( index, value ) {
+                    html += '<option value="' + value.id + '">' + value.tendonvi + '</option>';
+                } );
+                phamvi.html( html ).trigger( 'chosen:updated' );
+            }
+
         } );
         $( '#table-posts' ).init_dataTable( "users-classic", {
             dom: '<"head-table"Bif>rt<"footer-table"lp><"clear">',
@@ -160,12 +184,6 @@
                     }
                 },
             ]
-        } );
-        $( '.chosen-select' ).chosen( {
-            width: "100%",
-            no_results_text: "Oops, nothing found!",
-            disable_search_threshold: 5,
-            allow_single_deselect: true
         } );
         $( document ).on( 'click', 'button.edit-field', function () {
             let group = $( this ).closest( '.input-group' );

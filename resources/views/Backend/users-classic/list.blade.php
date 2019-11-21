@@ -13,12 +13,16 @@
     <form class="table-filter">
         <div class="form-group filter-select">
             <div class="input-control">
-                <select class="chosen-select" name="donvi_id">
-                    <option value="">== Lọc theo đơn vị ==</option>
+                <select class="chosen-select" name="donvi_id" data-placeholder="== Lọc theo đơn vị ==">
+                    <option value=""></option>
                     @if( !empty( $donvis) )
-                        @foreach ( $donvis as $donvi )
-                            <option value="{{ $donvi->id }}">{{ $donvi->tendonvi }}</option>
-                        @endforeach
+                        {!!
+                            _menu_tree( $donvis, [
+                               'title'  =>  'tendonvi',
+                               'type'   =>  'dropdown',
+                               'groupBy'=>  1,
+                            ]);
+                        !!}
                     @endif
                 </select>
             </div>
