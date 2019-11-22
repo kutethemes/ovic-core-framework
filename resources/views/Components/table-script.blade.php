@@ -35,7 +35,7 @@
         };
     }
     /* Init OvicTable */
-    $.fn.init_dataTable = function ( main_url, config ) {
+    $.fn.init_dataTable = function ( main_url, config, prefix = 'create' ) {
         let table = $( this ),
             options = {};
 
@@ -45,7 +45,7 @@
             responsive: true,
             dom: '<"head-table"fi>rt<"footer-table"p><"clear">',
             ajax: {
-                url: main_url + "/create",
+                url: main_url + "/" + prefix,
                 dataType: "json",
                 type: "GET",
                 headers: {
