@@ -9,8 +9,8 @@
 }
 
 .navbar-default .nav-second-level li a {
-    padding: 6px 10px 6px 10px;
-    padding-left: 20px;
+    padding: 6px 10px 6px 10px !important;
+    padding-left: 20px !important;
 }
 
 .navbar-default .nav > li.active {
