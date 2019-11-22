@@ -122,7 +122,10 @@
        'text_close'    => 'Đóng',
        'text_save'     => 'Chọn ảnh',
        'content'       => name_blade('Backend.media.data'),
-       'attribute'     => ['multi' => false],
+       'attribute'     => [
+            'multi_file'    => $multi_file,
+            'multi'         => false
+       ],
     ])
 
 @endif

@@ -14,6 +14,7 @@
     $offset         = ( isset( $offset ) ) ? $offset : 0;
     $inputOffset    = $limit;
     $check          = ( isset( $multi ) ) ? $multi : true;
+    $multiFile      = ( isset( $multi_file ) ) ? $multi_file : false;
 @endphp
 
 @push( 'styles' )
@@ -166,18 +167,20 @@
     <script src="{{ asset('js/plugins/jsTree/jstree.min.js') }}"></script>
     {{-- script media --}}
     <script>
-        var treeFolder = function ( directories, reload = false ) {
-            if ( reload ) {
-                $( '#mytree' ).jstree( true ).settings.core.data = JSON.parse( directories );
-                $( '#mytree' ).jstree( true ).refresh();
-            } else {
-                $( '#mytree' ).jstree( {
-                    "core": {
-                        "data": JSON.parse( directories )
-                    },
-                } );
-            }
-        };
+        var treeEl = $( '#mytree' ),
+            dropzonePreviews = $( '#dropzone-previews' ),
+            treeFolder = function ( directories, reload = false ) {
+                if ( reload ) {
+                    treeEl.jstree( true ).settings.core.data = JSON.parse( directories );
+                    treeEl.jstree( true ).refresh();
+                } else {
+                    treeEl.jstree( {
+                        "core": {
+                            "data": JSON.parse( directories )
+                        },
+                    } );
+                }
+            };
         if ( !$.fn.serializeObject ) {
             $.fn.serializeObject = function () {
                 var o = {};
@@ -299,7 +302,7 @@
         } );
         $( document ).on( 'click', '.btn-del-select', function () {
             let button = $( this ),
-                content = $( '#dropzone-previews' ),
+                content = dropzonePreviews,
                 input = content.find( 'input[name="images"]' ),
                 ids = input.val();
 
@@ -387,7 +390,7 @@
             $( 'input[name="sort"]' ).val( 'all' );
             $( 'input[name="offset"]' ).val( "{{ $offset }}" );
             $( 'button[value="all"]' ).addClass( 'active' ).siblings().removeClass( 'active' );
-            $( '#mytree' ).find( 'a' ).removeClass( 'jstree-clicked' );
+            treeEl.find( 'a' ).removeClass( 'jstree-clicked' );
         } );
         /* Lọc kiểu file */
         $( document ).on( 'click', '.file-control', function () {
@@ -439,16 +442,16 @@
         } );
         /* Sắp xếp */
         $( document ).on( 'click', '.onoffswitch-label', function () {
-            $( '#dropzone-previews' ).toggleClass( 'list-style' );
+            dropzonePreviews.toggleClass( 'list-style' );
         } );
         /* Chọn ảnh */
         $( document ).on( 'click', '.checkbox.checkbox-danger input', function () {
             if ( $( this ).is( ':checked' ) ) {
-                $( '#dropzone-previews' ).addClass( 'select-image' );
+                dropzonePreviews.addClass( 'select-image' );
             } else {
-                $( '#dropzone-previews' ).removeClass( 'select-image' );
-                $( '#dropzone-previews' ).find( '.file-box.active' ).removeClass( 'active' );
-                $( '#dropzone-previews' ).find( 'input[name="images"]' ).val( '' ).trigger( 'selected_images' );
+                dropzonePreviews.removeClass( 'select-image' );
+                dropzonePreviews.find( '.file-box.active' ).removeClass( 'active' );
+                dropzonePreviews.find( 'input[name="images"]' ).val( '' ).trigger( 'selected_images' );
             }
         } );
         $( document ).on( 'click', '#dropzone-previews.select-image .file-box', function () {
@@ -563,7 +566,7 @@
 </div>
 <div class="col-lg-9 animated fadeInRight full-height">
     <div class="row normal-scroll-content">
-        <form id="dropzone-previews" class="col-lg-12 @if ( $check == true ) multi @else select-image @endif">
+        <form id="dropzone-previews" class="col-lg-12 @if ( $check == true ) multi @else select-image @endif @if ( $multiFile == true ) multi @endif">
             <input type="hidden" name="images" value="">
             <div class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
