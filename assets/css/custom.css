@@ -73,7 +73,6 @@ body.full-height-layout #app {
     border-radius: 0;
     box-shadow: none;
     display: block;
-    overflow: hidden;
 }
 
 .modal.no-header .modal-content,
