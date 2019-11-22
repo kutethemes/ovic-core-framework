@@ -230,7 +230,7 @@
             } );
 
             return data;
-        }
+        };
         if ( !$.fn.serializeObject ) {
             $.fn.serializeObject = function () {
                 var o = {};
@@ -247,10 +247,10 @@
                 } );
                 return o;
             };
-        };
+        }
         // activate Nestable for list menu
-        $( '#menu-left' ).nestable( { maxDepth: 2 } ).nestable( 'collapseAll' );
-        $( '#menu-top' ).nestable( { maxDepth: 2 }.nestable( 'collapseAll' ) );
+        $( '#menu-left' ).nestable( { maxDepth: 2 } );
+        $( '#menu-top' ).nestable( { maxDepth: 2 } );
         // action Nestable for list menu
         $( '#nestable-menu' ).on( 'click', function ( e ) {
             var target = $( e.target ),
