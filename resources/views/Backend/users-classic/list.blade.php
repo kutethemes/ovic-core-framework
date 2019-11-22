@@ -21,7 +21,7 @@
                                'title'  =>  'tendonvi',
                                'type'   =>  'dropdown',
                                'groupBy'=>  1,
-                            ]);
+                            ], key($donvis) );
                         !!}
                     @endif
                 </select>
