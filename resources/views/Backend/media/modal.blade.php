@@ -123,7 +123,7 @@
        'text_save'     => 'Chọn ảnh',
        'content'       => name_blade('Backend.media.data'),
        'attribute'     => [
-            'multi_file'    => $multi_file,
+            'multi_file'    => !empty($multi_file) ? $multi_file : false,
             'multi'         => false
        ],
     ])
