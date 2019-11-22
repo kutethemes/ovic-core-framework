@@ -137,6 +137,13 @@
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
                         <option value=""></option>
+                        {!!
+                            _menu_tree( $donvis, [
+                               'title'  =>  'tendonvi',
+                               'type'   =>  'dropdown',
+                               'groupBy'=>  1,
+                            ]);
+                        !!}
                     </select>
                 </div>
             </div>

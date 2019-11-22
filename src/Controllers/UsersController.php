@@ -3,7 +3,6 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -224,7 +223,7 @@ class UsersController extends Controller
         if ( $validator->passes() ) {
             $data = $request->toArray();
 
-            $user = new User();
+            $user = new Users();
 
             $user->name      = $data['name'];
             $user->email     = $data['email'];
@@ -326,11 +325,11 @@ class UsersController extends Controller
             if ( !empty($data['password']) ) {
                 $data['password'] = Hash::make($data['password']);
             }
-            if ( !empty($data['role_ids']) ) {
-                $data['role_ids'] = maybe_serialize($data['role_ids']);
+            if ( !empty($data['donvi_id']) ) {
+                $data['role_ids'] = !empty($data['role_ids']) ? maybe_serialize($data['role_ids']) : 0;
             }
-            if ( !empty($data['donvi_ids']) ) {
-                $data['donvi_ids'] = maybe_serialize($data['donvi_ids']);
+            if ( !empty($data['donvi_id']) ) {
+                $data['donvi_ids'] = !empty($data['donvi_ids']) ? maybe_serialize($data['donvi_ids']) : 0;
             }
 
             Users::where('id', $id)->update($data);

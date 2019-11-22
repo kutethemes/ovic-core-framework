@@ -71,14 +71,17 @@
                 donvi = $( this ),
                 phamvi = $( '.form-group.phamvi .chosen-select' );
 
-            phamvi.html( '' ).trigger( 'chosen:updated' );
             if ( data !== undefined ) {
+                phamvi.find( 'option' ).hide();
                 $.each( donvidata[data.selected], function ( index, value ) {
-                    html += '<option value="' + value.id + '">' + value.tendonvi + '</option>';
-                } );
-                phamvi.html( html ).trigger( 'chosen:updated' );
-            }
+                    let option = phamvi.find( 'option[value="' + value.id + '"]' );
 
+                    if ( option.length ) {
+                        option.show();
+                    }
+                } );
+                phamvi.trigger( 'chosen:updated' );
+            }
         } );
         $( '#table-posts' ).init_dataTable( "users-classic", {
             dom: '<"head-table"Bif>rt<"footer-table"lp><"clear">',
@@ -219,12 +222,21 @@
                                 value = value.map( Number );
                             }
 
+                            if ( value == 'donvi_ids' ) {
+                                form.find( '[name="' + index + '"] option' ).show();
+                            }
+
                             form.find( '[name="' + index + '"]' ).val( value ).trigger( 'chosen:updated' );
+
                         } else if ( index === 'password' ) {
+
                             form.find( '[name="' + index + '"]' ).val( value ).attr( 'disabled', 'disabled' ).removeAttr( 'name' ).trigger( 'change' );
                             form.find( '[name="password_confirmation"]' ).removeAttr( 'name' );
+
                         } else {
+
                             form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
+
                         }
                     }
                 } );
