@@ -66,22 +66,21 @@
             disable_search_threshold: 5,
             allow_single_deselect: true
         } );
-        $( '.form-group.donvi .chosen-select' ).chosen().change( function ( event, data ) {
-            let html = '',
-                donvi = $( this ),
-                phamvi = $( '.form-group.phamvi .chosen-select' );
+        $( document ).on( 'chosen:updated', '.form-group.donvi .chosen-select', function () {
+            let data = $( this ).val(),
+                phamvi = $( this ).closest( 'form' ).find( '.form-group.phamvi .chosen-select' );
 
+            phamvi.find( 'option' ).hide();
             if ( data !== undefined ) {
-                phamvi.find( 'option' ).hide();
-                $.each( donvidata[data.selected], function ( index, value ) {
+                $.each( donvidata[data], function ( index, value ) {
                     let option = phamvi.find( 'option[value="' + value.id + '"]' );
 
                     if ( option.length ) {
                         option.show();
                     }
                 } );
-                phamvi.trigger( 'chosen:updated' );
             }
+            phamvi.trigger( 'chosen:updated' );
         } );
         $( '#table-posts' ).init_dataTable( "users", {
             columns: [
@@ -167,10 +166,6 @@
 
                             if ( Array.isArray( value ) ) {
                                 value = value.map( Number );
-                            }
-
-                            if ( value == 'donvi_ids' ) {
-                                form.find( '[name="' + index + '"] option' ).show();
                             }
 
                             form.find( '[name="' + index + '"]' ).val( value ).trigger( 'chosen:updated' );
