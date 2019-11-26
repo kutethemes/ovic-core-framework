@@ -45,10 +45,9 @@
 
             var imageVar = {};
 
-            $( document ).ready( function () {
+            $.fn.ovic_field_image = function () {
 
-                $( '.ovic-field-image' ).each( function () {
-
+                return this.each( function () {
                     var $this = $( this );
 
                     $this.on( 'click', '.ovic-image-add', function ( e ) {
@@ -110,8 +109,12 @@
                         preview.find( 'img' ).attr( 'src', placeholder );
                         $this.find( 'input' ).val( '0' ).trigger( 'change' );
                     } );
+                } )
 
-                } );
+            };
+
+            $( document ).ready( function () {
+                $( '.ovic-field-image' ).ovic_field_image();
             } );
         </script>
     @endpush
