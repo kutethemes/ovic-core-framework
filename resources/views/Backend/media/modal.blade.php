@@ -117,10 +117,10 @@
     @endpush
 
     @include( name_blade('Components.modal'), [
-       'title'         => 'Thư viện',
-       'id'            => 'modal-media',
-       'text_close'    => 'Đóng',
-       'text_save'     => 'Chọn ảnh',
+       'title'         => !empty($title)        ? $title        : 'Thư viện',
+       'id'            => !empty($id)           ? $id           : 'modal-media',
+       'text_close'    => !empty($text_close)   ? $text_close   : 'Đóng',
+       'text_save'     => !empty($text_save)    ? $text_save    : 'Chọn ảnh',
        'content'       => name_blade('Backend.media.data'),
        'attribute'     => [
             'multi_file'    => !empty($multi_file) ? $multi_file : false,
