@@ -66,7 +66,7 @@
             disable_search_threshold: 5,
             allow_single_deselect: true
         } );
-        $( document ).on( 'chosen:updated', '.form-group.donvi .chosen-select', function () {
+        $( document ).on( 'chosen:updated change', '.form-group.donvi .chosen-select', function () {
             let data = $( this ).val(),
                 phamvi = $( this ).closest( 'form' ).find( '.form-group.phamvi .chosen-select' );
 

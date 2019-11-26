@@ -36,6 +36,7 @@
 
         .client-donvi {
             min-width: 250px;
+            width: 100%;
         }
 
         .client-name,
