@@ -63,11 +63,11 @@
             padding: 15px;
         }
 
-        .dataTables_scroll table {
+        .dataTables_scroll table.table {
             margin-bottom: 0;
         }
 
-        .dataTables_scrollHead table thead > tr > th {
+        .dataTables_scrollHead table.table thead > tr > th {
             border: none;
         }
 
@@ -75,7 +75,7 @@
             margin-top: 1rem;
         }
 
-        .clients-list table tr td {
+        .clients-list table.table tr td {
             min-height: 46px;
             word-wrap: break-word;
         }
@@ -89,7 +89,7 @@
             font-size: 0;
         }
 
-        .clients-list table tbody > tr.active {
+        .clients-list table.table tbody > tr.active {
             background-color: #1ab394;
             color: #fff;
         }
@@ -121,16 +121,16 @@
             cursor: pointer;
         }
 
-        .clients-list table thead th,
-        .clients-list table tr td {
+        .clients-list table.table thead th,
+        .clients-list table.table tr td {
             border: 1px solid #aaa;
         }
 
-        .clients-list table thead tr {
+        .clients-list table.table thead tr {
             background-color: #9e9e9e;
         }
 
-        .clients-list table thead tr th {
+        .clients-list table.table thead tr th {
             color: #fff;
             font-weight: normal;
             border-bottom: none;
