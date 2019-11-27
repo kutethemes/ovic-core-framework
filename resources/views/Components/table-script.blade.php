@@ -84,7 +84,9 @@
     };
     /* lọc bảng */
     $( document ).on( 'click', '.table-filter button', function () {
-        OvicTable.ajax.reload( null, false );
+        if ( OvicTable !== null ) {
+            OvicTable.ajax.reload( null, false );
+        }
     } );
     /* sắp xếp bảng */
     $( document ).on( 'click', '.btn-group.sorting button', function () {
@@ -92,12 +94,16 @@
             value = button.val();
 
         if ( !button.hasClass( 'btn-primary' ) ) {
-            OvicTable.column( 1 ).search( value ).draw();
+            if ( OvicTable !== null ) {
+                OvicTable.column( 1 ).search( value ).draw();
+            }
             button.toggleClass( 'btn-primary btn-white' );
             $( '.btn-group.sorting button' ).not( button ).removeClass( 'btn-primary' ).addClass( 'btn-white' );
         } else {
             button.toggleClass( 'btn-primary btn-white' );
-            OvicTable.column( 1 ).search( '' ).draw();
+            if ( OvicTable !== null ) {
+                OvicTable.column( 1 ).search( '' ).draw();
+            }
         }
     } );
     /* chọn item */
@@ -167,7 +173,9 @@
 
                     button.trigger( 'add_post_success', [ response ] );
 
-                    OvicTable.ajax.reload( null, false );
+                    if ( OvicTable !== null ) {
+                        OvicTable.ajax.reload( null, false );
+                    }
 
                     toastr.info( response.message );
                 } else {
@@ -233,7 +241,9 @@
 
                             button.trigger( 'remove_post_success', [ response ] );
 
-                            OvicTable.ajax.reload( null, false );
+                            if ( OvicTable !== null ) {
+                                OvicTable.ajax.reload( null, false );
+                            }
 
                         } else {
 
@@ -291,10 +301,12 @@
 
                     button.trigger( 'update_post_success', [ response ] );
 
-                    if ( data.dataTable === undefined ) {
-                        OvicTable.ajax.reload( null, false );
-                    } else if ( $.isPlainObject( response.data ) ) {
-                        OvicTable.row( tr ).data( response.data );
+                    if ( OvicTable !== null ) {
+                        if ( data.dataTable === undefined ) {
+                            OvicTable.ajax.reload( null, false );
+                        } else if ( $.isPlainObject( response.data ) ) {
+                            OvicTable.row( tr ).data( response.data );
+                        }
                     }
 
                     toastr.info( response.message );
@@ -336,7 +348,7 @@
         let config = {},
             button = $( this ),
             tr = button.closest( 'tr' ),
-            data = OvicTable.row( tr ).data(),
+            data = (OvicTable !== null) ? OvicTable.row( tr ).data() : [],
             message = messageOff;
 
         if ( data.status !== 1 ) {
@@ -365,10 +377,12 @@
 
                     button.trigger( 'update_status_success', [ response ] );
 
-                    if ( config.dataTable === undefined ) {
-                        OvicTable.ajax.reload( null, false );
-                    } else if ( $.isPlainObject( response.data ) ) {
-                        OvicTable.row( tr ).data( response.data );
+                    if ( OvicTable !== null ) {
+                        if ( config.dataTable === undefined ) {
+                            OvicTable.ajax.reload( null, false );
+                        } else if ( $.isPlainObject( response.data ) ) {
+                            OvicTable.row( tr ).data( response.data );
+                        }
                     }
 
                     toastr.info( message );
