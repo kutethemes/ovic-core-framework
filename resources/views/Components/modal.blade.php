@@ -47,12 +47,12 @@
                 <div class="modal-footer">
                     @if( !empty( $text_close ) )
                         <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">
-                            {{ $text_close }}
+                            {!! $text_close !!}
                         </button>
                     @endif
                     @if( !empty( $text_save ) )
                         <button type="button" class="btn btn-primary save-modal">
-                            {{ $text_save }}
+                            {!! $text_save !!}
                         </button>
                     @endif
                 </div>
