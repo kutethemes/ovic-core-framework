@@ -9,10 +9,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-use Ovic\Framework\Ucases;
-
-/* Admin routes */
 Route::group(
     [
         'prefix'     => '',
@@ -25,8 +21,8 @@ Route::group(
         /* Backend routes */
         Route::group([],
             function () {
-                if ( Ucases::hasTable() ) {
-                    Ucases::GetRoute('backend');
+                if ( \Ovic\Framework\Ucases::hasTable() ) {
+                    \Ovic\Framework\Ucases::GetRoute('backend');
                 }
             }
         );
@@ -34,8 +30,8 @@ Route::group(
         /* Frontend routes */
         Route::group([],
             function () {
-                if ( Ucases::hasTable() ) {
-                    Ucases::GetRoute('frontend');
+                if ( \Ovic\Framework\Ucases::hasTable() ) {
+                    \Ovic\Framework\Ucases::GetRoute('frontend');
                 }
             }
         );
@@ -79,8 +75,8 @@ Route::group(
 /* Public routes */
 Route::group([],
     function () {
-        if ( Ucases::hasTable() ) {
-            Ucases::GetRoute('public');
+        if ( \Ovic\Framework\Ucases::hasTable() ) {
+            \Ovic\Framework\Ucases::GetRoute('public');
         }
 
         /* Images */
