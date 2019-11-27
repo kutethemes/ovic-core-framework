@@ -57,8 +57,16 @@
             z-index: 2;
         }
 
-        .file-box:hover .btn-del-file {
-            display: inline-block;
+        @media (min-width: 1024px) {
+            .file-box:hover .btn-del-file {
+                display: inline-block;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .file-box .btn-del-file {
+                display: inline-block;
+            }
         }
 
         .file-name .name {
