@@ -67,10 +67,6 @@
             margin-bottom: 0;
         }
 
-        .dataTables_scrollHead table.table thead > tr > th {
-            border: none;
-        }
-
         .footer-table {
             margin-top: 1rem;
         }
@@ -124,6 +120,10 @@
         .clients-list table.table thead th,
         .clients-list table.table tr td {
             border: 1px solid #aaa;
+        }
+
+        .clients-list table.table thead th {
+            border-bottom: none;
         }
 
         .clients-list table.table thead tr {
