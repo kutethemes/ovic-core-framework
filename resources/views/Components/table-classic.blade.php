@@ -121,16 +121,16 @@
             cursor: pointer;
         }
 
-        .clients-list table.dataTable thead th,
-        .clients-list table.dataTable tr td {
+        .clients-list table thead th,
+        .clients-list table tr td {
             border: 1px solid #aaa;
         }
 
-        .clients-list table.dataTable thead tr {
+        .clients-list table thead tr {
             background-color: #9e9e9e;
         }
 
-        .clients-list table.dataTable thead tr th {
+        .clients-list table thead tr th {
             color: #fff;
             font-weight: normal;
             border-bottom: none;
