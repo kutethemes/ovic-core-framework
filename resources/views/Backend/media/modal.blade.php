@@ -34,6 +34,36 @@
         .ovic-field-image img:hover {
             border-color: #23c6c8;
         }
+
+        @media (max-width: 991px) {
+            #modal-media .content-previews .file-box {
+                width: calc(33% - 5px);
+            }
+        }
+
+        @media (max-width: 767px) {
+            #modal-media .content-previews .file-box {
+                width: calc(50% - 5px);
+            }
+        }
+
+        @media (max-width: 575px) {
+            #modal-media .content-previews .file-box {
+                width: calc(33% - 5px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            #modal-media .content-previews .file-box {
+                width: calc(50% - 5px);
+            }
+        }
+
+        @media (max-width: 376px) {
+            #modal-media .content-previews .file-box {
+                width: calc(100% - 5px);
+            }
+        }
     </style>
 @endpush
 

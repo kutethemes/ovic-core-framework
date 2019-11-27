@@ -139,7 +139,7 @@
             position: relative;
             z-index: 3;
             cursor: pointer;
-            width: 19.5%;
+            width: calc(20% - 5px);
             float: none;
             padding-left: 5px;
             padding-right: 5px;
@@ -174,7 +174,7 @@
 
         @media (max-width: 1440px) {
             .content-previews .file-box {
-                width: 24.5%;
+                width: calc(25% - 5px);
             }
         }
 
@@ -192,19 +192,19 @@
 
         @media (max-width: 680px) {
             .content-previews .file-box {
-                width: 32.5%;
+                width: calc(33% - 5px);
             }
         }
 
         @media (max-width: 480px) {
             .content-previews .file-box {
-                width: 49.5%;
+                width: calc(50% - 5px);
             }
         }
 
         @media (max-width: 376px) {
             .content-previews .file-box {
-                width: 100%;
+                width: calc(100% - 5px);
             }
         }
     </style>
