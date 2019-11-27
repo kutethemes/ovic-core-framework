@@ -5,15 +5,20 @@
  *
  */
 
+var isTouch = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0) || (navigator.maxTouchPoints)),
+    isMobile = navigator.userAgent.match(
+        /(iPhone|iPod|iPad|Android|playbook|silk|BlackBerry|BB10|Windows Phone|Tizen|Bada|webOS|IEMobile|Opera Mini)/
+    );
+
 $.fn.animateCSS = function ( animate ) {
     var modal = $( this ),
         animate_in = modal.data( 'in' ),
         animate_out = modal.data( 'out' );
 
     if ( animate == 'in' ) {
-        modal.removeClass( animate_out ).addClass( animate_in );
+        modal.find( '.modal-dialog' ).removeClass( animate_out ).addClass( animate_in );
     } else {
-        modal.removeClass( animate_in ).addClass( animate_out );
+        modal.find( '.modal-dialog' ).removeClass( animate_in ).addClass( animate_out );
     }
 };
 
@@ -158,10 +163,12 @@ $( document ).ready( function () {
 
     $( "[data-toggle=popover]" ).popover();
 
-    // Add slimscroll to element
-    $( '.full-height-scroll' ).slimscroll( {
-        height: '100%'
-    } )
+    if ( isMobile === null ) {
+        // Add slimscroll to element
+        $( '.full-height-scroll' ).slimscroll( {
+            height: '100%'
+        } )
+    }
 } );
 
 // Minimalize menu when screen is less than 768px
@@ -297,5 +304,3 @@ function WinMove() {
             opacity: 0.8
         } ).disableSelection();
 }
-
-

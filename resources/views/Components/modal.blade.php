@@ -17,12 +17,12 @@
     }
 @endphp
 
-<div id="{{ $id }}" class="modal inmodal fade animated{{ !$footer ? ' no-footer' : '' }}{{ empty( $title ) ? ' no-header' : '' }}"
+<div id="{{ $id }}" class="modal inmodal fade{{ !$footer ? ' no-footer' : '' }}{{ empty( $title ) ? ' no-header' : '' }}"
      data-in="{{ !empty( $animated_in ) ? $animated_in : 'slideInLeft' }}"
      data-out="{{ !empty( $animated_out ) ? $animated_out : 'slideOutLeft' }}"
      tabindex="-1"
      role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog animated" role="document">
         <div class="modal-content">
             @if ( !empty( $title ) )
                 <div class="modal-header">

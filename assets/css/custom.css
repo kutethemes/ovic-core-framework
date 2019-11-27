@@ -85,6 +85,14 @@ body.full-height-layout #app {
     height: calc(100% - 70px);
 }
 
+.modal .modal-body > .row {
+    overflow-x: hidden;
+}
+
+.modal .modal-body > .row > .full-height {
+    height: auto;
+}
+
 .modal.inmodal .modal-dialog {
     -webkit-transform: translate(0);
     -moz-transform: translate(0);

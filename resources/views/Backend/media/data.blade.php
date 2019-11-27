@@ -130,10 +130,24 @@
             background-color: rgba(255, 255, 255, 0.6);
         }
 
-        .file-box {
+        .content-previews {
+            margin-left: -5px;
+            margin-right: -5px;
+        }
+
+        .content-previews .file-box {
             position: relative;
             z-index: 3;
             cursor: pointer;
+            width: 19.5%;
+            float: none;
+            padding-left: 5px;
+            padding-right: 5px;
+            display: inline-block;
+        }
+
+        .content-previews .file-box > .file {
+            margin-right: 0;
         }
 
         button.btn-del-select {
@@ -156,6 +170,42 @@
             left: 0;
             right: 0;
             z-index: 10;
+        }
+
+        @media (max-width: 1440px) {
+            .content-previews .file-box {
+                width: 24.5%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .file-box {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .content-image {
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .content-previews .file-box {
+                width: 32.5%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-previews .file-box {
+                width: 49.5%;
+            }
+        }
+
+        @media (max-width: 376px) {
+            .content-previews .file-box {
+                width: 100%;
+            }
         }
     </style>
 @endpush
@@ -495,7 +545,7 @@
     </script>
 @endpush
 
-<div class="col-lg-3 full-height">
+<div class="col-xl-3 col-md-4 col-sm-5 full-height filter-image">
     <div class="ibox full-height-scroll">
         <div class="ibox-content">
             @if( $check == true )
@@ -564,9 +614,10 @@
         </div>
     </div>
 </div>
-<div class="col-lg-9 animated fadeInRight full-height">
+<div class="col-xl-9 col-md-8 col-sm-7 full-height content-image">
     <div class="row normal-scroll-content">
-        <form id="dropzone-previews" class="col-lg-12 @if ( $check == true ) multi @else select-image @endif @if ( $multiFile == true ) multi @endif">
+        <form id="dropzone-previews"
+              class="col-lg-12 @if ( $check == true ) multi @else select-image @endif @if ( $multiFile == true ) multi @endif">
             <input type="hidden" name="images" value="">
             <div class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
