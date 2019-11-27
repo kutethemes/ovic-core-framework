@@ -75,76 +75,64 @@
 
             var imageVar = {};
 
-            $.fn.ovic_field_image = function () {
+            $( document ).on( 'click', '.ovic-field-image .ovic-image-add', function (e) {
+                e.preventDefault();
 
-                return this.each( function () {
-                    var $this = $( this );
+                var $button = $( this ),
+                    $wrapper = $button.closest( '.ovic-field-image' ),
+                    $modal = $( '#modal-media' );
 
-                    $this.on( 'click', '.ovic-image-add', function ( e ) {
+                $modal.modal( 'show' );
+                imageVar.$image_target = $wrapper;
 
-                        e.preventDefault();
+                if ( !imageVar.image_modal_loaded ) {
 
-                        var $button = $( this ),
-                            $modal = $( '#modal-media' );
+                    $modal.find( '.sk-spinner' ).show();
 
-                        $modal.modal( 'show' );
-                        imageVar.$image_target = $this;
+                    $.get( "upload/create", {
+                        _token: $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                    } ).done( function ( response ) {
 
-                        if ( !imageVar.image_modal_loaded ) {
+                        $modal.find( '.sk-spinner' ).hide();
 
-                            $modal.find( '.sk-spinner' ).show();
+                        imageVar.image_modal_loaded = true;
 
-                            $.get( "upload/create", {
-                                _token: $( 'meta[name="csrf-token"]' ).attr( 'content' )
-                            } ).done( function ( response ) {
+                        var $load = $modal.find( '.content-previews' ).html( response.content );
 
-                                $modal.find( '.sk-spinner' ).hide();
+                        /* Tạo thư mục */
+                        treeFolder( response.directories );
 
-                                imageVar.image_modal_loaded = true;
+                        $modal.on( 'click', '.btn-primary.save-modal', function () {
 
-                                var $load = $modal.find( '.content-previews' ).html( response.content );
+                            let file_box = $load.find( '.file-box.active' );
 
-                                /* Tạo thư mục */
-                                treeFolder( response.directories );
+                            if ( file_box.length && file_box.find( 'img' ).length ) {
+                                let id = file_box.data( 'id' );
+                                let src = file_box.find( 'img' ).attr( 'src' );
 
-                                $modal.on( 'click', '.btn-primary.save-modal', function () {
+                                imageVar.$image_target.find( 'input' ).val( id ).trigger( 'change' );
+                                imageVar.$image_target.find( 'img' ).attr( 'src', src );
+                            }
 
-                                    let file_box = $load.find( '.file-box.active' );
+                            $modal.modal( 'hide' );
 
-                                    if ( file_box.length && file_box.find( 'img' ).length ) {
-                                        let id = file_box.data( 'id' );
-                                        let src = file_box.find( 'img' ).attr( 'src' );
+                        } );
 
-                                        imageVar.$image_target.find( 'input' ).val( id ).trigger( 'change' );
-                                        imageVar.$image_target.find( 'img' ).attr( 'src', src );
-                                    }
-
-                                    $modal.modal( 'hide' );
-
-                                } );
-
-                            } ).fail( function ( response ) {
-                                $modal.find( '.sk-spinner' ).hide();
-                                $modal.find( '.content-previews' ).html( response );
-                            } );
-                        }
-
+                    } ).fail( function ( response ) {
+                        $modal.find( '.sk-spinner' ).hide();
+                        $modal.find( '.content-previews' ).html( response );
                     } );
+                }
+            } );
 
-                    $this.on( 'click', '.ovic-image-remove', function ( e ) {
-                        e.preventDefault();
-                        let preview = $this.find( '.image-preview' );
-                        let placeholder = preview.data( 'placeholder' );
+            $( document ).on( 'click', '.ovic-field-image .ovic-image-remove', function (e) {
+                e.preventDefault();
+                var $wrapper = $( this ).closest( '.ovic-field-image' ),
+                    preview = $wrapper.find( '.image-preview' ),
+                    placeholder = preview.data( 'placeholder' );
 
-                        preview.find( 'img' ).attr( 'src', placeholder );
-                        $this.find( 'input' ).val( '0' ).trigger( 'change' );
-                    } );
-                } )
-
-            };
-
-            $( document ).ready( function () {
-                $( '.ovic-field-image' ).ovic_field_image();
+                preview.find( 'img' ).attr( 'src', placeholder );
+                $wrapper.find( 'input' ).val( '0' ).trigger( 'change' );
             } );
         </script>
     @endpush
