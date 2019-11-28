@@ -12,11 +12,9 @@
 <div class="ibox-title">
     <h5>Chỉnh sửa chức năng</h5>
     <div class="ibox-tools">
-        <a class="collapse-link">
-            <i class="fa fa-chevron-up"></i>
-        </a>
         <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
             <i class="fa fa-wrench"></i>
+            Modules
         </a>
         <ul class="dropdown-menu dropdown-menu-right dropdown-form" x-placement="bottom-start">
             <li><a href="#" class="hide">Ẩn controller</a></li>

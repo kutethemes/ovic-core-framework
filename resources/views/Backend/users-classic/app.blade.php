@@ -327,7 +327,7 @@
         </div>
     </div>
     <div class="col-sm-9 full-height hide-sidebar">
-        <div class="ibox full-height-scroll">
+        <div class="ibox normal-scroll-content">
 
             @include( name_blade('Backend.users-classic.list') )
 

@@ -264,7 +264,7 @@
 @section( 'content-table' )
 
     <div class="col-sm-8 full-height">
-        <div class="ibox full-height-scroll">
+        <div class="ibox normal-scroll-content">
             <div class="ibox-content">
 
                 @include( name_blade('Backend.users.list') )

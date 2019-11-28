@@ -801,3 +801,16 @@ function _menu_tree( $resource, $atts, $parent_id = 0, $level = 0 )
 
     return $html;
 }
+
+function _menu_tree_arr( $resource, $parent_id = 0 )
+{
+    $data = [];
+    foreach ( $resource[$parent_id] as $parent ) {
+        $data[] = $parent;
+        if ( isset($resource[$parent['id']]) ) {
+            $data[] = _menu_tree_arr($resource, $parent['id']);
+        }
+    }
+
+    return $data;
+}

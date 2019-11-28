@@ -11,11 +11,6 @@
 
 <div class="ibox-title">
     <h5>Danh sách nhóm người dùng</h5>
-    <div class="ibox-tools">
-        <a class="collapse-link">
-            <i class="fa fa-chevron-up"></i>
-        </a>
-    </div>
 </div>
 <div class="ibox-content ibox-edit">
     <div class="sk-spinner sk-spinner-wave">

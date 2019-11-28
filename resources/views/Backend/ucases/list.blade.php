@@ -14,11 +14,9 @@
     <a href="#" class="btn btn-warning btn-xs reload-page" onclick="javascript:window.location.reload();return false;">Reload page</a>
     <h5>Danh sách menu <small>Menu Left / Menu Top</small></h5>
     <div class="ibox-tools">
-        <a class="collapse-link">
-            <i class="fa fa-chevron-up"></i>
-        </a>
         <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
             <i class="fa fa-wrench"></i>
+            Config
         </a>
         <ul id="nestable-menu" class="dropdown-menu dropdown-menu-right dropdown-order" x-placement="bottom-start">
             <li><a href="#" data-action="expand-all" class="dropdown-item">Expand All</a></li>

@@ -170,7 +170,7 @@
         </div>
     </div>
     <div class="col-sm-4 full-height">
-        <div class="ibox selected full-height-scroll">
+        <div class="ibox selected normal-scroll-content">
 
             @include( name_blade('Backend.roles.edit') )
 

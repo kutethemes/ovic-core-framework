@@ -267,7 +267,24 @@
         } );
         /* chọn nhiều quyền */
         $( document ).on( 'click', '.dd-item > .dd-handle .name', function () {
-            $( this ).closest( '.dd-handle' ).find( 'input' ).trigger( 'click' );
+            let checked = false,
+                input = $( this ).closest( '.dd-handle' ).find( 'input' );
+
+            input.each( function () {
+                if ( $( this ).is( ':checked' ) ) {
+                    checked = true;
+                }
+            } );
+
+            if ( checked == true ) {
+                input.each( function ( key, value ) {
+                    $( this ).prop( 'checked', '' );
+                } );
+            } else {
+                input.each( function ( key, value ) {
+                    $( this ).prop( 'checked', 'checked' );
+                } );
+            }
         } );
 
         $( document ).on( 'change', '.dd-item > .dd-handle input', function ( e ) {
@@ -288,7 +305,6 @@
             }
         } );
 
-
         $( document ).on( 'click', '.dd-item.has-children > .dd-list input', function () {
             let input = $( this ),
                 name = input.attr( 'name' ),
@@ -304,7 +320,7 @@
             } );
         } );
         /* chọn nhóm người dùng */
-        $( document ).on( 'click', '.client-detail a', function () {
+        $( document ).on( 'click', '.client-detail a.nav-link', function () {
             let button = $( this ),
                 form = $( '#list-posts' ),
                 id = button.data( 'id' ),
@@ -335,13 +351,12 @@
             return false;
         } );
         /* Phân quyền */
-        $( document ).on( 'click', '.dd-handle input[type="checkbox"]', function () {
+        $( document ).on( 'click', '.ibox-title a.save-change', function () {
             let input = $( this ),
-                form = input.closest( 'form' ),
+                form = $( '#list-posts' ),
                 roleID = form.find( 'input[name="id"]' ).val(),
                 role = $( '#role-' + roleID ),
-                item = input.closest( '.dd-item' ),
-                loading = item.closest( '.ibox-content' ),
+                loading = form.closest( '.ibox-content' ),
                 data = {};
 
             if ( roleID == 0 ) {
@@ -355,14 +370,9 @@
                 return false;
             }
 
-            if ( item.closest( '.dd-item.has-children' ).length ) {
-                let list = item.closest( '.dd-list' ),
-                    handle = list.prev( '.dd-handle' );
-
-                data = getData( handle, data );
+            if ( form.find( '.dd-handle' ).length ) {
+                data = getData( form.find( '.dd-handle' ), data );
             }
-
-            data = getData( item, data );
 
             data.id = roleID;
 
