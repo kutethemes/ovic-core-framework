@@ -49,15 +49,35 @@ class Ucases extends Eloquent
         return maybe_unserialize($value);
     }
 
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id')->with('children');
+    }
+
+    function filter_menu( $resource, $permission )
+    {
+        $data = [];
+        foreach ( $resource as $parent ) {
+            if ( !empty( $permission[$parent['slug'] ]) && array_sum($permission[$parent['slug']]) != 0 ) {
+                if ( !empty($parent['children']) ) {
+                    $parent['children'] = $this->filter_menu($parent['children'], $permission);
+                }
+                $data[] = $parent;
+            }
+        }
+
+        return $data;
+    }
+
     public function scopeEditMenu( $query, $position, $is_active = false )
     {
         $activeTXT = $is_active ? 'active' : 'inactive';
 
-        return Cache::rememberForever(
-            name_cache("edit_menu_{$position}_{$activeTXT}"),
+        return Cache::rememberForever(name_cache("edit_menu_{$position}_{$activeTXT}"),
             function () use ( $query, $position, $is_active ) {
                 $args = [
-                    [ 'position', $position ]
+                    [ 'position', $position ],
+                    [ 'parent_id', '0' ]
                 ];
 
                 if ( $is_active == true ) {
@@ -66,10 +86,9 @@ class Ucases extends Eloquent
                 }
 
                 return $query->where($args)
+                    ->orderBy('ordering', 'asc')
+                    ->with('children')
                     ->get()
-                    ->collect()
-                    ->sortBy('ordering')
-                    ->groupBy('parent_id')
                     ->toArray();
             }
         );
@@ -79,30 +98,27 @@ class Ucases extends Eloquent
     {
         $permission = Roles::Permission();
 
-        return Cache::rememberForever(
-            name_cache("primary_menu_{$position}"),
+        return Cache::rememberForever(name_cache("primary_menu_{$position}"),
             function () use ( $query, $position, $permission ) {
-                return $query->where(
+                $resource = $query->where(
                     [
                         [ 'status', '1' ],
-                        [ 'position', $position ]
+                        [ 'parent_id', '0' ],
+                        [ 'position', $position ],
                     ])
+                    ->orderBy('ordering', 'asc')
+                    ->with('children')
                     ->get()
-                    ->collect()
-                    ->filter(function ( $item, $key ) use ( $permission ) {
-                        return ( !empty($permission[$item->slug]) && array_sum($permission[$item->slug]) != 0 );
-                    })
-                    ->sortBy('ordering')
-                    ->groupBy('parent_id')
                     ->toArray();
+
+                return $this->filter_menu($resource, $permission);
             }
         );
     }
 
     public function scopeGetRoute( $query, $access )
     {
-        $ucases = Cache::rememberForever(
-            name_cache("get_route_{$access}"),
+        $ucases = Cache::rememberForever(name_cache("get_route_{$access}"),
             function () use ( $query, $access ) {
 
                 switch ( $access ) {
@@ -140,7 +156,7 @@ class Ucases extends Eloquent
                     $ClassRoute = $ucase->route['controller'];
 
                     if ( !empty($ucase->route['module']) ) {
-                        $ClassRoute = 'Modules\\'.$ucase->route['module'].'\Http\Controllers\\'.$ClassRoute;
+                        $ClassRoute = 'Modules\\' . $ucase->route['module'] . '\Http\Controllers\\' . $ClassRoute;
                     }
                     if ( class_exists("$ClassRoute") ) {
                         Route::resource("{$ucase->slug}", "{$ClassRoute}");
@@ -170,7 +186,7 @@ class Ucases extends Eloquent
 
         foreach ( $instance->where($key, $id)->orwhere('parent_id', $id)->get() as $model ) {
 
-            $roles = Roles::where('ucase_ids', 'LIKE', '%'.$model->slug.'%')->get([ 'id', 'ucase_ids' ]);
+            $roles = Roles::where('ucase_ids', 'LIKE', '%' . $model->slug . '%')->get([ 'id', 'ucase_ids' ]);
 
             if ( !empty($roles) ) {
                 foreach ( $roles as $role ) {

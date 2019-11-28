@@ -39,17 +39,17 @@
                     <div class="col-sm-6{{ $key == 'menu-left' ? ' b-r' : '' }}">
                         <div id="{{ $key }}" class="dd">
                             <ol class="dd-list dd-nodrag">
-                                @if( !empty( $menu[0] ) )
-                                    @foreach ( $menu[0] as $parent )
-                                        <li class="dd-item{{ !empty( $menu[$parent['id']] ) ? ' has-children' : '' }}"
+                                @if( !empty( $menu ) )
+                                    @foreach ( $menu as $parent )
+                                        <li class="dd-item{{ !empty( $parent['children'] ) ? ' has-children' : '' }}"
                                             data-slug="{{ $parent['slug'] }}">
 
                                             @include( name_blade('Backend.permission.item'), ['data' => $parent] )
 
-                                            @if( !empty( $menu[$parent['id']] ) )
+                                            @if( !empty( $parent['children'] ) )
 
                                                 <ol class="dd-list">
-                                                    @foreach ( $menu[$parent['id']] as $children )
+                                                    @foreach ( $parent['children'] as $children )
                                                         <li class="dd-item" data-slug="{{ $children['slug'] }}">
 
                                                             @include( name_blade('Backend.permission.item'), ['data' => $children] )

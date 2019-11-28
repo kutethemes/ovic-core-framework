@@ -20,10 +20,10 @@
             <span class="navbar-minimalize minimalize-styl-2">@yield('title')</span>
         </div>
         <ul class="nav navbar-top-links navbar-right">
-            @if( !empty( $top_menu[0] ) )
-                @foreach( $top_menu[0] as $key => $parent )
+            @if( !empty( $top_menu ) )
+                @foreach( $top_menu as $key => $parent )
                     <li>
-                        @if( !empty( $top_menu[$parent['id']] ) )
+                        @if( !empty( $parent['children'] ) )
                             @php
                                 $toggle = 'dropdown';
                             @endphp
@@ -35,15 +35,13 @@
                             @if( !empty($parent['route']['icon']) )
                                 <i class="{{ $parent['route']['icon'] }}"></i>
                             @endif
-                            <span class="nav-label">
-                                {{ $parent['title'] }}
-                            </span>
+                            <span class="nav-label">{{ $parent['title'] }}</span>
                         </a>
 
-                        @if( !empty( $top_menu[$parent['id']] ) )
+                        @if( !empty( $parent['children'] ) )
 
                             <ul class="dropdown-menu animated fadeInUp">
-                                @foreach ( $top_menu[$parent['id']] as $children )
+                                @foreach ( $parent['children'] as $children )
                                     <li>
                                         <a href="{{ url( "/{$children['slug']}" ) }}">
                                             @if( !empty($children['route']['icon']) )

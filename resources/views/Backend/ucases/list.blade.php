@@ -36,18 +36,18 @@
         @foreach( $menus as $key => $menu )
             <div class="col-sm-6{{ $key == 'menu-left' ? ' b-r' : '' }}">
                 <div id="{{ $key }}" class="dd">
-                    @if( !empty( $menu[0] ) )
+                    @if( !empty( $menu ) )
                         <ol class="dd-list {{ !user_can('edit', $permission) ? 'dd-nodrag' : '' }}">
-                            @foreach ( $menu[0] as $parent )
-                                <li class="dd-item{{ !empty( $menu[$parent['id']] ) ? ' has-children' : '' }}"
+                            @foreach ( $menu as $parent )
+                                <li class="dd-item{{ !empty( $parent['children'] ) ? ' has-children' : '' }}"
                                     data-id="{{ $parent['id'] }}">
 
                                     @include( name_blade('Backend.ucases.item'), ['data' => $parent] )
 
-                                    @if( !empty( $menu[$parent['id']] ) )
+                                    @if( !empty( $parent['children'] ) )
 
                                         <ol class="dd-list">
-                                            @foreach ( $menu[$parent['id']] as $children )
+                                            @foreach ( $parent['children'] as $children )
                                                 <li class="dd-item" data-id="{{ $children['id'] }}">
 
                                                     @include( name_blade('Backend.ucases.item'), ['data' => $children] )

@@ -55,8 +55,7 @@ class Roles extends Eloquent
             if ( $route != null ) {
                 return [ 1, 1, 1 ];
             }
-            $ucases = Cache::rememberForever(
-                name_cache('permission'),
+            $ucases = Cache::rememberForever(name_cache('permission'),
                 function () use ( $query ) {
                     return Ucases::where('access', 0)
                         ->get('slug')
@@ -79,8 +78,7 @@ class Roles extends Eloquent
             if ( $route != null ) {
                 return [ 1, 1, 1 ];
             }
-            $ucases = Cache::rememberForever(
-                name_cache('permission_supper_admin'),
+            $ucases = Cache::rememberForever(name_cache('permission_supper_admin'),
                 function () use ( $query ) {
                     return Ucases::all('slug')
                         ->toArray();
@@ -98,8 +96,7 @@ class Roles extends Eloquent
         }
         if ( !empty($user['role_ids']) ) {
 
-            $roles = Cache::rememberForever(
-                name_cache('permission_admin'),
+            $roles = Cache::rememberForever(name_cache('permission_admin'),
                 function () use ( $query, $user ) {
                     $role_ids = maybe_unserialize($user['role_ids']);
 

@@ -41,12 +41,12 @@
                 </li>
             @endauth
 
-            @if( !empty( $left_menu[0] ) )
-                @foreach( $left_menu[0] as $key => $parent )
+            @if( !empty( $left_menu ) )
+                @foreach( $left_menu as $key => $parent )
 
                     @php
                         $active     = '';
-                        $childrens  = !empty( $left_menu[$parent['id']] ) ? $left_menu[$parent['id']] : [];
+                        $childrens  = !empty( $parent['children'] ) ? $parent['children'] : [];
                         if ( $name == $parent['slug'] ){
                             $active = 'active';
                         }

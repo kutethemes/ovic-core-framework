@@ -417,6 +417,8 @@
                     loading.removeClass( 'sk-loading' );
                 }
             } );
+
+            return false;
         } );
     </script>
 @endpush

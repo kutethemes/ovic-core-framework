@@ -36,6 +36,11 @@ class Donvi extends Eloquent
         return $this->table;
     }
 
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id')->with('children');
+    }
+
     public function scopegetDonvi( $query )
     {
         $user = Auth::user();
