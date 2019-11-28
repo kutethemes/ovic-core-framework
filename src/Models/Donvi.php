@@ -46,31 +46,46 @@ class Donvi extends Eloquent
         $user = Auth::user();
 
         if ( $user->status == 3 ) {
-            $query = $query->where('id', '>', '0')
-                ->get([
-                    'id',
-                    'tendonvi',
-                    'parent_id'
+            return $query->where(
+                [
+                    [ 'status', 1 ],
+                    [ 'parent_id', 0 ]
+                ])
+                ->with([
+                    'children' => function ( $query ) {
+                        $query->where(
+                            [
+                                [ 'status', 1 ],
+                            ]
+                        );
+                    }
                 ]);
         } else {
-            $query = $query->where('id', $user->donvi_id);
-
-            if ( !empty($user->donvi_ids) && $user->donvi_ids !== 0 ) {
-                $query = $query->orWhere(
-                    function ( $query ) use ( $user ) {
-                        $query->whereIn('id', maybe_unserialize($user->donvi_ids));
+            $donvi_ids = maybe_unserialize($user->donvi_ids);
+            $query     = $query->where(
+                [
+                    [ 'status', '1' ],
+                    [ 'id', $user->donvi_id ]
+                ]
+            );
+            if ( !empty($donvi_ids) && $donvi_ids !== 0 ) {
+                return $query->orWhere(
+                    function ( $query ) use ( $donvi_ids ) {
+                        $query->whereIn('id', $donvi_ids);
                     }
                 );
+            } else {
+                return $query->orWhere('parent_id', $user->donvi_id)
+                    ->with([
+                        'children' => function ( $query ) {
+                            $query->where(
+                                [
+                                    [ 'status', 1 ],
+                                ]
+                            );
+                        }
+                    ]);
             }
-            $query = $query->get([
-                'id',
-                'tendonvi',
-                'parent_id'
-            ]);
         }
-
-        $donvi = $query->collect()->groupBy('parent_id');
-
-        return $donvi;
     }
 }

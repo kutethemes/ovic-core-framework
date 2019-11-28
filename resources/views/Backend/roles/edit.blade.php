@@ -70,6 +70,9 @@
                 <div class="col-sm-9">
                     <div class="input-group">
                         <input type="number" name="ordering" class="form-control" min="0" value="99"/>
+                        <div class="alert alert-warning">
+                            Số thứ tự ngoài việc sử dụng để sắp xếp khi hiển thị nó còn thể hiện phân cấp khi tạo tài khoản.
+                        </div>
                     </div>
                 </div>
             </div>

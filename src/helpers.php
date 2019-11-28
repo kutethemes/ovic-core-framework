@@ -754,14 +754,15 @@ function _menu_tree( $resource, $atts, $parent_id = 0, $level = 0 )
     $after      = '';
     $sub_before = '';
     $sub_after  = '';
-    foreach ( $resource[$parent_id] as $parent ) {
+    foreach ( $resource as $parent ) {
         $class = '';
+        $level = $parent['level'];
         $title = $parent[$atts['title']];
         switch ( $atts['type'] ) {
 
             case 'list':
 
-                if ( isset($resource[$parent[$atts['id']]]) ) {
+                if ( $parent['haschild'] == 1 ) {
                     $class = ' has-children';
                 }
                 $before     = "<li id='menu-{$parent[$atts['id']]}' class='menu-item{$class}'>";
@@ -791,9 +792,9 @@ function _menu_tree( $resource, $atts, $parent_id = 0, $level = 0 )
         }
         $html .= $before;
         $html .= $title;
-        if ( isset($resource[$parent[$atts['id']]]) ) {
+        if ( $parent['haschild'] == 1 ) {
             $html .= $sub_before;
-            $html .= _menu_tree($resource, $atts, $parent[$atts['id']], $level + 1);
+            $html .= _menu_tree($resource, $atts);
             $html .= $sub_after;
         }
         $html .= $after;
@@ -823,6 +824,22 @@ function _menu_tree_arr( $resource, $parent_id = 0, $level = false )
             }
             $data[] = $parent;
         }
+    }
+
+    return $data;
+}
+
+function remove_level( $resource, $data = [], $level = 0 )
+{
+    foreach ( $resource as $key => $parent ) {
+        $key                = $parent['id'];
+        $parent['level']    = $level;
+        $parent['haschild'] = !empty($parent['children']) ? 1 : 0;
+        $data[$key]         = $parent;
+        if ( !empty($parent['children']) ) {
+            $data = remove_level($parent['children'], $data, $level + 1);
+        }
+        unset($data[$key]['children']);
     }
 
     return $data;

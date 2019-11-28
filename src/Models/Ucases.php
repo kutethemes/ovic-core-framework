@@ -5,6 +5,7 @@ namespace Ovic\Framework;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Collection;
@@ -58,7 +59,7 @@ class Ucases extends Eloquent
     {
         $data = [];
         foreach ( $resource as $parent ) {
-            if ( !empty( $permission[$parent['slug'] ]) && array_sum($permission[$parent['slug']]) != 0 ) {
+            if ( !empty($permission[$parent['slug']]) && array_sum($permission[$parent['slug']]) != 0 ) {
                 if ( !empty($parent['children']) ) {
                     $parent['children'] = $this->filter_menu($parent['children'], $permission);
                 }
@@ -76,8 +77,8 @@ class Ucases extends Eloquent
         return Cache::rememberForever(name_cache("edit_menu_{$position}_{$activeTXT}"),
             function () use ( $query, $position, $is_active ) {
                 $args = [
+                    [ 'parent_id', '0' ],
                     [ 'position', $position ],
-                    [ 'parent_id', '0' ]
                 ];
 
                 if ( $is_active == true ) {
@@ -87,7 +88,12 @@ class Ucases extends Eloquent
 
                 return $query->where($args)
                     ->orderBy('ordering', 'asc')
-                    ->with('children')
+                    ->with([
+                        'children' => function ( $query ) use ( $args ) {
+                            array_shift($args);
+                            $query->where($args);
+                        }
+                    ])
                     ->get()
                     ->toArray();
             }
@@ -100,14 +106,19 @@ class Ucases extends Eloquent
 
         return Cache::rememberForever(name_cache("primary_menu_{$position}"),
             function () use ( $query, $position, $permission ) {
-                $resource = $query->where(
-                    [
-                        [ 'status', '1' ],
-                        [ 'parent_id', '0' ],
-                        [ 'position', $position ],
+                $args     = [
+                    [ 'parent_id', 0 ],
+                    [ 'status', 1 ],
+                    [ 'position', $position ],
+                ];
+                $resource = $query->where($args)
+                    ->with([
+                        'children' => function ( $query ) use ( $args ) {
+                            array_shift($args);
+                            $query->where($args);
+                        }
                     ])
                     ->orderBy('ordering', 'asc')
-                    ->with('children')
                     ->get()
                     ->toArray();
 

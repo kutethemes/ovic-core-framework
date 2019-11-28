@@ -79,11 +79,9 @@ class UsersController extends Controller
         $donvis = [];
         $ucases = [];
         if ( Donvi::hasTable() ) {
-            $donvis = Donvi::all([ 'id', 'tendonvi', 'parent_id' ])
-                ->collect()
-                ->groupBy('parent_id')
-                ->toArray();
+            $donvis = Donvi::getDonvi(true);
         }
+
         if ( Roles::hasTable() ) {
             $roles = Roles::all([ 'id', 'title' ]);
         }
