@@ -278,11 +278,11 @@
 
             if ( checked == true ) {
                 input.each( function ( key, value ) {
-                    $( this ).prop( 'checked', '' );
+                    $( this ).prop( 'checked', '' ).trigger( 'change' );
                 } );
             } else {
                 input.each( function ( key, value ) {
-                    $( this ).prop( 'checked', 'checked' );
+                    $( this ).prop( 'checked', 'checked' ).trigger( 'change' );
                 } );
             }
         } );
