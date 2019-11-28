@@ -802,13 +802,26 @@ function _menu_tree( $resource, $atts, $parent_id = 0, $level = 0 )
     return $html;
 }
 
-function _menu_tree_arr( $resource, $parent_id = 0 )
+function _menu_tree_arr( $resource, $parent_id = 0, $level = false )
 {
     $data = [];
     foreach ( $resource[$parent_id] as $parent ) {
-        $data[] = $parent;
-        if ( isset($resource[$parent['id']]) ) {
-            $data[] = _menu_tree_arr($resource, $parent['id']);
+
+        if ( $level == false ) {
+            $data[] = $parent;
+            if ( isset($resource[$parent['id']]) ) {
+                $childrens = _menu_tree_arr($resource, $parent['id']);
+                if ( !empty($childrens) ) {
+                    foreach ( $childrens as $children ) {
+                        $data[] = $children;
+                    }
+                }
+            }
+        } else {
+            if ( isset($resource[$parent['id']]) ) {
+                $parent['child'] = _menu_tree_arr($resource, $parent['id']);
+            }
+            $data[] = $parent;
         }
     }
 
