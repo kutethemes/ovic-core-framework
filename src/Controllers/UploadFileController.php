@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class UploadFileController extends Controller
@@ -164,7 +165,7 @@ class UploadFileController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create( Request $request )
     {
@@ -174,17 +175,15 @@ class UploadFileController extends Controller
             return $this->filter($data);
         } else {
             $this->install();
-
             $content    = '';
-            $dir        = '';
             $permission = user_can('all');
             if ( !empty($this->attachments) ) {
                 foreach ( $this->attachments as $attachment ) {
                     $content .= view(name_blade('Backend.media.image'),
-                        compact([
-                            'attachment',
-                            'permission'
-                        ]))
+                        [
+                            'attachment' => $attachment,
+                            'permission' => $permission
+                        ])
                         ->toHtml();
                 }
             }
@@ -207,8 +206,6 @@ class UploadFileController extends Controller
             $args = [
                 [ 'post_type', '=', 'attachment' ],
                 [ 'status', '=', 'publish' ],
-                'limit'  => $data['limit'],
-                'offset' => $data['offset'],
             ];
 
             if ( !empty($data['s']) ) {
@@ -219,56 +216,74 @@ class UploadFileController extends Controller
                 $args[] = [ "name", "like", "%{$data['dir']}%" ];
             }
 
-            $attachments = $this->get_attachments($args);
+            $Query = Posts::Owner()->where($args);
 
-            foreach ( $attachments as $key => $attachment ) {
-                $mimetype  = $attachment['meta']['_attachment_metadata']['mimetype'];
-                $extension = $attachment['meta']['_attachment_metadata']['extension'];
-
-                switch ( $data['sort'] ) {
-                    case 'im':
-                        if ( !strstr($mimetype, "image/") ) {
-                            unset($attachments[$key]);
+            switch ( $data['sort'] ) {
+                case 'im':
+                    $Query = $Query->where(
+                        function ( $query ) {
+                            $query->where('name', 'LIKE', "%.jpg")
+                                ->orWhere('name', 'LIKE', "%.png");
                         }
-                        break;
+                    );
+                    break;
 
-                    case 'vi':
-                        if ( !strstr($mimetype, "video/") ) {
-                            unset($attachments[$key]);
+                case 'vi':
+                    $Query = $Query->where(
+                        function ( $query ) {
+                            $query->where('name', 'LIKE', "%.mp4")
+                                ->orWhere('name', 'LIKE', "%.webm");
                         }
-                        break;
+                    );
+                    break;
 
-                    case 'au':
-                        if ( !strstr($mimetype, "audio/") ) {
-                            unset($attachments[$key]);
+                case 'au':
+                    $Query = $Query->where(
+                        function ( $query ) {
+                            $query->where('name', 'LIKE', "%.mp3");
                         }
-                        break;
+                    );
+                    break;
 
-                    case 'doc':
-                        $ext_allow = [ 'doc', 'docx', 'xls', 'xlsx', 'pdf' ];
-                        if ( !in_array($extension, $ext_allow) ) {
-                            unset($attachments[$key]);
+                case 'doc':
+                    $Query = $Query->where(
+                        function ( $query ) {
+                            $query->where('name', 'LIKE', "%.doc")
+                                ->orWhere('name', 'LIKE', "%.docx")
+                                ->orWhere('name', 'LIKE', "%.xls")
+                                ->orWhere('name', 'LIKE', "%.xlsx")
+                                ->orWhere('name', 'LIKE', "%.ppt")
+                                ->orWhere('name', 'LIKE', "%.pptx")
+                                ->orWhere('name', 'LIKE', "%.pdf");
                         }
-                        break;
+                    );
+                    break;
 
-                    case 'ar':
-                        $ext_allow = [ 'rar', 'zip' ];
-                        if ( !in_array($extension, $ext_allow) ) {
-                            unset($attachments[$key]);
+                case 'ar':
+                    $Query = $Query->where(
+                        function ( $query ) {
+                            $query->where('name', 'LIKE', "%.rar")
+                                ->orWhere('name', 'LIKE', "%.zip");
                         }
-                        break;
-                }
+                    );
+                    break;
             }
+
+            $attachments = $Query->latest()
+                ->offset($data['offset'])
+                ->limit($data['limit'])
+                ->get()
+                ->toArray();
 
             $html       = '';
             $permission = user_can('all');
 
             foreach ( $attachments as $attachment ) {
                 $html .= view(name_blade('Backend.media.image'),
-                    compact([
-                        'attachment',
-                        'permission'
-                    ]))
+                    [
+                        'attachment' => $attachment,
+                        'permission' => $permission
+                    ])
                     ->toHtml();
             }
 
@@ -294,10 +309,51 @@ class UploadFileController extends Controller
         );
     }
 
+    public function FileExtension( $extension )
+    {
+        switch ( $extension ) {
+            case 'doc':
+            case 'docx':
+            case 'ppt':
+            case 'pptx':
+            case 'xls':
+            case 'slsx':
+            case 'pdf':
+
+                return 'doc';
+                break;
+
+            case 'jpeg':
+            case 'png':
+
+                return 'image';
+                break;
+
+            case 'mp4':
+
+                return 'video';
+                break;
+
+            case 'mp3':
+
+                return 'audio';
+                break;
+
+            case 'zip':
+            case 'rar':
+
+                return 'archive';
+                break;
+        }
+
+        return 'archive';
+    }
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @mimes: http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -312,74 +368,101 @@ class UploadFileController extends Controller
             ]);
         }
 
-        if ( !$request->hasFile('file') ) {
-            return response()->json(
+        $mimes    = '';
+        $mimes    .= 'jpeg,png,';                          // image
+        $mimes    .= 'zip,rar,';                           // archive
+        $mimes    .= 'doc,docx,xls,xlsx,ppt,pptx,pdf,';    // doc
+        $mimes    .= 'mp4,webm,';                          // video
+        $mimes    .= 'mpga';                               // audio
+        $rules    = [
+            'file' => [
+                'required',
+                'mimes:' . $mimes,
+            ],
+        ];
+        $messages = [
+            'file.required' => 'Không có file để tải lên.',
+            'file.mimes'    => 'Không cho phép tải lên file này.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ( $validator->passes() ) {
+
+            $now  = now();
+            $file = $request->file('file');
+
+            $MimeType     = $file->getClientMimeType();
+            $extension    = $file->getClientOriginalExtension();
+            $FileSize     = $file->getSize();
+            $OriginalName = $file->getClientOriginalName();
+
+            $FileName = str_replace(".{$extension}", "-{$now->getTimestamp()}.{$extension}", $OriginalName);
+
+            $FilePath = Storage::putFileAs(
+                "{$this->folder}{$now->year}/{$now->month}",
+                $file,
+                $FileName
+            );
+
+            $post_id = $this->add_attachments(
                 [
-                    'status'      => 'error',
-                    'message'     => 'The File do not exits.',
-                    'html'        => '',
-                    'directories' => []
+                    'title'     => $FileName,
+                    'name'      => "{$now->year}/{$now->month}/{$FileName}",
+                    'post_type' => 'attachment',
+                    'meta'      => [
+                        '_attachment_metadata' => [
+                            'alt'       => '',
+                            'size'      => size_format($FileSize),
+                            'mimetype'  => $MimeType,
+                            'extension' => $extension,
+                        ],
+                    ],
+                    'user_id'   => Auth::user()->id,
+                    'owner_id'  => Auth::user()->id,
                 ]
             );
+
+            if ( $post_id > 0 ) {
+
+                $this->install();
+
+                return response()->json(
+                    [
+                        'status'      => 'success',
+                        'message'     => 'Lưu file thành công.',
+                        'html'        => $this->image($post_id)->toHtml(),
+                        'directories' => json_encode($this->directories)
+                    ]
+                );
+            } else {
+
+                return response()->json(
+                    [
+                        'status'      => 'error',
+                        'message'     => 'Lỗi không lưu được file.',
+                        'html'        => '',
+                        'directories' => []
+                    ]
+                );
+            }
         }
 
-        $now  = now();
-        $file = $request->file('file');
+        $message = '';
+        $errors  = $validator->errors()->all();
 
-        $MimeType     = $file->getClientMimeType();
-        $extension    = $file->getClientOriginalExtension();
-        $FileSize     = $file->getSize();
-        $OriginalName = $file->getClientOriginalName();
+        foreach ( $errors as $error ) {
+            $message .= "{$error}\n";
+        }
 
-        $FileName = str_replace(".{$extension}", "-{$now->getTimestamp()}.{$extension}", $OriginalName);
-
-        $FilePath = Storage::putFileAs(
-            "{$this->folder}{$now->year}/{$now->month}",
-            $file,
-            $FileName
-        );
-
-        $post_id = $this->add_attachments(
+        return response()->json(
             [
-                'title'     => $FileName,
-                'name'      => "{$now->year}/{$now->month}/{$FileName}",
-                'post_type' => 'attachment',
-                'meta'      => [
-                    '_attachment_metadata' => [
-                        'alt'       => '',
-                        'size'      => size_format($FileSize),
-                        'mimetype'  => $MimeType,
-                        'extension' => $extension,
-                    ],
-                ],
-                'user_id'   => Auth::user()->id,
-                'owner_id'  => Auth::user()->id,
+                'status'      => 'error',
+                'message'     => $message,
+                'html'        => '',
+                'directories' => []
             ]
         );
-
-        if ( $post_id > 0 ) {
-
-            $this->install();
-
-            return response()->json(
-                [
-                    'status'      => 'success',
-                    'message'     => 'Lưu file thành công.',
-                    'html'        => $this->image($post_id)->toHtml(),
-                    'directories' => json_encode($this->directories)
-                ]
-            );
-        } else {
-
-            return response()->json(
-                [
-                    'status'      => 'error',
-                    'message'     => 'Lỗi không lưu được file.',
-                    'html'        => '',
-                    'directories' => []
-                ]
-            );
-        }
     }
 
     /**

@@ -46,6 +46,10 @@
                 <div class="icon">
                     <i class="fa fa-file-word-o"></i>
                 </div>
+            @elseif ( in_array( $extension, [ 'ppt','pptx' ] ) )
+                <div class="icon">
+                    <i class="fa fa-file-powerpoint-o"></i>
+                </div>
             @elseif ( in_array( $extension, [ 'xls','xlsx' ] ) )
                 <div class="icon">
                     <i class="fa fa-bar-chart-o"></i>

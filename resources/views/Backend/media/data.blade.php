@@ -266,9 +266,7 @@
             },
             acceptedFiles: '.zip,.rar,audio/*,video/*,image/*,.doc,.docx,.xls,.xlsx,application/pdf',
             paramName: "file", // The name that will be used to transfer the file
-            maxFilesize: 16, // MB
             uploadMultiple: false,
-            dictFileTooBig: 'File lớn hơn 16MB',
             init: function () {
                 this.on( "complete", function ( file ) {
                     this.removeFile( file );
@@ -278,7 +276,7 @@
 
                 $( '#dropzone-previews .content-previews' ).prepend( response.html );
 
-                if ( response.status == 'success' ) {
+                if ( response.status === 'success' ) {
                     toastr.info( response.message );
 
                     /* Tạo thư mục */
@@ -292,7 +290,15 @@
                     } );
                 }
             },
-            dictDefaultMessage: "<strong>Kéo thả files vào đây để upload lên máy chủ. </strong></br>  (Hoặc click chuột để chọn files upload.)"
+            error: function () {
+                swal( {
+                    type: 'error',
+                    title: 'Error!',
+                    text: 'Lỗi không thể upload file.',
+                    showConfirmButton: true
+                } );
+            },
+            dictDefaultMessage: "<strong>Kéo thả files vào đây hoặc click chuột để upload lên máy chủ. </strong></br> ( dung lượng tải lên tối đa {{ ini_get('post_max_size') }} )"
         };
         @endif
 
