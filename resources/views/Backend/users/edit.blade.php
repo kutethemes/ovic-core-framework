@@ -97,13 +97,12 @@
                     <select name="donvi_id" class="form-control chosen-select"
                             data-placeholder="Chọn đơn vị">
                         <option value=""></option>
-{{--                        {!!--}}
-{{--                            _menu_tree( $donvis, [--}}
-{{--                               'title'  =>  'tendonvi',--}}
-{{--                               'type'   =>  'dropdown',--}}
-{{--                               'groupBy'=>  1,--}}
-{{--                            ]);--}}
-{{--                        !!}--}}
+                        {!!
+                            _menu_tree( $donvis, [
+                               'title'  =>  'tendonvi',
+                               'type'   =>  'dropdown',
+                            ]);
+                        !!}
                     </select>
                 </div>
             </div>
@@ -137,13 +136,12 @@
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
                         <option value=""></option>
-{{--                        {!!--}}
-{{--                            _menu_tree( $donvis, [--}}
-{{--                               'title'  =>  'tendonvi',--}}
-{{--                               'type'   =>  'dropdown',--}}
-{{--                               'groupBy'=>  1,--}}
-{{--                            ]);--}}
-{{--                        !!}--}}
+                        {!!
+                            _menu_tree( $donvis, [
+                               'title'  =>  'tendonvi',
+                               'type'   =>  'dropdown',
+                            ]);
+                        !!}
                     </select>
                 </div>
             </div>

@@ -47,6 +47,35 @@ class Roles extends Eloquent
         return maybe_unserialize($value);
     }
 
+    public function scopegetRoles( $query )
+    {
+        $user = Auth::user();
+
+        if ( $user['status'] == 3 ) {
+            return Cache::rememberForever(name_cache('roles_supper_admin'),
+                function () use ( $query ) {
+                    return $query->where('ordering', '>=', 0)
+                        ->orderBy('ordering', 'asc')
+                        ->get();
+                }
+            );
+        }
+
+        $role_ids = maybe_unserialize($user['role_ids']);
+
+        if ( !empty($role_ids) ) {
+            return Cache::rememberForever(name_cache('roles_admin'),
+                function () use ( $query, $role_ids ) {
+                    return $query->where('ordering', '>', min($role_ids))
+                        ->orderBy('ordering', 'asc')
+                        ->get();
+                }
+            );
+        }
+
+        return [];
+    }
+
     public function scopePermission( $query, $route = null )
     {
         $permission = [];

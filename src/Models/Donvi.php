@@ -41,12 +41,12 @@ class Donvi extends Eloquent
         return $this->hasMany(self::class, 'parent_id')->with('children');
     }
 
-    public function scopegetDonvi( $query )
+    public function scopegetDonvi( $query, $level = false )
     {
         $user = Auth::user();
 
         if ( $user->status == 3 ) {
-            return $query->where(
+            $query = $query->where(
                 [
                     [ 'status', 1 ],
                     [ 'parent_id', 0 ]
@@ -59,7 +59,9 @@ class Donvi extends Eloquent
                             ]
                         );
                     }
-                ]);
+                ])
+                ->get()
+                ->toArray();
         } else {
             $donvi_ids = maybe_unserialize($user->donvi_ids);
             $query     = $query->where(
@@ -69,14 +71,17 @@ class Donvi extends Eloquent
                 ]
             );
             if ( !empty($donvi_ids) && $donvi_ids !== 0 ) {
-                return $query->orWhere(
-                    function ( $query ) use ( $donvi_ids ) {
-                        $query->whereIn('id', $donvi_ids);
-                    }
-                );
+                $query = $query->with(
+                    [
+                        'children' => function ( $query ) use ( $donvi_ids ) {
+                            $query->whereIn('id', $donvi_ids);
+                        }
+                    ])
+                    ->get()
+                    ->toArray();
             } else {
-                return $query->orWhere('parent_id', $user->donvi_id)
-                    ->with([
+                $query = $query->with(
+                    [
                         'children' => function ( $query ) {
                             $query->where(
                                 [
@@ -84,8 +89,16 @@ class Donvi extends Eloquent
                                 ]
                             );
                         }
-                    ]);
+                    ])
+                    ->get()
+                    ->toArray();
             }
         }
+
+        if ( $level == true ) {
+            return remove_level($query);
+        }
+
+        return $query;
     }
 }

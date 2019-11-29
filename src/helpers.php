@@ -123,6 +123,173 @@ function get_attachment_url( $id, $is_path = false )
     return route('images.build', explode('/', $path));
 }
 
+
+/**
+ * @uses : https://laravel.com/docs/master/collections#method-groupby
+ * @atts['type']: dropdown, list, group
+ * @example:
+ *  _menu_tree( $donvi, ['title' => 'tendonvi', 'type' => 'group','groupBy' => 1] )
+ *
+ * */
+function _menu_tree( $resource, $atts )
+{
+    $resource = remove_level($resource);
+    $atts     = ovic_parse_args($atts, [
+        'id'      => 'id',
+        'title'   => 'title',
+        'type'    => 'list',
+        'groupBy' => 0,
+    ]);
+    $html     = '';
+    $before   = '';
+    $after    = '';
+    foreach ( $resource as $parent ) {
+        $class = '';
+        $level = $parent['level'];
+        $title = $parent[$atts['title']];
+        switch ( $atts['type'] ) {
+
+            case 'list':
+
+                if ( $parent['haschild'] == 1 ) {
+                    $class = ' has-children';
+                }
+                $before = "<li id='menu-{$parent[$atts['id']]}' class='menu-item{$class}'>";
+                $after  = "</li>";
+
+                break;
+
+            case 'dropdown':
+
+                $title = str_repeat('-', $level) . " {$title}";
+                $title = "<option value='{$parent[$atts['id']]}'>{$title}</option>";
+
+                break;
+
+            case 'group':
+
+                if ( $level <= $atts['groupBy'] ) {
+                    $before = "<optgroup label='{$title}'>";
+                    $after  = "</optgroup>";
+                }
+
+                $title = "<option value='{$parent[$atts['id']]}'>{$title}</option>";
+
+                break;
+        }
+        $html .= $before;
+        $html .= $title;
+        $html .= $after;
+    }
+
+    return $html;
+}
+
+function _menu_tree_old( $resource, $atts, $parent_id = 0, $level = 0 )
+{
+    $atts       = ovic_parse_args($atts, [
+        'id'      => 'id',
+        'title'   => 'title',
+        'type'    => 'list',
+        'groupBy' => 0,
+    ]);
+    $html       = '';
+    $before     = '';
+    $after      = '';
+    $sub_before = '';
+    $sub_after  = '';
+    foreach ( $resource[$parent_id] as $parent ) {
+        $class = '';
+        $title = $parent[$atts['title']];
+        switch ( $atts['type'] ) {
+
+            case 'list':
+
+                if ( isset($resource[$parent[$atts['id']]]) ) {
+                    $class = ' has-children';
+                }
+                $before     = "<li id='menu-{$parent[$atts['id']]}' class='menu-item{$class}'>";
+                $after      = "</li>";
+                $sub_before = "<ul class='sub-menu'>";
+                $sub_after  = "</ul>";
+
+                break;
+
+            case 'dropdown':
+
+                $title = str_repeat('-', $level) . " {$title}";
+                $title = "<option value='{$parent[$atts['id']]}'>{$title}</option>";
+
+                break;
+
+            case 'group':
+
+                if ( $level <= $atts['groupBy'] ) {
+                    $before = "<optgroup label='{$title}'>";
+                    $after  = "</optgroup>";
+                }
+
+                $title = "<option value='{$parent[$atts['id']]}'>{$title}</option>";
+
+                break;
+        }
+        $html .= $before;
+        $html .= $title;
+        if ( isset($resource[$parent[$atts['id']]]) ) {
+            $html .= $sub_before;
+            $html .= _menu_tree($resource, $atts, $parent[$atts['id']], $level + 1);
+            $html .= $sub_after;
+        }
+        $html .= $after;
+    }
+
+    return $html;
+}
+
+function _menu_tree_arr( $resource, $parent_id = 0, $level = false )
+{
+    $data = [];
+
+    foreach ( $resource[$parent_id] as $parent ) {
+        if ( $level == false ) {
+            $data[] = $parent;
+            if ( isset($resource[$parent['id']]) ) {
+                $childrens = _menu_tree_arr($resource, $parent['id']);
+                if ( !empty($childrens) ) {
+                    foreach ( $childrens as $children ) {
+                        $data[] = $children;
+                    }
+                }
+            }
+        } else {
+            if ( isset($resource[$parent['id']]) ) {
+                $parent['child'] = _menu_tree_arr($resource, $parent['id']);
+            }
+            $data[] = $parent;
+        }
+    }
+
+    return $data;
+}
+
+function remove_level( $resource, $data = [], $level = 0 )
+{
+    if ( !empty($resource) ) {
+        foreach ( $resource as $key => $parent ) {
+            $key                = $parent['id'];
+            $parent['level']    = $level;
+            $parent['haschild'] = !empty($parent['children']) ? 1 : 0;
+            $data[$key]         = $parent;
+            if ( !empty($parent['children']) ) {
+                $data = remove_level($parent['children'], $data, $level + 1);
+            }
+            unset($data[$key]['children']);
+        }
+    }
+
+    return $data;
+}
+
 /**
  * Parses a string into variables to be stored in an array.
  *
@@ -732,115 +899,4 @@ function ovic_timezone_choice( $selected_zone, $locale = null )
     $structure[] = '</optgroup>';
 
     echo join("\n", $structure);
-}
-
-/**
- * @uses : https://laravel.com/docs/master/collections#method-groupby
- * @atts['type']: dropdown, list, group
- * @example:
- *  _menu_tree( $donvi, ['title' => 'tendonvi', 'type' => 'group','groupBy' => 1] )
- *
- * */
-function _menu_tree( $resource, $atts, $parent_id = 0, $level = 0 )
-{
-    $atts       = ovic_parse_args($atts, [
-        'id'      => 'id',
-        'title'   => 'title',
-        'type'    => 'list',
-        'groupBy' => 0,
-    ]);
-    $html       = '';
-    $before     = '';
-    $after      = '';
-    $sub_before = '';
-    $sub_after  = '';
-    foreach ( $resource as $parent ) {
-        $class = '';
-        $level = $parent['level'];
-        $title = $parent[$atts['title']];
-        switch ( $atts['type'] ) {
-
-            case 'list':
-
-                if ( $parent['haschild'] == 1 ) {
-                    $class = ' has-children';
-                }
-                $before     = "<li id='menu-{$parent[$atts['id']]}' class='menu-item{$class}'>";
-                $after      = "</li>";
-                $sub_before = "<ul class='sub-menu'>";
-                $sub_after  = "</ul>";
-
-                break;
-
-            case 'dropdown':
-
-                $title = str_repeat('-', $level) . " {$title}";
-                $title = "<option value='{$parent[$atts['id']]}'>{$title}</option>";
-
-                break;
-
-            case 'group':
-
-                if ( $level <= $atts['groupBy'] ) {
-                    $before = "<optgroup label='{$title}'>";
-                    $after  = "</optgroup>";
-                }
-
-                $title = "<option value='{$parent[$atts['id']]}'>{$title}</option>";
-
-                break;
-        }
-        $html .= $before;
-        $html .= $title;
-        if ( $parent['haschild'] == 1 ) {
-            $html .= $sub_before;
-            $html .= _menu_tree($resource, $atts);
-            $html .= $sub_after;
-        }
-        $html .= $after;
-    }
-
-    return $html;
-}
-
-function _menu_tree_arr( $resource, $parent_id = 0, $level = false )
-{
-    $data = [];
-    foreach ( $resource[$parent_id] as $parent ) {
-
-        if ( $level == false ) {
-            $data[] = $parent;
-            if ( isset($resource[$parent['id']]) ) {
-                $childrens = _menu_tree_arr($resource, $parent['id']);
-                if ( !empty($childrens) ) {
-                    foreach ( $childrens as $children ) {
-                        $data[] = $children;
-                    }
-                }
-            }
-        } else {
-            if ( isset($resource[$parent['id']]) ) {
-                $parent['child'] = _menu_tree_arr($resource, $parent['id']);
-            }
-            $data[] = $parent;
-        }
-    }
-
-    return $data;
-}
-
-function remove_level( $resource, $data = [], $level = 0 )
-{
-    foreach ( $resource as $key => $parent ) {
-        $key                = $parent['id'];
-        $parent['level']    = $level;
-        $parent['haschild'] = !empty($parent['children']) ? 1 : 0;
-        $data[$key]         = $parent;
-        if ( !empty($parent['children']) ) {
-            $data = remove_level($parent['children'], $data, $level + 1);
-        }
-        unset($data[$key]['children']);
-    }
-
-    return $data;
 }

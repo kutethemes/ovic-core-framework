@@ -46,10 +46,6 @@
     <script src="{{ asset('js/plugins/validate/jquery.validate.min.js') }}"></script>
     {{-- script users --}}
     <script>
-        var donvidata = JSON.parse(
-            JSON.stringify( @json( $donvis ) )
-        );
-
         $( "#edit-post" ).validate( {
             errorPlacement: function ( error, element ) {
                 element.before( error );
@@ -60,28 +56,61 @@
                 }
             }
         } );
+
         $( '.chosen-select' ).chosen( {
             width: "100%",
             no_results_text: "Không tìm thấy kết quả!",
             disable_search_threshold: 5,
             allow_single_deselect: true
         } );
-        $( document ).on( 'chosen:updated change', '.form-group.donvi .chosen-select', function () {
+
+        $( '.form-group.donvi .chosen-select' ).bind( 'chosen:hiding_dropdown', function () {
             let data = $( this ).val(),
                 phamvi = $( this ).closest( 'form' ).find( '.form-group.phamvi .chosen-select' );
 
             phamvi.find( 'option' ).hide();
-            if ( data !== undefined ) {
-                $.each( donvidata[data], function ( index, value ) {
-                    let option = phamvi.find( 'option[value="' + value.id + '"]' );
 
-                    if ( option.length ) {
-                        option.show();
-                    }
+            if ( data !== undefined && data !== null ) {
+                $.ajax( {
+                    url: 'users/create',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        selected: data
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                    },
+                    success: function ( response ) {
+
+                        $.each( response, function ( index, value ) {
+
+                            if ( data != value ) {
+                                let option = phamvi.find( 'option[value="' + value + '"]' );
+
+                                if ( option.length ) {
+                                    option.show();
+                                }
+                            }
+                            phamvi.trigger( 'chosen:updated' );
+
+                        } );
+
+                    },
+                    error: function () {
+
+                        swal( {
+                            type: 'error',
+                            title: "Error!",
+                            text: "Hệ thống không phản hồi.",
+                            showConfirmButton: true
+                        } );
+                    },
                 } );
             }
             phamvi.trigger( 'chosen:updated' );
         } );
+
         $( '#table-posts' ).init_dataTable( "users-classic", {
             dom: '<"head-table"Bif>rt<"footer-table"lp><"clear">',
             buttons: [
@@ -187,6 +216,7 @@
                 },
             ]
         } );
+
         $( document ).on( 'click', 'button.edit-field', function () {
             let group = $( this ).closest( '.input-group' );
             let input = group.find( 'input' );

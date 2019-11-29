@@ -79,11 +79,11 @@ class UsersController extends Controller
         $donvis = [];
         $ucases = [];
         if ( Donvi::hasTable() ) {
-            $donvis = Donvi::getDonvi(true);
+            $donvis = Donvi::getDonvi();
         }
 
         if ( Roles::hasTable() ) {
-            $roles = Roles::all([ 'id', 'title' ]);
+            $roles = Roles::getRoles();
         }
 
         return view(
@@ -101,6 +101,34 @@ class UsersController extends Controller
      */
     public function create( Request $request )
     {
+        if ( $request->has('selected') ) {
+            if ( Donvi::hasTable() ) {
+                $donvis = Donvi::where(
+                    [
+                        [ 'status', '1' ],
+                        [ 'id', $request->input('selected') ]
+                    ])
+                    ->with(
+                        [
+                            'children' => function ( $query ) {
+                                $query->where(
+                                    [
+                                        [ 'status', 1 ],
+                                    ]
+                                );
+                            }
+                        ])
+                    ->get()
+                    ->toArray();
+
+                return response()->json(
+                    array_keys(remove_level($donvis))
+                );
+            } else {
+                return response()->json([]);
+            }
+        }
+
         $args = [
             [ 'id', '>', 0 ],
         ];

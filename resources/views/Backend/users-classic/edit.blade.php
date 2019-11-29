@@ -97,7 +97,6 @@
                             _menu_tree( $donvis, [
                                'title'  =>  'tendonvi',
                                'type'   =>  'dropdown',
-                               'groupBy'=>  1,
                             ]);
                         !!}
                     </select>
@@ -136,7 +135,6 @@
                             _menu_tree( $donvis, [
                                'title'  =>  'tendonvi',
                                'type'   =>  'dropdown',
-                               'groupBy'=>  1,
                             ]);
                         !!}
                     </select>
