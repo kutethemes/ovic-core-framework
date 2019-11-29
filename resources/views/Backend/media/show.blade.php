@@ -13,7 +13,7 @@
 
 @extends( name_blade('Backend.app') )
 
-@section( 'title', 'Attachment Detail' )
+@section( 'title', $attachment['title']  )
 
 @push( 'styles' )
     <!-- style show media -->
@@ -22,6 +22,16 @@
             font-size: 200px;
         }
     </style>
+@endpush
+
+@push( 'scripts' )
+    <script src="{{ asset('js/plugins/video/responsible-video.js') }}"></script>
+    <!-- script show media -->
+    <script>
+        $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function (e){
+            $('body').hasClass('fullscreen-video') ? $('body').removeClass('fullscreen-video') : $('body').addClass('fullscreen-video')
+        });
+    </script>
 @endpush
 
 @section( 'content' )
@@ -36,7 +46,7 @@
     <div class="col-sm-12 full-height">
         <div class="ibox full-height-scroll">
             <div class="ibox-title">
-                <h5>{{ $attachment['name'] }}</h5>
+                <h5>THÔNG TIN FILE</h5>
             </div>
             <div class="ibox-content">
                 <div class="row">
@@ -45,7 +55,7 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Title</label>
                                 <div class="col-lg-9">
-                                    <p class="form-control-static">{{ $attachment['title'] }}</p>
+                                    <p class="form-control-static">{{ $attachment['name'] }}</p>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
@@ -94,9 +104,9 @@
                     <div class="col-sm-5">
                         <a href="{{ $url }}" class="text-center" target="_blank">
                             @if ( strstr( $mimetype, "video/" ) )
-                                <div class="icon">
-                                    <i class="img-fluid fa fa-film"></i>
-                                </div>
+                                <figure>
+                                    <iframe width="425" height="349" src="{{ $url }}" frameborder="0" allowfullscreen></iframe>
+                                </figure>
                             @elseif ( strstr( $mimetype, "image/" ) )
                                 <div class="image">
                                     <img alt="image" class="img-fluid" src="{{ $url }}"/>
@@ -108,6 +118,10 @@
                             @elseif ( in_array( $extension, [ 'doc','docx' ] ) )
                                 <div class="icon">
                                     <i class="fa fa-file-word-o"></i>
+                                </div>
+                            @elseif ( in_array( $extension, [ 'ppt','pptx' ] ) )
+                                <div class="icon">
+                                    <i class="fa fa-file-powerpoint-o"></i>
                                 </div>
                             @elseif ( in_array( $extension, [ 'xls','xlsx' ] ) )
                                 <div class="icon">
