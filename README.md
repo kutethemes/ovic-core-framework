@@ -50,15 +50,10 @@ The package will automatically register a service provider and alias.
 Optionally, publish the package's configuration file by running:
 
 ``` bash
-All     : php artisan vendor:publish --provider="Ovic\Framework\FrameworkServiceProvider" --force
-Config  : php artisan vendor:publish --tag=ovic-config --force
-Assets  : php artisan vendor:publish --tag=ovic-assets --force
-Views   : php artisan vendor:publish --tag=ovic-views --force
-Lang    : php artisan vendor:publish --tag=ovic-lang --force
-Auth    : php artisan vendor:publish --tag=ovic-auth --force
+php artisan vendor:publish --tag=ovic-auth --force
 ```
 
-## Config
+## Advance options
 
 To update through Composer, by run the following command:
 
@@ -76,6 +71,17 @@ To clear cache Composer, by run the following command:
 
 ``` bash
 composer clear-cache
+```
+
+To publish the package's file by running:
+
+``` bash
+All     : php artisan vendor:publish --provider="Ovic\Framework\FrameworkServiceProvider" --force
+Config  : php artisan vendor:publish --tag=ovic-config --force
+Assets  : php artisan vendor:publish --tag=ovic-assets --force
+Views   : php artisan vendor:publish --tag=ovic-views --force
+Lang    : php artisan vendor:publish --tag=ovic-lang --force
+Auth    : php artisan vendor:publish --tag=ovic-auth --force
 ```
 
 To registering HTTP Session, by run the following command ( https://laravel.com/docs/6.x/session ):

@@ -4,9 +4,7 @@ namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Artisan;
 
@@ -27,7 +25,7 @@ class UcasesController extends Controller
     public function rules( $id = null )
     {
         $rules = [
-            'slug'      => [ 'required', 'string', 'max:100', 'unique:'.$this->table.',slug' ],
+            'slug'      => [ 'required', 'string', 'max:100', 'unique:' . $this->table . ',slug' ],
             'title'     => [ 'required', 'string', 'max:100' ],
             'ordering'  => [ 'numeric', 'min:0' ],
             'parent_id' => [ 'numeric', 'min:0' ],
@@ -36,7 +34,7 @@ class UcasesController extends Controller
             'route.*'   => [ 'string', 'nullable' ],
         ];
         if ( $id != null ) {
-            $rules['slug'] = [ 'required', 'string', 'max:100', 'unique:'.$this->table.',slug,'.$id ];
+            $rules['slug'] = [ 'required', 'string', 'max:100', 'unique:' . $this->table . ',slug,' . $id ];
         }
 
         return $rules;
@@ -55,34 +53,32 @@ class UcasesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
         $permission = user_can('all');
 
-        if ( array_sum($permission) == 0 ) {
+        if ( array_sum($permission) == 0 || !user_can('view') ) {
             abort(404);
         }
 
-        $menus = [
-            'menu-left' => Ucases::EditMenu('left'),
-            'menu-top'  => Ucases::EditMenu('top'),
-        ];
-
         return view(
             name_blade('Backend.ucases.app'),
-            compact([
-                'menus',
-                'permission'
-            ])
+            [
+                'menus'      => [
+                    'menu-left' => Ucases::EditMenu('left'),
+                    'menu-top'  => Ucases::EditMenu('top'),
+                ],
+                'permission' => $permission
+            ]
         );
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create( Request $request )
     {
@@ -135,7 +131,7 @@ class UcasesController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store( Request $request )
     {
@@ -203,7 +199,7 @@ class UcasesController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit( $id )
     {
@@ -235,7 +231,7 @@ class UcasesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update( Request $request, $id )
     {
@@ -258,7 +254,7 @@ class UcasesController extends Controller
 
                 if ( $slug != $_slug ) {
 
-                    $roles = Roles::where('ucase_ids', 'LIKE', '%'.$_slug.'%')
+                    $roles = Roles::where('ucase_ids', 'LIKE', '%' . $_slug . '%')
                         ->get([ 'id', 'ucase_ids' ]);
 
                     if ( !empty($roles) ) {
@@ -301,7 +297,7 @@ class UcasesController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy( Request $request, $id )
     {

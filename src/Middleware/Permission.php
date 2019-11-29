@@ -2,11 +2,9 @@
 
 namespace Ovic\Framework;
 
-use Auth;
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 class Permission extends Middleware
 {

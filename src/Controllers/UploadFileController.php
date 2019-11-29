@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class UploadFileController extends Controller
@@ -123,7 +122,7 @@ class UploadFileController extends Controller
                 if ( !empty($month) ) {
                     foreach ( $month as $mon ) {
                         $data['children'][] = [
-                            "text"   => "Tháng ".str_replace([ $year, '/' ], [ '', '' ], $mon),
+                            "text"   => "Tháng " . str_replace([ $year, '/' ], [ '', '' ], $mon),
                             "a_attr" => [
                                 "class"    => "dir-filter",
                                 "data-dir" => $mon,
@@ -141,13 +140,13 @@ class UploadFileController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
         $permission = user_can('all');
 
-        if ( array_sum($permission) == 0 ) {
+        if ( array_sum($permission) == 0 || !user_can('view') ) {
             abort(404);
         }
 
@@ -200,7 +199,7 @@ class UploadFileController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function filter( $data )
     {
@@ -279,7 +278,7 @@ class UploadFileController extends Controller
             return response()->json(
                 [
                     'status'  => $status,
-                    'message' => 'Đã tìm được '.$count.' kết quả.',
+                    'message' => 'Đã tìm được ' . $count . ' kết quả.',
                     'html'    => $html,
                     'count'   => $count,
                 ]
@@ -300,7 +299,7 @@ class UploadFileController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store( Request $request )
     {
@@ -388,7 +387,7 @@ class UploadFileController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return string
      */
     public function show( $id )
     {
@@ -414,7 +413,7 @@ class UploadFileController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return string
      */
     public function image( $id )
     {
@@ -465,7 +464,7 @@ class UploadFileController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy( $id )
     {
@@ -485,7 +484,7 @@ class UploadFileController extends Controller
             return response()->json([
                 'status'      => 200,
                 'ids'         => $deleted['ids'],
-                'message'     => 'Đã xóa '.$deleted['count'].' file!',
+                'message'     => 'Đã xóa ' . $deleted['count'] . ' file!',
                 'directories' => json_encode($this->directories)
             ]);
         }

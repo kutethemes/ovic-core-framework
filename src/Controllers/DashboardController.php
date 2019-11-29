@@ -4,9 +4,7 @@ namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Route;
 
 class DashboardController extends Controller
 {

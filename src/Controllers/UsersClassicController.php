@@ -65,19 +65,18 @@ class UsersClassicController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index( Request $request )
     {
         $permission = user_can('all');
 
-        if ( array_sum($permission) == 0 ) {
+        if ( array_sum($permission) == 0 || !user_can('view') ) {
             abort(404);
         }
 
         $roles  = [];
         $donvis = [];
-        $ucases = [];
         if ( Donvi::hasTable() ) {
             $donvis = Donvi::getDonvi();
         }
@@ -87,16 +86,18 @@ class UsersClassicController extends Controller
 
         return view(
             name_blade('Backend.users-classic.app2'),
-            compact(
-                [ 'donvis', 'roles', 'permission' ]
-            )
+            [
+                'donvis'     => $donvis,
+                'roles'      => $roles,
+                'permission' => $permission
+            ]
         );
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create( Request $request )
     {
@@ -237,7 +238,7 @@ class UsersClassicController extends Controller
      *
      * @param  array  $data
      *
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store( Request $request )
     {
@@ -297,7 +298,7 @@ class UsersClassicController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show( $id )
     {
@@ -324,7 +325,7 @@ class UsersClassicController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update( Request $request, $id )
     {
@@ -393,7 +394,7 @@ class UsersClassicController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy( $id )
     {

@@ -2,7 +2,6 @@
 
 namespace Ovic\Framework;
 
-use Ovic\Framework\Roles;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -25,13 +24,13 @@ class RolesController extends Controller
     public function rules( $id = null, $request = null )
     {
         $rules = [
-            'name'     => [ 'required', 'string', 'max:100', 'unique:'.$this->table.',name' ],
+            'name'     => [ 'required', 'string', 'max:100', 'unique:' . $this->table . ',name' ],
             'title'    => [ 'required', 'string', 'max:100' ],
             'ordering' => [ 'numeric', 'min:0' ],
             'status'   => [ 'numeric', 'min:0', 'max:1' ],
         ];
         if ( $id != null ) {
-            $rules['name'] = [ 'required', 'string', 'max:100', 'unique:'.$this->table.',name,'.$id ];
+            $rules['name'] = [ 'required', 'string', 'max:100', 'unique:' . $this->table . ',name,' . $id ];
             if ( !$request->has('name') ) {
                 $rules['name'] = '';
             }
@@ -56,13 +55,13 @@ class RolesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
         $permission = user_can('all');
 
-        if ( array_sum($permission) == 0 ) {
+        if ( array_sum($permission) == 0 || !user_can('view') ) {
             abort(404);
         }
 
@@ -77,7 +76,7 @@ class RolesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create( Request $request )
     {
@@ -162,7 +161,7 @@ class RolesController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store( Request $request )
     {
@@ -234,7 +233,7 @@ class RolesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update( Request $request, $id )
     {
@@ -290,7 +289,7 @@ class RolesController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy( $id )
     {
@@ -311,7 +310,7 @@ class RolesController extends Controller
             return response()->json([
                 'status'  => 'success',
                 'title'   => 'Đã xóa!',
-                'message' => 'Đã xóa '.$count.' nhóm người dùng!',
+                'message' => 'Đã xóa ' . $count . ' nhóm người dùng!',
             ]);
         }
         return response()->json([

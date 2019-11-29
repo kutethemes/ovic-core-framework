@@ -66,7 +66,7 @@ class Roles extends Eloquent
         if ( !empty($role_ids) ) {
             return Cache::rememberForever(name_cache('roles_admin'),
                 function () use ( $query, $role_ids ) {
-                    return $query->where('ordering', '>', min($role_ids))
+                    return $query->where('ordering', '>', min((array) $role_ids))
                         ->orderBy('ordering', 'asc')
                         ->get();
                 }
@@ -82,7 +82,7 @@ class Roles extends Eloquent
 
         if ( !Auth::check() ) {
             if ( $route != null ) {
-                return [ 1, 1, 1 ];
+                return [ 1, 1, 1, 1 ];
             }
             $ucases = Cache::rememberForever(name_cache('permission'),
                 function () use ( $query ) {
@@ -93,10 +93,10 @@ class Roles extends Eloquent
             );
             if ( !empty($ucases) ) {
                 foreach ( $ucases as $ucase ) {
-                    $permission[$ucase['slug']] = [ 1, 1, 1 ];
+                    $permission[$ucase['slug']] = [ 1, 1, 1, 1 ];
                 }
             }
-            $permission['dashboard'] = [ 1, 1, 1 ];
+            $permission['dashboard'] = [ 1, 1, 1, 1 ];
 
             return $permission;
         }
@@ -105,7 +105,7 @@ class Roles extends Eloquent
 
         if ( $user['status'] == 3 ) {
             if ( $route != null ) {
-                return [ 1, 1, 1 ];
+                return [ 1, 1, 1, 1 ];
             }
             $ucases = Cache::rememberForever(name_cache('permission_supper_admin'),
                 function () use ( $query ) {
@@ -115,11 +115,11 @@ class Roles extends Eloquent
             );
             if ( !empty($ucases) ) {
                 foreach ( $ucases as $ucase ) {
-                    $permission[$ucase['slug']] = [ 1, 1, 1 ];
+                    $permission[$ucase['slug']] = [ 1, 1, 1, 1 ];
                 }
             }
-            $permission['ucases']    = [ 1, 1, 1 ];
-            $permission['dashboard'] = [ 1, 1, 1 ];
+            $permission['ucases']    = [ 1, 1, 1, 1 ];
+            $permission['dashboard'] = [ 1, 1, 1, 1 ];
 
             return $permission;
         }

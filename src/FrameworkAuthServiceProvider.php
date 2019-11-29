@@ -2,9 +2,7 @@
 
 namespace Ovic\Framework;
 
-use App\Policies\PostPolicy;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class FrameworkAuthServiceProvider extends ServiceProvider

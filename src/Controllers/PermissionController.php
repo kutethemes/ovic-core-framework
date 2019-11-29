@@ -3,9 +3,7 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Artisan;
 
@@ -26,13 +24,13 @@ class PermissionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
         $permission = user_can('all');
 
-        if ( array_sum($permission) == 0 ) {
+        if ( array_sum($permission) == 0 || !user_can('view') ) {
             abort(404);
         }
 
@@ -40,18 +38,16 @@ class PermissionController extends Controller
             ->orderBy('ordering', 'asc')
             ->get();
 
-        $menus = [
-            'menu-left' => Ucases::EditMenu('left', true),
-            'menu-top'  => Ucases::EditMenu('top', true),
-        ];
-
         return view(
             name_blade('Backend.permission.app'),
-            compact([
-                'menus',
-                'roles',
-                'permission'
-            ])
+            [
+                'menus'      => [
+                    'menu-left' => Ucases::EditMenu('left', true),
+                    'menu-top'  => Ucases::EditMenu('top', true),
+                ],
+                'roles'      => $roles,
+                'permission' => $permission
+            ]
         );
     }
 
@@ -61,7 +57,7 @@ class PermissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update( Request $request, $id )
     {
@@ -74,7 +70,7 @@ class PermissionController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'id' => [ 'required', 'numeric', 'unique:'.$this->table.',id,'.$id ],
+            'id' => [ 'required', 'numeric', 'unique:' . $this->table . ',id,' . $id ],
         ]);
         $data      = $request->except([ '_token', 'id' ]);
 

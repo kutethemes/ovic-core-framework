@@ -3,7 +3,6 @@
 namespace Ovic\Framework;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -74,7 +73,7 @@ class Posts extends Eloquent
      * Destroy the models for the given IDs.
      *
      * @param  \Illuminate\Support\Collection|array|int  $ids
-     * @return int
+     * @return array
      */
     public static function destroy( $ids )
     {

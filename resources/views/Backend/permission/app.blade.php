@@ -25,7 +25,7 @@
         }
 
         .dd-handle .name {
-            width: calc(100% - 128px);
+            width: calc(100% - 156px);
             margin-right: 10px;
         }
 
@@ -70,8 +70,8 @@
             margin-bottom: 0;
         }
 
-        .dd-handle > .btn-group > *:nth-child(2) {
-            margin: 0 3px;
+        .dd-handle > .btn-group > *:not(:last-child) {
+            margin-right: 3px;
         }
 
         .dd-item > btn-group > * {
@@ -276,7 +276,7 @@
                 }
             } );
 
-            if ( checked == true ) {
+            if ( checked === true ) {
                 input.each( function ( key, value ) {
                     $( this ).prop( 'checked', '' ).trigger( 'change' );
                 } );
@@ -332,20 +332,13 @@
             button.closest( '.client-detail' ).find( 'a' ).not( button ).removeClass( 'active' );
 
             $.each( ucase, function ( index, value ) {
-                let item = $( '#menu-' + index ),
-                    add = item.find( 'input[name="add"]' ),
-                    edit = item.find( 'input[name="edit"]' ),
-                    del = item.find( 'input[name="delete"]' );
+                let item = $( '#menu-' + index );
 
-                if ( value[0] !== undefined && value[0] == 1 ) {
-                    add.prop( 'checked', true );
-                }
-                if ( value[1] !== undefined && value[1] == 1 ) {
-                    edit.prop( 'checked', true );
-                }
-                if ( value[2] !== undefined && value[2] == 1 ) {
-                    del.prop( 'checked', true );
-                }
+                item.find( 'input' ).each( function ( key ) {
+                    if ( value[key] !== undefined && parseInt( value[key] ) === 1 ) {
+                        $( this ).prop( 'checked', true );
+                    }
+                } );
             } );
 
             return false;
@@ -359,7 +352,7 @@
                 loading = form.closest( '.ibox-content' ),
                 data = {};
 
-            if ( roleID == 0 ) {
+            if ( parseInt( roleID ) === 0 ) {
                 form.trigger( 'reset' );
                 swal( {
                     type: 'warning',

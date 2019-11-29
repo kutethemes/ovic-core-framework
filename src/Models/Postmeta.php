@@ -3,7 +3,6 @@
 namespace Ovic\Framework;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Support\Facades\Auth;
 
 class Postmeta extends Eloquent
 {

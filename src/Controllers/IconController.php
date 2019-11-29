@@ -22,9 +22,9 @@ class IconController extends Controller
         $icon_lists = $this->default_icons();
         if ( !empty($icon_lists) ) {
             foreach ( $icon_lists as $list ) {
-                $html .= ( count($icon_lists) >= 2 ) ? '<div class="ovic-icon-title">'.$list['title'].'</div>' : '';
+                $html .= ( count($icon_lists) >= 2 ) ? '<div class="ovic-icon-title">' . $list['title'] . '</div>' : '';
                 foreach ( $list['icons'] as $icon ) {
-                    $html .= '<a class="ovic-icon-tooltip" data-ovic-icon="'.$icon.'" title="'.$icon.'"><span class="ovic-icon ovic-selector"><i class="'.$icon.'"></i></span></a>';
+                    $html .= '<a class="ovic-icon-tooltip" data-ovic-icon="' . $icon . '" title="' . $icon . '"><span class="ovic-icon ovic-selector"><i class="' . $icon . '"></i></span></a>';
                 }
             }
         } else {
@@ -38,7 +38,7 @@ class IconController extends Controller
 
     public function default_icons()
     {
-        return [
+        return response()->json([
             [
                 'title' => 'Font Awesome',
                 'icons' => [
@@ -719,6 +719,6 @@ class IconController extends Controller
                     'fa fa-meetup',
                 ],
             ],
-        ];
+        ]);
     }
 }

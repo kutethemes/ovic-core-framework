@@ -17,6 +17,13 @@
         {{ $data['title'] }}
     </div>
     <div class="btn-group">
+        <label class="css-checkbox" for="view-{{ $data['slug'] }}"
+               data-trigger="hover" data-toggle="popover"
+               data-placement="top" data-content="Xem">
+            <input id="view-{{ $data['slug'] }}" type="checkbox" name="view"
+                   value="0">
+            <span class="checkmark"></span>
+        </label>
         <label class="css-checkbox" for="add-{{ $data['slug'] }}"
                data-trigger="hover" data-toggle="popover"
                data-placement="top" data-content="Thêm">

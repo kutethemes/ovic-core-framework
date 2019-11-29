@@ -3,7 +3,6 @@
 namespace Ovic\Framework;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class FrameworkServiceProvider extends ServiceProvider
@@ -51,19 +50,19 @@ class FrameworkServiceProvider extends ServiceProvider
         });
 
         /* Load Config */
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'ovic');
+        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'ovic');
 
         /* Load Migrations */
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         /* Load Routes */
-        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
 
         /* Load Language */
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'ovic');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'ovic');
 
         /* Load View */
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'ovic');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'ovic');
 
         /* Publishes */
         $this->publishes_config();
@@ -76,7 +75,7 @@ class FrameworkServiceProvider extends ServiceProvider
     public function publishes_config()
     {
         $this->publishes([
-            __DIR__.'/../config/config.php' => config_path('ovic.php')
+            __DIR__ . '/../config/config.php' => config_path('ovic.php')
         ], 'ovic-config');
     }
 
@@ -84,7 +83,7 @@ class FrameworkServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                __DIR__.'/../assets/' => public_path(),
+                __DIR__ . '/../assets/' => public_path(),
             ],
             'ovic-assets'
         );
@@ -94,7 +93,7 @@ class FrameworkServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                __DIR__.'/../resources/views/' => resource_path('views'),
+                __DIR__ . '/../resources/views/' => resource_path('views'),
             ],
             'ovic-views'
         );
@@ -104,7 +103,7 @@ class FrameworkServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                __DIR__.'/../resources/lang' => resource_path('lang/ovic-core/framework'),
+                __DIR__ . '/../resources/lang' => resource_path('lang/ovic-core/framework'),
             ],
             'ovic-lang'
         );
@@ -114,7 +113,7 @@ class FrameworkServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                __DIR__.'/../resources/views/auth' => resource_path('views/auth'),
+                __DIR__ . '/../resources/views/auth' => resource_path('views/auth'),
             ],
             'ovic-auth'
         );

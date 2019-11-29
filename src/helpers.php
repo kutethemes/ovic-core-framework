@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Ovic\Framework\Roles;
 use Ovic\Framework\Posts;
 
@@ -32,14 +31,17 @@ function name_cache( $name )
 function user_can( $can, $data = null )
 {
     switch ( $can ) {
-        case 'add':
+        case 'view':
             $key = 0;
             break;
-        case 'edit':
+        case 'add':
             $key = 1;
             break;
-        case 'delete':
+        case 'edit':
             $key = 2;
+            break;
+        case 'delete':
+            $key = 3;
             break;
     }
     if ( $data == null ) {
@@ -57,7 +59,7 @@ function user_can( $can, $data = null )
         if ( !empty($permission) ) {
             return $permission;
         }
-        return [ 0, 0, 0 ];
+        return [ 0, 0, 0, 0 ];
     }
 
     if ( !empty($permission[$key]) && $permission[$key] == 1 ) {
@@ -71,7 +73,7 @@ function button_set( $button, $permission, $attr = [] )
 {
     switch ( $button ) {
         case 'add':
-            $key     = 0;
+            $key     = 1;
             $class   = ' add-post';
             $default = [
                 'text'  => 'Thêm',
@@ -81,7 +83,7 @@ function button_set( $button, $permission, $attr = [] )
             ];
             break;
         case 'edit':
-            $key     = 1;
+            $key     = 2;
             $class   = ' edit-post';
             $default = [
                 'text'  => 'Sửa',
@@ -91,7 +93,7 @@ function button_set( $button, $permission, $attr = [] )
             ];
             break;
         case 'delete':
-            $key     = 2;
+            $key     = 3;
             $class   = ' delete-post';
             $default = [
                 'text'  => 'Xóa',
@@ -114,6 +116,8 @@ function button_set( $button, $permission, $attr = [] )
                 'class' => $attr['class'] . $class,
             ]);
     }
+
+    return false;
 }
 
 function get_attachment_url( $id, $is_path = false )

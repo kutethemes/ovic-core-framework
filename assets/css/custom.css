@@ -141,3 +141,12 @@ body.full-height-layout #app {
         height: auto !important;
     }
 }
+/**
+    Custom full layout of ibox panel
+ */
+
+/*.full-height-content, .full-height{padding: 0px!important;}*/
+/*.panel-left{border-right: 1px solid #ccc;}*/
+/*.panel-left .ibox-title{background: #f3f3f4!important;}*/
+/*.panel-left .ibox-content{background: #fbfbfb!important;}*/
+/*.full-height-content .ibox-title{border: none!important;}*/
