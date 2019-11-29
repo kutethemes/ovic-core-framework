@@ -11,11 +11,19 @@
      */
 @endphp
 
+@php
+    $url        = get_attachment_url( $attachment['name'], true );
+    $size       = $attachment['meta']['_attachment_metadata']['size'];
+    $mimetype   = $attachment['meta']['_attachment_metadata']['mimetype'];
+    $extension  = $attachment['meta']['_attachment_metadata']['extension'];
+@endphp
+
 @extends( name_blade('Backend.app') )
 
 @section( 'title', $attachment['title']  )
 
 @push( 'styles' )
+    <link href="{{ asset('js/APlayer/APlayer.min.css') }}" rel="stylesheet">
     <!-- style show media -->
     <style>
         div.icon {
@@ -26,22 +34,25 @@
 
 @push( 'scripts' )
     <script src="{{ asset('js/plugins/video/responsible-video.js') }}"></script>
+    <script src="{{ asset('js/APlayer/APlayer.min.js') }}"></script>
     <!-- script show media -->
     <script>
         $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function (e){
             $('body').hasClass('fullscreen-video') ? $('body').removeClass('fullscreen-video') : $('body').addClass('fullscreen-video')
         });
+        const ap = new APlayer({
+            container: document.getElementById('aplayer'),
+            audio: [{
+                name: "{{ $attachment['title'] }}",
+                artist: 'artist',
+                url: "{{ $url }}",
+                cover: 'cover.jpg'
+            }]
+        });
     </script>
 @endpush
 
 @section( 'content' )
-
-    @php
-        $url        = get_attachment_url( $attachment['name'], true );
-        $size       = $attachment['meta']['_attachment_metadata']['size'];
-        $mimetype   = $attachment['meta']['_attachment_metadata']['mimetype'];
-        $extension  = $attachment['meta']['_attachment_metadata']['extension'];
-    @endphp
 
     <div class="col-sm-12 full-height">
         <div class="ibox full-height-scroll">
@@ -137,6 +148,9 @@
                                 </div>
                             @endif
                         </a>
+                        @if ( strstr( $mimetype, "audio/" ) )
+                            <div id="aplayer"></div>
+                        @endif
                     </div>
                 </div>
             </div>

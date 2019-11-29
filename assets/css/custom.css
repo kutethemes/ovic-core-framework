@@ -151,8 +151,24 @@ body.full-height-layout #app {
     Custom full layout of ibox panel
  */
 
-/*.full-height-content, .full-height{padding: 0px!important;}*/
-/*.panel-left{border-right: 1px solid #ccc;}*/
-/*.panel-left .ibox-title{background: #f3f3f4!important;}*/
-/*.panel-left .ibox-content{background: #fbfbfb!important;}*/
-/*.full-height-content .ibox-title{border: none!important;}*/
+
+.full-height-content.nopadding, .full-height-content.nopadding .full-height{
+    padding: 0px!important;
+}
+.panel-left{border-right: 1px solid #e7eaec;}
+.panel-left .ibox-title{
+    background: #f3f3f4;
+    border-top:none!important;
+    border-bottom: 1px solid #e7eaec;
+}
+.panel-left .ibox, .panel-left .ibox-content{
+    background: #fbfbfb!important;
+}
+.full-height-content.nopadding .ibox-content{border: none!important;}
+.full-height-content.nopadding .panel-left .form-group.submit.row{
+    padding: 10px;
+    text-align: -webkit-match-parent;
+    margin-bottom: 19px;
+    background: #f3f3f4;
+}
+.full-height-content.nopadding .panel-left .form-group.submit.row > div{text-align: right!important;}
