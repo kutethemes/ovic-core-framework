@@ -17,14 +17,14 @@
     {{-- Chosen --}}
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     {{-- style users --}}
-    <style>
-        @if( empty( $permission[0] ) || $permission[0] == false )
+    @if( !user_can('add', $permission) )
+        <style>
             .btn.add-new {
-            display: none !important;
-        }
-
-        @endif
-
+                display: none !important;
+            }
+        </style>
+    @endif
+    <style>
         .client-avatar img {
             max-width: 28px;
         }
@@ -35,6 +35,14 @@
 
         .field-password .input-group-append {
             display: none;
+        }
+
+        .table-filter {
+            border-bottom: 1px solid #e7eaec;
+        }
+
+        .table-filter .input-control div.chosen-container {
+            min-width: 320px;
         }
     </style>
 @endpush
@@ -72,7 +80,7 @@
 
             if ( data !== undefined && data !== null ) {
                 $.ajax( {
-                    url: 'users/create',
+                    url: 'users-classic/create',
                     type: 'GET',
                     dataType: 'json',
                     data: {
@@ -85,7 +93,7 @@
 
                         $.each( response, function ( index, value ) {
 
-                            if ( data != value ) {
+                            if ( data !== parseInt( value ) ) {
                                 let option = phamvi.find( 'option[value="' + value + '"]' );
 
                                 if ( option.length ) {
@@ -162,6 +170,11 @@
                     }
                 },
                 {
+                    className: "client-email",
+                    data: "email",
+                    sortable: false
+                },
+                {
                     className: "client-name",
                     data: "name",
                     sortable: false
@@ -169,11 +182,6 @@
                 {
                     className: "client-donvi",
                     data: "donvi_text",
-                    sortable: false
-                },
-                {
-                    className: "client-email",
-                    data: "email",
                     sortable: false
                 },
                 {
@@ -185,7 +193,7 @@
                         let _title = "Người dùng không kích hoạt";
                         let _icon = "<span class='label label-danger'>Inactive</span>";
 
-                        data = data == 3 ? 1 : data;
+                        data = parseInt( data ) === 3 ? 1 : data;
 
                         switch ( data ) {
                             case 1:
@@ -242,7 +250,7 @@
 
                 $.each( user, function ( index, value ) {
                     if ( form.find( '[name="' + index + '"]' ).length ) {
-                        if ( index === 'status' && value == 3 ) {
+                        if ( index === 'status' && parseInt( value ) === 3 ) {
                             value = 1;
                         }
                         if ( chosen.indexOf( index ) !== -1 ) {
@@ -347,7 +355,7 @@
 
 @section( 'content-table-classic' )
 
-    <div class="col-sm-3 full-height">
+    <div class="col-sm-4 full-height">
         <div class="ibox selected full-height-scroll">
             <div class="ibox-content">
 
@@ -356,7 +364,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-9 full-height hide-sidebar">
+    <div class="col-sm-8 full-height hide-sidebar">
         <div class="ibox normal-scroll-content">
 
             @include( name_blade('Backend.users-classic.list') )

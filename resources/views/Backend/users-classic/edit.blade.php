@@ -29,7 +29,7 @@
             </label>
             <div>
                 <div class="input-group">
-                    <input type="text" name="name" class="form-control required" placeholder="Name" maxlength="100">
+                    <input type="text" name="name" class="form-control required" placeholder="Họ tên" maxlength="100">
                     <span class="input-group-append">
                         <select name="status" class="btn btn-white dropdown-toggle">
                             <option value="1">Kích hoạt</option>
@@ -102,7 +102,6 @@
                     </select>
                 </div>
             </div>
-            <div class="hr-line-dashed"></div>
         @endif
 
         @if( !empty( $roles) )

@@ -34,9 +34,9 @@
         <thead>
         <tr>
             <th class="client-avatar"></th>
-            <th class="client-name">Tên hiển thị</th>
+            <th class="client-email">Tài khoản/Email</th>
+            <th class="client-name">Chủ tài khoản</th>
             <th class="client-donvi">Đơn vị</th>
-            <th class="client-email">Email</th>
             <th class="client-status">Trạng thái</th>
         </tr>
         </thead>

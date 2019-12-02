@@ -10,14 +10,27 @@
 @endphp
 
 @php
-    $footer     = true;
-    $attribute  = !empty( $attribute ) ? $attribute : [];
+    $modal_footer     = true;
+    $attribute        = !empty( $attribute ) ? $attribute : [];
     if ( empty( $text_close ) && empty( $text_save ) ){
-        $footer = false;
+        $modal_footer = false;
     }
 @endphp
 
-<div id="{{ $id }}" class="modal inmodal fade{{ !$footer ? ' no-footer' : '' }}{{ empty( $title ) ? ' no-header' : '' }}"
+@if (!empty($modal_size))
+    @push( 'styles' )
+        <style>
+            @media (min-width: {{ $modal_size }}px) {
+                {{ "#{$id}" }} .modal-content {
+                    width: {{ $modal_size }}px;
+                }
+            }
+        </style>
+    @endpush
+@endif
+
+<div id="{{ $id }}"
+     class="modal inmodal fade{{ !$modal_footer ? ' no-footer' : '' }}{{ empty( $title ) ? ' no-header' : '' }}"
      data-in="{{ !empty( $animated_in ) ? $animated_in : 'slideInLeft' }}"
      data-out="{{ !empty( $animated_out ) ? $animated_out : 'slideOutLeft' }}"
      tabindex="-1"
@@ -43,7 +56,7 @@
 
             </div>
 
-            @if( $footer )
+            @if( $modal_footer )
                 <div class="modal-footer">
                     @if( !empty( $text_close ) )
                         <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">

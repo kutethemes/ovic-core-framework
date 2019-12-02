@@ -104,10 +104,11 @@ class UsersController extends Controller
     {
         if ( $request->has('selected') ) {
             if ( Donvi::hasTable() ) {
+                $id     = $request->input('selected');
                 $donvis = Donvi::where(
                     [
                         [ 'status', '1' ],
-                        [ 'id', $request->input('selected') ]
+                        [ 'id', $id ]
                     ])
                     ->with(
                         [
@@ -130,17 +131,16 @@ class UsersController extends Controller
             }
         }
 
+        $user = Auth::user();
         $args = [
             [ 'id', '>', 0 ],
+            [ 'donvi_id', '=', $user->donvi_id ],
         ];
 
         $totalData = Users::count();
-
-        $totalFiltered = $totalData;
-
-        $limit  = $request->input('length');
-        $start  = $request->input('start');
-        $search = $request->input('search.value');
+        $limit     = $request->input('length');
+        $start     = $request->input('start');
+        $search    = $request->input('search.value');
 
         /* sorting */
         $sort   = $request->input('sorting');
@@ -148,30 +148,35 @@ class UsersController extends Controller
 
         if ( $status != '' ) {
             if ( $status == 1 ) {
-                $args = [
-                    [ 'status', '>', 0 ],
-                    [ 'status', '<>', 2 ],
-                ];
+                $args[] = [ 'status', '>', 0 ];
+                $args[] = [ 'status', '<>', 2 ];
             } else {
-                $args = [
-                    [ 'status', '=', $status ],
-                ];
+                $args[] = [ 'status', '=', $status ];
             }
         } elseif ( $sort != '' && !empty($search) ) {
-            $args = [
-                [ 'status', '=', $sort ],
-            ];
+            $args[] = [ 'status', '=', $sort ];
         }
 
         if ( empty($search) ) {
-            $users = Users::where($args)
+            $totalFiltered = count(Users::where($args)->get());
+            $users         = Users::where($args)
                 ->offset($start)
                 ->limit($limit)
                 ->latest()
                 ->get()
                 ->toArray();
         } else {
-            $users = Users::where($args)
+            $totalFiltered = count(
+                Users::where($args)
+                    ->where(
+                        function ( $query ) use ( $search ) {
+                            $query->where('name', 'LIKE', "%{$search}%")
+                                ->orWhere('email', 'LIKE', "%{$search}%");
+                        }
+                    )
+                    ->get()
+            );
+            $users         = Users::where($args)
                 ->where(
                     function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
@@ -183,8 +188,6 @@ class UsersController extends Controller
                 ->latest()
                 ->get()
                 ->toArray();
-
-            $totalFiltered = count($users);
         }
 
         $data = [];

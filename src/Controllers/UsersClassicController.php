@@ -3,10 +3,13 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class UsersClassicController extends Controller
 {
@@ -65,7 +68,8 @@ class UsersClassicController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param  Request  $request
+     * @return Factory|View
      */
     public function index( Request $request )
     {
@@ -97,49 +101,45 @@ class UsersClassicController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function create( Request $request )
     {
         if ( $request->has('selected') ) {
-            if ( Donvi::hasTable() ) {
-                $donvis = Donvi::where(
-                    [
-                        [ 'status', '1' ],
-                        [ 'id', $request->input('selected') ]
-                    ])
-                    ->with(
-                        [
-                            'children' => function ( $query ) {
-                                $query->where(
-                                    [
-                                        [ 'status', 1 ],
-                                    ]
-                                );
-                            }
-                        ])
-                    ->get()
-                    ->toArray();
+            $id     = $request->input('selected');
+            $donvis = Donvi::where(
+                [
+                    [ 'status', 1 ],
+                    [ 'id', $id ]
+                ])
+                ->with([
+                    'children' => function ( $query ) {
+                        $query->where(
+                            [
+                                [ 'status', 1 ],
+                            ]
+                        );
+                    }
+                ])
+                ->get()
+                ->toArray();
 
-                return response()->json(
-                    array_keys(remove_level($donvis))
-                );
-            } else {
-                return response()->json([]);
-            }
+            return response()->json(
+                array_keys(remove_level($donvis))
+            );
         }
 
-        $args = [
+        $user             = Auth::user();
+        $args             = [
             [ 'id', '>', 0 ],
         ];
+        $args['donvi_id'] = [ 'donvi_id', '=', $user->donvi_id ];
 
         $totalData = Users::count();
-
-        $totalFiltered = $totalData;
-
-        $limit  = $request->input('length');
-        $start  = $request->input('start');
-        $search = $request->input('search.value');
+        $limit     = $request->input('length');
+        $start     = $request->input('start');
+        $search    = $request->input('search.value');
 
         /* sorting */
         $sort   = $request->input('sorting');
@@ -147,37 +147,46 @@ class UsersClassicController extends Controller
 
         if ( $status != '' ) {
             if ( $status == 1 ) {
-                $args = [
-                    [ 'status', '>', 0 ],
-                    [ 'status', '<>', 2 ],
-                ];
+                $args[] = [ 'status', '>', 0 ];
+                $args[] = [ 'status', '<>', 2 ];
             } else {
-                $args = [
-                    [ 'status', '=', $status ],
-                ];
+                $args[] = [ 'status', '=', $status ];
             }
         } elseif ( $sort != '' && !empty($search) ) {
-            $args = [
-                [ 'status', '=', $sort ],
-            ];
+            $args[] = [ 'status', '=', $sort ];
         }
 
         /* filter */
         $filter = $request->input('filter');
 
         if ( !empty($filter['donvi_id']) ) {
-            $args[] = [ 'donvi_id', '=', $filter['donvi_id'] ];
+            $args['donvi_id'] = [ 'donvi_id', '=', $filter['donvi_id'] ];
         }
 
+        $args = array_values($args);
+
         if ( empty($search) ) {
-            $users = Users::where($args)
+            $totalFiltered = count(
+                Users::where($args)->get()
+            );
+            $users         = Users::where($args)
                 ->offset($start)
                 ->limit($limit)
                 ->latest()
                 ->get()
                 ->toArray();
         } else {
-            $users = Users::where($args)
+            $totalFiltered = count(
+                Users::where($args)
+                    ->where(
+                        function ( $query ) use ( $search ) {
+                            $query->where('name', 'LIKE', "%{$search}%")
+                                ->orWhere('email', 'LIKE', "%{$search}%");
+                        }
+                    )
+                    ->get()
+            );
+            $users         = Users::where($args)
                 ->where(
                     function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")
@@ -189,8 +198,6 @@ class UsersClassicController extends Controller
                 ->latest()
                 ->get()
                 ->toArray();
-
-            $totalFiltered = count($users);
         }
 
         $data = [];
@@ -236,9 +243,8 @@ class UsersClassicController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function store( Request $request )
     {
@@ -298,7 +304,7 @@ class UsersClassicController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function show( $id )
     {
@@ -322,10 +328,10 @@ class UsersClassicController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update( Request $request, $id )
     {
@@ -394,7 +400,7 @@ class UsersClassicController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy( $id )
     {

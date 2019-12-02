@@ -17,14 +17,14 @@
     {{-- Chosen --}}
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     {{-- style users --}}
-    <style>
-        @if( empty( $permission[0] ) || $permission[0] == false )
+    @if( !user_can('add', $permission) )
+        <style>
             .btn.add-new {
-            display: none !important;
-        }
-
-        @endif
-
+                display: none !important;
+            }
+        </style>
+    @endif
+    <style>
         .client-avatar img {
             max-width: 28px;
         }
@@ -85,7 +85,7 @@
 
                         $.each( response, function ( index, value ) {
 
-                            if ( data != value ) {
+                            if ( data !== parseInt( value ) ) {
                                 let option = phamvi.find( 'option[value="' + value + '"]' );
 
                                 if ( option.length ) {
@@ -122,6 +122,11 @@
                     }
                 },
                 {
+                    className: "client-email",
+                    data: "email",
+                    sortable: false
+                },
+                {
                     className: "client-name",
                     data: "name",
                     sortable: false
@@ -129,11 +134,6 @@
                 {
                     className: "client-donvi",
                     data: "donvi_text",
-                    sortable: false
-                },
-                {
-                    className: "client-email",
-                    data: "email",
                     sortable: false
                 },
                 {
@@ -145,7 +145,7 @@
                         let _title = "Người dùng không kích hoạt";
                         let _icon = "<span class='label label-danger'>Inactive</span>";
 
-                        data = data == 3 ? 1 : data;
+                        data = parseInt( data ) === 3 ? 1 : data;
 
                         switch ( data ) {
                             case 1:
@@ -189,7 +189,7 @@
 
                 $.each( user, function ( index, value ) {
                     if ( form.find( '[name="' + index + '"]' ).length ) {
-                        if ( index === 'status' && value == 3 ) {
+                        if ( index === 'status' && parseInt( value ) === 3 ) {
                             value = 1;
                         }
                         if ( chosen.indexOf( index ) !== -1 ) {
@@ -293,20 +293,20 @@
 
 @section( 'content-table' )
 
-    <div class="col-sm-8 full-height">
-        <div class="ibox normal-scroll-content">
-            <div class="ibox-content">
-
-                @include( name_blade('Backend.users.list') )
-
-            </div>
-        </div>
-    </div>
     <div class="col-sm-4 full-height">
         <div class="ibox selected full-height-scroll">
             <div class="ibox-content">
 
                 @include( name_blade('Backend.users.edit') )
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 full-height">
+        <div class="ibox normal-scroll-content">
+            <div class="ibox-content">
+
+                @include( name_blade('Backend.users.list') )
 
             </div>
         </div>

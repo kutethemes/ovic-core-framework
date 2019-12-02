@@ -41,7 +41,7 @@ class Donvi extends Eloquent
         return $this->hasMany(self::class, 'parent_id')->with('children');
     }
 
-    public function scopegetDonvi( $query, $level = false )
+    public function scopegetDonvi( $query, $level = false, $args = [] )
     {
         $user = Auth::user();
 
@@ -52,12 +52,9 @@ class Donvi extends Eloquent
                     [ 'parent_id', 0 ]
                 ])
                 ->with([
-                    'children' => function ( $query ) {
-                        $query->where(
-                            [
-                                [ 'status', 1 ],
-                            ]
-                        );
+                    'children' => function ( $query ) use ( $args ) {
+                        $args[] = [ 'status', 1 ];
+                        $query->where($args);
                     }
                 ])
                 ->get()
@@ -82,12 +79,9 @@ class Donvi extends Eloquent
             } else {
                 $query = $query->with(
                     [
-                        'children' => function ( $query ) {
-                            $query->where(
-                                [
-                                    [ 'status', 1 ],
-                                ]
-                            );
+                        'children' => function ( $query ) use ( $args ) {
+                            $args[] = [ 'status', 1 ];
+                            $query->where($args);
                         }
                     ])
                     ->get()

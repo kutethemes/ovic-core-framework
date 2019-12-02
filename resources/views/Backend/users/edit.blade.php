@@ -24,12 +24,9 @@
     <div class="client-detail">
 
         <div class="form-group row">
-            <label class="col-sm-3 col-form-label">
-                Tên hiển thị *
-            </label>
-            <div class="col-sm-9">
+            <div class="col-sm-12">
                 <div class="input-group">
-                    <input type="text" name="name" class="form-control required" placeholder="Name" maxlength="100">
+                    <input type="text" name="name" class="form-control required" placeholder="Họ tên" maxlength="100">
                     <span class="input-group-append">
                         <select name="status" class="btn btn-white dropdown-toggle">
                             <option value="1">Kích hoạt</option>
@@ -40,26 +37,18 @@
                 </div>
             </div>
         </div>
-        <div class="hr-line-dashed"></div>
 
         <div class="form-group row">
-            <label class="col-sm-3 col-form-label">
-                Email *
-            </label>
-            <div class="col-sm-9">
+            <div class="col-sm-12">
                 <div class="input-group">
                     <input type="email" name="email" class="form-control required"
                            placeholder="Enter email" maxlength="100">
                 </div>
             </div>
         </div>
-        <div class="hr-line-dashed"></div>
 
         <div class="form-group field-password row">
-            <label class="col-sm-3 col-form-label">
-                Mật khẩu *
-            </label>
-            <div class="col-sm-9">
+            <div class="col-sm-12">
                 <div class="input-group">
                     <input id="password" type="password" class="form-control required"
                            placeholder="Mật khẩu >= 8 ký tự"
@@ -72,13 +61,9 @@
                 </div>
             </div>
         </div>
-        <div class="hr-line-dashed"></div>
 
         <div class="form-group field-password-confirmation row">
-            <label class="col-sm-3 col-form-label">
-                Xác nhận *
-            </label>
-            <div class="col-sm-9">
+            <div class="col-sm-12">
                 <div class="input-group">
                     <input id="password_confirmation" type="password" class="form-control required"
                            placeholder="Mật khẩu >= 8 ký tự"
@@ -86,14 +71,10 @@
                 </div>
             </div>
         </div>
-        <div class="hr-line-dashed field-password-confirmation"></div>
 
         @if( !empty( $donvis) )
             <div class="form-group row donvi">
-                <label class="col-sm-3 col-form-label">
-                    Đơn vị
-                </label>
-                <div class="col-sm-9">
+                <div class="col-sm-12">
                     <select name="donvi_id" class="form-control chosen-select"
                             data-placeholder="Chọn đơn vị">
                         <option value=""></option>
@@ -106,15 +87,11 @@
                     </select>
                 </div>
             </div>
-            <div class="hr-line-dashed"></div>
         @endif
 
         @if( !empty( $roles) )
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label">
-                    Nhóm quyền
-                </label>
-                <div class="col-sm-9">
+                <div class="col-sm-12">
                     <select name="role_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn nhóm quyền">
                         <option value=""></option>
@@ -124,15 +101,11 @@
                     </select>
                 </div>
             </div>
-            <div class="hr-line-dashed"></div>
         @endif
 
         @if( !empty( $donvis ) )
             <div class="form-group row phamvi">
-                <label class="col-sm-3 col-form-label">
-                    Phạm vi quản lý
-                </label>
-                <div class="col-sm-9">
+                <div class="col-sm-12">
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
                         <option value=""></option>
@@ -145,7 +118,6 @@
                     </select>
                 </div>
             </div>
-            <div class="hr-line-dashed d-none"></div>
         @endif
 
     </div>

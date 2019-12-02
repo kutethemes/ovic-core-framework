@@ -13,15 +13,14 @@
     <form class="table-filter">
         <div class="form-group filter-select">
             <div class="input-control">
-                <select class="chosen-select" name="donvi_id" data-placeholder="== Lọc theo đơn vị ==">
+                <select class="chosen-select" name="donvi_id" data-placeholder="Lọc theo đơn vị">
                     <option value=""></option>
                     @if( !empty( $donvis) )
                         {!!
                             _menu_tree( $donvis, [
                                'title'  =>  'tendonvi',
                                'type'   =>  'dropdown',
-                               'groupBy'=>  1,
-                            ], key($donvis) );
+                            ]);
                         !!}
                     @endif
                 </select>
@@ -43,9 +42,9 @@
                            data-placement="top" data-content="Chọn tất cả">
                 </th>
                 <th class="client-avatar"></th>
-                <th class="client-name">Tên hiển thị</th>
+                <th class="client-email">Tài khoản/Email</th>
+                <th class="client-name">Chủ tài khoản</th>
                 <th class="client-donvi">Đơn vị</th>
-                <th class="client-email">Email</th>
                 <th class="client-status">Trạng thái</th>
                 <th class="client-options">Thao tác</th>
             </tr>

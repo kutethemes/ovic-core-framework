@@ -407,7 +407,7 @@ class UploadFileController extends Controller
 
             $post_id = $this->add_attachments(
                 [
-                    'title'     => $FileName,
+                    'title'     => $OriginalName,
                     'name'      => "{$now->year}/{$now->month}/{$FileName}",
                     'post_type' => 'attachment',
                     'meta'      => [

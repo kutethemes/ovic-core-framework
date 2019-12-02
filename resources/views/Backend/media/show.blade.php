@@ -5,7 +5,7 @@
      * @package Ovic
      * @subpackage Framework
      *
-     * @var $attachment
+     * @var TYPE_NAME $attachment
      *
      * @version 1.0
      */
@@ -33,23 +33,31 @@
 @endpush
 
 @push( 'scripts' )
-    <script src="{{ asset('js/plugins/video/responsible-video.js') }}"></script>
-    <script src="{{ asset('js/APlayer/APlayer.min.js') }}"></script>
-    <!-- script show media -->
-    <script>
-        $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function (e){
-            $('body').hasClass('fullscreen-video') ? $('body').removeClass('fullscreen-video') : $('body').addClass('fullscreen-video')
-        });
-        const ap = new APlayer({
-            container: document.getElementById('aplayer'),
-            audio: [{
-                name: "{{ $attachment['title'] }}",
-                artist: 'artist',
-                url: "{{ $url }}",
-                cover: 'cover.jpg'
-            }]
-        });
-    </script>
+    @if ( strstr( $mimetype, "video/" ) )
+        <script src="{{ asset('js/plugins/video/responsible-video.js') }}"></script>
+        <!-- script show media -->
+        <script>
+            var body = $( 'body' );
+            $( document ).on( 'webkitfullscreenchange mozfullscreenchange fullscreenchange', function ( e ) {
+                body.hasClass( 'fullscreen-video' ) ? body.removeClass( 'fullscreen-video' ) : body.addClass( 'fullscreen-video' )
+            } );
+        </script>
+    @endif
+    @if ( strstr( $mimetype, "audio/" ) )
+        <script src="{{ asset('js/APlayer/APlayer.min.js') }}"></script>
+        <!-- script show media -->
+        <script>
+            const ap = new APlayer( {
+                container: document.getElementById( 'aplayer' ),
+                audio: [ {
+                    name: "{{ $attachment['title'] }}",
+                    artist: 'artist',
+                    url: "{{ $url }}",
+                    cover: 'cover.jpg'
+                } ]
+            } );
+        </script>
+    @endif
 @endpush
 
 @section( 'content' )
@@ -113,10 +121,11 @@
                         </div>
                     </div>
                     <div class="col-sm-5">
-                        <a href="{{ $url }}" class="text-center" target="_blank">
+                        <div class="text-center">
                             @if ( strstr( $mimetype, "video/" ) )
                                 <figure>
-                                    <iframe width="425" height="349" src="{{ $url }}" frameborder="0" allowfullscreen></iframe>
+                                    <iframe width="425" height="349" src="{{ $url }}" frameborder="0"
+                                            allowfullscreen></iframe>
                                 </figure>
                             @elseif ( strstr( $mimetype, "image/" ) )
                                 <div class="image">
@@ -126,6 +135,7 @@
                                 <div class="icon">
                                     <i class="fa fa-music"></i>
                                 </div>
+                                <div id="aplayer"></div>
                             @elseif ( in_array( $extension, [ 'doc','docx' ] ) )
                                 <div class="icon">
                                     <i class="fa fa-file-word-o"></i>
@@ -147,10 +157,7 @@
                                     <i class="fa fa-file-archive-o"></i>
                                 </div>
                             @endif
-                        </a>
-                        @if ( strstr( $mimetype, "audio/" ) )
-                            <div id="aplayer"></div>
-                        @endif
+                        </div>
                     </div>
                 </div>
             </div>

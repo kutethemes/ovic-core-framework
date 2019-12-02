@@ -16,14 +16,30 @@
 @push( 'styles.table' )
     {{-- style roles --}}
     <style>
+        .alert-danger {
+            border-radius: 0 !important;
+        }
+
+        .client-name {
+            min-width: 100px;
+        }
+
         .client-order {
-            max-width: 45px;
+            min-width: 45px;
             text-align: center;
         }
 
-        .client-title,
-        .client-desc {
+        .client-title {
             min-width: 200px;
+        }
+
+        .client-desc {
+            min-width: 190px;
+            width: 100%;
+        }
+
+        #table-posts tbody td {
+            padding: 10px 5px 10px 5px !important;
         }
     </style>
 @endpush

@@ -257,6 +257,10 @@
             };
         }
 
+        $(document).ajaxComplete(function (event, xhr) {
+            $( "[data-toggle=popover]" ).popover();
+        });
+
         @if( user_can( 'add', 'upload' ) )
         /* Tạo file */
         Dropzone.options.dropzoneForm = {
@@ -278,6 +282,8 @@
 
                 if ( response.status === 'success' ) {
                     toastr.info( response.message );
+
+                    $( "[data-toggle=popover]" ).popover();
 
                     /* Tạo thư mục */
                     treeFolder( response.directories, true );
