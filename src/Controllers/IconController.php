@@ -38,7 +38,7 @@ class IconController extends Controller
 
     public function default_icons()
     {
-        return response()->json([
+        return [
             [
                 'title' => 'Font Awesome',
                 'icons' => [
@@ -719,6 +719,6 @@ class IconController extends Controller
                     'fa fa-meetup',
                 ],
             ],
-        ]);
+        ];
     }
 }

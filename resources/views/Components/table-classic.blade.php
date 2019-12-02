@@ -167,7 +167,9 @@
         }
 
         .client-id {
-            width: 30px;
+            min-width: 30px;
+            max-width: 30px;
+            text-align: center;
         }
 
         .table-filter > * {
