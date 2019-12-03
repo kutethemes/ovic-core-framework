@@ -3,10 +3,14 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class UsersController extends Controller
 {
@@ -65,7 +69,8 @@ class UsersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param  Request  $request
+     * @return Factory|View
      */
     public function index( Request $request )
     {
@@ -98,44 +103,41 @@ class UsersController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function create( Request $request )
     {
         if ( $request->has('selected') ) {
-            if ( Donvi::hasTable() ) {
-                $id     = $request->input('selected');
-                $donvis = Donvi::where(
-                    [
-                        [ 'status', '1' ],
-                        [ 'id', $id ]
-                    ])
-                    ->with(
-                        [
-                            'children' => function ( $query ) {
-                                $query->where(
-                                    [
-                                        [ 'status', 1 ],
-                                    ]
-                                );
-                            }
-                        ])
-                    ->get()
-                    ->toArray();
+            $id     = $request->input('selected');
+            $donvis = Donvi::where(
+                [
+                    [ 'status', 1 ],
+                    [ 'parent_id', $id ]
+                ])
+                ->with([
+                    'children' => function ( $query ) {
+                        $query->where(
+                            [
+                                [ 'status', 1 ],
+                            ]
+                        );
+                    }
+                ])
+                ->get()
+                ->toArray();
 
-                return response()->json(
-                    array_keys(remove_level($donvis))
-                );
-            } else {
-                return response()->json([]);
-            }
+            return response()->json(
+                array_keys(remove_level($donvis))
+            );
         }
-
         $user = Auth::user();
         $args = [
             [ 'id', '>', 0 ],
-            [ 'donvi_id', '=', $user->donvi_id ],
         ];
+        if ( $user->status !== 3 ) {
+            $args[] = [ 'donvi_id', '=', $user->donvi_id ];
+        }
 
         $totalData = Users::count();
         $limit     = $request->input('length');
@@ -233,9 +235,8 @@ class UsersController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function store( Request $request )
     {
@@ -295,7 +296,7 @@ class UsersController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function show( $id )
     {
@@ -309,7 +310,7 @@ class UsersController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit( $id )
     {
@@ -319,10 +320,10 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update( Request $request, $id )
     {
@@ -391,7 +392,7 @@ class UsersController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy( $id )
     {

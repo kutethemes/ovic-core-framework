@@ -97,16 +97,16 @@
 
                         $.each( response, function ( index, value ) {
 
-                            if ( data !== parseIntvalue ) {
+                            if ( data !== parseInt( value ) ) {
                                 let option = phamvi.find( 'option[value="' + value + '"]' );
 
                                 if ( option.length ) {
                                     option.show();
                                 }
                             }
-                            phamvi.trigger( 'chosen:updated' );
 
                         } );
+                        phamvi.trigger( 'chosen:updated' );
 
                     },
                     error: function () {

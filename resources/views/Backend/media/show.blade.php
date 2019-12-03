@@ -67,7 +67,7 @@
             <div class="ibox-title">
                 <h5>THÔNG TIN FILE</h5>
             </div>
-            <div class="ibox-content">
+            <div class="ibox-content full-height">
                 <div class="row">
                     <div class="col-sm-7 b-r">
                         <div>

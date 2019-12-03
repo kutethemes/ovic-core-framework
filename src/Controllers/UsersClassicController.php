@@ -111,7 +111,7 @@ class UsersClassicController extends Controller
             $donvis = Donvi::where(
                 [
                     [ 'status', 1 ],
-                    [ 'id', $id ]
+                    [ 'parent_id', $id ]
                 ])
                 ->with([
                     'children' => function ( $query ) {
@@ -129,12 +129,13 @@ class UsersClassicController extends Controller
                 array_keys(remove_level($donvis))
             );
         }
-
-        $user             = Auth::user();
-        $args             = [
+        $user = Auth::user();
+        $args = [
             [ 'id', '>', 0 ],
         ];
-        $args['donvi_id'] = [ 'donvi_id', '=', $user->donvi_id ];
+        if ( $user->status !== 3 ) {
+            $args['donvi_id'] = [ 'donvi_id', '=', $user->donvi_id ];
+        }
 
         $totalData = Users::count();
         $limit     = $request->input('length');
