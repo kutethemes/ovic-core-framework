@@ -44,6 +44,7 @@ class UcasesController extends Controller
     {
         return [
             'slug.required'  => 'Tên route là trường bắt buộc tối đa 100 kí tự',
+            'slug.unique'    => 'Tên route đã được sử dụng',
             'title.required' => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
             'access.max'     => 'Quyền truy cập chấp nhận 3 ký tự số 0, 1 và 2',
             'status.max'     => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
@@ -259,14 +260,16 @@ class UcasesController extends Controller
 
                     if ( !empty($roles) ) {
                         foreach ( $roles as $role ) {
-                            $ucase_ids        = $role['ucase_ids'];
-                            $ucase_ids[$slug] = $ucase_ids[$_slug];
+                            $ucase_ids = $role['ucase_ids'];
+                            if ( !empty($ucase_ids[$_slug]) ) {
+                                $ucase_ids[$slug] = $ucase_ids[$_slug];
 
-                            unset($ucase_ids[$_slug]);
+                                unset($ucase_ids[$_slug]);
 
-                            Roles::where('id', $role['id'])->update([
-                                'ucase_ids' => maybe_serialize($ucase_ids)
-                            ]);
+                                Roles::where('id', $role['id'])->update([
+                                    'ucase_ids' => maybe_serialize($ucase_ids)
+                                ]);
+                            }
                         }
                     }
                 }
