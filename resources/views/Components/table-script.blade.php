@@ -178,9 +178,10 @@
                     }
 
                     toastr.info( response.message );
-                } else {
 
-                    button.trigger( 'add_post_error' );
+                } else if ( response.status === 400 ) {
+
+                    button.trigger( 'add_post_error', [ response ] );
 
                     let html = '';
                     $.each( response.message, function ( index, value ) {
@@ -194,11 +195,14 @@
                         text: html,
                         showConfirmButton: true
                     } );
+
+                } else {
+                    button.trigger( 'add_post_action', [ response ] );
                 }
             },
-            error: function () {
+            error: function ( response ) {
 
-                button.trigger( 'add_post_error' );
+                button.trigger( 'add_post_error', [ response ] );
 
                 swal( {
                     type: 'error',
@@ -247,7 +251,7 @@
 
                         } else {
 
-                            button.trigger( 'remove_post_error' );
+                            button.trigger( 'remove_post_error', [ response ] );
 
                         }
 
@@ -258,9 +262,9 @@
                             showConfirmButton: true,
                         } );
                     },
-                    error: function () {
+                    error: function ( response ) {
 
-                        button.trigger( 'remove_post_error' );
+                        button.trigger( 'remove_post_error', [ response ] );
 
                         swal( {
                             type: 'error',
@@ -311,9 +315,9 @@
 
                     toastr.info( response.message );
 
-                } else {
+                } else if ( response.status === 400 ) {
 
-                    button.trigger( 'update_post_error' );
+                    button.trigger( 'update_post_error', [ response ] );
 
                     let html = '';
                     $.each( response.message, function ( index, value ) {
@@ -327,11 +331,13 @@
                         text: html,
                         showConfirmButton: true
                     } );
+                } else {
+                    button.trigger( 'add_post_action', [ response ] );
                 }
             },
-            error: function () {
+            error: function ( response ) {
 
-                button.trigger( 'update_post_error' );
+                button.trigger( 'update_post_error', [ response ] );
 
                 swal( {
                     type: 'error',
@@ -387,9 +393,9 @@
 
                     toastr.info( message );
 
-                } else {
+                } else if ( response.status === 400 ) {
 
-                    button.trigger( 'update_status_error' );
+                    button.trigger( 'update_status_error', [ response ] );
 
                     let html = '';
                     $.each( response.message, function ( index, value ) {
@@ -403,11 +409,13 @@
                         text: html,
                         showConfirmButton: true
                     } );
+                } else {
+                    button.trigger( 'add_post_action', [ response ] );
                 }
             },
-            error: function () {
+            error: function ( response ) {
 
-                button.trigger( 'update_status_error' );
+                button.trigger( 'update_status_error', [ response ] );
 
                 swal( {
                     type: 'error',

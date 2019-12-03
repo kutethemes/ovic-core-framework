@@ -64,7 +64,7 @@ class Posts extends Eloquent
     {
         return $this->meta()->get()->collect()->mapWithKeys(
             function ( $item, $key ) {
-                return [ $item['meta_key'] => maybe_unserialize($item['meta_value']) ];
+                return [ $item['meta_key'] => $item['meta_value'] ];
             }
         )->toArray();
     }

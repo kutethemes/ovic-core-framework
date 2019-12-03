@@ -12,13 +12,31 @@ class Users extends User
      *
      * @var string
      */
-    protected $table = 'users';
+    protected $table   = 'users';
+    protected $appends = [ 'meta' ];
 
     public function __construct( array $attributes = [] )
     {
         $this->table = config('ovic.table.users', 'users');
 
         parent::__construct($attributes);
+    }
+
+    /**
+     * Get the user that owns the phone.
+     */
+    public function meta()
+    {
+        return $this->hasMany(Usermeta::class, 'user_id');
+    }
+
+    public function getMetaAttribute()
+    {
+        return $this->meta()->get()->collect()->mapWithKeys(
+            function ( $item, $key ) {
+                return [ $item['meta_key'] => $item['meta_value'] ];
+            }
+        )->toArray();
     }
 
     public function scopehasTable( $query )

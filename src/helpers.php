@@ -102,10 +102,20 @@ function button_set( $button, $permission, $attr = [] )
                 'class' => 'btn-danger',
             ];
             break;
+        default:
+            $key     = 9;
+            $class   = ' custom-post';
+            $default = [
+                'text'  => 'Button',
+                'type'  => 'button',
+                'icon'  => 'fa fa-save',
+                'class' => 'btn-primary',
+            ];
+            break;
     }
     $attr = ovic_parse_args($attr, $default);
 
-    if ( !empty($permission[$key]) && $permission[$key] == true ) {
+    if ( $key == 9 || !empty($permission[$key]) && $permission[$key] == true ) {
 
         return view(
             name_blade('Components.button'))
