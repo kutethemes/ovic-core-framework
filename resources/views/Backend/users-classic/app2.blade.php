@@ -137,7 +137,8 @@
                     action: function ( e, dt, node, config ) {
                         let ids = [],
                             data = [],
-                            items = $( '#table-posts' ).find( '.select-items' );
+                            body = $( dt.table().body() ),
+                            items = body.find( '.select-items' );
 
                         data.id = 0;
                         data.name = 'Các mục đã chọn';
