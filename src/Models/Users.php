@@ -55,22 +55,22 @@ class Users extends User
 
     public function setRoleIdsAttribute( $value )
     {
-        $this->attributes['role_ids'] = json_encode($value);
+        $this->attributes['role_ids'] = maybe_serialize($value);
     }
 
     public function setDonviIdsAttribute( $value )
     {
-        $this->attributes['donvi_ids'] = json_encode($value);
+        $this->attributes['donvi_ids'] = maybe_serialize($value);
     }
 
     public function getRoleIdsAttribute( $value )
     {
-        return json_decode($value, true);
+        return maybe_unserialize($value);
     }
 
     public function getDonviIdsAttribute( $value )
     {
-        return json_decode($value, true);
+        return maybe_unserialize($value);
     }
 
     /**
