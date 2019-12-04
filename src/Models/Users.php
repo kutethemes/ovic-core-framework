@@ -3,6 +3,7 @@
 namespace Ovic\Framework;
 
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 
 class Users extends User
@@ -76,7 +77,7 @@ class Users extends User
     /**
      * Destroy the models for the given IDs.
      *
-     * @param  \Illuminate\Support\Collection|array|int  $ids
+     * @param  Collection|array|int  $ids
      * @return int
      */
     public static function destroy( $ids )

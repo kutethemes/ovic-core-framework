@@ -3,6 +3,7 @@
 namespace Ovic\Framework;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -177,7 +178,7 @@ class Ucases extends Eloquent
     /**
      * Destroy the models for the given IDs.
      *
-     * @param  \Illuminate\Support\Collection|int  $id
+     * @param  Collection|int  $id
      * @return int
      */
     public static function destroy( $id )
