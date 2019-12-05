@@ -61,6 +61,9 @@
                     data.sorting = sorting_value;
                     data.filter = $( '.table-filter' ).serializeObject();
                 },
+                complete: function ( response ) {
+                    table.trigger( 'dataTable_ajax_complete', [ response, table ] );
+                },
                 error: function () {
                     swal( {
                         type: 'error',
