@@ -164,6 +164,7 @@
         .table-filter .input-control {
             display: inline-block;
             text-align: left;
+            vertical-align: middle;
         }
 
         .client-id {
