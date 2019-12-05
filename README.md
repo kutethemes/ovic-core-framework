@@ -73,6 +73,12 @@ To clear cache Composer, by run the following command:
 composer clear-cache
 ```
 
+To publish the modules file by running:
+
+``` bash
+php artisan module:publish
+```
+
 To publish the package's file by running:
 
 ``` bash

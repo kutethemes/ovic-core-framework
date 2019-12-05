@@ -47,6 +47,18 @@ class DashboardController extends Controller
         return 'Autoload đã được cập nhật thành công.';
     }
 
+    public function update_modules( Request $request )
+    {
+        Artisan::call('module:publish');
+
+        if ( $request->ajax() ) {
+            return response()->json([
+                'message' => 'Modules đã được cập nhật thành công.',
+            ]);
+        }
+        return 'Modules đã được cập nhật thành công.';
+    }
+
     public function update_assets( Request $request )
     {
         Artisan::call('vendor:publish --tag=ovic-assets --force');

@@ -100,6 +100,20 @@
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">
+                            Modules
+                            <br>
+                        </label>
+                        <div class="col-sm-10">
+                            <button class="btn btn-primary action-config" data-action="update-modules" type="button">
+                                <i class="fa fa-download"></i>
+                                Update Modules
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">
                             Cache
                             <br>
                             <small class="text-navy">Xóa tất cả cache.</small>

@@ -44,6 +44,23 @@
         .table-filter .input-control div.chosen-container {
             min-width: 320px;
         }
+
+        .client-avatar {
+            min-width: 40px;
+        }
+
+        .client-email {
+            min-width: 210px;
+        }
+
+        .client-name {
+            min-width: 150px;
+        }
+
+        .client-donvi {
+            min-width: 230px;
+            width: 100%;
+        }
     </style>
 @endpush
 
