@@ -62,7 +62,7 @@
                     data.filter = $( '.table-filter' ).serializeObject();
                 },
                 complete: function ( response ) {
-                    table.trigger( 'dataTable_ajax_complete', [ response, table ] );
+                    table.trigger( 'dataTable_ajax_complete', [ response ] );
                 },
                 error: function () {
                     swal( {
