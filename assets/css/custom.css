@@ -1,5 +1,6 @@
 .navbar-top-links li {
     position: relative;
+    white-space: nowrap;
 }
 
 .navbar-default .nav > li > a {
