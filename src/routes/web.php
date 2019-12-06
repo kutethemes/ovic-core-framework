@@ -52,6 +52,9 @@ Route::group(
 //
 //        /* Upload Route */
 //        Route::resource('upload', 'Ovic\Framework\UploadFileController');
+//
+//        /* Email Route */
+//        Route::resource('email', 'Ovic\Framework\EmailController');
 
         /* Ucases Route */
         Route::resource('ucases', 'Ovic\Framework\UcasesController');
