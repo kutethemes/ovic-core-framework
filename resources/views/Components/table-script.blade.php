@@ -242,6 +242,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
                     },
+                    data: data,
                     success: function ( response ) {
 
                         if ( response.status === 'success' ) {
