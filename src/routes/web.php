@@ -9,10 +9,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-
 Route::group(
     [
         'prefix'     => '',
@@ -65,18 +61,14 @@ Route::group(
         /* Icon fonts */
         Route::get('icon-fonts', 'Ovic\Framework\IconController@getIcon')->name('icon.fonts');
 
-        /* Cache */
-        Route::get('clear-cache', 'Ovic\Framework\DashboardController@clear_cache')->name('clear.cache');
-        Route::get('create-cache', 'Ovic\Framework\DashboardController@create_cache')->name('create.cache');
-        Route::get('update-assets', 'Ovic\Framework\DashboardController@update_assets')->name('update.assets');
-        Route::get('update-modules', 'Ovic\Framework\DashboardController@update_modules')->name('update.modules');
-        Route::get('dump-autoload', 'Ovic\Framework\DashboardController@dump_autoload')->name('dump.autoload');
-
         /* System config */
         Route::get('configs', 'Ovic\Framework\DashboardController@configs')->name('configs');
 
         /* Dashboard Route */
         Route::get('dashboard', 'Ovic\Framework\DashboardController@index')->name('dashboard');
+
+        /* Systems */
+        Route::get('systems/{action}', 'Ovic\Framework\DashboardController@systems')->name('systems.action');
     }
 );
 

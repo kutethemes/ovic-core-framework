@@ -23,12 +23,14 @@ class Users extends User
         parent::__construct($attributes);
     }
 
-    /**
-     * Get the user that owns the phone.
-     */
     public function meta()
     {
         return $this->hasMany(Usermeta::class, 'user_id');
+    }
+
+    public function donvi()
+    {
+        return $this->belongsTo(Donvi::class);
     }
 
     public function getMetaAttribute()

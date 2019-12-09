@@ -14,6 +14,17 @@ class EmailReceive extends Eloquent
      */
     protected $table = 'email_receive';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'email_id',
+        'nguoinhan',
+        'status',
+    ];
+
     public function __construct( array $attributes = [] )
     {
         $this->table = config('ovic.table.email_receive', 'email_receive');
@@ -33,5 +44,10 @@ class EmailReceive extends Eloquent
     public function scopeTableName( $query )
     {
         return $this->table;
+    }
+
+    public function email()
+    {
+        return $this->belongsTo(Email::class);
     }
 }

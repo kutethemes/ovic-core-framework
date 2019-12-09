@@ -45,7 +45,7 @@
             loading.ladda( 'start' );
 
             $.ajax( {
-                url: action,
+                url: "systems/" + action,
                 dataType: "json",
                 type: "GET",
                 headers: {
@@ -90,7 +90,7 @@
                             <small class="text-navy">Cập nhật thư viện assets.</small>
                         </label>
                         <div class="col-sm-10">
-                            <button class="btn btn-primary action-config" data-action="update-assets" type="button">
+                            <button class="btn btn-primary action-config" data-action="update_assets" type="button">
                                 <i class="fa fa-download"></i>
                                 Update thư viện
                             </button>
@@ -100,13 +100,13 @@
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">
-                            Modules
+                            Publish Modules
                             <br>
                         </label>
                         <div class="col-sm-10">
-                            <button class="btn btn-primary action-config" data-action="update-modules" type="button">
+                            <button class="btn btn-primary action-config" data-action="update_modules" type="button">
                                 <i class="fa fa-download"></i>
-                                Update Modules
+                                Publish
                             </button>
                         </div>
                     </div>
@@ -119,13 +119,9 @@
                             <small class="text-navy">Xóa tất cả cache.</small>
                         </label>
                         <div class="col-sm-10">
-                            <button class="btn btn-danger action-config" data-action="clear-cache" type="button">
+                            <button class="btn btn-danger action-config" data-action="clear_cache" type="button">
                                 <i class="fa fa-warning"></i>
                                 Xóa cache
-                            </button>
-                            <button class="btn btn-danger action-config" data-action="dump-autoload" type="button">
-                                <i class="fa fa-warning"></i>
-                                Dump Autoload
                             </button>
                         </div>
                     </div>
@@ -133,7 +129,7 @@
 
                     <div class="form-group submit row">
                         <div class="col-sm-12">
-                            <button class="btn btn-primary action-config" data-action="save-change" type="button">
+                            <button class="btn btn-primary action-config" data-action="save_change" type="button">
                                 <i class="fa fa-save"></i>
                                 Save change
                             </button>

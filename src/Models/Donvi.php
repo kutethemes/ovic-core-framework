@@ -13,7 +13,8 @@ class Donvi extends Eloquent
      *
      * @var string
      */
-    protected $table = 'donvi';
+    protected $table   = 'donvi';
+    protected $appends = [ 'users' ];
 
     public function __construct( array $attributes = [] )
     {
@@ -39,6 +40,16 @@ class Donvi extends Eloquent
     public function children()
     {
         return $this->hasMany(self::class, 'parent_id')->with('children');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(Users::class);
+    }
+
+    public function getUsersAttribute()
+    {
+        return $this->users()->get()->toArray();
     }
 
     public function scopegetDonvi( $query, $level = false, $args = [] )

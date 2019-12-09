@@ -27,16 +27,20 @@ class DashboardController extends Controller
         );
     }
 
-    public function dump_autoload( Request $request )
+    public function systems( Request $request, $action )
     {
-        shell_exec('composer dump-autoload');
-
-        if ( $request->ajax() ) {
-            return response()->json([
-                'message' => 'Autoload đã được cập nhật thành công.',
-            ]);
+        if ( method_exists($this, $action) ) {
+            return call_user_func(
+                [ $this, $action ], $request
+            );
         }
-        return 'Autoload đã được cập nhật thành công.';
+
+        return 'function không tồn tại.';
+    }
+
+    public function save_change( Request $request )
+    {
+        //
     }
 
     public function update_modules( Request $request )
