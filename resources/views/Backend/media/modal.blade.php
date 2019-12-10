@@ -89,7 +89,7 @@
 
                     $modal.find( '.sk-spinner' ).show();
 
-                    $.get( "upload/create", {
+                    $.get( "{{ asset('upload') }}/create", {
                         _token: $( 'meta[name="csrf-token"]' ).attr( 'content' )
                     } ).done( function ( response ) {
 

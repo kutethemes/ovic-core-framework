@@ -15,8 +15,8 @@ class EmailController extends Controller
     public function rules()
     {
         $rules = [
-            'tieude'  => [ 'required', 'string' ],
-            'noidung' => [ 'required', 'string' ],
+            'tieude'  => [ 'required' ],
+            'noidung' => [ 'required' ],
         ];
 
         return $rules;
@@ -32,15 +32,50 @@ class EmailController extends Controller
 
     public function counting()
     {
-        $user    = Auth::user();
-        $email   = Email::where('nguoigui', $user->email)->get()->collect();
-        $receive = EmailReceive::where('nguoinhan', $user->email)->get()->collect();
+        $user  = Auth::user();
+        $draft = Email::where(
+            [
+                [ 'status', 0 ],
+                [ 'nguoigui', $user->email ]
+            ])->count();
+
+        $inbox = Email::where(
+            [
+                [ 'status', 1 ],
+                [ 'nguoigui', '<>', $user->email ]
+            ])
+            ->whereHas('receive', function ( $query ) use ( $user ) {
+                $query->where([
+                    [ 'status', '<>', -1 ],
+                    [ 'nguoinhan', $user->email ]
+                ]);
+            })->count();
+
+        $trash = Email::where('status', 1)
+            ->whereHas('receive', function ( $query ) use ( $user ) {
+                $query->where([
+                    [ 'status', -1 ],
+                    [ 'nguoinhan', $user->email ]
+                ]);
+            })->count();
+
+        $outbox = Email::where(
+            [
+                [ 'status', 1 ],
+                [ 'nguoigui', $user->email ]
+            ])
+            ->whereHas('receive', function ( $query ) use ( $user ) {
+                $query->where([
+                    [ 'status', '<>', -1 ],
+                    [ 'nguoinhan', $user->email ]
+                ]);
+            })->count();
 
         return [
-            'inbox'  => $receive->where('status', '<>', -1)->count(),
-            'outbox' => $email->where('status', 1)->count(),
-            'draft'  => $email->where('status', 0)->count(),
-            'trash'  => $email->where('status', -1)->count(),
+            'inbox'  => $inbox,
+            'outbox' => $outbox,
+            'draft'  => $draft,
+            'trash'  => $trash,
         ];
     }
 
@@ -56,11 +91,7 @@ class EmailController extends Controller
             abort(404);
         }
 
-        $mailbox = 'inbox'; // send, inbox, outbox, trash, draft, show, edit
-
-        if ( $request->has('mailbox') ) {
-            $mailbox = $request->input('mailbox');
-        }
+        $mailbox = $request->input('mailbox', 'inbox'); // send, inbox, outbox, trash, draft, show, edit
 
         return view(name_blade('Backend.email.app'), [
             'mailbox'    => $mailbox,
@@ -82,13 +113,31 @@ class EmailController extends Controller
             abort(404);
         }
 
-        $email = Email::findOrFail($id);
+        $data  = [];
+        $email = Email::findOrFail($id)->toArray();
+        if ( !empty($email['files']) ) {
+            foreach ( $email['files'] as $file ) {
+                $data[] = Posts::where('id', $id)
+                    ->get()
+                    ->first()
+                    ->toArray();
+            }
+        }
+        $email['files'] = $data;
 
         return view(
             name_blade('Backend.email.app'),
             [
                 'email'    => $email,
                 'mailbox'  => 'show',
+                'reply'    => route('email.edit', [
+                    $email['id'],
+                    'type' => 'reply'
+                ]),
+                'forward'  => route('email.edit', [
+                    $email['id'],
+                    'type' => 'forward'
+                ]),
                 'counting' => $this->counting(),
             ]
         );
@@ -101,13 +150,38 @@ class EmailController extends Controller
      *
      * @return Factory|View
      */
-    public function edit( $id )
+    public function edit( Request $request, $id )
     {
         if ( !user_can('edit') ) {
             abort(404);
         }
 
-        $email = Email::findOrFail($id);
+        $data  = [];
+        $type  = $request->get('type', '');
+        $email = Email::findOrFail($id)->toArray();
+
+        if ( !empty($email['files']) ) {
+            foreach ( $email['files'] as $file ) {
+                $data[] = Posts::where('id', $id)
+                    ->get()
+                    ->first()
+                    ->toArray();
+            }
+        }
+        $email['files'] = $data;
+
+        if ( $type == 'reply' ) {
+            $email['receive'] = [
+                [ 'nguoinhan' => $email['nguoigui'] ]
+            ];
+            $email['id']      = '';
+            $email['tieude']  = '';
+            $email['noidung'] = '';
+            $email['files']   = [];
+        } elseif ( $type == 'forward' ) {
+            $email['receive'] = [];
+            $email['id']      = '';
+        }
 
         return view(
             name_blade('Backend.email.app'),
@@ -131,11 +205,15 @@ class EmailController extends Controller
         $limit   = $request->input('length');
         $start   = $request->input('start');
         $search  = $request->input('search.value');
-        $mailbox = $request->input('mailbox');
+        $mailbox = $request->input('mailbox', 'inbox');
         $args    = [
             [ 'id', '>', 0 ],
         ];
         switch ( $mailbox ) {
+            case 'inbox':
+                $args[] = [ 'status', 1 ];
+                $args[] = [ 'nguoigui', '<>', $user->email ];
+                break;
             case 'outbox':
                 $args[] = [ 'status', 1 ];
                 $args[] = [ 'nguoigui', $user->email ];
@@ -148,19 +226,46 @@ class EmailController extends Controller
         $condition = Email::where($args);
 
         if ( $mailbox == 'inbox' ) {
-            $condition->whereHas('receive', function ( $query ) use ( $user ) {
-                $query->where([
-                    [ 'status', 1 ],
-                    [ 'nguoinhan', $user->email ]
+            $condition->whereHas('receive',
+                function ( $query ) use ( $user ) {
+                    $query->where([
+                        [ 'status', '<>', -1 ],
+                        [ 'nguoinhan', $user->email ]
+                    ]);
+                })
+                ->with([
+                    'receive' => function ( $query ) use ( $user ) {
+                        $query->where([
+                            [ 'status', '<>', -1 ],
+                            [ 'nguoinhan', $user->email ]
+                        ]);
+                    }
                 ]);
-            });
         } elseif ( $mailbox == 'trash' ) {
-            $condition->whereHas('receive', function ( $query ) use ( $user ) {
-                $query->where([
-                    [ 'status', -1 ],
-                    [ 'nguoinhan', $user->email ]
+            $condition->whereHas('receive',
+                function ( $query ) use ( $user ) {
+                    $query->where([
+                        [ 'status', -1 ],
+                        [ 'nguoinhan', $user->email ]
+                    ]);
+                })
+                ->with([
+                    'receive' => function ( $query ) use ( $user ) {
+                        $query->where([
+                            [ 'status', -1 ],
+                            [ 'nguoinhan', $user->email ]
+                        ]);
+                    }
                 ]);
-            });
+        } elseif ( $mailbox == 'outbox' ) {
+            $condition->whereHas('receive',
+                function ( $query ) use ( $user ) {
+                    $query->where([
+                        [ 'status', '<>', -1 ],
+                        [ 'nguoinhan', $user->email ]
+                    ]);
+                }
+            );
         }
 
         $totalData = $condition->count();
@@ -214,6 +319,51 @@ class EmailController extends Controller
         return $data;
     }
 
+    public function saveEmail( Request $request, $email_id )
+    {
+        $meta      = [];
+        $user      = Auth::user();
+        $send_type = $request->input('send_type');
+        $nguoinhan = $request->input('nguoinhan');
+
+        if ( $send_type == 0 ) {
+            $meta = explode(',', trim($nguoinhan));
+        } else {
+            $donvi = Donvi::where(
+                [
+                    'khoi'   => $send_type,
+                    'status' => 1,
+                ])
+                ->WhereHas('users')
+                ->get()
+                ->toArray();
+
+            if ( !empty($donvi) ) {
+                foreach ( $donvi as $item ) {
+                    if ( !empty($item['users']) ) {
+                        foreach ( $item['users'] as $user ) {
+                            $meta[] = $user['email'];
+                        }
+                    }
+                }
+            }
+        }
+
+        $meta[] = $user->email;
+
+        foreach ( $meta as $value ) {
+            EmailReceive::updateOrCreate(
+                [
+                    'email_id'  => $email_id,
+                    'nguoinhan' => $value
+                ],
+                [
+                    'status' => 0
+                ]
+            );
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      * @param  Request  $request
@@ -240,49 +390,15 @@ class EmailController extends Controller
 
             if ( $email->save() ) {
 
-                $meta      = [];
-                $email_id  = $email->getAttributeValue('id');
-                $send_type = $request->input('send_type');
-                $nguoinhan = $request->input('nguoinhan');
+                $email_id = $email->getAttributeValue('id');
+                $status   = $request->input('status');
+                $message  = $status == 1 ? 'Gửi thư' : 'Lưu thư nháp';
 
-                if ( $send_type == 0 ) {
-                    $meta = explode(',', trim($nguoinhan));
-                } else {
-                    $donvi = Donvi::where(
-                        [
-                            'khoi'   => $send_type,
-                            'status' => 1,
-                        ])
-                        ->WhereHas('users')
-                        ->get()
-                        ->toArray();
-
-                    if ( !empty($donvi) ) {
-                        foreach ( $donvi as $item ) {
-                            if ( !empty($item['users']) ) {
-                                foreach ( $item['users'] as $user ) {
-                                    $meta[] = $user['email'];
-                                }
-                            }
-                        }
-                    }
-                }
-
-                foreach ( $meta as $value ) {
-                    EmailReceive::updateOrCreate(
-                        [
-                            'email_id'  => $email_id,
-                            'nguoinhan' => $value
-                        ],
-                        [
-                            'status' => 0
-                        ]
-                    );
-                }
+                $this->saveEmail($request, $email_id);
 
                 return response()->json([
                     'status'  => 200,
-                    'message' => 'Gửi thư thành công.',
+                    'message' => $message . ' thành công.',
                     'data'    => $this->counting(),
                 ]);
 
@@ -290,7 +406,7 @@ class EmailController extends Controller
 
             return response()->json([
                 'status'  => 400,
-                'message' => [ 'Gửi thư không thành công.' ],
+                'message' => [ $message . ' không thành công.' ],
             ]);
         }
 
@@ -310,6 +426,14 @@ class EmailController extends Controller
      */
     public function update( Request $request, $id )
     {
+        if ( $request->has('delete') ) {
+            $restore = false;
+            if ( $request->has('restore') ) {
+                $restore = true;
+            }
+            return $this->softDelete($id, $restore);
+        }
+
         if ( !user_can('edit') ) {
             return response()->json([
                 'status'  => 400,
@@ -317,9 +441,14 @@ class EmailController extends Controller
                 'data'    => [],
             ]);
         }
+
         $validator = Validator::make($request->all(), $this->rules(), $this->messages());
 
         if ( $validator->passes() ) {
+
+            $user    = Auth::user();
+            $status  = $request->input('status');
+            $message = $status == 1 ? 'Cập nhật thư' : 'Cập nhật thư nháp';
 
             $email = Email::find($id);
 
@@ -329,29 +458,28 @@ class EmailController extends Controller
 
             if ( $email->save() ) {
 
-                if ( $request->has('read') && $request->has('receive.0.nguoinhan') ) {
-                    EmailReceive::where(
-                        [
-                            'email_id'  => $id,
-                            'nguoinhan' => $request->input('receive.0.nguoinhan')
-                        ]
-                    )->update(
-                        [
-                            'status' => 1
-                        ]
-                    );
+                if ( $request->has('read') ) {
+                    EmailReceive::where([
+                        'email_id'  => $id,
+                        'nguoinhan' => $user->email
+                    ])->update([
+                        'status' => 1
+                    ]);
+                } else {
+                    $this->saveEmail($request, $id);
                 }
 
                 return response()->json([
                     'status'  => 200,
-                    'message' => 'Cập nhật thư thành công.',
+                    'message' => $message . ' thành công.',
+                    'data'    => $this->counting(),
                 ]);
 
             }
 
             return response()->json([
                 'status'  => 400,
-                'message' => [ 'Cập nhật thư không thành công.' ],
+                'message' => [ $message . ' không thành công.' ],
             ]);
         }
 
@@ -364,11 +492,68 @@ class EmailController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  boolean  $restore
      * @param  int  $id
      *
      * @return JsonResponse
      */
-    public function destroy( $id )
+    public function softDelete( $ids, $restore = false )
+    {
+        if ( !user_can('delete') ) {
+            return response()->json([
+                'status'  => 'warning',
+                'title'   => 'Cảnh báo!',
+                'message' => 'Bạn không được cấp quyền xóa dữ liệu!',
+            ]);
+        }
+
+        $count  = 0;
+        $user   = Auth::user();
+        $status = $restore ? 1 : -1;
+        $text   = $restore ? 'Khôi phục' : 'Xóa';
+
+        if ( !is_numeric($ids) && !is_array($ids) && is_string($ids) ) {
+            $ids = explode(',', $ids);
+        }
+
+        $ids = is_array($ids) ? $ids : func_get_args();
+
+        foreach ( Email::whereIn('id', $ids)->get() as $model ) {
+            EmailReceive::where([
+                'email_id'  => $model->id,
+                'nguoinhan' => $user->email
+            ])->update([
+                'status' => $status
+            ]);
+
+            $count++;
+        }
+
+        if ( $count > 0 ) {
+            return response()->json([
+                'status'  => "success",
+                'title'   => "Đã {$text}!",
+                'message' => "Đã {$text} {$count} thư!",
+                'data'    => $this->counting(),
+            ]);
+        }
+
+        return response()->json([
+            'status'  => "error",
+            'title'   => "Lỗi!",
+            'message' => "{$text} thư không thành công!",
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     *
+     * @return JsonResponse
+     */
+    public function destroy( Request $request, $id )
     {
         if ( !user_can('delete') ) {
             return response()->json([

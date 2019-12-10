@@ -225,9 +225,9 @@
     <script src="{{ asset('js/plugins/jsTree/jstree.min.js') }}"></script>
     {{-- script media --}}
     <script>
-        var treeEl = $( '#mytree' ),
+        var treeEl           = $( '#mytree' ),
             dropzonePreviews = $( '#dropzone-previews' ),
-            treeFolder = function ( directories, reload = false ) {
+            treeFolder       = function ( directories, reload = false ) {
                 if ( reload ) {
                     treeEl.jstree( true ).settings.core.data = JSON.parse( directories );
                     treeEl.jstree( true ).refresh();
@@ -257,14 +257,14 @@
             };
         }
 
-        $(document).ajaxComplete(function (event, xhr) {
+        $( document ).ajaxComplete( function ( event, xhr ) {
             $( "[data-toggle=popover]" ).popover();
-        });
+        } );
 
         @if( user_can( 'add', 'upload' ) )
         /* Tạo file */
         Dropzone.options.dropzoneForm = {
-            url: "upload",
+            url: "{{ asset('upload') }}",
             headers: {
                 'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
             },
@@ -312,7 +312,7 @@
         /* Xóa file */
         $( document ).on( 'click', '.btn-del-file', function () {
             let parent = $( this ).closest( '.file-box' );
-            let id = parent.data( 'id' );
+            let id     = parent.data( 'id' );
             swal( {
                 title: "Bạn có chắc muốn xóa?",
                 text: "Khi đồng ý xóa dữ liệu sẽ không thể khôi phục lại!",
@@ -324,7 +324,7 @@
             }, function ( isConfirm ) {
                 if ( isConfirm ) {
                     $.ajax( {
-                        url: "upload/" + id,
+                        url: "{{ asset('upload') }}/" + id,
                         type: 'DELETE',
                         dataType: 'json',
                         headers: {
@@ -360,8 +360,8 @@
         } );
         /* Xóa nhiều file */
         $( document ).on( 'selected_images', function ( event ) {
-            let input = $( event.target ),
-                ids = input.val(),
+            let input  = $( event.target ),
+                ids    = input.val(),
                 button = $( '.btn-del-select' );
 
             if ( ids !== 0 && ids !== '' ) {
@@ -371,10 +371,10 @@
             }
         } );
         $( document ).on( 'click', '.btn-del-select', function () {
-            let button = $( this ),
+            let button  = $( this ),
                 content = dropzonePreviews,
-                input = content.find( 'input[name="images"]' ),
-                ids = input.val();
+                input   = content.find( 'input[name="images"]' ),
+                ids     = input.val();
 
             swal( {
                 title: "Bạn có chắc muốn xóa?",
@@ -387,7 +387,7 @@
             }, function ( isConfirm ) {
                 if ( isConfirm ) {
                     $.ajax( {
-                        url: "upload/" + ids,
+                        url: "{{ asset('upload') }}/" + ids,
                         type: 'DELETE',
                         dataType: 'json',
                         headers: {
@@ -425,14 +425,14 @@
         @endif
         /* Lọc */
         $( document ).on( 'submit', '.filter-control', function () {
-            let form = $( this ),
+            let form   = $( this ),
                 offset = form.find( '[name="offset"]' ),
-                limit = form.find( '[name="limit"]' );
+                limit  = form.find( '[name="limit"]' );
 
             offset.val( "{{ $offset }}" );
 
             $.ajax( {
-                url: "upload/create",
+                url: "{{ asset('upload') }}/create",
                 type: 'GET',
                 dataType: 'json',
                 headers: {
@@ -483,12 +483,12 @@
         /* Tải thêm ảnh */
         $( document ).on( 'click', '.load_more', function () {
             let button = $( this ),
-                form = button.closest( 'form' ),
+                form   = button.closest( 'form' ),
                 offset = form.find( '[name="offset"]' ),
-                limit = form.find( '[name="limit"]' );
+                limit  = form.find( '[name="limit"]' );
 
             $.ajax( {
-                url: "upload/create",
+                url: "{{ asset('upload') }}/create",
                 type: 'GET',
                 dataType: 'json',
                 headers: {
@@ -525,17 +525,17 @@
             }
         } );
         $( document ).on( 'click', '#dropzone-previews.select-image .file-box', function () {
-            let file = $( this ),
-                ids = [],
-                id = file.data( 'id' ),
-                form = file.closest( '#dropzone-previews' ),
+            let file  = $( this ),
+                ids   = [],
+                id    = file.data( 'id' ),
+                form  = file.closest( '#dropzone-previews' ),
                 input = form.find( 'input[name="images"]' );
 
             if ( form.hasClass( 'multi' ) ) {
                 file.toggleClass( 'active' );
                 form.find( '.file-box' ).each( function () {
                     let file = $( this ),
-                        id = file.data( 'id' );
+                        id   = file.data( 'id' );
                     if ( file.hasClass( 'active' ) ) {
                         ids.push( id );
                     }
@@ -588,7 +588,7 @@
             <div class="clearfix"></div>
 
             @if( user_can( 'add', 'upload' ) )
-                <form action="upload" class="dropzone" id="dropzoneForm" method="POST"
+                <form class="dropzone" id="dropzoneForm" method="POST"
                       enctype="multipart/form-data">
                     <div class="fallback">
                         <input name="file" type="file" multiple/>

@@ -15,9 +15,11 @@ class CreateEmailTable extends Migration
     {
         Schema::create('email', function ( Blueprint $table ) {
             $table->bigIncrements('id');
-            $table->integer('email_id');
-            $table->string('nguoinhan', 100);
-            $table->tinyInteger('status')->default(0)->comment('1: Đã gửi, 0: Chưa gửi, -1: Xóa');
+            $table->string('nguoigui', 100);
+            $table->text('tieude');
+            $table->text('noidung');
+            $table->text('files')->nullable();
+            $table->tinyInteger('status')->default(0)->comment('1: Đã gửi, 0: Chưa gửi');
             $table->timestamps();
         });
     }

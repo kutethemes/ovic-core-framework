@@ -31,12 +31,16 @@
                         title="Refresh inbox">
                     <i class="fa fa-refresh"></i> Refresh
                 </button>
-                @if( $mailbox != 'trash' )
-                    <button class="btn btn-white table-delete btn-sm" data-toggle="tooltip" data-placement="top"
-                            title="Move to trash">
-                        <i class="fa fa-trash-o"></i>
+                @if( $mailbox == 'trash' )
+                    <button class="btn btn-white table-delete restore btn-sm" data-toggle="tooltip" data-placement="top"
+                            title="Khôi phục thư">
+                        <i class="fa fa-undo"></i> Restore
                     </button>
                 @endif
+                <button class="btn btn-white table-delete btn-sm" data-toggle="tooltip" data-placement="top"
+                        title="@if( $mailbox == 'trash' ) Xóa vĩnh viễn @else Chuyển đến thư mục rác @endif">
+                    <i class="fa fa-trash-o"></i>
+                </button>
             </div>
         </div>
         <div class="mail-box">

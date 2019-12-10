@@ -361,7 +361,7 @@
             data = (OvicTable !== null) ? OvicTable.row( tr ).data() : [],
             message = messageOff;
 
-        if ( data.status !== 1 ) {
+        if ( parseInt( data.status ) !== 1 ) {
             data.status = 1;
             message = messageOn;
         } else {
@@ -369,7 +369,7 @@
         }
 
         config.status = data.status;
-        if ( reload == true ) {
+        if ( reload === true ) {
             config.dataTable = true;
         }
 

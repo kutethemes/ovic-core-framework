@@ -2,10 +2,12 @@
 
 namespace Ovic\Framework;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 
 class Email extends Eloquent
 {
@@ -65,6 +67,27 @@ class Email extends Eloquent
     }
 
     /**
+     * Validate created_at
+     * */
+    public function getCreatedAtAttribute( $value )
+    {
+        return Carbon::parse($value)->format('H:i - d/m/Y');
+    }
+
+    /**
+     * Validate files
+     * */
+    public function getFilesAttribute( $value )
+    {
+        return maybe_unserialize($value);
+    }
+
+    public function setFilesAttribute( $value )
+    {
+        $this->attributes['files'] = maybe_serialize($value);
+    }
+
+    /**
      * Destroy the models for the given IDs.
      *
      * @param  Collection|array|int  $ids
@@ -93,17 +116,17 @@ class Email extends Eloquent
         $key = ( $instance = new static )->getKeyName();
 
         foreach ( $instance->whereIn($key, $ids)->get() as $model ) {
-            EmailReceive::where(
-                [
-                    'email_id'  => $model->$key,
-                    'nguoinhan' => $model->receive[0]['nguoinhan']
-                ]
-            )->update(
-                [
-                    'status' => -1
-                ]
-            );
-            $count++;
+            if ( $model->delete() ) {
+                if ( !empty($model->receive) ) {
+                    foreach ( $model->receive as $receive ) {
+                        EmailReceive::where([
+                            'email_id'  => $model->$key,
+                            'nguoinhan' => $receive['nguoinhan']
+                        ])->delete();
+                    }
+                }
+                $count++;
+            }
         }
 
         return $count;

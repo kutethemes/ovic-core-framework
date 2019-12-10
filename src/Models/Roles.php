@@ -147,7 +147,7 @@ class Roles extends Eloquent
                                     $permission[$key] = $ucases_id;
                                 } else {
                                     foreach ( $ucases_id as $index => $ucases ) {
-                                        if ( $permission[$key][$index] == 0 && $ucases == 1 ) {
+                                        if ( !empty($permission[$key][$index]) && $permission[$key][$index] == 0 && $ucases == 1 ) {
                                             $permission[$key][$index] = $ucases;
                                         }
                                     }
@@ -157,7 +157,7 @@ class Roles extends Eloquent
                     }
                 }
             }
-            $permission['dashboard'] = [ 1, 1, 1 ];
+            $permission['dashboard'] = [ 1, 1, 1, 1 ];
         }
 
         return $permission;
