@@ -3,11 +3,15 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class UploadFileController extends Controller
 {
@@ -16,16 +20,6 @@ class UploadFileController extends Controller
     private $offset      = 0;
     private $attachments = [];
     private $directories = [];
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     public function get_attachments( $args )
     {
@@ -98,13 +92,12 @@ class UploadFileController extends Controller
     public function createDirectories( $attachments )
     {
         $folder      = [];
-        $year        = '';
         $directories = [];
         if ( !empty($attachments) ) {
             foreach ( $attachments as $attachment ) {
-                $dir_year = explode('/', $attachment['name']);
-                $dir_year = array_shift($dir_year);
-                $dir      = str_replace($attachment['title'], '', $attachment['name']);
+                $name     = explode('/', $attachment['name']);
+                $dir_year = $name[0];
+                $dir      = $name[1];
 
                 $directories[$dir_year][] = $dir;
             }
@@ -123,7 +116,7 @@ class UploadFileController extends Controller
                 if ( !empty($month) ) {
                     foreach ( $month as $mon ) {
                         $data['children'][] = [
-                            "text"   => "Tháng " . str_replace([ $year, '/' ], [ '', '' ], $mon),
+                            "text"   => "Tháng " . $mon,
                             "a_attr" => [
                                 "class"    => "dir-filter",
                                 "data-dir" => $mon,
@@ -141,7 +134,7 @@ class UploadFileController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function index()
     {
@@ -165,7 +158,8 @@ class UploadFileController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function create( Request $request )
     {
@@ -198,7 +192,7 @@ class UploadFileController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function filter( $data )
     {
@@ -352,10 +346,10 @@ class UploadFileController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @mimes: http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store( Request $request )
     {
@@ -522,7 +516,7 @@ class UploadFileController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit( $id )
     {
@@ -532,10 +526,10 @@ class UploadFileController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update( Request $request, $id )
     {
@@ -547,7 +541,7 @@ class UploadFileController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy( $id )
     {
