@@ -89,7 +89,7 @@ class Ucases extends Eloquent
                     ->with([
                         'children' => function ( $query ) use ( $args ) {
                             array_shift($args);
-                            $query->where($args);
+                            $query->where($args)->orderBy('ordering', 'asc');
                         }
                     ])
                     ->get()
@@ -113,7 +113,7 @@ class Ucases extends Eloquent
                     ->with([
                         'children' => function ( $query ) use ( $args ) {
                             array_shift($args);
-                            $query->where($args);
+                            $query->where($args)->orderBy('ordering', 'asc');
                         }
                     ])
                     ->orderBy('ordering', 'asc')

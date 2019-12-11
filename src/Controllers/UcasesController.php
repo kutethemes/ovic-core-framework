@@ -94,24 +94,22 @@ class UcasesController extends Controller
         $position = !empty($request['position']) ? $request['position'] : 'left';
 
         if ( !empty($request['data']) ) {
-            foreach ( $request['data'] as $key => $data ) {
+            foreach ( $request['data'] as $order_parent => $parent ) {
                 $update = [
-                    'ordering'  => $key,
+                    'ordering'  => $order_parent,
                     'parent_id' => 0,
                     'position'  => $position
                 ];
-                Ucases::where('id', $data['id'])
-                    ->update($update);
+                Ucases::where('id', $parent['id'])->update($update);
 
-                if ( !empty($data['children']) ) {
-                    foreach ( $data['children'] as $key => $children ) {
+                if ( !empty($parent['children']) ) {
+                    foreach ( $parent['children'] as $order_child => $children ) {
                         $update = [
-                            'ordering'  => $key,
-                            'parent_id' => $data['id'],
+                            'ordering'  => $order_child,
+                            'parent_id' => $parent['id'],
                             'position'  => $position
                         ];
-                        Ucases::where('id', $children['id'])
-                            ->update($update);
+                        Ucases::where('id', $children['id'])->update($update);
                     }
                 }
             }
