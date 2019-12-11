@@ -54,56 +54,59 @@ class Donvi extends Eloquent
 
     public function scopegetDonvi( $query, $level = false, $args = [] )
     {
-        $user = Auth::user();
+        $user   = Auth::user();
+        $args[] = [ 'status', 1 ];
 
         if ( $user->status == 3 ) {
-            $query = $query->where(
-                [
-                    [ 'status', 1 ],
-                    [ 'parent_id', 0 ]
-                ])
+            if ( empty($args) ) {
+                $args['parent_id'] = [ 'parent_id', 0 ];
+            }
+            $query = $query->where(array_values($args))
                 ->with([
                     'children' => function ( $query ) use ( $args ) {
-                        $args[] = [ 'status', 1 ];
-                        $query->where($args);
+                        unset($args['parent_id']);
+                        $query->where(
+                            array_values($args)
+                        );
                     }
-                ])
-                ->get()
-                ->toArray();
+                ]);
+
         } else {
             $donvi_ids = maybe_unserialize($user->donvi_ids);
-            $query     = $query->where(
-                [
-                    [ 'status', '1' ],
-                    [ 'id', $user->donvi_id ]
-                ]
-            );
+            $query     = $query->where('id', $user->donvi_id);
+
             if ( !empty($donvi_ids) && $donvi_ids !== 0 ) {
                 $query = $query->with(
                     [
-                        'children' => function ( $query ) use ( $donvi_ids ) {
-                            $query->whereIn('id', $donvi_ids);
+                        'children' => function ( $query ) use ( $args, $donvi_ids ) {
+                            $query->whereIn('id', $donvi_ids)
+                                ->where(
+                                    array_values($args)
+                                );
                         }
-                    ])
-                    ->get()
-                    ->toArray();
+                    ]);
             } else {
                 $query = $query->with(
                     [
                         'children' => function ( $query ) use ( $args ) {
-                            $args[] = [ 'status', 1 ];
-                            $query->where($args);
+                            $query->where(
+                                array_values($args)
+                            );
                         }
-                    ])
-                    ->get()
-                    ->toArray();
+                    ]);
             }
         }
 
         if ( $level == true ) {
-            return remove_level($query);
+            return remove_level(
+                $query->get()->toArray()
+            );
         }
 
-        return $query;
+        if ( $level == null ) {
+            return $query;
+        }
+
+        return $query->get()->toArray();
     }
 }
