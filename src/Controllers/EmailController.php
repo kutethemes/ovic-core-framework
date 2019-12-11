@@ -117,7 +117,7 @@ class EmailController extends Controller
         $email = Email::findOrFail($id)->toArray();
         if ( !empty($email['files']) ) {
             foreach ( $email['files'] as $file ) {
-                $data[] = Posts::where('id', $id)
+                $data[] = Posts::where('id', $file)
                     ->get()
                     ->first()
                     ->toArray();
