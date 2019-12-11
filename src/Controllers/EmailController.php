@@ -264,8 +264,15 @@ class EmailController extends Controller
                         [ 'status', '<>', -1 ],
                         [ 'nguoinhan', $user->email ]
                     ]);
-                }
-            );
+                })
+                ->with([
+                    'receive' => function ( $query ) use ( $user ) {
+                        $query->where([
+                            [ 'status', '<>', -1 ],
+                            [ 'nguoinhan', $user->email ]
+                        ]);
+                    }
+                ]);
         }
 
         $totalData = $condition->count();
