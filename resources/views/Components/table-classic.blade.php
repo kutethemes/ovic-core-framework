@@ -209,9 +209,14 @@
             height: 35px;
         }
 
+        .table-filter .custom-select {
+            height: 36px;
+        }
+
         .table-filter input,
         .dataTables_length select,
         .table-filter .btn.btn-white,
+        .table-filter .custom-select,
         .head-table .btn-group > a.btn.btn-default,
         .table-filter .chosen-container-single .chosen-single {
             border-radius: 5px;

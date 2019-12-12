@@ -54,14 +54,14 @@ class Donvi extends Eloquent
 
     public function scopegetDonvi( $query, $level = false, $args = [] )
     {
-        $user   = Auth::user();
-        $args[] = [ 'status', 1 ];
+        $user = Auth::user();
 
         if ( $user->status == 3 ) {
             if ( empty($args) ) {
                 $args['parent_id'] = [ 'parent_id', 0 ];
             }
-            $query = $query->where(array_values($args))
+            $args[] = [ 'status', 1 ];
+            $query  = $query->where(array_values($args))
                 ->with([
                     'children' => function ( $query ) use ( $args ) {
                         unset($args['parent_id']);
@@ -72,6 +72,7 @@ class Donvi extends Eloquent
                 ]);
 
         } else {
+            $args[]    = [ 'status', 1 ];
             $donvi_ids = maybe_unserialize($user->donvi_ids);
             $query     = $query->where('id', $user->donvi_id);
 
@@ -97,16 +98,16 @@ class Donvi extends Eloquent
             }
         }
 
-        if ( $level == true ) {
+        if ( $level === true ) {
             return remove_level(
                 $query->get()->toArray()
             );
         }
 
-        if ( $level == null ) {
-            return $query;
+        if ( $level === false ) {
+            return $query->get()->toArray();
         }
 
-        return $query->get()->toArray();
+        return $query;
     }
 }
