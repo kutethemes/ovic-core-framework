@@ -51,6 +51,9 @@ Route::group(
 //
 //        /* Email Route */
 //        Route::resource('email', 'Ovic\Framework\EmailController');
+//
+//        /* Importer Route */
+//        Route::resource('importer', 'Ovic\Framework\ImporterController');
 
         /* Ucases Route */
         Route::resource('ucases', 'Ovic\Framework\UcasesController');
