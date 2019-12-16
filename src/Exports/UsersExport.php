@@ -17,10 +17,14 @@ class UsersExport implements FromView, WithEvents
 {
     public $users = [];
 
-    public function __construct( $donvi_id = '' )
+    public function __construct( $donvi_id = '', $status = '' )
     {
-        $user      = Auth::user();
-        $condition = User::where('status', 1);
+        $user = Auth::user();
+        if ( !empty($status) ) {
+            $condition = User::where('status', $status);
+        } else {
+            $condition = User::where('id', '>', 0);
+        }
         if ( empty($donvi_id) ) {
             $donvi = Donvi::getDonvi(true);
             unset($donvi[$user->donvi_id]);

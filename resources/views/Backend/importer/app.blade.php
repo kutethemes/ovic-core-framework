@@ -27,6 +27,13 @@
             padding-left: 0;
             padding-right: 0;
         }
+
+        .chosen-container-single .chosen-single {
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #495057;
+        }
     </style>
 @endpush
 
@@ -61,7 +68,22 @@
 
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label">
-                                            Export theo đơn vị
+                                            Trạng thái
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <select name="status" class="custom-select rounded-0">
+                                                <option value="">Tất cả</option>
+                                                <option value="1">Đang kích hoạt</option>
+                                                <option value="2">Đang ẩn</option>
+                                                <option value="0">Không kích hoạt</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">
+                                            Đơn vị
                                             <br>
                                             <small class="text-navy">
                                                 Những người dùng trong đơn vị được chọn quản lý.

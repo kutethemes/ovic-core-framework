@@ -42,9 +42,10 @@ class ImporterController extends Controller
 
         if ( $type == 'export' ) {
             if ( $target == 'user' ) {
-                $donvi = $request->input('donvi');
+                $donvi  = $request->input('donvi', '');
+                $status = $request->input('status', '');
 
-                return Excel::download(new UsersExport($donvi),
+                return Excel::download(new UsersExport($donvi, $status),
                     'danh-sach-nguoi-dung.xlsx'
                 );
             }
