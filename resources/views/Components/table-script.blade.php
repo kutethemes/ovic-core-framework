@@ -265,6 +265,8 @@
                             text: response.message,
                             showConfirmButton: true,
                         } );
+
+                        $( '#select-all' ).prop( 'checked', '' );
                     },
                     error: function ( response ) {
 
