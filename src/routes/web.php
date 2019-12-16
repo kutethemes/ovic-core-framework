@@ -16,8 +16,6 @@ Route::group(
     ],
     function () {
 
-        Auth::routes();
-
         /* Backend routes */
         Route::group([],
             function () {
@@ -83,6 +81,6 @@ Route::group([],
         }
 
         /* Images */
-        Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index')->name('images.build');
+        Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@getImage')->name('images.build');
     }
 );

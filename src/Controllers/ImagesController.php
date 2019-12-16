@@ -6,10 +6,9 @@ use App\Http\Controllers\Controller;
 
 class ImagesController extends Controller
 {
-    public function index( $year, $month, $filename )
+    public function getImage( $year, $month, $filename )
     {
-
-        $path = storage_path("app/uploads/{$year}/{$month}/{$filename}");
+        $path = storage_path() . "/app/uploads/{$year}/{$month}/{$filename}";
 
         if ( !file_exists($path) ) {
             return response($path, 400);

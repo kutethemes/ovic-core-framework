@@ -266,7 +266,7 @@
                             showConfirmButton: true,
                         } );
 
-                        $( '#select-all' ).prop( 'checked', '' );
+                        $( '#select-all' ).prop( 'checked', '' ).trigger( 'change_select_all' );
                     },
                     error: function ( response ) {
 

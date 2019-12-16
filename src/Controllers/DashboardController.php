@@ -76,6 +76,7 @@ class DashboardController extends Controller
         Artisan::call('view:clear');
         Artisan::call('optimize:clear');
         Artisan::call('clear-compiled');
+//        Artisan::call('storage:link');
 
         if ( $request->ajax() ) {
             return response()->json([
