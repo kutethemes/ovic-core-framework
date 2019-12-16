@@ -14,6 +14,12 @@
 @section( 'title', 'IMPORT DỮ LIỆU' )
 
 @push('styles')
+    {{-- Toastr style --}}
+    <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
+    {{-- Sweet Alert --}}
+    <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
+    {{-- Chosen --}}
+    <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     <style>
         #page-wrapper .ibox-content {
             background: transparent;
@@ -49,19 +55,21 @@
                         <div role="tabpanel" id="tab-1" class="tab-pane active">
                             <div class="panel-body">
 
-                                <form action="" id="importer-data">
+                                <form action="" id="export-data">
                                     <input type="hidden" name="type" value="export">
                                     <input type="hidden" name="target" value="user">
 
                                     <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">
+                                        <label class="col-sm-3 col-form-label">
                                             Export theo đơn vị
                                             <br>
-                                            <small class="text-navy">Những người dùng trong đơn vị được chọn quản lý.</small>
+                                            <small class="text-navy">
+                                                Những người dùng trong đơn vị được chọn quản lý.
+                                            </small>
                                         </label>
-                                        <div class="col-sm-10">
-                                            <select name="donvi" class="custom-select">
-                                                <option value="">Tất cả</option>
+                                        <div class="col-sm-9">
+                                            <select name="donvi" class="chosen-select" data-placeholder="Tất cả">
+                                                <option value=""></option>
                                                 {!!
                                                     _menu_tree( $donvi, [
                                                        'title'  =>  'tendonvi',
@@ -76,7 +84,7 @@
                                     <div class="form-group submit row">
                                         <div class="col-sm-12">
                                             <button type="submit" class="btn btn-primary">
-                                                Export người dùng
+                                                Export
                                             </button>
                                         </div>
                                     </div>
@@ -88,14 +96,74 @@
                         <div role="tabpanel" id="tab-2" class="tab-pane">
                             <div class="panel-body">
 
-                                <form action="" id="importer-data">
+                                <form action="" id="import-data">
                                     <input type="hidden" name="type" value="import">
                                     <input type="hidden" name="target" value="user">
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">
+                                            File import
+                                            <br>
+                                            <small class="text-navy">
+                                                Chỉ hỗ trợ file excel.
+                                            </small>
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" name="file" value="">
+                                                <span class="input-group-append ovic-field-image">
+                                                    <a href="#" class="btn btn-primary ovic-image-add">
+                                                        Add File
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">
+                                            Chọn nhóm quyền
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <select name="role" class="chosen-select" multiple
+                                                    data-placeholder="Chọn nhóm quyền">
+                                                <option value=""></option>
+                                                @foreach( $role as $data )
+                                                    <option value="{{ $data['id'] }}">
+                                                        {{ $data['title'] }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">
+                                            Chọn đơn vị
+                                            <br>
+                                            <small class="text-navy">
+                                                Những người dùng trong đơn vị được chọn quản lý.
+                                            </small>
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <select name="donvi" class="chosen-select">
+                                                {!!
+                                                    _menu_tree( $donvi, [
+                                                       'title'  =>  'tendonvi',
+                                                       'type'   =>  'dropdown',
+                                                    ]);
+                                                !!}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
 
                                     <div class="form-group submit row">
                                         <div class="col-sm-12">
                                             <button type="submit" class="btn btn-primary">
-                                                Import người dùng
+                                                Import
                                             </button>
                                         </div>
                                     </div>
@@ -112,7 +180,21 @@
 
 @endsection
 
+@push( 'after-content' )
+
+    @include( name_blade('Backend.media.modal'), [
+        'text_save' => 'Chọn file'
+    ] )
+
+@endpush
+
 @push('scripts')
+    {{-- Sweet Alert --}}
+    <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+    {{-- Toastr script --}}
+    <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
+    {{-- Chosen --}}
+    <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
     <script>
         if ( !$.fn.serializeObject ) {
             $.fn.serializeObject = function () {
@@ -131,13 +213,74 @@
                 return o;
             };
         }
-        $( document ).on( 'submit', '#importer-data', function () {
+        toastr.options = {
+            "preventDuplicates": true,
+        };
+        $( '.chosen-select' ).chosen( {
+            width: "100%",
+            no_results_text: "Không tìm thấy kết quả!",
+            disable_search_threshold: 5,
+            allow_single_deselect: true
+        } );
+        $( document ).on( 'click', '#modal-media .save-modal', function () {
+            let ids   = [],
+                html  = '',
+                form  = $( '#import-data' ),
+                media = $( '#modal-media' ),
+                file  = media.find( '.content-previews .file-box.active' );
+
+
+            form.find( '.form-group input[name="file"]' ).val( file.data( 'name' ) );
+
+            return false;
+        } );
+        $( document ).on( 'submit', '#export-data', function () {
             let form = $( this ),
                 data = form.serializeObject(),
-                url  = 'importer/create?' + $.param( data )
+                url  = "{{ asset('importer/create') }}?" + $.param( data )
 
-            // console.log(url);
             window.location = url;
+
+            return false;
+        } );
+        $( document ).on( 'submit', '#import-data', function () {
+            let form = $( this ),
+                data = form.serializeObject();
+
+            $.ajax( {
+                url: "{{ asset('importer/create') }}",
+                dataType: "json",
+                type: "GET",
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                },
+                success: function ( response ) {
+                    if ( response.status === 200 ) {
+                        swal( {
+                            type: 'success',
+                            title: 'Success!',
+                            text: response.message,
+                            showConfirmButton: true
+                        } );
+                    } else {
+                        swal( {
+                            type: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            showConfirmButton: true
+                        } );
+                    }
+                },
+                error: function () {
+                    swal( {
+                        type: 'error',
+                        title: 'Error!',
+                        text: 'Import không thành công',
+                        showConfirmButton: true
+                    } );
+                }
+            } );
 
             return false;
         } );

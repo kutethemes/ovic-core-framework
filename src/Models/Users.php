@@ -15,6 +15,21 @@ class Users extends User
      */
     protected $table   = 'users';
     protected $appends = [ 'meta' ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'password',
+        'email',
+        'avatar',
+        'role_ids',
+        'donvi_id',
+        'donvi_ids',
+        'status',
+    ];
 
     public function __construct( array $attributes = [] )
     {

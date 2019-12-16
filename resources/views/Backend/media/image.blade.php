@@ -17,7 +17,7 @@
     $extension  = $attachment['meta']['_attachment_metadata']['extension'];
 @endphp
 
-<div class="file-box image-{{ $attachment['id'] }}" data-id="{{ $attachment['id'] }}">
+<div class="file-box image-{{ $attachment['id'] }}" data-id="{{ $attachment['id'] }}" data-name="{{ $attachment['name'] }}">
     <div class="file">
         @if( user_can( 'delete', 'upload' ) )
             <a href="#" class="btn-del-file" title="Xóa file">

@@ -2,23 +2,59 @@
 
 namespace Ovic\Framework;
 
-use App\User;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
-class UsersImport implements ToModel
+use Maatwebsite\Excel\Validators\Failure;
+
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+
+class UsersImport implements ToModel, WithStartRow, WithValidation, SkipsOnFailure
 {
+    use Importable, SkipsFailures;
+
+    public $role_ids = [];
+    public $donvi_id = [];
+
+    public function __construct( $role_ids = [], $donvi_id = '' )
+    {
+        $this->role_ids = !empty($role_ids) ? (array) $role_ids : 0;
+        $this->donvi_id = !empty($donvi_id) ? $donvi_id : 0;
+    }
+
     /**
-     * @param  array  $row
-     *
-     * @return User|null
+     * @return int
      */
+    public function startRow(): int
+    {
+        return 5;
+    }
+
+    public function rules(): array
+    {
+        return [
+            '2' => Rule::unique('users', 'email'),
+        ];
+    }
+
     public function model( array $row )
     {
-        return new User([
-            'name'     => $row[0],
-            'email'    => $row[1],
-            'password' => Hash::make($row[2]),
+        return new Users([
+            'name'      => trim($row[1]),
+            'email'     => trim($row[2]),
+            'password'  => Hash::make(trim($row[3])),
+            'role_ids'  => maybe_serialize($this->role_ids),
+            'donvi_id'  => $this->donvi_id,
+            'donvi_ids' => 0,
+            'status'    => 1,
         ]);
     }
 }

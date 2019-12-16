@@ -20,14 +20,15 @@ class UsersExport implements FromView, WithEvents
     public function __construct( $donvi_id = '' )
     {
         $user      = Auth::user();
-        $donvi     = Donvi::getDonvi(true);
         $condition = User::where('status', 1);
         if ( empty($donvi_id) ) {
+            $donvi = Donvi::getDonvi(true);
+            unset($donvi[$user->donvi_id]);
             $condition = $condition->whereIn('donvi_id', array_keys($donvi));
         } else {
             $condition = $condition->where('donvi_id', $donvi_id);
         }
-        $this->users = $condition->get([ 'id', 'name', ])->toArray();
+        $this->users = $condition->get([ 'id', 'name' ])->toArray();
     }
 
     public function view(): View
