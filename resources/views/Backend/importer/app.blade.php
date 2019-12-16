@@ -68,6 +68,16 @@
 
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label">
+                                            Tên file
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <input class="form-control" type="text" name="fileName" value="DS-Nguoidung">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">
                                             Trạng thái
                                         </label>
                                         <div class="col-sm-9">

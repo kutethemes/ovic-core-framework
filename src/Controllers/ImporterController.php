@@ -42,11 +42,12 @@ class ImporterController extends Controller
 
         if ( $type == 'export' ) {
             if ( $target == 'user' ) {
+                $name   = $request->input('fileName', 'DS-Nguoidung');
                 $donvi  = $request->input('donvi', '');
                 $status = $request->input('status', '');
 
                 return Excel::download(new UsersExport($donvi, $status),
-                    'danh-sach-nguoi-dung.xlsx'
+                    "{$name}.xlsx"
                 );
             }
         } else {
