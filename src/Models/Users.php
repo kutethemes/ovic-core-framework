@@ -5,6 +5,7 @@ namespace Ovic\Framework;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Hash;
 
 class Users extends User
 {
@@ -13,8 +14,15 @@ class Users extends User
      *
      * @var string
      */
-    protected $table   = 'users';
-    protected $appends = [ 'meta' ];
+    protected $table      = 'users';
+    protected $appends    = [ 'meta' ];
+    protected $attributes = array(
+        'avatar'    => 0,
+        'role_ids'  => 0,
+        'donvi_id'  => 0,
+        'donvi_ids' => 0,
+        'status'    => 1,
+    );
     /**
      * The attributes that are mass assignable.
      *
@@ -74,6 +82,11 @@ class Users extends User
     public function setRoleIdsAttribute( $value )
     {
         $this->attributes['role_ids'] = maybe_serialize($value);
+    }
+
+    public function setPasswordAttribute( $value )
+    {
+        $this->attributes['password'] = Hash::make($value);
     }
 
     public function setDonviIdsAttribute( $value )

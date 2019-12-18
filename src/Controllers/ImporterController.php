@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
@@ -54,7 +53,7 @@ class ImporterController extends Controller
                 $status = $request->input('status', '');
 
                 ob_end_clean(); // this
-                ob_start(); // and this
+                ob_start();     // and this
 
                 return Excel::download(new UsersExport($donvi, $status),
                     "{$name}.xlsx"

@@ -146,6 +146,7 @@ class EmailController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param  Request  $request
      * @param  int  $id
      *
      * @return Factory|View
@@ -389,7 +390,9 @@ class EmailController extends Controller
 
         if ( $validator->passes() ) {
 
-            $email = new Email();
+            $status  = $request->input('status');
+            $message = $status == 1 ? 'Gửi thư' : 'Lưu thư nháp';
+            $email   = new Email();
 
             $email->fill(
                 $this->fill_data($request)
@@ -398,8 +401,6 @@ class EmailController extends Controller
             if ( $email->save() ) {
 
                 $email_id = $email->getAttributeValue('id');
-                $status   = $request->input('status');
-                $message  = $status == 1 ? 'Gửi thư' : 'Lưu thư nháp';
 
                 $this->saveEmail($request, $email_id);
 
@@ -499,9 +500,8 @@ class EmailController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param $ids
      * @param  boolean  $restore
-     * @param  int  $id
-     *
      * @return JsonResponse
      */
     public function softDelete( $ids, $restore = false )
@@ -555,12 +555,11 @@ class EmailController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Request  $request
      * @param  int  $id
      *
      * @return JsonResponse
      */
-    public function destroy( Request $request, $id )
+    public function destroy( $id )
     {
         if ( !user_can('delete') ) {
             return response()->json([

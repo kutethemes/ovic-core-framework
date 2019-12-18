@@ -71,7 +71,8 @@
                                             Tên file
                                         </label>
                                         <div class="col-sm-9">
-                                            <input class="form-control" type="text" name="fileName" value="danh_sach_nguoi_dung">
+                                            <input class="form-control" type="text" name="fileName"
+                                                   value="danh_sach_nguoi_dung">
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
@@ -268,10 +269,9 @@
         } );
         $( document ).on( 'submit', '#export-data', function () {
             let form = $( this ),
-                data = form.serializeObject(),
-                url  = "{{ asset('importer/create') }}?" + $.param( data );
+                data = form.serializeObject();
 
-            window.location = url;
+            window.location = "{{ asset('importer/create') }}?" + $.param( data );
 
             return false;
         } );

@@ -182,6 +182,26 @@
     {{--  Date picker  --}}
     <script src="{{ asset('js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
     <script>
+        toastr.options = {
+            "preventDuplicates": true,
+        };
+        if ( !$.fn.serializeObject ) {
+            $.fn.serializeObject = function () {
+                var o = {};
+                var a = this.serializeArray();
+                $.each( a, function () {
+                    if ( o[this.name] ) {
+                        if ( !o[this.name].push ) {
+                            o[this.name] = [ o[this.name] ];
+                        }
+                        o[this.name].push( this.value || '' );
+                    } else {
+                        o[this.name] = this.value || '';
+                    }
+                } );
+                return o;
+            };
+        }
         $( '.chosen-select' ).chosen( {
             width: "100%",
             no_results_text: "Không tìm thấy kết quả",
@@ -194,14 +214,107 @@
             showButtonPanel: true
         } );
         $( document ).on( 'click', 'button.edit-field', function () {
-            let group = $( this ).closest( '.input-group' );
-            let input = group.find( 'input' );
+            let group = $( this ).closest( '.input-group' ),
+                input = group.find( 'input' );
 
             if ( input.attr( 'disabled' ) === undefined ) {
                 input.attr( 'disabled', 'disabled' ).removeAttr( 'name' );
             } else {
                 input.removeAttr( 'disabled' ).attr( 'name', 'password' );
             }
+        } );
+        $( document ).on( 'click', 'button.edit-post', function () {
+            let button = $( this ),
+                form   = button.closest( 'form' ),
+                data   = form.serializeObject();
+
+            $.ajax( {
+                url: "profile/" + data.id,
+                type: 'PUT',
+                dataType: 'json',
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                },
+                success: function ( response ) {
+
+                    if ( response.status === 200 ) {
+
+                        toastr.info( response.message );
+
+                    } else if ( response.status === 400 ) {
+
+                        let html = '';
+                        $.each( response.message, function ( index, value ) {
+                            html += "<p class='text-danger'>" + value + "</p>";
+                        } );
+
+                        swal( {
+                            html: true,
+                            type: 'error',
+                            title: '',
+                            text: html,
+                            showConfirmButton: true
+                        } );
+                    }
+                },
+                error: function ( response ) {
+                    swal( {
+                        type: 'error',
+                        title: "Error!",
+                        text: "Hệ thống không phản hồi.",
+                        showConfirmButton: true
+                    } );
+                },
+            } );
+        } );
+        $( document ).on( 'click', 'button.delete-post', function () {
+            let button = $( this ),
+                form   = button.closest( 'form' ),
+                data   = form.serializeObject();
+
+            swal( {
+                title: "Bạn có chắc muốn xóa hồ sơ?",
+                text: "Khi đồng ý xóa hồ sơ của bạn sẽ không thể khôi phục lại!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Đồng ý!",
+                closeOnConfirm: false
+            }, function ( isConfirm ) {
+                if ( isConfirm ) {
+
+                    $.ajax( {
+                        url: "profile/" + data.id,
+                        type: 'DELETE',
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                        },
+                        success: function ( response ) {
+
+                            swal( {
+                                type: response.status,
+                                title: response.title,
+                                text: response.message,
+                                showConfirmButton: true,
+                            }, function ( isConfirm ) {
+                                if ( isConfirm ) {
+                                    document.getElementById( 'logout-form' ).submit();
+                                }
+                            } );
+                        },
+                        error: function () {
+                            swal( {
+                                type: 'error',
+                                title: "Error!",
+                                text: "Hệ thống không phản hồi.",
+                                showConfirmButton: true
+                            } );
+                        },
+                    } );
+                }
+            } );
         } );
     </script>
 @endpush

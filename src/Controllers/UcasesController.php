@@ -3,10 +3,14 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\View\View;
 
 class UcasesController extends Controller
 {
@@ -54,7 +58,7 @@ class UcasesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function index()
     {
@@ -79,7 +83,7 @@ class UcasesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function create( Request $request )
     {
@@ -128,9 +132,9 @@ class UcasesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store( Request $request )
     {
@@ -186,7 +190,7 @@ class UcasesController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function show( $id )
     {
@@ -198,7 +202,7 @@ class UcasesController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function edit( $id )
     {
@@ -227,10 +231,10 @@ class UcasesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update( Request $request, $id )
     {
@@ -298,9 +302,9 @@ class UcasesController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function destroy( Request $request, $id )
+    public function destroy( $id )
     {
         if ( !user_can('delete') ) {
             return response()->json([

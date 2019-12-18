@@ -516,7 +516,7 @@ class UploadFileController extends Controller
      *
      * @param  int  $id
      *
-     * @return Response
+     * @return void
      */
     public function edit( $id )
     {
@@ -529,7 +529,7 @@ class UploadFileController extends Controller
      * @param  Request  $request
      * @param  int  $id
      *
-     * @return Response
+     * @return void
      */
     public function update( Request $request, $id )
     {

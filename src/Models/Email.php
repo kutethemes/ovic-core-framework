@@ -4,9 +4,7 @@ namespace Ovic\Framework;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
 class Email extends Eloquent

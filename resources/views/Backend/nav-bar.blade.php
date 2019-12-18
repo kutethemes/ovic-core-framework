@@ -90,7 +90,7 @@
                                 Đăng nhập
                             </a>
                         </li>
-                        @if (Route::has('register'))
+                        @if ( Route::has('register') )
                             <li>
                                 <a href="{{ route('register') }}" class="dropdown-item">
                                     Đăng kí

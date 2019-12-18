@@ -6,9 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
@@ -261,34 +260,35 @@ class UsersClassicController extends Controller
         $validator = Validator::make($request->all(), $this->rules(), $this->messages());
 
         if ( $validator->passes() ) {
-            $data = $request->toArray();
 
             $user = new Users();
 
-            $user->name      = $data['name'];
-            $user->email     = $data['email'];
-            $user->avatar    = $data['avatar'];
-            $user->password  = Hash::make($data['password']);
-            $user->donvi_id  = !empty($data['donvi_id']) ? $data['donvi_id'] : 0;
-            $user->donvi_ids = !empty($data['donvi_ids']) ? $data['donvi_ids'] : 0;
-            $user->role_ids  = !empty($data['role_ids']) ? $data['role_ids'] : 0;
-            $user->status    = $data['status'];
+            $user->fill(
+                $request->all()
+            );
 
-            $user->save();
+            if ( $user->save() ) {
 
-            $user_id = $user->getAttributeValue('id');
+                $user_id = $user->getAttributeValue('id');
 
-            if ( $request->has('dataTable') ) {
-                $user = Users::where('id', $user_id)->get()->first();
+                if ( $request->has('dataTable') ) {
+                    $user = Users::where('id', $user_id)->get()->first();
 
-                if ( !empty($user) ) {
-                    $dataTable = $this->user_data($user);
+                    if ( !empty($user) ) {
+                        $dataTable = $this->user_data($user);
+                    }
                 }
+
+                return response()->json([
+                    'status'  => 200,
+                    'message' => 'Tạo người dùng thành công.',
+                    'data'    => $dataTable,
+                ]);
             }
 
             return response()->json([
-                'status'  => 200,
-                'message' => 'Tạo người dùng thành công.',
+                'status'  => 400,
+                'message' => [ 'Tạo người dùng không thành công.' ],
                 'data'    => $dataTable,
             ]);
         }
@@ -360,29 +360,33 @@ class UsersClassicController extends Controller
         }
 
         if ( $validator->passes() ) {
-            if ( !empty($data['password']) ) {
-                $data['password'] = Hash::make($data['password']);
-            }
-            if ( !empty($data['donvi_id']) ) {
-                $data['role_ids'] = !empty($data['role_ids']) ? maybe_serialize($data['role_ids']) : 0;
-            }
-            if ( !empty($data['donvi_id']) ) {
-                $data['donvi_ids'] = !empty($data['donvi_ids']) ? maybe_serialize($data['donvi_ids']) : 0;
-            }
 
-            Users::where('id', $id)->update($data);
+            $user = Users::find($id);
 
-            if ( $request->has('dataTable') ) {
-                $user = Users::where('id', $id)->get()->first();
+            $user->fill($data);
 
-                if ( !empty($user) ) {
-                    $dataTable = $this->user_data($user);
+            if ( $user->save() ) {
+
+                Artisan::call('cache:clear');
+
+                if ( $request->has('dataTable') ) {
+                    $user = Users::where('id', $id)->get()->first();
+
+                    if ( !empty($user) ) {
+                        $dataTable = $this->user_data($user);
+                    }
                 }
+
+                return response()->json([
+                    'status'  => 200,
+                    'message' => 'Cập nhật người dùng thành công.',
+                    'data'    => $dataTable,
+                ]);
             }
 
             return response()->json([
-                'status'  => 200,
-                'message' => 'Update người dùng thành công.',
+                'status'  => 400,
+                'message' => [ 'Cập nhật người dùng không thành công.' ],
                 'data'    => $dataTable,
             ]);
         }
@@ -414,6 +418,9 @@ class UsersClassicController extends Controller
         $count = Users::destroy($id);
 
         if ( $count > 0 ) {
+
+            Artisan::call('cache:clear');
+
             return response()->json([
                 'status'  => 'success',
                 'title'   => 'Đã xóa!',

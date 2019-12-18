@@ -92,7 +92,7 @@
                 <div>
                     <select name="donvi_id" class="form-control chosen-select"
                             data-placeholder="Chọn đơn vị">
-                        <option value=""></option>
+                        <option value="0"></option>
                         {!!
                             _menu_tree( $donvis, [
                                'title'  =>  'tendonvi',
@@ -112,7 +112,7 @@
                 <div>
                     <select name="role_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn nhóm quyền">
-                        <option value=""></option>
+                        <option value="0"></option>
                         @foreach ( $roles as $role )
                             <option value="{{ $role->id }}">{{ $role->title }}</option>
                         @endforeach
@@ -129,7 +129,7 @@
                 <div>
                     <select name="donvi_ids" class="form-control chosen-select"
                             multiple="multiple" data-placeholder="Chọn phạm vi quản lý">
-                        <option value=""></option>
+                        <option value="0"></option>
                         {!!
                             _menu_tree( $donvis, [
                                'title'  =>  'tendonvi',

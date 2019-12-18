@@ -4,6 +4,7 @@ namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -24,14 +25,17 @@ class ProfileController extends Controller
             abort(404);
         }
 
+        $diachi = [];
+        if ( class_exists(Diachi::class) ) {
+            $diachi = Diachi::select('id', 'parent_id', 'tendiadanh')->where('parent_id', 1)->get();
+        }
+
         return view(
             name_blade('Backend.profile.app'),
             [
                 'user'       => Auth::user(),
                 'permission' => $permission,
-                'diachi'     => Diachi::select('id', 'parent_id', 'tendiadanh')
-                    ->where('parent_id', 1)
-                    ->get(),
+                'diachi'     => $diachi,
             ]
         );
     }
@@ -88,11 +92,31 @@ class ProfileController extends Controller
      * @param  Request  $request
      * @param  int  $id
      *
-     * @return void
+     * @return string
      */
     public function update( Request $request, $id )
     {
-        //
+        if ( !user_can('edit') ) {
+            return response()->json([
+                'status'  => 400,
+                'message' => [ 'Bạn không được cấp quyền sửa dữ liệu.' ],
+            ]);
+        }
+
+        if ( Route::has('users-classic.update') ) {
+            return redirect()->route(
+                'users-classic.update', $id
+            );
+        } elseif ( Route::has('users.update') ) {
+            return redirect()->route(
+                'users.update', $id
+            );
+        }
+
+        return response()->json([
+            'status'  => 400,
+            'message' => [ 'Cập nhật người dùng không thành công.' ],
+        ]);
     }
 
     /**
@@ -100,10 +124,31 @@ class ProfileController extends Controller
      *
      * @param  int  $id
      *
-     * @return void
+     * @return string
      */
     public function destroy( $id )
     {
-        //
+        if ( !user_can('delete') ) {
+            return response()->json([
+                'status'  => 'warning',
+                'title'   => 'Cảnh báo!',
+                'message' => 'Bạn không được cấp quyền xóa dữ liệu!',
+            ]);
+        }
+
+        if ( Route::has('users-classic.destroy') ) {
+            return redirect()->route(
+                'users-classic.destroy', $id
+            );
+        } elseif ( Route::has('users.destroy') ) {
+            return redirect()->route(
+                'users.destroy', $id
+            );
+        }
+
+        return response()->json([
+            'status'  => 400,
+            'message' => [ 'Xóa người dùng không thành công!' ],
+        ]);
     }
 }
