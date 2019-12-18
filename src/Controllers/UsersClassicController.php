@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -68,10 +69,9 @@ class UsersClassicController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  Request  $request
      * @return Factory|View
      */
-    public function index( Request $request )
+    public function index()
     {
         $permission = user_can('all');
 
@@ -305,13 +305,11 @@ class UsersClassicController extends Controller
      *
      * @param  int  $id
      *
-     * @return Factory|View
+     * @return void
      */
     public function show( $id )
     {
-        $user = \Auth::user();
-
-        return view(name_blade('Backend.users-classic.show'), compact('user'));
+        //
     }
 
     /**
@@ -319,7 +317,7 @@ class UsersClassicController extends Controller
      *
      * @param  int  $id
      *
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function edit( $id )
     {

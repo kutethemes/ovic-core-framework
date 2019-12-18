@@ -66,11 +66,11 @@
                 </a>
                 <ul class="dropdown-menu animated fadeInUp">
                     @auth
-                        @if( Route::has('users.show') )
+                        @if( Route::has('profile.index') )
                             <li>
                                 <a class="dropdown-item"
-                                   href="{{ route('users.show', Auth::user()->id ) }}">
-                                    Profile
+                                   href="{{ route('profile.index' ) }}">
+                                    Hồ sơ
                                 </a>
                             </li>
                             <li class="dropdown-divider"></li>

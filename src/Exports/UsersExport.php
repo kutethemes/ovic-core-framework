@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\View\View;
 
 use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class UsersExport implements FromView, WithEvents
 {
@@ -37,7 +38,7 @@ class UsersExport implements FromView, WithEvents
 
     public function view(): View
     {
-        return view(name_blade('Backend.importer.excel-users'), [
+        return view(name_blade('Backend.importer.export'), [
             'users' => $this->users
         ]);
     }
@@ -66,23 +67,23 @@ class UsersExport implements FromView, WithEvents
 
                 /* Alignment Vertical */
                 $event->sheet->getDelegate()->getStyle("A1:{$cellRange}")->getAlignment()
-                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                    ->setVertical(Alignment::VERTICAL_CENTER);
 
                 /* Alignment Horizontal */
                 $event->sheet->getDelegate()->getStyle("A1:$cellHead")->getAlignment()
-                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 $event->sheet->getDelegate()->getStyle("A5:A{$max}")->getAlignment()
-                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 $event->sheet->getDelegate()->getStyle("B5:{$cellRange}")->getAlignment()
-                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                    ->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
                 /* Border */
                 $styleArray = [
                     'borders' => [
                         'allBorders' => [
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'borderStyle' => Border::BORDER_THIN,
                             'color'       => [ 'argb' => '0000' ],
                         ],
                     ],

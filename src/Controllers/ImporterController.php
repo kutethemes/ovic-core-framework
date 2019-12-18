@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ImporterController extends Controller
 {
@@ -20,6 +21,12 @@ class ImporterController extends Controller
      */
     public function index()
     {
+        $permission = user_can('all');
+
+        if ( array_sum($permission) == 0 || !user_can('view') ) {
+            abort(404);
+        }
+
         return view(
             name_blade('Backend.importer.app'),
             [
@@ -33,7 +40,7 @@ class ImporterController extends Controller
      * Show the form for creating a new resource.
      *
      * @param  Request  $request
-     * @return JsonResponse
+     * @return BinaryFileResponse | JsonResponse
      */
     public function create( Request $request )
     {
@@ -45,6 +52,9 @@ class ImporterController extends Controller
                 $name   = $request->input('fileName', 'DS-Nguoidung');
                 $donvi  = $request->input('donvi', '');
                 $status = $request->input('status', '');
+
+                ob_end_clean(); // this
+                ob_start(); // and this
 
                 return Excel::download(new UsersExport($donvi, $status),
                     "{$name}.xlsx"
@@ -76,12 +86,12 @@ class ImporterController extends Controller
                         'message' => 'import thành công!'
                     ]);
                 }
-
-                return response()->json([
-                    'status'  => 400,
-                    'message' => 'import không thành công!'
-                ]);
             }
         }
+
+        return response()->json([
+            'status'  => 400,
+            'message' => 'import không thành công!'
+        ]);
     }
 }

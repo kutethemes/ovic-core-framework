@@ -69,10 +69,9 @@ class UsersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  Request  $request
      * @return Factory|View
      */
-    public function index( Request $request )
+    public function index()
     {
         $permission = user_can('all');
 
@@ -296,13 +295,11 @@ class UsersController extends Controller
      *
      * @param  int  $id
      *
-     * @return Factory|View
+     * @return void
      */
     public function show( $id )
     {
-        $user = \Auth::user();
-
-        return view(name_blade('Backend.users.show'), compact('user'));
+        //
     }
 
     /**
@@ -310,7 +307,7 @@ class UsersController extends Controller
      *
      * @param  int  $id
      *
-     * @return Response
+     * @return void
      */
     public function edit( $id )
     {

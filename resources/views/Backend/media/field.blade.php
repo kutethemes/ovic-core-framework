@@ -12,7 +12,7 @@
 @php
     $placeholder    = ( !empty( $placeholder ) ) ? $placeholder : 'img/a_none.jpg';
     $alt            = ( !empty( $alt ) ) ? $alt : 'Placeholder';
-    $image          = ( !empty( $value ) && !empty( $image ) ) ? $image : $placeholder;
+    $image          = ( !empty( $value ) ) ? get_attachment_url( $value ) : $placeholder;
 @endphp
 
 <div class="ovic-field-image">
@@ -22,12 +22,16 @@
         </div>
         @if( user_can( 'add', 'upload' ) )
             <div class="group-button">
-                <a href="#" class="btn btn-primary ovic-image-add">
-                    Add Image
-                </a>
-                <a href="#" class="btn btn-danger ovic-image-remove">
-                    Remove Image
-                </a>
+                @if( user_can( 'add', $permission ) )
+                    <a href="#" class="btn btn-primary ovic-image-add">
+                        Add Image
+                    </a>
+                @endif
+                @if( user_can( 'delete', $permission ) )
+                    <a href="#" class="btn btn-danger ovic-image-remove">
+                        Remove Image
+                    </a>
+                @endif
             </div>
             <input type="hidden" name="{{ $name }}" value="{{ $value }}"/>
         @endif

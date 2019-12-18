@@ -38,6 +38,9 @@ Route::group(
 //        Route::resource('users', 'Ovic\Framework\UsersController');
 //        Route::resource('users-classic', 'Ovic\Framework\UsersClassicController');
 //
+//        /* Profile Route */
+//        Route::resource('profile', 'Ovic\Framework\ProfileController');
+//
 //        /* Roles Route */
 //        Route::resource('roles', 'Ovic\Framework\RolesController');
 //

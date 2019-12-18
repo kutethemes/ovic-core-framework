@@ -132,7 +132,14 @@ function button_set( $button, $permission, $attr = [] )
 
 function get_attachment_url( $id, $is_path = false )
 {
-    $path = !$is_path ? Posts::where('id', '=', $id)->value('name') : $id;
+    $path = '';
+    if ( !$is_path ) {
+        if ( Posts::where('id', $id)->exists() ) {
+            $path = Posts::where('id', '=', $id)->value('name');
+        }
+    } else {
+        $path = $id;
+    }
 
     return route('images.build', explode('/', $path));
 }
