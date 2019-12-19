@@ -18,6 +18,10 @@
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     {{-- style dataTable --}}
     <style>
+        .table tbody td.dataTables_empty {
+            height: 46px !important;
+        }
+        
         .ibox {
             background-color: #fff;
         }

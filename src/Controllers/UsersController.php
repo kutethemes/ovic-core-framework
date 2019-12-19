@@ -133,9 +133,6 @@ class UsersController extends Controller
         $args = [
             [ 'id', '>', 0 ],
         ];
-        if ( $user->status !== 3 ) {
-            $args[] = [ 'donvi_id', '=', $user->donvi_id ];
-        }
 
         $totalData = Users::count();
         $limit     = $request->input('length');
@@ -157,26 +154,39 @@ class UsersController extends Controller
             $args[] = [ 'status', '=', $sort ];
         }
 
+        /* filter */
+        $filter = $request->input('filter');
+
+        if ( !empty($filter['donvi_id']) ) {
+            $args['donvi_id'] = [ 'donvi_id', '=', $filter['donvi_id'] ];
+        }
+
+        $args      = array_values($args);
+        $condition = Users::where($args);
+
+        if ( empty($filter['donvi_id']) && $user->status !== 3 ) {
+            $donvis = Donvi::getDonvi(true);
+            if ( !empty($donvis) ) {
+                $condition = $condition->whereIn('donvi_id', array_keys($donvis));
+            }
+        }
+
         if ( empty($search) ) {
-            $totalFiltered = count(Users::where($args)->get());
-            $users         = Users::where($args)
+            $totalFiltered = $condition->count();
+            $users         = $condition
                 ->offset($start)
                 ->limit($limit)
                 ->latest()
                 ->get()
                 ->toArray();
         } else {
-            $totalFiltered = count(
-                Users::where($args)
-                    ->where(
-                        function ( $query ) use ( $search ) {
-                            $query->where('name', 'LIKE', "%{$search}%")
-                                ->orWhere('email', 'LIKE', "%{$search}%");
-                        }
-                    )
-                    ->get()
-            );
-            $users         = Users::where($args)
+            $totalFiltered = $condition->where(
+                function ( $query ) use ( $search ) {
+                    $query->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('email', 'LIKE', "%{$search}%");
+                }
+            )->count();
+            $users         = $condition
                 ->where(
                     function ( $query ) use ( $search ) {
                         $query->where('name', 'LIKE', "%{$search}%")

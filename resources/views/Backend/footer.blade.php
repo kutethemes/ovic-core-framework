@@ -11,9 +11,9 @@
 <!-- Footer -->
 <div class="footer">
     <div class="float-right">
-        Version <strong>1.0.0</strong>
+        Version <strong>3.0.0</strong>
     </div>
     <div>
-        Trung tâm phần mềm © 2015-2019
+        Sở Giáo dục và Đào tạo Hải Phòng © 2015-2019
     </div>
 </div>

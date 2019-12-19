@@ -27,7 +27,7 @@
     @foreach( $users as $user )
         <tr>
             <td height="25">{{ $user['id'] }}</td>
-            <td height="25">{{ $user['name'] }}</td>
+            <td height="25">{{ $user['hodem'] .' '. $user['ten'] }}</td>
             <td height="25"></td>
             <td height="25"></td>
             <td height="25"></td>

@@ -21,6 +21,7 @@ class Users extends User
         'role_ids'  => 0,
         'donvi_id'  => 0,
         'donvi_ids' => 0,
+        'canhan_id' => 0,
         'status'    => 1,
     );
     /**
@@ -36,6 +37,7 @@ class Users extends User
         'role_ids',
         'donvi_id',
         'donvi_ids',
+        'canhan_id',
         'status',
     ];
 

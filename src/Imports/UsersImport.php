@@ -50,6 +50,7 @@ class UsersImport implements ToModel, WithStartRow, WithValidation, SkipsOnFailu
         return new Users([
             'name'      => trim($row[1]),
             'email'     => trim($row[2]),
+            'canhan_id' => trim($row[0]),
             'password'  => Hash::make(trim($row[3])),
             'role_ids'  => maybe_serialize($this->role_ids),
             'donvi_id'  => $this->donvi_id,
