@@ -3,12 +3,13 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
-use Modules\Doituong\Entities\Diachi;
 
 class ProfileController extends Controller
 {
@@ -26,14 +27,30 @@ class ProfileController extends Controller
         }
 
         $diachi = [];
-        if ( class_exists(Diachi::class) ) {
-            $diachi = Diachi::select('id', 'parent_id', 'tendiadanh')->where('parent_id', 1)->get();
+        $canhan = [];
+        $user   = Auth::user();
+        if ( class_exists(\Modules\Doituong\Entities\Diachi::class) ) {
+            $diachi = \Modules\Doituong\Entities\Diachi::where('parent_id', 1)->get();
+        }
+        if ( !empty($user->canhan_id) && class_exists(\Modules\Doituong\Entities\DTTDCanhan::class) ) {
+            $canhan = \Modules\Doituong\Entities\DTTDCanhan::where('id', $user->canhan_id)->get()->first()->toArray();
+        }
+
+        if ( empty($canhan) ) {
+            $canhan['id']       = 0;
+            $canhan['noisinh']  = 0;
+            $canhan['gioitinh'] = 1;
+            $canhan['scmnd']    = '';
+            $canhan['hodem']    = '';
+            $canhan['ten']      = '';
+            $canhan['ngaysinh'] = today()->format('d/m/Y');
         }
 
         return view(
             name_blade('Backend.profile.app'),
             [
-                'user'       => Auth::user(),
+                'user'       => $user,
+                'canhan'     => $canhan,
                 'permission' => $permission,
                 'diachi'     => $diachi,
             ]
@@ -101,6 +118,44 @@ class ProfileController extends Controller
                 'status'  => 400,
                 'message' => [ 'Bạn không được cấp quyền sửa dữ liệu.' ],
             ]);
+        }
+
+        $canhan_id = $request->input('canhan_id');
+
+        if ( $canhan_id > 0 && class_exists(\Modules\Doituong\Entities\DTTDCanhan::class) ) {
+            $validator = Validator::make($request->all(),
+                [
+                    'hodem'    => 'required|string',
+                    'ten'      => 'required|string',
+                    'scmnd'    => 'required|numeric',
+                    'ngaysinh' => 'required|date_format:d/m/Y',
+                    'gioitinh' => 'required|numeric',
+                    'noisinh'  => 'required|numeric',//|exists:dm_diadanh',
+                ],
+                [
+                    'hodem.required'    => 'Họ đệm là trường bắt buộc!',
+                    'ten.required'      => 'Tên là trường bắt buộc!',
+                    'scmnd.required'    => 'Số chứng minh nhân dân là trường bắt buộc!',
+                    'scmnd.numeric'     => 'Số chứng minh nhân dân phải là số!',
+                    'ngaysinh.required' => 'Ngày sinh là trường bắt buộc!',
+                    'ngaysinh.date'     => 'Ngày sinh định dạng ngày chưa đúng!',
+                    'gioitinh.required' => 'Giới tính là trường bắt buộc!',
+                    'gioitinh.numeric'  => 'Giới tính không hợp lệ!',
+                    'noisinh.required'  => 'Nơi sinh là trường bắt buộc!',
+                    'noisinh.numeric'   => 'Nơi sinh không hợp lệ!',
+                ]
+            );
+
+            if ( $validator->passes() ) {
+                \Modules\Doituong\Entities\DTTDCanhan::where('id', $canhan_id)->update([
+                    'hodem'    => $request->input('hodem'),
+                    'ten'      => $request->input('ten'),
+                    'gioitinh' => $request->input('gioitinh'),
+                    'scmnd'    => $request->input('scmnd'),
+                    'noisinh'  => $request->input('noisinh'),
+                    'ngaysinh' => Carbon::createFromFormat('d/m/Y', $request->input('ngaysinh'))->toDateString(),
+                ]);
+            }
         }
 
         if ( Route::has('users-classic.update') ) {

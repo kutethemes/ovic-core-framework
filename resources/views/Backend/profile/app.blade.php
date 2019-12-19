@@ -49,6 +49,7 @@
             <div class="ibox-content">
                 <form action="#" id="edit-post" method="post">
                     <input type="hidden" name="id" value="{{ $user->id }}">
+                    <input type="hidden" name="canhan_id" value="{{ $canhan['id'] }}">
 
                     <div class="row">
                         <div class="col-md-6 b-r">
@@ -103,10 +104,25 @@
                         <div class="col-md-6">
 
                             <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Họ và tên</label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <input type="text" name="hodem" class="form-control" placeholder="Họ đệm"
+                                               value="{{ $canhan['hodem'] }}">
+                                        <span class="input-group-append">
+                                            <input type="text" name="ten" class="form-control" placeholder="Tên"
+                                                   value="{{ $canhan['ten'] }}">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+
+                            <div class="form-group row">
                                 <label class="col-sm-2 col-form-label">Ngày sinh</label>
                                 <div class="col-sm-10">
                                     <input type="text" name="ngaysinh" class="form-control"
-                                           value="{{ today()->format('d/m/Y') }}">
+                                           value="{{ $canhan['ngaysinh'] }}">
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
@@ -114,7 +130,7 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 col-form-label">Số CMND</label>
                                 <div class="col-sm-10">
-                                    <input type="text" name="scmnd" class="form-control" value="">
+                                    <input type="text" name="scmnd" class="form-control" value="{{ $canhan['scmnd'] }}">
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
@@ -124,7 +140,10 @@
                                 <div class="col-sm-10">
                                     <select name="noisinh" id="noisinh" class="form-control chosen-select">
                                         @foreach( $diachi as $item )
-                                            <option value="{{ $item->id }}">{{ $item->tendiadanh }}</option>
+                                            <option value="{{ $item->id }}"
+                                                    @if( $canhan['noisinh'] == $item->id ) selected @endif>
+                                                {{ $item->tendiadanh }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -135,13 +154,15 @@
                                 <label class="col-sm-2 col-form-label">Giới tính</label>
                                 <div class="col-sm-10">
                                     <div class="radio radio-info form-check-inline col-form-label">
-                                        <input type="radio" id="gioitinh-nam" value="1" name="gioitinh" checked="">
+                                        <input type="radio" id="gioitinh-nam" value="1" name="gioitinh"
+                                               @if( $canhan['gioitinh'] == 1 ) checked @endif>
                                         <label for="gioitinh-nam" class="m-0">
                                             Nam
                                         </label>
                                     </div>
                                     <div class="radio radio-info form-check-inline col-form-label">
-                                        <input type="radio" id="gioitinh-nu" value="0" name="gioitinh">
+                                        <input type="radio" id="gioitinh-nu" value="0" name="gioitinh"
+                                               @if( $canhan['gioitinh'] == 0 ) checked @endif>
                                         <label for="gioitinh-nu" class="m-0">
                                             Nữ
                                         </label>
