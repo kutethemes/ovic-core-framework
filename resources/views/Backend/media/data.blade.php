@@ -319,7 +319,8 @@
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy",
                 closeOnConfirm: false
             }, function ( isConfirm ) {
                 if ( isConfirm ) {
@@ -382,7 +383,8 @@
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy",
                 closeOnConfirm: false
             }, function ( isConfirm ) {
                 if ( isConfirm ) {

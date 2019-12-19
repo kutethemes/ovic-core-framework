@@ -279,7 +279,8 @@
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Đồng ý!",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Hủy",
                 closeOnConfirm: false
             }, function ( isConfirm ) {
                 if ( isConfirm ) {

@@ -36,7 +36,7 @@
     }
     /* Init OvicTable */
     $.fn.init_dataTable = function ( main_url, config, prefix = 'create' ) {
-        let table = $( this ),
+        let table   = $( this ),
             options = {};
 
         options = $.extend( {
@@ -53,13 +53,13 @@
                 },
                 data: function ( data ) {
                     let sorting_value = '',
-                        button = $( '.btn-group.sorting .btn-primary' );
+                        button        = $( '.btn-group.sorting .btn-primary' );
 
                     if ( button.length ) {
                         sorting_value = button.val();
                     }
                     data.sorting = sorting_value;
-                    data.filter = $( '.table-filter' ).serializeObject();
+                    data.filter  = $( '.table-filter' ).serializeObject();
                 },
                 complete: function ( response ) {
                     table.trigger( 'dataTable_ajax_complete', [ response ] );
@@ -94,7 +94,7 @@
     /* sắp xếp bảng */
     $( document ).on( 'click', '.btn-group.sorting button', function () {
         let button = $( this ),
-            value = button.val();
+            value  = button.val();
 
         if ( !button.hasClass( 'btn-primary' ) ) {
             if ( OvicTable !== null ) {
@@ -138,8 +138,8 @@
     } );
     /* chọn từng item */
     $( document ).on( 'change', '.select-items', function ( e ) {
-        var check = false,
-            all = $( '#select-all' ),
+        var check   = false,
+            all     = $( '#select-all' ),
             item_id = $( '.select-items' );
 
         if ( !all.is( ':checked' ) ) {
@@ -230,7 +230,8 @@
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Đồng ý xóa!",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy",
             closeOnConfirm: false
         }, function ( isConfirm ) {
             if ( isConfirm ) {
@@ -291,7 +292,7 @@
     $.fn.update_post = function ( main_url, data, reload = false ) {
 
         let button = $( this ),
-            tr = $( "#table-posts" ).find( '.row-' + data.id );
+            tr     = $( "#table-posts" ).find( '.row-' + data.id );
 
         if ( reload ) {
             data.dataTable = true;
@@ -357,15 +358,15 @@
     /* Update status */
     $.fn.update_status = function ( main_url, messageOff, messageOn, reload = false ) {
 
-        let config = {},
-            button = $( this ),
-            tr = button.closest( 'tr' ),
-            data = (OvicTable !== null) ? OvicTable.row( tr ).data() : [],
+        let config  = {},
+            button  = $( this ),
+            tr      = button.closest( 'tr' ),
+            data    = (OvicTable !== null) ? OvicTable.row( tr ).data() : [],
             message = messageOff;
 
         if ( parseInt( data.status ) !== 1 ) {
             data.status = 1;
-            message = messageOn;
+            message     = messageOn;
         } else {
             data.status = 0;
         }
