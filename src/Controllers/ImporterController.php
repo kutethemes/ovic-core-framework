@@ -48,14 +48,13 @@ class ImporterController extends Controller
 
         if ( $type == 'export' ) {
             if ( $target == 'user' ) {
-                $name   = $request->input('fileName', 'DS-Nguoidung');
+                $name   = $request->input('fileName', 'danh_sach_nguoi_dung');
                 $donvi  = $request->input('donvi', '');
-                $status = $request->input('status', '');
 
                 ob_end_clean(); // this
                 ob_start();     // and this
 
-                return Excel::download(new UsersExport($donvi, $status),
+                return Excel::download(new UsersExport($donvi),
                     "{$name}.xlsx"
                 );
             }

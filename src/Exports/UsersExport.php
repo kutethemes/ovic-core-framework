@@ -18,28 +18,22 @@ class UsersExport implements FromView, WithEvents
 {
     public $users = [];
 
-    public function __construct( $donvi_id = '', $status = '' )
+    public function __construct( $donvi_id = '' )
     {
         $user = Auth::user();
         if ( class_exists(\Modules\Doituong\Entities\DTTDCanhan::class) ) {
-            if ( !empty($status) ) {
-                $condition = \Modules\Doituong\Entities\DTTDCanhan::where('status', $status);
-            } else {
-                $condition = \Modules\Doituong\Entities\DTTDCanhan::where('id', '>', 0);
-            }
+            $condition = \Modules\Doituong\Entities\DTTDCanhan::where('id', '>', 0);
             if ( empty($donvi_id) ) {
                 $donvi = Donvi::getDonvi(true);
                 unset($donvi[$user->donvi_id]);
-                $condition = $condition->whereIn('donvi_id', array_keys($donvi));
+                $condition = $condition->where(function ( $query ) use ( $donvi ) {
+                    $query->whereIn('donvi_id', array_keys($donvi));
+                });
             } else {
                 $condition = $condition->where('donvi_id', $donvi_id);
             }
             $this->users = $condition->orderBy('ten', 'asc')
-                ->get([
-                    'id',
-                    'hodem',
-                    'ten'
-                ])
+                ->get([ 'id', 'hodem', 'ten' ])
                 ->toArray();
         }
     }

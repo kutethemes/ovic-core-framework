@@ -21,6 +21,7 @@ class CreateUsersTable2 extends Migration
                         $table->text('role_ids')->after('avatar')->nullable();
                         $table->text('donvi_ids')->after('role_ids')->nullable();
                         $table->integer('donvi_id')->after('donvi_ids')->default(0);
+                        $table->integer('canhan_id')->after('donvi_id')->default(0);
                         $table->tinyInteger('status')->after('donvi_id')->default(1);
                     }
                 );
@@ -34,6 +35,7 @@ class CreateUsersTable2 extends Migration
                     $table->text('role_ids')->after('avatar')->nullable();
                     $table->text('donvi_ids')->after('role_ids')->nullable();
                     $table->integer('donvi_id')->after('donvi_ids')->default(0);
+                    $table->integer('canhan_id')->after('donvi_id')->default(0);
                     $table->tinyInteger('status')->after('donvi_id')->default(1);
                     $table->string('email', 100)->unique();
                     $table->timestamp('email_verified_at')->nullable();
