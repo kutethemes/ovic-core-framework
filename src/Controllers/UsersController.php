@@ -346,10 +346,7 @@ class UsersController extends Controller
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
 
         if ( Users::find($id)->status == 3 ) {
-            $data['status']    = 3;
-            $data['role_ids']  = 0;
-            $data['donvi_id']  = 0;
-            $data['donvi_ids'] = 0;
+            $data['status'] = 3;
             if ( !Auth::check() || Auth::user()->status != 3 ) {
                 return response()->json([
                     'status'  => 400,
