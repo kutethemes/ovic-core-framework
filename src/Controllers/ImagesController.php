@@ -3,6 +3,9 @@
 namespace Ovic\Framework;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class ImagesController extends Controller
 {
@@ -10,10 +13,13 @@ class ImagesController extends Controller
     {
         $path = storage_path() . "/app/uploads/{$year}/{$month}/{$filename}";
 
-        if ( !file_exists($path) ) {
+        if ( !File::exists($path) ) {
             return response($path, 400);
         }
 
-        return response()->file($path);
+        $content = File::get($path);
+        $type    = File::mimeType($path);
+
+        return response()->file($path, [ "Content-Type", $type ]);
     }
 }

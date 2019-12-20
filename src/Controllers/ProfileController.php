@@ -120,9 +120,9 @@ class ProfileController extends Controller
             ]);
         }
 
-        $canhan_id = $request->input('canhan_id');
+		$user = Auth::user();
 
-        if ( $canhan_id > 0 && class_exists(\Modules\Doituong\Entities\DTTDCanhan::class) ) {
+        if ( !empty($user->canhan_id) && $user->canhan_id > 0 && class_exists(\Modules\Doituong\Entities\DTTDCanhan::class) ) {
             $validator = Validator::make($request->all(),
                 [
                     'hodem'    => 'required|string',
@@ -147,7 +147,7 @@ class ProfileController extends Controller
             );
 
             if ( $validator->passes() ) {
-                \Modules\Doituong\Entities\DTTDCanhan::where('id', $canhan_id)->update([
+                \Modules\Doituong\Entities\DTTDCanhan::where('id', $user->canhan_id)->update([
                     'hodem'    => $request->input('hodem'),
                     'ten'      => $request->input('ten'),
                     'gioitinh' => $request->input('gioitinh'),

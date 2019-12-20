@@ -49,7 +49,6 @@
             <div class="ibox-content">
                 <form action="#" id="edit-post" method="post">
                     <input type="hidden" name="id" value="{{ $user->id }}">
-                    <input type="hidden" name="canhan_id" value="{{ $canhan['id'] }}">
 
                     <div class="row">
                         <div class="col-md-6 b-r">

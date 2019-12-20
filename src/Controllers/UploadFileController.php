@@ -393,10 +393,8 @@ class UploadFileController extends Controller
 
             $FileName = str_replace(".{$extension}", "-{$now->getTimestamp()}.{$extension}", $OriginalName);
 
-            $FilePath = Storage::putFileAs(
-                "{$this->folder}{$now->year}/{$now->month}",
-                $file,
-                $FileName
+            $FilePath = Storage::disk('local')->putFileAs(
+                "{$this->folder}{$now->year}/{$now->month}", $file, $FileName
             );
 
             $post_id = $this->add_attachments(
@@ -426,7 +424,8 @@ class UploadFileController extends Controller
                         'status'      => 'success',
                         'message'     => 'Lưu file thành công.',
                         'html'        => $this->image($post_id)->toHtml(),
-                        'directories' => json_encode($this->directories)
+                        'directories' => json_encode($this->directories),
+                        'FilePath'    => $FilePath,
                     ]
                 );
             } else {

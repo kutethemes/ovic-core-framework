@@ -54,6 +54,10 @@ class Donvi extends Eloquent
 
     public function scopegetDonvi( $query, $level = false, $args = [] )
     {
+    	if ( !Auth::check() ){
+    		return [];
+		}
+
         $user = Auth::user();
 
         if ( $user->status == 3 ) {
