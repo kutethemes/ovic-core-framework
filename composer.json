@@ -43,7 +43,8 @@
         "nesbot/carbon": "2.*",
         "maatwebsite/excel": "3.*",
         "nwidart/laravel-modules": "6.*",
-        "laravel/framework": "6.0.*"
+        "laravel/framework": "6.0.*",
+        "yajra/laravel-datatables": "1.*"
     },
     "extra": {
         "laravel": {
