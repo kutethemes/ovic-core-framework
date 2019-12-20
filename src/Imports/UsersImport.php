@@ -42,6 +42,7 @@ class UsersImport implements ToModel, WithStartRow, WithValidation, SkipsOnFailu
     {
         return [
             '2' => Rule::unique('users', 'email'),
+            '0' => Rule::unique('users', 'canhan_id'),
         ];
     }
 

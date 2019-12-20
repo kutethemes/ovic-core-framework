@@ -18,6 +18,8 @@
     <link href="{{ asset('css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     {{-- Sweet Alert --}}
     <link href="{{ asset('css/plugins/sweetalert/sweetalert.min.css') }}" rel="stylesheet">
+    {{-- Ladda style --}}
+    <link href="{{ asset('css/plugins/ladda/ladda-themeless.min.css') }}" rel="stylesheet">
     {{-- Chosen --}}
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     <style>
@@ -180,7 +182,7 @@
 
                                     <div class="form-group submit row">
                                         <div class="col-sm-12">
-                                            <button type="submit" class="btn btn-primary">
+                                            <button type="submit" class="btn btn-primary import-data">
                                                 Import
                                             </button>
                                         </div>
@@ -211,6 +213,10 @@
     <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
     {{-- Toastr script --}}
     <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
+    {{-- Ladda --}}
+    <script src="{{ asset('js/plugins/ladda/spin.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/ladda/ladda.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/ladda/ladda.jquery.min.js') }}"></script>
     {{-- Chosen --}}
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
     <script>
@@ -261,8 +267,11 @@
             return false;
         } );
         $( document ).on( 'submit', '#import-data', function () {
-            let form = $( this ),
-                data = form.serializeObject();
+            let form    = $( this ),
+                loading = form.find( 'button.import-data' ).ladda(),
+                data    = form.serializeObject();
+
+            loading.ladda( 'start' );
 
             $.ajax( {
                 url: "{{ asset('importer/create') }}",
@@ -288,8 +297,10 @@
                             showConfirmButton: true
                         } );
                     }
+                    loading.ladda( 'stop' );
                 },
                 error: function () {
+                    loading.ladda( 'stop' );
                     swal( {
                         type: 'error',
                         title: 'Error!',
