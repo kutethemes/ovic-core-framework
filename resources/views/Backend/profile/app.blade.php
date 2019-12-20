@@ -66,8 +66,32 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 col-form-label">Tên hiển thị</label>
                                 <div class="col-sm-10">
-                                    <input type="text" name="name" class="form-control required" placeholder="Họ tên"
-                                           maxlength="100" value="{{ $user->name }}">
+                                    <div class="input-group">
+                                        <input type="text" name="name" class="form-control required"
+                                               placeholder="Họ tên"
+                                               maxlength="100" value="{{ $user->name }}">
+                                        <div class="input-group-append">
+                                            @switch( $user->status )
+                                                @case( 0 )
+                                                <button class="btn btn-danger rounded-0" type="button">
+                                                    KHÔNG KÍCH HOẠT
+                                                </button>
+                                                @break
+
+                                                @case( 2 )
+                                                <button class="btn btn-warning rounded-0" type="button">
+                                                    KÍCH HOẠT ẨN
+                                                </button>
+                                                @break
+
+                                                @default
+                                                <button class="btn btn-primary rounded-0" type="button">
+                                                    ĐANG KÍCH HOẠT
+                                                </button>
+                                                @break
+                                            @endswitch
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
@@ -89,11 +113,11 @@
                                                placeholder="Mật khẩu >= 8 ký tự"
                                                name="password" minlength="8" disabled
                                                value="{{ $user->password }}">
-                                        <span class="input-group-append">
-                                            <button class="btn btn-info edit-field" type="button">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info edit-field rounded-0" type="button">
                                                 <i class="fa fa-paste"></i> Edit
                                             </button>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
