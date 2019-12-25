@@ -59,7 +59,7 @@
                         sorting_value = button.val();
                     }
                     data.sorting = sorting_value;
-                    data.filter  = $( '.table-filter' ).serializeObject();
+                    data.filter  = $( 'form.table-filter' ).serializeObject();
                 },
                 complete: function ( response ) {
                     table.trigger( 'dataTable_ajax_complete', [ response ] );
@@ -86,7 +86,7 @@
         OvicTable = table.DataTable( options );
     };
     /* lọc bảng */
-    $( document ).on( 'click', '.table-filter button', function () {
+    $( document ).on( 'click', 'form.table-filter button', function () {
         if ( OvicTable !== null ) {
             OvicTable.ajax.reload( null, false );
         }
