@@ -120,9 +120,9 @@
     } );
     /* chọn tất cả */
     $( document ).on( 'change', '#select-all', function ( e ) {
-        var self = $( this );
-
-        var item_id = $( '.select-items' );
+        var self    = $( this ),
+            table   = self.closest( '.dataTables_wrapper' ),
+            item_id = table.find( 'tbody .select-items' );
 
         if ( self.is( ':checked' ) ) {
             item_id.each( function ( key, value ) {
@@ -139,8 +139,9 @@
     /* chọn từng item */
     $( document ).on( 'change', '.select-items', function ( e ) {
         var check   = false,
-            all     = $( '#select-all' ),
-            item_id = $( '.select-items' );
+            table   = $( this ).closest( '.dataTables_wrapper' ),
+            all     = table.find( 'thead #select-all' ),
+            item_id = table.find( 'tbody .select-items' );
 
         if ( !all.is( ':checked' ) ) {
             all.prop( 'checked', 'checked' ).trigger( 'change_select_all' );
@@ -150,7 +151,7 @@
                     check = true;
                 }
             } );
-            if ( check == false ) {
+            if ( check === false ) {
                 all.prop( 'checked', '' ).trigger( 'change_select_all' );
             }
         }
