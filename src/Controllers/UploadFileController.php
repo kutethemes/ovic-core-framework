@@ -2,15 +2,20 @@
 
 namespace Ovic\Framework;
 
+use Illuminate\Http\File;
+
 use App\Http\Controllers\Controller;
+
 use Illuminate\Contracts\View\Factory;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+
 use Illuminate\View\View;
 
 class UploadFileController extends Controller
@@ -392,9 +397,8 @@ class UploadFileController extends Controller
             $OriginalName = $file->getClientOriginalName();
 
             $FileName = str_replace(".{$extension}", "-{$now->getTimestamp()}.{$extension}", $OriginalName);
-
-            $FilePath = Storage::disk('local')->putFileAs(
-                "{$this->folder}{$now->year}/{$now->month}", $file, $FileName
+            $FilePath = $file->storeAs(
+                "{$this->folder}{$now->year}/{$now->month}", "{$FileName}"
             );
 
             $post_id = $this->add_attachments(

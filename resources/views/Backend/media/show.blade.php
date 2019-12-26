@@ -16,7 +16,6 @@
     $size       = $attachment['meta']['_attachment_metadata']['size'];
     $mimetype   = $attachment['meta']['_attachment_metadata']['mimetype'];
     $extension  = $attachment['meta']['_attachment_metadata']['extension'];
-    $rawUrl     = asset("storage/app/uploads/{$attachment['name']}");
 @endphp
 
 @extends( name_blade('Backend.app') )
@@ -94,18 +93,6 @@
                                     <p class="form-control-static">
                                         <a href="{{ $url }}">
                                             {{ $url }}
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Assets Url</label>
-                                <div class="col-lg-9">
-                                    <p class="form-control-static">
-                                        <a href="{{ $rawUrl }}">
-                                            {{ $rawUrl }}
                                         </a>
                                     </p>
                                 </div>
