@@ -2,13 +2,8 @@
 
 namespace Ovic\Framework;
 
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
-use Maatwebsite\Excel\Validators\Failure;
 
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;

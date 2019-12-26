@@ -2,7 +2,6 @@
 
 namespace Ovic\Framework;
 
-use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\View\View;
 
