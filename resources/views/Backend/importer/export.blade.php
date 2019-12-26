@@ -16,11 +16,11 @@
 <table class="table">
     <thead>
     <tr>
-        <th width="12" height="25"><b>ID cá nhân</b></th>
+        <th width="10" height="25"><b>ID cá nhân</b></th>
         <th width="25" height="25"><b>Họ và tên</b></th>
         <th width="40" height="25"><b>Email</b></th>
         <th width="25" height="25"><b>Mật khẩu</b></th>
-        <th width="25" height="25"><b>Ghi chú</b></th>
+        <th width="30" height="25"><b>Ghi chú</b></th>
     </tr>
     </thead>
     <tbody>

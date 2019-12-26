@@ -48,7 +48,7 @@ class ImporterController extends Controller
 
         if ( $type == 'export' ) {
             if ( $target == 'user' ) {
-                $name   = $request->input('fileName', 'danh_sach_nguoi_dung');
+                $name   = $request->input('fileName', 'Danh sách cá nhân');
                 $donvi  = $request->input('donvi', '');
 
                 ob_end_clean(); // this

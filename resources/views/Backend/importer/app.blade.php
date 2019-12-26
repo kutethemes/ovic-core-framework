@@ -74,7 +74,7 @@
                                         </label>
                                         <div class="col-sm-9">
                                             <input class="form-control" type="text" name="fileName"
-                                                   value="danh_sach_nguoi_dung">
+                                                   value="Danh sách cá nhân">
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed"></div>
