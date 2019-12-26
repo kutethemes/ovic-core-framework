@@ -104,11 +104,13 @@
 
                         $modal.on( 'click', '.btn-primary.save-modal', function () {
 
-                            let file_box = $load.find( '.file-box.active' );
+                            let $file_box = $load.find( '.file-box.active' );
 
-                            if ( file_box.length && file_box.find( 'img' ).length ) {
-                                let id  = file_box.data( 'id' );
-                                let src = file_box.find( 'img' ).attr( 'src' );
+                            $button.trigger( 'ovic_save_modal_button', [ $button, $modal, $file_box ] );
+
+                            if ( $file_box.length && $file_box.find( 'img' ).length ) {
+                                let id  = $file_box.data( 'id' );
+                                let src = $file_box.find( 'img' ).attr( 'src' );
 
                                 imageVar.$image_target.find( 'input' ).val( id ).trigger( 'change' );
                                 imageVar.$image_target.find( 'img' ).attr( 'src', src );
