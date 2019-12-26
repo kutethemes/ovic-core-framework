@@ -75,12 +75,12 @@
 
             var imageVar = {};
 
-            $( document ).on( 'click', '.ovic-field-image .ovic-image-add', function (e) {
+            $( document ).on( 'click', '.ovic-field-image .ovic-image-add', function ( e ) {
                 e.preventDefault();
 
-                var $button = $( this ),
+                var $button  = $( this ),
                     $wrapper = $button.closest( '.ovic-field-image' ),
-                    $modal = $( '#modal-media' );
+                    $modal   = $( '#modal-media' );
 
                 $modal.modal( 'show' );
                 imageVar.$image_target = $wrapper;
@@ -107,7 +107,7 @@
                             let file_box = $load.find( '.file-box.active' );
 
                             if ( file_box.length && file_box.find( 'img' ).length ) {
-                                let id = file_box.data( 'id' );
+                                let id  = file_box.data( 'id' );
                                 let src = file_box.find( 'img' ).attr( 'src' );
 
                                 imageVar.$image_target.find( 'input' ).val( id ).trigger( 'change' );
@@ -125,10 +125,10 @@
                 }
             } );
 
-            $( document ).on( 'click', '.ovic-field-image .ovic-image-remove', function (e) {
+            $( document ).on( 'click', '.ovic-field-image .ovic-image-remove', function ( e ) {
                 e.preventDefault();
-                var $wrapper = $( this ).closest( '.ovic-field-image' ),
-                    preview = $wrapper.find( '.image-preview' ),
+                var $wrapper    = $( this ).closest( '.ovic-field-image' ),
+                    preview     = $wrapper.find( '.image-preview' ),
                     placeholder = preview.data( 'placeholder' );
 
                 preview.find( 'img' ).attr( 'src', placeholder );
@@ -138,11 +138,11 @@
     @endpush
 
     @include( name_blade('Components.modal'), [
-       'title'         => !empty($title)        ? $title        : 'Thư viện',
-       'id'            => !empty($id)           ? $id           : 'modal-media',
-       'text_close'    => !empty($text_close)   ? $text_close   : 'Đóng',
-       'text_save'     => !empty($text_save)    ? $text_save    : 'Chọn ảnh',
+       'id'            => 'modal-media',
        'content'       => name_blade('Backend.media.data'),
+       'title'         => !empty($title)        ? $title                : 'Thư viện',
+       'text_close'    => !empty($text_close)   ? $text_close           : 'Đóng',
+       'text_save'     => !empty($text_save)    ? $text_save            : 'Chọn ảnh',
        'attribute'     => [
             'multi_file'    => !empty($multi_file) ? $multi_file : false,
             'multi'         => false
