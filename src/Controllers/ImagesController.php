@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Response;
 
 class ImagesController extends Controller
 {
-    public function show( $year, $month, $filename )
+    public function index( $year, $month, $filename )
     {
         $path = storage_path("app/uploads/{$year}/{$month}/{$filename}");
 

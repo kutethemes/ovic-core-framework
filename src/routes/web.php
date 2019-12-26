@@ -84,6 +84,6 @@ Route::group([],
         }
 
         /* Images */
-        Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@show')->name('images.build');
+        Route::get('images/{year}/{month}/{filename}', 'Ovic\Framework\ImagesController@index')->name('images.build');
     }
 );
