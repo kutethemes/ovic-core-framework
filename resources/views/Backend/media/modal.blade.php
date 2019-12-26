@@ -106,8 +106,6 @@
 
                             let $file_box = $load.find( '.file-box.active' );
 
-                            $button.trigger( 'ovic_save_modal_button', [ $button, $modal, $file_box ] );
-
                             if ( $file_box.length && $file_box.find( 'img' ).length ) {
                                 let id  = $file_box.data( 'id' );
                                 let src = $file_box.find( 'img' ).attr( 'src' );
@@ -117,6 +115,8 @@
                             }
 
                             $modal.modal( 'hide' );
+
+                            $modal.trigger( 'ovic_save_modal_button', [ $button, $file_box ] );
 
                         } );
 
