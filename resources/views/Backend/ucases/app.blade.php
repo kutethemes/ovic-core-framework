@@ -226,8 +226,8 @@
             "preventDuplicates": true,
         };
         var updateMenu = function ( e, item, source, destination, position ) {
-                var list = item.closest( '.dd' ),
-                    data = list.nestable( 'serialize' ),
+                var list    = item.closest( '.dd' ),
+                    data    = list.nestable( 'serialize' ),
                     loading = list.closest( '.ibox-content' );
 
                 loading.addClass( 'sk-loading' );
@@ -249,9 +249,9 @@
                     }
                 } );
             },
-            template = function ( data, addNew = false ) {
-                let html = '',
-                    item = '',
+            template   = function ( data, addNew = false ) {
+                let html   = '',
+                    item   = '',
                     status = '';
 
                 if ( data.status == 0 ) {
@@ -320,7 +320,7 @@
                         },
                         success: function ( response ) {
 
-                            let menu = $( '#menu-' + data.id ).closest( '.dd-item' ),
+                            let menu     = $( '#menu-' + data.id ).closest( '.dd-item' ),
                                 mainmenu = menu.closest( '.dd' );
 
                             if ( response.status === 'success' ) {
@@ -382,20 +382,20 @@
         /* select button */
         $( document ).on( 'click', '.form-group .btn-group', function ( e ) {
             var target = $( e.target ),
-                form = target.closest( 'form' ),
-                name = target.data( 'name' ),
-                value = target.val();
+                form   = target.closest( 'form' ),
+                name   = target.data( 'name' ),
+                value  = target.val();
 
             target.addClass( 'active' ).siblings().removeClass( 'active' );
             form.find( 'input[name="' + name + '"]' ).val( value ).trigger( 'change' );
         } );
         /* controller */
         $( document ).on( 'click', '.ibox-title .dropdown-form a', function () {
-            let button = $( this ),
-                form = $( '#edit-post' ),
+            let button      = $( this ),
+                form        = $( '#edit-post' ),
                 custom_link = form.find( '.field-custom_link' ),
-                controller = form.find( '.field-controller' ),
-                module = form.find( '.field-module' );
+                controller  = form.find( '.field-controller' ),
+                module      = form.find( '.field-module' );
 
             if ( button.hasClass( 'hide' ) ) {
 
@@ -429,9 +429,9 @@
         } );
         $( document ).on( 'change', '#edit-post input', function ( e ) {
             var target = $( e.target ),
-                form = target.closest( 'form' ),
-                name = target.attr( 'name' ),
-                value = target.val();
+                form   = target.closest( 'form' ),
+                name   = target.attr( 'name' ),
+                value  = target.val();
 
             if ( name === 'access' || name === 'position' ) {
                 form.find( '.form-group [value="' + value + '"]' ).addClass( 'active' ).siblings().removeClass( 'active' );
@@ -439,12 +439,12 @@
         } );
         /* Edit */
         $( document ).on( 'click', '.dd-handle .btn.edit', function () {
-            let button = $( this ),
-                form = $( '#edit-post' ),
+            let button  = $( this ),
+                form    = $( '#edit-post' ),
                 loading = form.closest( '.ibox-content' ),
-                menu = $( '.dd' ),
-                icon = form.find( '.ovic-field-icon' ),
-                item = button.closest( '.dd-item' );
+                menu    = $( '.dd' ),
+                icon    = form.find( '.ovic-field-icon' ),
+                item    = button.closest( '.dd-item' );
 
             if ( !item.hasClass( 'active' ) ) {
 
@@ -462,6 +462,17 @@
                         if ( response.status === 'success' ) {
                             $.each( response.data, function ( index, value ) {
                                 if ( $.isPlainObject( value ) ) {
+
+                                    if ( value['controller'] !== null || value['custom_link'] !== null ) {
+                                        if ( value['custom_link'] !== null ) {
+                                            loading.prev( '.ibox-title' ).find( 'a.custom_link' ).trigger( 'click' );
+                                        } else {
+                                            loading.prev( '.ibox-title' ).find( 'a.controller' ).trigger( 'click' );
+                                        }
+                                    } else {
+                                        loading.prev( '.ibox-title' ).find( 'a.hide' ).trigger( 'click' );
+                                    }
+
                                     $.each( value, function ( objIndex, objValue ) {
                                         let name = '[name="' + index + '[' + objIndex + ']"]';
 
@@ -475,6 +486,7 @@
                                                 form.find( name ).val( objValue ).trigger( 'change' );
                                             }
                                         }
+
                                     } );
                                 } else if ( form.find( '[name="' + index + '"]' ).length ) {
                                     form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
@@ -486,7 +498,6 @@
                             form.find( '.form-group .add-post' ).addClass( 'd-none' );
                             form.find( '.field-position' ).addClass( 'd-none' );
                             form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
-                            loading.prev( '.ibox-title' ).find( 'a.controller' ).trigger( 'click' );
                         } else {
                             swal( {
                                 type: response.status,
@@ -508,12 +519,12 @@
         @if( user_can('add', $permission) )
         /* Add post */
         $( document ).on( 'click', '#edit-post .btn.add-post', function () {
-            let button = $( this ),
-                form = button.closest( '#edit-post' ),
-                loading = form.closest( '.ibox-content' ),
-                data = form.serializeObject(),
+            let button   = $( this ),
+                form     = button.closest( '#edit-post' ),
+                loading  = form.closest( '.ibox-content' ),
+                data     = form.serializeObject(),
                 menuLeft = $( '#menu-left' ),
-                menuTop = $( '#menu-top' );
+                menuTop  = $( '#menu-top' );
 
             loading.addClass( 'sk-loading' );
 
@@ -529,9 +540,9 @@
 
                     if ( response.status === 200 ) {
 
-                        data.id = response.id;
+                        data.id   = response.id;
                         data.icon = form.find( 'input[name="route[icon]"]' ).val();
-                        let html = template( data, true );
+                        let html  = template( data, true );
 
                         if ( data.position === 'left' ) {
                             menuLeft.append( html );
@@ -567,10 +578,10 @@
         @if( user_can('edit', $permission) )
         /* Update post */
         $( document ).on( 'click', '#edit-post .btn.edit-post', function () {
-            let button = $( this ),
-                form = button.closest( '#edit-post' ),
+            let button  = $( this ),
+                form    = button.closest( '#edit-post' ),
                 loading = $( '.ibox-content.ibox-list' ),
-                data = form.serializeObject();
+                data    = form.serializeObject();
 
             loading.addClass( 'sk-loading' );
 
@@ -586,7 +597,7 @@
                     if ( response.status === 200 ) {
 
                         data.icon = form.find( 'input[name="route[icon]"]' ).val();
-                        let html = template( data );
+                        let html  = template( data );
 
                         $( '#menu-' + data.id ).replaceWith( html );
 
@@ -618,20 +629,20 @@
         /* Remove post */
         $( document ).on( 'click', '#edit-post .btn.delete-post', function () {
             let button = $( this ),
-                form = button.closest( '#edit-post' ),
-                data = form.serializeObject();
+                form   = button.closest( '#edit-post' ),
+                data   = form.serializeObject();
 
             button.removeMenu( data );
 
             return false;
         } );
         $( document ).on( 'click', '.dd-handle .btn.remove', function () {
-            let data = [],
+            let data   = [],
                 button = $( this ),
                 handle = button.closest( '.dd-handle' ),
-                title = handle.find( '.name' ).html();
+                title  = handle.find( '.name' ).html();
 
-            data.id = handle.closest( '.dd-item' ).data( 'id' );
+            data.id    = handle.closest( '.dd-item' ).data( 'id' );
             data.title = title;
 
             button.removeMenu( data );

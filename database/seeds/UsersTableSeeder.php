@@ -13,10 +13,15 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name'     => 'Super Admin',
-            'email'    => 'admin@laravel.com',
-            'password' => Hash::make('12345678'),
-            'status'   => '3',
+            'name'      => 'Super Admin',
+            'email'     => 'admin@laravel.com',
+            'password'  => Hash::make('12345678'),
+            'status'    => '3',
+            'avatar'    => '0',
+            'role_ids'  => '0',
+            'donvi_ids' => '0',
+            'donvi_id'  => '0',
+            'canhan_id' => '0',
         ]);
     }
 }
