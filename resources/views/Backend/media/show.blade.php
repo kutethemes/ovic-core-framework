@@ -2,20 +2,24 @@
     /**
      * The media show for our theme
      *
+     * @var $attachment
      * @package Ovic
      * @subpackage Framework
      *
-     * @var TYPE_NAME $attachment
-     *
      * @version 1.0
      */
-@endphp
 
-@php
-    $url        = get_attachment_url( $attachment['name'], true );
+    $url        = route( 'images.build', explode( '/', $attachment['name'] ) );
     $size       = $attachment['meta']['_attachment_metadata']['size'];
     $mimetype   = $attachment['meta']['_attachment_metadata']['mimetype'];
     $extension  = $attachment['meta']['_attachment_metadata']['extension'];
+    $typeEmbed  = "microsoft"; // google, microsoft
+    $linkEmbed  = "https://docs.google.com/viewer?embedded=true&url={$url}"; // embed
+    $linkEmbed  = "https://docs.google.com/viewerng/viewer?url={$url}"; // view
+    if ( $typeEmbed == "microsoft" ){
+        $linkEmbed  = "https://view.officeapps.live.com/op/embed.aspx?src={$url}"; // embed
+        $linkEmbed  = "https://view.officeapps.live.com/op/view.aspx?src={$url}"; // view
+    }
 @endphp
 
 @extends( name_blade('Backend.app') )
@@ -124,7 +128,7 @@
                         <div class="text-center">
                             @if ( strstr( $mimetype, "video/" ) )
                                 <figure>
-                                    <iframe width="425" height="349" src="{{ $url }}" frameborder="0"
+                                    <iframe width="425" height="349" src="{{ $url }}"
                                             allowfullscreen></iframe>
                                 </figure>
                             @elseif ( strstr( $mimetype, "image/" ) )
@@ -140,18 +144,37 @@
                                 <div class="icon">
                                     <i class="fa fa-file-word-o"></i>
                                 </div>
+                                <a href="{{ $linkEmbed }}"
+                                   class="btn btn-info" target="_blank">
+                                    Xem file
+                                </a><br>
+                                <span>( chỉ xem được file nhỏ hơn 5MB )</span>
                             @elseif ( in_array( $extension, [ 'ppt','pptx' ] ) )
                                 <div class="icon">
                                     <i class="fa fa-file-powerpoint-o"></i>
                                 </div>
+                                <a href="{{ $linkEmbed }}"
+                                   class="btn btn-info" target="_blank">
+                                    Xem file
+                                </a><br>
+                                <span>( chỉ xem được file nhỏ hơn 5MB )</span>
                             @elseif ( in_array( $extension, [ 'xls','xlsx' ] ) )
                                 <div class="icon">
                                     <i class="fa fa-bar-chart-o"></i>
                                 </div>
+                                <a href="{{ $linkEmbed }}"
+                                   class="btn btn-info" target="_blank">
+                                    Xem file
+                                </a><br>
+                                <span>( chỉ xem được file nhỏ hơn 5MB )</span>
                             @elseif ( strstr( $mimetype, "pdf" ) )
                                 <div class="icon">
                                     <i class="fa fa-file-pdf-o"></i>
                                 </div>
+                                <a href="https://docs.google.com/viewer?embedded=true&url={{ $url }}"
+                                   class="btn btn-info" target="_blank">
+                                    Xem file
+                                </a>
                             @else
                                 <div class="icon">
                                     <i class="fa fa-file-archive-o"></i>
