@@ -76,7 +76,7 @@
                     <div class="col-sm-7 b-r">
                         <div>
                             <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Title</label>
+                                <label class="col-lg-3 col-form-label">Name</label>
                                 <div class="col-lg-9">
                                     <p class="form-control-static">{{ $attachment['name'] }}</p>
                                 </div>
@@ -92,7 +92,7 @@
                             <div class="hr-line-dashed"></div>
 
                             <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Url</label>
+                                <label class="col-lg-3 col-form-label">Link</label>
                                 <div class="col-lg-9">
                                     <p class="form-control-static">
                                         <a href="{{ $url }}">
