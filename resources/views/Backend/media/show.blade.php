@@ -55,7 +55,7 @@
                 container: document.getElementById( 'aplayer' ),
                 audio: [ {
                     name: "{{ $attachment['title'] }}",
-                    artist: 'artist',
+                    artist: '',
                     url: "{{ $url }}",
                     cover: 'cover.jpg'
                 } ]
@@ -171,7 +171,7 @@
                                 <div class="icon">
                                     <i class="fa fa-file-pdf-o"></i>
                                 </div>
-                                <a href="https://docs.google.com/viewer?embedded=true&url={{ $url }}"
+                                <a href="https://docs.google.com/viewerng/viewer?url={{ $url }}"
                                    class="btn btn-info" target="_blank">
                                     Xem file
                                 </a>
