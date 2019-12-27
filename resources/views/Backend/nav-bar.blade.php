@@ -2,11 +2,15 @@
     /**
      * The nav bar for our theme
      *
+     * @var $primary_menu
      * @package Ovic
      * @subpackage Framework
      *
      * @version 1.0
      */
+    $name       = Route::currentRouteName();
+    $name       = explode('.', $name, 2);
+    $name       = $name[0];
     $toggle     = 'none';
     $top_menu   = $primary_menu['top'];
 @endphp
@@ -42,7 +46,7 @@
 
                             <ul class="dropdown-menu animated fadeInUp">
                                 @foreach ( $parent['children'] as $children )
-                                    <li>
+                                    <li @if ( $name == $children['slug'] ) class="active" @endif>
                                         <a href="{{ url( "/{$children['slug']}" ) }}">
                                             @if( !empty($children['route']['icon']) )
                                                 <i class="{{ $children['route']['icon'] }}"></i>

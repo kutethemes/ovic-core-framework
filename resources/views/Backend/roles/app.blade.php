@@ -41,6 +41,15 @@
         #table-posts tbody td {
             padding: 10px 5px 10px 5px !important;
         }
+
+        .form-group.submit {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        .form-group.submit .col-sm-12 {
+            padding: 0;
+        }
     </style>
 @endpush
 
@@ -76,12 +85,12 @@
                     render: function ( data, type, row, meta ) {
                         let _class = "inactive";
                         let _title = "Nhóm không kích hoạt";
-                        let _icon = "<span class='label label-danger'>Inactive</span>";
+                        let _icon  = "<span class='label label-danger'>Inactive</span>";
 
                         if ( data === 1 ) {
                             _class = "active";
                             _title = "Nhóm đang kích hoạt";
-                            _icon = "<span class='label label-warning'>Active</span>";
+                            _icon  = "<span class='label label-warning'>Active</span>";
                         }
                         return "<a href='#' title='" + _title + "' class='status " + _class + "'>" + _icon + "</a>";
                     }
@@ -90,7 +99,7 @@
         } );
         /* Edit */
         $( document ).on( 'click', '#table-posts tbody > tr', function () {
-            let row = $( this ),
+            let row  = $( this ),
                 form = $( '#edit-post' ),
                 role = OvicTable.row( this ).data();
 
@@ -113,7 +122,7 @@
         } );
         /* Add new */
         $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
-            let form = $( '#edit-post' ),
+            let form  = $( '#edit-post' ),
                 table = $( '#table-posts' );
 
             table.find( 'tbody > tr' ).removeClass( 'active' );
@@ -128,8 +137,8 @@
         /* Add post */
         $( document ).on( 'click', '#edit-post .btn.add-post', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
-                data = form.serializeObject();
+                form   = $( '#edit-post' ),
+                data   = form.serializeObject();
 
             button.add_new( "roles", data );
 
@@ -141,8 +150,8 @@
         /* Update post */
         $( document ).on( 'click', '#edit-post .btn.edit-post', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
-                data = form.serializeObject();
+                form   = $( '#edit-post' ),
+                data   = form.serializeObject();
 
             button.update_post( "roles", data );
 
@@ -165,8 +174,8 @@
         /* Remove post */
         $( document ).on( 'click', '#edit-post .btn.delete-post', function () {
             let button = $( this ),
-                form = $( '#edit-post' ),
-                data = form.serializeObject();
+                form   = $( '#edit-post' ),
+                data   = form.serializeObject();
 
             button.remove_post( "roles", data );
 

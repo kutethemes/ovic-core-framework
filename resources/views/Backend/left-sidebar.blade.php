@@ -2,6 +2,7 @@
     /**
      * The left sidebar for our theme
      *
+     * @var $primary_menu
      * @package Ovic
      * @subpackage Framework
      *
