@@ -168,15 +168,6 @@
                 <div class="col-sm-9">
                     <div class="input-group">
                         <input type="text" name="route[custom_link]" class="form-control" placeholder="Custom Link">
-                        <span class="input-group-append">
-                            <select name="route[method]" class="btn btn-white dropdown-toggle">
-                                <option value="get">GET</option>
-                                <option value="post">POST</option>
-                                <option value="put">PUT</option>
-                                <option value="patch">PATCH</option>
-                                <option value="delete">DELETE</option>
-                            </select>
-                        </span>
                     </div>
                 </div>
             </div>

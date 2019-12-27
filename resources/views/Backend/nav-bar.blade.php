@@ -33,7 +33,7 @@
                             @endphp
                         @endif
 
-                        <a href="{{ url( "/{$parent['slug']}" ) }}"
+                        <a href="{{ $parent['url'] }}"
                            data-toggle="{{ $toggle }}"
                            class="dropdown-toggle">
                             @if( !empty($parent['route']['icon']) )
@@ -47,7 +47,7 @@
                             <ul class="dropdown-menu animated fadeInUp">
                                 @foreach ( $parent['children'] as $children )
                                     <li @if ( $name == $children['slug'] ) class="active" @endif>
-                                        <a href="{{ url( "/{$children['slug']}" ) }}">
+                                        <a href="{{ $children['url'] }}">
                                             @if( !empty($children['route']['icon']) )
                                                 <i class="{{ $children['route']['icon'] }}"></i>
                                             @endif

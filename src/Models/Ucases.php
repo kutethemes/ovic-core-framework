@@ -56,10 +56,15 @@ class Ucases extends Eloquent
     function filter_menu( $resource, $permission )
     {
         $data = [];
+
         foreach ( $resource as $parent ) {
             if ( !empty($permission[$parent['slug']]) && array_sum($permission[$parent['slug']]) != 0 ) {
+                $parent['url'] = url("/{$parent['slug']}");
                 if ( !empty($parent['children']) ) {
                     $parent['children'] = $this->filter_menu($parent['children'], $permission);
+                }
+                if ( !empty($parent['route']['custom_link']) ) {
+                    $parent['url'] = $parent['route']['custom_link'];
                 }
                 $data[] = $parent;
             }
@@ -153,14 +158,7 @@ class Ucases extends Eloquent
 
         if ( !empty($ucases) ) {
             foreach ( $ucases as $ucase ) {
-                if ( !empty($ucase->route['custom_link']) ) {
-
-                    $method = !empty($ucase->route['method']) ? $ucase->route['method'] : 'get';
-                    if ( class_exists($ucase->route['custom_link']) ) {
-                        Route::match([ $method ], "{$ucase->slug}", $ucase->route['custom_link']);
-                    }
-
-                } elseif ( !empty($ucase->route['controller']) ) {
+                if ( !empty($ucase->route['controller']) ) {
 
                     $ClassRoute = $ucase->route['controller'];
 

@@ -61,7 +61,7 @@
                     @endphp
 
                     <li class="{{ $active }}">
-                        <a href="{{ url( "/{$parent['slug']}" ) }}">
+                        <a href="{{ $parent['url'] }}">
                             @if( !empty($parent['route']['icon']) )
                                 <i class="{{ $parent['route']['icon'] }}"></i>
                             @endif
@@ -76,7 +76,7 @@
                             <ul class="nav nav-second-level collapse">
                                 @foreach ( $childrens as $children )
                                     <li @if ( $name == $children['slug'] ) class="active" @endif>
-                                        <a href="{{ url( "/{$children['slug']}" ) }}">
+                                        <a href="{{ $children['url'] }}">
                                             @if( !empty($children['route']['icon']) )
                                                 <i class="{{ $children['route']['icon'] }}"></i>
                                             @endif
