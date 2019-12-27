@@ -39,6 +39,31 @@
         .datepicker.dropdown-menu td {
             padding: 4px 5px !important;
         }
+
+        .col-md-6.empty-canhan::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .col-md-6.empty-canhan::after {
+            content: "KHÔNG CÓ THÔNG TIN CÁ NHÂN";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            font-size: 20px;
+            text-align: center;
+        }
     </style>
 @endpush
 
@@ -73,21 +98,21 @@
                                         <div class="input-group-append">
                                             @switch( $user->status )
                                                 @case( 0 )
-                                                <button class="btn btn-danger rounded-0" type="button">
+                                                <span class="btn btn-danger rounded-0">
                                                     KHÔNG KÍCH HOẠT
-                                                </button>
+                                                </span>
                                                 @break
 
                                                 @case( 2 )
-                                                <button class="btn btn-warning rounded-0" type="button">
+                                                <span class="btn btn-warning rounded-0">
                                                     KÍCH HOẠT ẨN
-                                                </button>
+                                                </span>
                                                 @break
 
                                                 @default
-                                                <button class="btn btn-primary rounded-0" type="button">
+                                                <span class="btn btn-primary rounded-0">
                                                     ĐANG KÍCH HOẠT
-                                                </button>
+                                                </span>
                                                 @break
                                             @endswitch
                                         </div>
@@ -124,7 +149,7 @@
                             <div class="hr-line-dashed"></div>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 {{ $canhan['id'] == 0 ? 'empty-canhan' : '' }}">
 
                             <div class="form-group row">
                                 <label class="col-sm-2 col-form-label">Họ và tên</label>
