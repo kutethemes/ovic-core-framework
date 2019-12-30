@@ -24,12 +24,12 @@
             <div class="group-button">
                 @if( user_can( 'add', $permission ) )
                     <a href="#" class="btn btn-primary ovic-image-add">
-                        Add Image
+                        Thêm ảnh
                     </a>
                 @endif
                 @if( user_can( 'delete', $permission ) )
                     <a href="#" class="btn btn-danger ovic-image-remove">
-                        Remove Image
+                        Xóa ảnh
                     </a>
                 @endif
             </div>

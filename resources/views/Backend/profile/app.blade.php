@@ -124,8 +124,7 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 col-form-label">Email</label>
                                 <div class="col-sm-10">
-                                    <input type="email" name="email" class="form-control required"
-                                           placeholder="Enter email" maxlength="100" value="{{ $user->email }}">
+                                    <input type="email" class="form-control" readonly="" value="{{ $user->email }}">
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
@@ -140,7 +139,7 @@
                                                value="{{ $user->password }}">
                                         <div class="input-group-append">
                                             <button class="btn btn-info edit-field rounded-0" type="button">
-                                                <i class="fa fa-paste"></i> Edit
+                                                <i class="fa fa-paste"></i> Sửa
                                             </button>
                                         </div>
                                     </div>
@@ -224,8 +223,7 @@
 
                     <div class="form-group submit row">
                         <div class="col-sm-12">
-                            {{ button_set( 'delete', $permission, [ 'class'=>'btn btn-danger' ] ) }}
-                            {{ button_set( 'edit', $permission, [ 'class'=>'btn btn-primary' ] ) }}
+                            {{ button_set( 'edit', $permission, [ 'class'=>'btn btn-primary', 'text'=>'Cập nhật' ] ) }}
                         </div>
                     </div>
                 </form>
