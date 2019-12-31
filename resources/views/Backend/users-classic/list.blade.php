@@ -26,6 +26,7 @@
                 </select>
             </div>
             <button class="btn btn-white" type="button" value="0">
+                <i class="fa fa-filter"></i>
                 Lọc
             </button>
         </div>

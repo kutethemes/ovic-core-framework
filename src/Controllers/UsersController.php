@@ -158,10 +158,9 @@ class UsersController extends Controller
         $filter = $request->input('filter');
 
         if ( !empty($filter['donvi_id']) ) {
-            $args['donvi_id'] = [ 'donvi_id', '=', $filter['donvi_id'] ];
+            $args[] = [ 'donvi_id', $filter['donvi_id'] ];
         }
 
-        $args      = array_values($args);
         $condition = Users::where($args);
 
         if ( empty($filter['donvi_id']) && $user->status !== 3 ) {
