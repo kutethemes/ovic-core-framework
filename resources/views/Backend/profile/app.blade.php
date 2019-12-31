@@ -129,6 +129,16 @@
                             </div>
                             <div class="hr-line-dashed"></div>
 
+                            @if ( !empty( $donvi ) )
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Đơn vị</label>
+                                    <div class="col-sm-10">
+                                        <input type="donvi" class="form-control" readonly="" value="{{ $donvi }}">
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                            @endif
+
                             <div class="form-group field-password row">
                                 <label class="col-sm-2 col-form-label">Mật khẩu</label>
                                 <div class="col-sm-10">

@@ -26,6 +26,7 @@ class ProfileController extends Controller
             abort(404);
         }
 
+        $donvi  = '';
         $diachi = [];
         $canhan = [];
         $user   = Auth::user();
@@ -46,6 +47,10 @@ class ProfileController extends Controller
             $canhan['ngaysinh'] = today()->format('d/m/Y');
         }
 
+        if ( Donvi::hasTable() ) {
+            $donvi = Donvi::where('id', $user->donvi_id)->value('tendonvi');
+        }
+
         return view(
             name_blade('Backend.profile.app'),
             [
@@ -53,6 +58,7 @@ class ProfileController extends Controller
                 'canhan'     => $canhan,
                 'permission' => $permission,
                 'diachi'     => $diachi,
+                'donvi'      => $donvi,
             ]
         );
     }
@@ -120,7 +126,7 @@ class ProfileController extends Controller
             ]);
         }
 
-		$user = Auth::user();
+        $user = Auth::user();
 
         if ( !empty($user->canhan_id) && $user->canhan_id > 0 && class_exists(\Modules\Doituong\Entities\DTTDCanhan::class) ) {
             $validator = Validator::make($request->all(),
