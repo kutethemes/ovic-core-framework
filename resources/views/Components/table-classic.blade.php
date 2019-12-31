@@ -262,6 +262,7 @@
         }
 
         .head-table .btn-group > a.btn.add-new {
+            margin-right: 10px;
             border-radius: 3px;
         }
 
@@ -271,7 +272,6 @@
         }
 
         .head-table .btn-group > a.btn.delete-select {
-            margin-left: 10px;
             border-color: #ed5565;;
             border-top-left-radius: 3px;
             border-bottom-left-radius: 3px;
