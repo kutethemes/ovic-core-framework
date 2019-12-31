@@ -227,7 +227,7 @@
         .table-filter .custom-select,
         .head-table .btn-group > a.btn.btn-default,
         .table-filter .chosen-container-single .chosen-single {
-            border-radius: 5px;
+            border-radius: 3px;
             border-color: #aaa;
         }
 
