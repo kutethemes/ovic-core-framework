@@ -75,14 +75,18 @@
 
 @push( 'after-content' )
 
-    @include( name_blade('Backend.media.modal') )
+    @if( user_can('add', $permission) || user_can('edit', $permission) )
 
-    @include( name_blade('Components.modal'), [
-       'title'      => 'Edit',
-       'id'         => 'modal-edit-post',
-       'modal_size' => '500',
-       'content'    => name_blade('Backend.users-classic.edit'),
-    ])
+        @include( name_blade('Backend.media.modal') )
+
+        @include( name_blade('Components.modal'), [
+           'title'      => 'Edit',
+           'id'         => 'modal-edit-post',
+           'modal_size' => '500',
+           'content'    => name_blade('Backend.users-classic.edit'),
+        ])
+
+    @endif
 
 @endpush
 
@@ -275,9 +279,10 @@
                     render: function ( data, type, row, meta ) {
                         let html = '';
 
-                        html += '<button class="btn btn-info edit" type="button"><i class="fa fa-edit"></i></button>';
-
-                        @if( user_can('delete', $permission) )
+                        @if( user_can('edit', $permission) )
+                            html += '<button class="btn btn-info edit" type="button"><i class="fa fa-edit"></i></button>';
+                        @endif
+                                @if( user_can('delete', $permission) )
                             html += '<button class="btn btn-danger delete" type="button"><i class="fa fa-trash-o"></i></button>';
                         @endif
 
