@@ -111,14 +111,17 @@
     } );
     /* chọn item */
     $( document ).on( 'change_select_all', '#select-all,.select-all', function ( e ) {
-        let self   = $( this ),
-            table  = self.closest( '.dataTables_wrapper' ),
-            button = table.find( '.btn.delete-select' );
+        let self      = $( this ),
+            table     = self.closest( '.dataTables_wrapper' ),
+            btnDelete = table.find( '.head-table .btn.delete-select' ),
+            btnChange = table.find( '.head-table .btn.change-password' );
 
         if ( self.is( ':checked' ) ) {
-            button.removeClass( 'disabled' );
+            btnDelete.removeClass( 'disabled' );
+            btnChange.removeClass( 'disabled' );
         } else {
-            button.addClass( 'disabled' );
+            btnDelete.addClass( 'disabled' );
+            btnChange.addClass( 'disabled' );
         }
     } );
     /* chọn tất cả */
@@ -129,7 +132,7 @@
 
         if ( self.is( ':checked' ) ) {
             item_id.each( function ( key, value ) {
-                var item = $( value );
+                let item = $( value );
                 item.prop( 'checked', 'checked' );
             } );
         } else {

@@ -28,7 +28,7 @@
                 <div class="input-group">
                     <input type="text" name="name" class="form-control required" placeholder="Họ tên" maxlength="100">
                     <span class="input-group-append">
-                        <select name="status" class="btn btn-white dropdown-toggle">
+                        <select name="status" class="custom-select rounded-0">
                             <option value="1">Kích hoạt</option>
                             <option value="2">Kích hoạt ẩn</option>
                             <option value="0">Không kích hoạt</option>

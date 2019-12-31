@@ -10,10 +10,12 @@
 @endphp
 
 <div class="head-group col-sm-12">
-    <button class="btn btn-primary add-new" type="button">
-        <i class="fa fa-plus"></i>
-        Add new
-    </button>
+    @if( !user_can('add', $permission) )
+        <button class="btn btn-primary add-new" type="button">
+            <i class="fa fa-plus"></i>
+            Add new
+        </button>
+    @endif
     <div class="button-group">
         <span class="font-bold">Lọc theo:</span>
         <div class="btn-group sorting">

@@ -17,13 +17,6 @@
     {{-- Chosen --}}
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     {{-- style users --}}
-    @if( !user_can('add', $permission) )
-        <style>
-            .btn.add-new {
-                display: none !important;
-            }
-        </style>
-    @endif
     <style>
         .client-avatar img {
             max-width: 28px;
@@ -37,6 +30,35 @@
             display: none;
         }
     </style>
+@endpush
+
+@section( 'content-table' )
+
+    <div class="col-sm-4 full-height">
+        <div class="ibox selected full-height-scroll">
+            <div class="ibox-content">
+
+                @include( name_blade('Backend.users.edit') )
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 full-height">
+        <div class="ibox normal-scroll-content">
+            <div class="ibox-content">
+
+                @include( name_blade('Backend.users.list') )
+
+            </div>
+        </div>
+    </div>
+
+@endsection
+
+@push( 'after-content' )
+
+    @include( name_blade('Backend.media.modal') )
+
 @endpush
 
 @push( 'scripts.table' )
@@ -143,7 +165,7 @@
                     render: function ( data, type, row, meta ) {
                         let _class = "inactive";
                         let _title = "Người dùng không kích hoạt";
-                        let _icon = "<span class='label label-danger'>Inactive</span>";
+                        let _icon = "<span class='label label-danger'>Tắt</span>";
 
                         data = parseInt( data ) === 3 ? 1 : data;
 
@@ -151,12 +173,12 @@
                             case 1:
                                 _class = "active";
                                 _title = "Người dùng đang kích hoạt";
-                                _icon = "<span class='label label-warning'>Active</span>";
+                                _icon = "<span class='label label-warning'>Bật</span>";
                                 break;
                             case 2:
                                 _class = "inactive";
                                 _title = "Người dùng ẩn";
-                                _icon = "<span class='label label-warning'>Hidden</span>";
+                                _icon = "<span class='label label-warning'>Ẩn</span>";
                                 break;
                         }
                         return "<a href='#' title='" + _title + "' class='status " + _class + "'>" + _icon + "</a>";
@@ -221,6 +243,8 @@
                 $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
             }
         } );
+
+        @if( user_can('add', $permission) )
         /* Add new */
         $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
             let form = $( '#edit-post' ),
@@ -238,8 +262,6 @@
 
             return false;
         } );
-
-        @if( user_can('add', $permission) )
         /* Add post */
         $( document ).on( 'click', '#edit-post .btn.add-post', function () {
             let button = $( this ),
@@ -289,34 +311,5 @@
         } );
         @endif
     </script>
-@endpush
-
-@section( 'content-table' )
-
-    <div class="col-sm-4 full-height">
-        <div class="ibox selected full-height-scroll">
-            <div class="ibox-content">
-
-                @include( name_blade('Backend.users.edit') )
-
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-8 full-height">
-        <div class="ibox normal-scroll-content">
-            <div class="ibox-content">
-
-                @include( name_blade('Backend.users.list') )
-
-            </div>
-        </div>
-    </div>
-
-@endsection
-
-@push( 'after-content' )
-
-    @include( name_blade('Backend.media.modal') )
-
 @endpush
 

@@ -17,14 +17,11 @@
     {{-- Chosen --}}
     <link href="{{ asset('css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
     {{-- style users --}}
-    @if( !user_can('add', $permission) )
-        <style>
-            .btn.add-new {
-                display: none !important;
-            }
-        </style>
-    @endif
     <style>
+        #modal-edit-post .modal-body {
+            height: calc(100% - 54px);
+        }
+
         .client-avatar img {
             max-width: 28px;
         }
@@ -64,13 +61,81 @@
     </style>
 @endpush
 
+@section( 'content-table-classic' )
+
+    <div class="col-sm-12 full-height hide-sidebar">
+        <div class="ibox normal-scroll-content">
+
+            @include( name_blade('Backend.users-classic.list') )
+
+        </div>
+    </div>
+
+@endsection
+
+@push( 'after-content' )
+
+    @include( name_blade('Backend.media.modal') )
+
+    @include( name_blade('Components.modal'), [
+       'title'      => 'Edit',
+       'id'         => 'modal-edit-post',
+       'modal_size' => '500',
+       'content'    => name_blade('Backend.users-classic.edit'),
+    ])
+
+@endpush
+
 @push( 'scripts.table.classic' )
     {{-- Chosen --}}
     <script src="{{ asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
     {{-- Jquery Validate --}}
     <script src="{{ asset('js/plugins/validate/jquery.validate.min.js') }}"></script>
     {{-- script users --}}
-    <script>
+    <script type="application/javascript">
+        let buttonTable = [],
+            ajaxurl     = "users-classic";
+
+        @if( user_can('add', $permission) )
+        buttonTable.push(
+            {
+                text: 'Thêm mới',
+                className: 'btn btn-primary add-new',
+            }
+        );
+        @endif
+
+        @if( user_can('delete', $permission) )
+        buttonTable.push(
+            {
+                text: '<i class="fa fa-trash"></i> Xóa',
+                className: 'btn btn-danger delete-select disabled',
+                titleAttr: 'Xóa tất cả mục đã chọn.',
+                action: function ( e, dt, node, config ) {
+                    let ids   = [],
+                        data  = [],
+                        body  = $( dt.table().body() ),
+                        items = body.find( '.select-items' );
+
+                    data.id   = 0;
+                    data.name = 'Các mục đã chọn';
+                    items.each( function ( index, value ) {
+                        if ( $( this ).is( ':checked' ) ) {
+                            ids.push(
+                                $( this ).val()
+                            );
+                        }
+                    } );
+                    data.id = ids;
+
+                    $( this ).remove_post( ajaxurl, data );
+
+                    return false;
+                }
+            }
+        );
+        @endif
+
         $( "#edit-post" ).validate( {
             errorPlacement: function ( error, element ) {
                 element.before( error );
@@ -90,14 +155,14 @@
         } );
 
         $( '.form-group.donvi .chosen-select' ).bind( 'chosen:hiding_dropdown', function () {
-            let data = $( this ).val(),
+            let data   = $( this ).val(),
                 phamvi = $( this ).closest( 'form' ).find( '.form-group.phamvi .chosen-select' );
 
             phamvi.find( 'option' ).hide();
 
             if ( data !== undefined && data !== null ) {
                 $.ajax( {
-                    url: 'users-classic/create',
+                    url: ajaxurl + '/create',
                     type: 'GET',
                     dataType: 'json',
                     data: {
@@ -117,9 +182,9 @@
                                     option.show();
                                 }
                             }
-                            phamvi.trigger( 'chosen:updated' );
 
                         } );
+                        phamvi.trigger( 'chosen:updated' );
 
                     },
                     error: function () {
@@ -136,40 +201,16 @@
             phamvi.trigger( 'chosen:updated' );
         } );
 
-        $( '#table-posts' ).init_dataTable( "users-classic", {
-            dom: '<"head-table"Bif>rt<"footer-table"lp><"clear">',
-            buttons: [
-                {
-                    text: 'Thêm mới',
-                    className: 'btn btn-primary add-new',
-                },
-                {
-                    text: '<i class="fa fa-trash"></i> Xóa',
-                    className: 'btn btn-danger delete-select disabled',
-                    titleAttr: 'Xóa tất cả mục đã chọn.',
-                    action: function ( e, dt, node, config ) {
-                        let ids = [],
-                            data = [],
-                            body = $( dt.table().body() ),
-                            items = body.find( '.select-items' );
-
-                        data.id = 0;
-                        data.name = 'Các mục đã chọn';
-                        items.each( function ( index, value ) {
-                            if ( $( this ).is( ':checked' ) ) {
-                                ids.push(
-                                    $( this ).val()
-                                );
-                            }
-                        } );
-                        data.id = ids;
-
-                        $( this ).remove_post( main_url, data );
-
-                        return false;
+        $( '#table-posts' ).init_dataTable( ajaxurl, {
+            dom: '<"head-table"Bf>rt<"footer-table"lp><"clear">',
+            buttons: {
+                dom: {
+                    button: {
+                        className: ''
                     }
-                }
-            ],
+                },
+                buttons: buttonTable
+            },
             columns: [
                 {
                     className: "client-id",
@@ -209,7 +250,7 @@
                     render: function ( data, type, row, meta ) {
                         let _class = "inactive";
                         let _title = "Người dùng không kích hoạt";
-                        let _icon = "<span class='label label-danger'>Inactive</span>";
+                        let _icon  = "<span class='label label-danger'>Tắt</span>";
 
                         data = parseInt( data ) === 3 ? 1 : data;
 
@@ -217,12 +258,12 @@
                             case 1:
                                 _class = "active";
                                 _title = "Người dùng đang kích hoạt";
-                                _icon = "<span class='label label-warning'>Active</span>";
+                                _icon  = "<span class='label label-warning'>Bật</span>";
                                 break;
                             case 2:
                                 _class = "inactive";
                                 _title = "Người dùng ẩn";
-                                _icon = "<span class='label label-warning'>Hidden</span>";
+                                _icon  = "<span class='label label-warning'>Ẩn</span>";
                                 break;
                         }
                         return "<a href='#' title='" + _title + "' class='status " + _class + "'>" + _icon + "</a>";
@@ -235,14 +276,106 @@
                         let html = '';
 
                         html += '<button class="btn btn-info edit" type="button"><i class="fa fa-edit"></i></button>';
-                        html += '<button class="btn btn-danger delete" type="button"><i class="fa fa-trash-o"></i></button>';
 
-                        return html;
+                        @if( user_can('delete', $permission) )
+                            html += '<button class="btn btn-danger delete" type="button"><i class="fa fa-trash-o"></i></button>';
+                        @endif
+
+                            return html;
                     }
                 },
             ]
         } );
 
+        $( document ).on( 'click', '#table-posts .btn.edit', function () {
+            let button = $( this ),
+                row    = button.closest( 'tr' ),
+                form   = $( '#edit-post' ),
+                modal  = $( '#modal-edit-post' ),
+                user   = OvicTable.row( row ).data(),
+                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
+
+            /* active */
+            form.find( '.ovic-field-image img' ).attr( 'src', user.avatar_url );
+
+            $.each( user, function ( index, value ) {
+                if ( form.find( '[name="' + index + '"]' ).length ) {
+                    if ( index === 'status' && parseInt( value ) === 3 ) {
+                        value = 1;
+                    }
+                    if ( chosen.indexOf( index ) !== -1 ) {
+
+                        if ( Array.isArray( value ) ) {
+                            value = value.map( Number );
+                        }
+
+                        form.find( '[name="' + index + '"]' ).val( value ).trigger( 'chosen:updated' );
+
+                    } else if ( index === 'password' ) {
+
+                        form.find( '[name="' + index + '"]' ).val( value ).attr( 'disabled', 'disabled' ).removeAttr( 'name' ).trigger( 'change' );
+                        form.find( '[name="password_confirmation"]' ).removeAttr( 'name' );
+
+                    } else {
+
+                        form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
+
+                    }
+                }
+            } );
+
+            modal.find( '.modal-title' ).text( user.name );
+            form.find( '.form-group .add-post' ).addClass( 'd-none' );
+            form.find( '.field-password-confirmation' ).css( 'display', 'none' );
+            form.find( '.field-password .input-group-append' ).css( 'display', 'block' );
+            form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
+
+            modal.modal( {
+                backdrop: 'static',
+                keyboard: false,
+            } );
+        } );
+
+        @if( user_can('add', $permission) )
+        /* Add new */
+        $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
+            let form  = $( '#edit-post' ),
+                modal = $( '#modal-edit-post' );
+
+            form.find( '.ovic-field-image .ovic-image-remove' ).trigger( 'click' );
+            form.find( '.field-password input' ).removeAttr( 'disabled' ).attr( 'name', 'password' );
+            form.find( '.chosen-select' ).val( '' ).trigger( 'chosen:updated' );
+            form.find( '.field-password-confirmation' ).css( 'display', 'block' ).find( 'input' ).attr( 'name', 'password_confirmation' );
+            form.find( '.field-password .input-group-append' ).css( 'display', 'none' );
+
+            form.trigger( 'reset' );
+            form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
+            form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
+
+            modal.find( '.modal-title' ).text( 'Thêm mới' );
+            modal.modal( {
+                backdrop: 'static',
+                keyboard: false,
+            } );
+
+            return false;
+        } );
+        /* Add post */
+        $( document ).on( 'click', '#edit-post .btn.add-post', function () {
+            let button = $( this ),
+                form   = $( '#edit-post' ),
+                data   = form.serializeObject();
+
+            button.add_new( ajaxurl, data );
+
+            return false;
+        } );
+        $( document ).on( 'add_post_success', function ( event, response ) {
+            $( '#modal-edit-post' ).modal( 'hide' );
+        } );
+        @endif
+
+        @if( user_can('edit', $permission) )
         $( document ).on( 'click', 'button.edit-field', function () {
             let group = $( this ).closest( '.input-group' );
             let input = group.find( 'input' );
@@ -253,100 +386,23 @@
                 input.removeAttr( 'disabled' ).attr( 'name', 'password' );
             }
         } );
-        /* Edit */
-        $( document ).on( 'click', '#table-posts .btn.edit', function () {
-            let button = $( this ),
-                row = button.closest( 'tr' ),
-                form = $( '#edit-post' ),
-                user = OvicTable.row( row ).data(),
-                chosen = [ 'role_ids', 'donvi_ids', 'donvi_id' ];
-
-            if ( !row.hasClass( 'active' ) ) {
-                /* active */
-                row.addClass( 'active' ).siblings().removeClass( 'active' );
-                form.find( '.ovic-field-image img' ).attr( 'src', user.avatar_url );
-
-                $.each( user, function ( index, value ) {
-                    if ( form.find( '[name="' + index + '"]' ).length ) {
-                        if ( index === 'status' && parseInt( value ) === 3 ) {
-                            value = 1;
-                        }
-                        if ( chosen.indexOf( index ) !== -1 ) {
-
-                            if ( Array.isArray( value ) ) {
-                                value = value.map( Number );
-                            }
-
-                            form.find( '[name="' + index + '"]' ).val( value ).trigger( 'chosen:updated' );
-
-                        } else if ( index === 'password' ) {
-
-                            form.find( '[name="' + index + '"]' ).val( value ).attr( 'disabled', 'disabled' ).removeAttr( 'name' ).trigger( 'change' );
-                            form.find( '[name="password_confirmation"]' ).removeAttr( 'name' );
-
-                        } else {
-
-                            form.find( '[name="' + index + '"]' ).val( value ).trigger( 'change' );
-
-                        }
-                    }
-                } );
-
-                form.find( '.form-group .add-post' ).addClass( 'd-none' );
-                form.find( '.field-password-confirmation' ).css( 'display', 'none' );
-                form.find( '.field-password .input-group-append' ).css( 'display', 'block' );
-                form.find( '.form-group .edit-post,.form-group .delete-post' ).removeClass( 'd-none' );
-            } else {
-                $( '.wrapper-content .btn.add-new' ).trigger( 'click' );
-            }
-        } );
-        /* Add new */
-        $( document ).on( 'click', '.wrapper-content .btn.add-new', function () {
-            let form = $( '#edit-post' ),
-                table = $( '#table-posts' );
-
-            form.find( '.ovic-field-image .ovic-image-remove' ).trigger( 'click' );
-            form.find( '.field-password input' ).removeAttr( 'disabled' ).attr( 'name', 'password' );
-            form.find( '.chosen-select' ).val( '' ).trigger( 'chosen:updated' );
-            form.find( '.field-password-confirmation' ).css( 'display', 'block' ).find( 'input' ).attr( 'name', 'password_confirmation' );
-            form.find( '.field-password .input-group-append' ).css( 'display', 'none' );
-
-            table.find( 'tbody > tr' ).removeClass( 'active' );
-            form.trigger( 'reset' );
-            form.find( 'input[name="id"]' ).val( '' ).trigger( 'change' );
-            form.find( '.form-group .add-post' ).removeClass( 'd-none' ).siblings().addClass( 'd-none' );
-
-            return false;
-        } );
-
-        @if( user_can('add', $permission) )
-        /* Add post */
-        $( document ).on( 'click', '#edit-post .btn.add-post', function () {
-            let button = $( this ),
-                form = button.closest( 'form' ),
-                data = form.serializeObject();
-
-            button.add_new( "users-classic", data );
-
-            return false;
-        } );
-        @endif
-
-        @if( user_can('edit', $permission) )
         /* Update post */
         $( document ).on( 'click', '#edit-post .btn.edit-post', function () {
             let button = $( this ),
-                form = button.closest( 'form' ),
-                data = form.serializeObject();
+                form   = $( '#edit-post' ),
+                data   = form.serializeObject();
 
-            button.update_post( "users-classic", data, true );
+            button.update_post( ajaxurl, data, true );
 
             return false;
+        } );
+        $( document ).on( 'update_post_success', function ( event, response ) {
+            $( '#modal-edit-post' ).modal( 'hide' );
         } );
         /* Status */
         $( document ).on( 'click', '#table-posts .status', function () {
 
-            $( this ).update_status( "users-classic",
+            $( this ).update_status( ajaxurl,
                 "Tắt kích hoạt thành công",
                 "Kích hoạt thành công",
                 true
@@ -358,43 +414,25 @@
 
         @if( user_can('delete', $permission) )
         /* Remove post */
+        $( document ).on( 'click', '#edit-post .btn.delete-post', function () {
+            let button = $( this ),
+                form   = $( '#edit-post' ),
+                data   = form.serializeObject();
+
+            button.remove_post( ajaxurl, data );
+
+            return false;
+        } );
         $( document ).on( 'click', '#table-posts .btn.delete', function () {
             let button = $( this ),
-                row = button.closest( 'tr' ),
-                data = OvicTable.row( row ).data();
+                row    = button.closest( 'tr' ),
+                data   = OvicTable.row( row ).data();
 
-            button.remove_post( "users-classic", data );
+            button.remove_post( ajaxurl, data );
 
             return false;
         } );
         @endif
     </script>
-@endpush
-
-@section( 'content-table-classic' )
-
-    <div class="col-sm-4 full-height">
-        <div class="ibox selected full-height-scroll">
-            <div class="ibox-content">
-
-                @include( name_blade('Backend.users-classic.edit') )
-
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-8 full-height hide-sidebar">
-        <div class="ibox normal-scroll-content">
-
-            @include( name_blade('Backend.users-classic.list') )
-
-        </div>
-    </div>
-
-@endsection
-
-@push( 'after-content' )
-
-    @include( name_blade('Backend.media.modal') )
-
 @endpush
 

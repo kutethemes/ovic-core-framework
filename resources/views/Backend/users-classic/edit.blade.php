@@ -25,13 +25,13 @@
 
         <div class="form-group">
             <label>
-                Tên hiển thị *
+                Tên hiển thị: *
             </label>
             <div>
                 <div class="input-group">
-                    <input type="text" name="name" class="form-control required" placeholder="Họ tên" maxlength="100">
+                    <input type="text" name="name" class="form-control required" placeholder="Name" maxlength="100">
                     <span class="input-group-append">
-                        <select name="status" class="btn btn-white dropdown-toggle">
+                        <select name="status" class="custom-select rounded-0">
                             <option value="1">Kích hoạt</option>
                             <option value="2">Kích hoạt ẩn</option>
                             <option value="0">Không kích hoạt</option>
@@ -43,7 +43,7 @@
 
         <div class="form-group">
             <label>
-                Email *
+                Email: *
             </label>
             <div>
                 <div class="input-group">
@@ -55,7 +55,7 @@
 
         <div class="form-group field-password">
             <label>
-                Mật khẩu *
+                Mật khẩu: *
             </label>
             <div>
                 <div class="input-group">
@@ -73,7 +73,7 @@
 
         <div class="form-group field-password-confirmation">
             <label>
-                Xác nhận *
+                Xác nhận: *
             </label>
             <div>
                 <div class="input-group">
@@ -87,7 +87,7 @@
         @if( !empty( $donvis) )
             <div class="form-group donvi">
                 <label>
-                    Đơn vị
+                    Đơn vị:
                 </label>
                 <div>
                     <select name="donvi_id" class="form-control chosen-select"
@@ -107,7 +107,7 @@
         @if( !empty( $roles) )
             <div class="form-group">
                 <label>
-                    Nhóm quyền
+                    Nhóm quyền:
                 </label>
                 <div>
                     <select name="role_ids" class="form-control chosen-select"
@@ -124,7 +124,7 @@
         @if( !empty( $donvis ) )
             <div class="form-group phamvi">
                 <label>
-                    Phạm vi quản lý
+                    Phạm vi quản lý:
                 </label>
                 <div>
                     <select name="donvi_ids" class="form-control chosen-select"
@@ -143,10 +143,9 @@
 
     </div>
 
-    <div class="form-group submit row">
-        <div class="col-sm-12">
-            {{ button_set( 'edit', $permission, [ 'class'=>'btn btn-primary d-none' ] ) }}
-            {{ button_set( 'add', $permission ) }}
-        </div>
+    <div class="form-group submit">
+        {{ button_set( 'delete', $permission, [ 'class'=>'btn btn-danger d-none' ] ) }}
+        {{ button_set( 'edit', $permission, [ 'class'=>'btn btn-primary d-none' ] ) }}
+        {{ button_set( 'add', $permission ) }}
     </div>
 </form>

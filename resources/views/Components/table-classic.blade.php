@@ -21,7 +21,7 @@
         .table tbody td.dataTables_empty {
             height: 46px !important;
         }
-        
+
         .ibox {
             background-color: #fff;
         }
@@ -103,6 +103,10 @@
             margin-bottom: 0;
             margin-top: 1rem;
             text-align: right;
+        }
+
+        .form-group .btn.edit-field {
+            height: 100%;
         }
 
         div.chosen-container {
@@ -257,6 +261,10 @@
             display: inline-block;
         }
 
+        .head-table .btn-group > a.btn.add-new {
+            border-radius: 3px;
+        }
+
         .head-table .btn-group > a.btn.add-new:hover {
             color: #fff;
             border-color: #18a689;
@@ -265,6 +273,8 @@
         .head-table .btn-group > a.btn.delete-select {
             margin-left: 10px;
             border-color: #ed5565;;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
         }
 
         .dataTables_filter input {

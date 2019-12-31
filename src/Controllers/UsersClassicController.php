@@ -39,7 +39,9 @@ class UsersClassicController extends Controller
         ];
 
         if ( $id != null ) {
+
             $rules['email'] = [ 'required', 'string', 'email', 'max:100', 'unique:' . $this->table . ',email,' . $id ];
+
             if ( !$request->has('password') ) {
                 $rules['password'] = '';
             }
@@ -57,12 +59,13 @@ class UsersClassicController extends Controller
     public function messages()
     {
         return [
-            'name.required'     => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
-            'email.required'    => 'Email là trường bắt buộc tối đa 100 kí tự',
-            'email.email'       => 'Email không đúng định dạng',
-            'password.required' => 'Mật khẩu là trường bắt buộc',
-            'password.min'      => 'Mật khẩu phải chứa ít nhất 8 ký tự',
-            'status.max'        => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
+            'name.required'      => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
+            'email.required'     => 'Email là trường bắt buộc tối đa 100 kí tự',
+            'email.email'        => 'Email không đúng định dạng',
+            'password.confirmed' => 'Mật khẩu và xác nhận không trùng khớp',
+            'password.required'  => 'Mật khẩu là trường bắt buộc',
+            'password.min'       => 'Mật khẩu phải chứa ít nhất 8 ký tự',
+            'status.max'         => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
         ];
     }
 
@@ -89,7 +92,7 @@ class UsersClassicController extends Controller
         }
 
         return view(
-            name_blade('Backend.users-classic.app2'),
+            name_blade('Backend.users-classic.app'),
             [
                 'donvis'     => $donvis,
                 'roles'      => $roles,
@@ -341,6 +344,40 @@ class UsersClassicController extends Controller
                 'data'    => [],
             ]);
         }
+
+        if ( $request->has('chang_password') ) {
+            $count   = 0;
+            $message = 'Cập nhật người dùng thành công.';
+            $ids     = $request->input('ids');
+            if ( !empty($ids) ) {
+                $ids = json_decode($ids, true);
+                $request->request->remove('ids');
+                $request->request->remove('chang_password');
+                if ( is_array($ids) && !empty($ids) ) {
+                    foreach ( $ids as $user_id ) {
+                        $updated = $this->update($request, $user_id);
+                        if ( $updated->getData()->status == 200 ) {
+                            $count++;
+                        } else {
+                            $message = $updated->getData()->message;
+                        }
+                    }
+                }
+            }
+
+            if ( $count > 0 ) {
+                return response()->json([
+                    'status'  => 200,
+                    'message' => $message,
+                ]);
+            }
+
+            return response()->json([
+                'status'  => 400,
+                'message' => $message,
+            ]);
+        }
+
         $dataTable = [];
         $validator = Validator::make($request->all(), $this->rules($id, $request), $this->messages());
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
