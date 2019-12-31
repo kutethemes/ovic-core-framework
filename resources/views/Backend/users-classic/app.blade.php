@@ -47,11 +47,11 @@
         }
 
         .client-email {
-            min-width: 210px;
+            min-width: 250px;
         }
 
         .client-name {
-            min-width: 150px;
+            min-width: 200px;
         }
 
         .client-donvi {
