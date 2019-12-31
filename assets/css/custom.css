@@ -44,6 +44,30 @@ body.full-height-layout #app {
     height: 100%;
 }
 
+.dataTables_length select {
+    -webkit-transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.dataTables_length select {
+    display: inline-block;
+    width: 100%;
+    height: calc(1.6em + 0.75rem + 2px) !important;
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #495057;
+    vertical-align: middle;
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
 /* Modal */
 .modal.inmodal {
     padding: 0 !important;
@@ -152,24 +176,35 @@ body.full-height-layout #app {
     Custom full layout of ibox panel
  */
 
-
-.full-height-content.nopadding, .full-height-content.nopadding .full-height{
-    padding: 0px!important;
+.full-height-content.nopadding, .full-height-content.nopadding .full-height {
+    padding: 0 !important;
 }
-.panel-left{border-right: 1px solid #e7eaec;}
-.panel-left .ibox-title{
+
+.panel-left {
+    border-right: 1px solid #e7eaec;
+}
+
+.panel-left .ibox-title {
     background: #f3f3f4;
-    border-top:none!important;
+    border-top: none !important;
     border-bottom: 1px solid #e7eaec;
 }
-.panel-left .ibox, .panel-left .ibox-content{
-    background: #fbfbfb!important;
+
+.panel-left .ibox, .panel-left .ibox-content {
+    background: #fbfbfb !important;
 }
-.full-height-content.nopadding .ibox-content{border: none!important;}
-.full-height-content.nopadding .panel-left .form-group.submit.row{
+
+.full-height-content.nopadding .ibox-content {
+    border: none !important;
+}
+
+.full-height-content.nopadding .panel-left .form-group.submit.row {
     padding: 10px;
     text-align: -webkit-match-parent;
     margin-bottom: 19px;
     background: #f3f3f4;
 }
-.full-height-content.nopadding .panel-left .form-group.submit.row > div{text-align: right!important;}
+
+.full-height-content.nopadding .panel-left .form-group.submit.row > div {
+    text-align: right !important;
+}
