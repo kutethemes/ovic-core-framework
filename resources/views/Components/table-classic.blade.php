@@ -316,7 +316,7 @@
 
         ul.pagination > li > a,
         ul.pagination > li > span {
-            padding: 6px 12px;
+            padding: 8px 15px;
         }
 
         .client-options {
