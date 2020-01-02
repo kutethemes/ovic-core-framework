@@ -86,7 +86,9 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Time created</label>
                                 <div class="col-lg-9">
-                                    <p class="form-control-static">{{ $attachment['created_at'] }}</p>
+                                    <p class="form-control-static">
+                                        {{ \Carbon\Carbon::parse($attachment['created_at'])->format('h:m:s - d/m/Y') }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
