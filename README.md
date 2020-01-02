@@ -1,4 +1,8 @@
-# Ovic-Laravel-Framework
+# Ovic Laravel Framework
+
+<a href="https://packagist.org/packages/ovic-core/framework"><img src="https://poser.pugx.org/ovic-core/framework/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/ovic-core/framework"><img src="https://poser.pugx.org/ovic-core/framework/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/ovic-core/framework"><img src="https://poser.pugx.org/ovic-core/framework/license.svg" alt="License"></a>
 
 ## Install
 
