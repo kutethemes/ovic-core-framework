@@ -150,7 +150,6 @@
                                    class="btn btn-info" target="_blank">
                                     Xem file
                                 </a><br>
-                                <span>( chỉ xem được file nhỏ hơn 5MB )</span>
                             @elseif ( in_array( $extension, [ 'ppt','pptx' ] ) )
                                 <div class="icon">
                                     <i class="fa fa-file-powerpoint-o"></i>
@@ -159,7 +158,6 @@
                                    class="btn btn-info" target="_blank">
                                     Xem file
                                 </a><br>
-                                <span>( chỉ xem được file nhỏ hơn 5MB )</span>
                             @elseif ( in_array( $extension, [ 'xls','xlsx' ] ) )
                                 <div class="icon">
                                     <i class="fa fa-bar-chart-o"></i>
@@ -168,7 +166,6 @@
                                    class="btn btn-info" target="_blank">
                                     Xem file
                                 </a><br>
-                                <span>( chỉ xem được file nhỏ hơn 5MB )</span>
                             @elseif ( strstr( $mimetype, "pdf" ) )
                                 <div class="icon">
                                     <i class="fa fa-file-pdf-o"></i>
