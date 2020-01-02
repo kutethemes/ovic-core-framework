@@ -4,7 +4,6 @@
 [![Total Downloads](https://poser.pugx.org/ovic-core/framework/downloads?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
 [![Latest Unstable Version](https://poser.pugx.org/ovic-core/framework/v/unstable?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
 [![License](https://poser.pugx.org/ovic-core/framework/license?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
-[![composer.lock](https://poser.pugx.org/ovic-core/framework/composerlock?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
 
 ## Install
 
