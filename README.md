@@ -1,8 +1,10 @@
 # Ovic Laravel Framework
 
-<a href="https://packagist.org/packages/ovic-core/framework"><img src="https://poser.pugx.org/ovic-core/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/ovic-core/framework"><img src="https://poser.pugx.org/ovic-core/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/ovic-core/framework"><img src="https://poser.pugx.org/ovic-core/framework/license.svg" alt="License"></a>
+[![Latest Stable Version](https://poser.pugx.org/ovic-core/framework/v/stable?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
+[![Total Downloads](https://poser.pugx.org/ovic-core/framework/downloads?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
+[![Latest Unstable Version](https://poser.pugx.org/ovic-core/framework/v/unstable?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
+[![License](https://poser.pugx.org/ovic-core/framework/license?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
+[![composer.lock](https://poser.pugx.org/ovic-core/framework/composerlock?format=flat-square)](https://packagist.org/packages/ovic-core/framework)
 
 ## Install
 
