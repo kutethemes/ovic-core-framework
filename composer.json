@@ -32,6 +32,10 @@
     "require": {
         "php": ">= 5.6",
         "ext-json": "*",
+        "ext-zip": "*",
+        "ext-dom": "*",
+        "ext-libxml": "*",
+        "ext-simplexml": "*",
         "laravel/ui": "1.*",
         "nesbot/carbon": "2.*",
         "maatwebsite/excel": "3.*",
