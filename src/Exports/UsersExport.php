@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
+use PhpOffice\PhpSpreadsheet\Worksheet\PageMargins;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -56,7 +57,16 @@ class UsersExport implements FromView, WithEvents
                 $cellRange = "E{$max}";
                 $cellHead  = "E{$less}";
 
+                /* Create a page margins object */
+                $pageMargins = new PageMargins();
+                $pageMargins->setTop(0.25);
+                $pageMargins->setRight(0.7);
+                $pageMargins->setBottom(0.25);
+                $pageMargins->setLeft(0.7);
+
                 /* Page type */
+                $event->sheet->getDelegate()->setPageMargins($pageMargins);
+                $event->sheet->getDelegate()->getPageSetup()->setHorizontalCentered(true);
                 $event->sheet->getDelegate()->getPageSetup()->setPaperSize(PageSetup::PAPERSIZE_A4);
                 $event->sheet->getDelegate()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
 
