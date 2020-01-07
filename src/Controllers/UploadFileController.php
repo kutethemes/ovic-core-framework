@@ -2,8 +2,6 @@
 
 namespace Ovic\Framework;
 
-use Illuminate\Http\File;
-
 use App\Http\Controllers\Controller;
 
 use Illuminate\Contracts\View\Factory;
@@ -12,7 +10,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -124,7 +121,7 @@ class UploadFileController extends Controller
                             "text"   => "Tháng " . $mon,
                             "a_attr" => [
                                 "class"    => "dir-filter",
-                                "data-dir" => $mon,
+                                "data-dir" => "{$year}/{$mon}",
                             ]
                         ];
                     }
