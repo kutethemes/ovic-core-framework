@@ -72,15 +72,16 @@
             display: table;
         }
 
-        #wrapper::before {
+        #app::before {
             left: 0;
         }
 
-        #wrapper::after {
+        #app::after {
             right: 0;
         }
 
-        #wrapper::before, #wrapper::after {
+        #app::before,
+        #app::after {
             height: 100vh;
             width: 5px;
             position: fixed;
@@ -240,7 +241,7 @@
 
 <body class="account-page theme-orange">
 
-<div id="wrapper">
+<div id="app">
 
     <div class="vertical-align-wrap">
         <div class="vertical-align-middle auth-main">
