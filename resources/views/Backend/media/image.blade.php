@@ -66,7 +66,7 @@
             <div class="file-name">
                 <span class="name">{{ $attachment['title'] }}</span>
                 <br/>
-                <small>Added: {{ $attachment['created_at'] }}</small>
+                <small>Added: {{ \Carbon\Carbon::parse($attachment['created_at'])->format('h:m:s - d/m/Y') }}</small>
             </div>
         </a>
     </div>
