@@ -3,7 +3,7 @@
     white-space: nowrap;
 }
 
-.navbar-default .nav li a {
+.navbar-default .nav li:not(.nav-header) a {
     font-weight: 400;
     font-size: 12px;
 }

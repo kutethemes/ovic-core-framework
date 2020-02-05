@@ -47,10 +47,6 @@ class ProfileController extends Controller
             $canhan['ngaysinh'] = today()->format('d/m/Y');
         }
 
-        if ( Donvi::hasTable() ) {
-            $donvi = Donvi::where('id', $user->donvi_id)->value('tendonvi');
-        }
-
         return view(
             name_blade('Backend.profile.app'),
             [
@@ -162,6 +158,10 @@ class ProfileController extends Controller
                     'ngaysinh' => Carbon::createFromFormat('d/m/Y', $request->input('ngaysinh'))->toDateString(),
                 ]);
             }
+        }
+
+        if ( $request->has('password') ) {
+            $request->request->set('password_confirmation', $request->input('password'));
         }
 
         if ( Route::has('users-classic.update') ) {

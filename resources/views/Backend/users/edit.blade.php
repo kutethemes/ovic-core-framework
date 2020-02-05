@@ -55,7 +55,7 @@
                            name="password" minlength="8">
                     <span class="input-group-append">
                         <button class="btn btn-info edit-field" type="button">
-                            <i class="fa fa-paste"></i> Edit
+                            <i class="fa fa-paste"></i> Sửa
                         </button>
                     </span>
                 </div>

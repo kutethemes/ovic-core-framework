@@ -129,29 +129,21 @@
                             </div>
                             <div class="hr-line-dashed"></div>
 
-                            @if ( !empty( $donvi ) )
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Đơn vị</label>
-                                    <div class="col-sm-10">
-                                        <input type="donvi" class="form-control" readonly="" value="{{ $donvi }}">
-                                    </div>
-                                </div>
-                                <div class="hr-line-dashed"></div>
-                            @endif
-
                             <div class="form-group field-password row">
-                                <label class="col-sm-2 col-form-label">Mật khẩu</label>
+                                <label class="col-sm-2 col-form-label">Đổi mật khẩu</label>
                                 <div class="col-sm-10">
                                     <div class="input-group">
                                         <input id="password" type="password" class="form-control required"
-                                               placeholder="Mật khẩu >= 8 ký tự"
-                                               name="password" minlength="8" disabled
-                                               value="{{ $user->password }}">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-info edit-field rounded-0" type="button">
+                                               placeholder="Mật khẩu >= 8 ký tự" minlength="8"
+                                               value="" disabled>
+                                        <input id="password_confirmation" type="password" class="form-control required"
+                                               placeholder="Xác nhận Mật khẩu" minlength="8"
+                                               value="" disabled>
+                                        <span class="input-group-append">
+                                            <button class="btn btn-info edit-field" type="button">
                                                 <i class="fa fa-paste"></i> Sửa
                                             </button>
-                                        </div>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -279,6 +271,19 @@
                 return o;
             };
         }
+        $( document ).on( 'click', 'button.edit-field', function () {
+            let group        = $( this ).closest( '.input-group' ),
+                input        = group.find( 'input' ),
+                password     = group.find( 'input#password' ),
+                confirmation = group.find( 'input#password_confirmation' );
+
+            if ( input.attr( 'disabled' ) === undefined ) {
+                input.val( '' ).attr( 'disabled', 'disabled' ).removeAttr( 'name' );
+            } else {
+                password.removeAttr( 'disabled' ).attr( 'name', 'password' );
+                confirmation.removeAttr( 'disabled' ).attr( 'name', 'password_confirmation' );
+            }
+        } );
         $( '.chosen-select' ).chosen( {
             width: "100%",
             no_results_text: "Không tìm thấy kết quả",
@@ -289,16 +294,6 @@
             changeMonth: true,
             changeYear: true,
             showButtonPanel: true
-        } );
-        $( document ).on( 'click', 'button.edit-field', function () {
-            let group = $( this ).closest( '.input-group' ),
-                input = group.find( 'input' );
-
-            if ( input.attr( 'disabled' ) === undefined ) {
-                input.attr( 'disabled', 'disabled' ).removeAttr( 'name' );
-            } else {
-                input.removeAttr( 'disabled' ).attr( 'name', 'password' );
-            }
         } );
         $( document ).on( 'click', 'button.edit-post', function () {
             let button = $( this ),

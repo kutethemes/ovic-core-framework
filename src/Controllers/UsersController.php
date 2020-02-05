@@ -56,12 +56,13 @@ class UsersController extends Controller
     public function messages()
     {
         return [
-            'name.required'     => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
-            'email.required'    => 'Email là trường bắt buộc tối đa 100 kí tự',
-            'email.email'       => 'Email không đúng định dạng',
-            'password.required' => 'Mật khẩu là trường bắt buộc',
-            'password.min'      => 'Mật khẩu phải chứa ít nhất 8 ký tự',
-            'status.max'        => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
+            'name.required'      => 'Tên hiển thị là trường bắt buộc tối đa 100 kí tự',
+            'email.required'     => 'Email là trường bắt buộc tối đa 100 kí tự',
+            'email.email'        => 'Email không đúng định dạng',
+            'password.confirmed' => 'Mật khẩu và xác nhận không trùng khớp',
+            'password.required'  => 'Mật khẩu là trường bắt buộc',
+            'password.min'       => 'Mật khẩu phải chứa ít nhất 8 ký tự',
+            'status.max'         => 'Trạng thái chấp nhận 3 ký tự số 0, 1 và 2',
         ];
     }
 
