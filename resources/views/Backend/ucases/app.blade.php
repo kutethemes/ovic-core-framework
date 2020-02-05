@@ -254,10 +254,10 @@
                     item   = '',
                     status = '';
 
-                if ( data.status == 0 ) {
+                if ( data.status === 0 ) {
                     status = 'disable';
                 }
-                if ( data.status == 2 ) {
+                if ( data.status === 2 ) {
                     status = 'hidden';
                 }
 
@@ -346,8 +346,8 @@
             } );
         };
         // activate Nestable for list menu
-        $( '#menu-left' ).nestable( { maxDepth: 2 } ).nestable( 'collapseAll' ).on( 'dragEnd', updateMenu );
-        $( '#menu-top' ).nestable( { maxDepth: 2 } ).nestable( 'collapseAll' ).on( 'dragEnd', updateMenu );
+        $( '#menu-left' ).nestable( { maxDepth: 3 } ).nestable( 'collapseAll' ).on( 'dragEnd', updateMenu );
+        $( '#menu-top' ).nestable( { maxDepth: 3 } ).nestable( 'collapseAll' ).on( 'dragEnd', updateMenu );
 
         // action Nestable for list menu
         $( document ).on( 'click', '#nestable-menu', function ( e ) {

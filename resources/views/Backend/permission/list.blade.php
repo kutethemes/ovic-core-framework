@@ -54,6 +54,20 @@
 
                                                             @include( name_blade('Backend.permission.item'), ['data' => $children] )
 
+                                                            @if( !empty( $children['children'] ) )
+
+                                                                <ol class="dd-list">
+                                                                    @foreach ( $children['children'] as $children )
+                                                                        <li class="dd-item" data-slug="{{ $children['slug'] }}">
+
+                                                                            @include( name_blade('Backend.permission.item'), ['data' => $children] )
+
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ol>
+
+                                                            @endif
+
                                                         </li>
                                                     @endforeach
                                                 </ol>

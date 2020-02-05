@@ -249,8 +249,8 @@
             };
         }
         // activate Nestable for list menu
-        $( '#menu-left' ).nestable( { maxDepth: 2 } );
-        $( '#menu-top' ).nestable( { maxDepth: 2 } );
+        $( '#menu-left' ).nestable( { maxDepth: 3 } );
+        $( '#menu-top' ).nestable( { maxDepth: 3 } );
         // action Nestable for list menu
         $( '#nestable-menu' ).on( 'click', function ( e ) {
             var target = $( e.target ),

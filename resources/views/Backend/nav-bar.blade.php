@@ -6,7 +6,7 @@
      * @package Ovic
      * @subpackage Framework
      *
-     * @version 1.0
+     * @version 1.0.1
      */
     $name       = Route::currentRouteName();
     $name       = explode('.', $name, 2);
@@ -54,6 +54,21 @@
                                             <span class="nav-label">{{ $children['title'] }}</span>
                                         </a>
                                     </li>
+                                    @if( !empty( $children['children'] ) )
+
+                                        @foreach ( $children['children'] as $children )
+                                            <li @if ( $name == $children['slug'] ) class="active" @endif>
+                                                <a href="{{ $children['url'] }}">
+                                                    --
+                                                    @if( !empty($children['route']['icon']) )
+                                                        <i class="{{ $children['route']['icon'] }}"></i>
+                                                    @endif
+                                                    <span class="nav-label">{{ $children['title'] }}</span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+
+                                    @endif
                                 @endforeach
                             </ul>
 

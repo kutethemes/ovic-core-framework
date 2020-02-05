@@ -151,7 +151,10 @@ function get_attachment_url( $id, $is_path = false )
  * @example:
  *  _menu_tree( $donvi, ['title' => 'tendonvi', 'type' => 'group','groupBy' => 1] )
  *
- * */
+ * @param $resource
+ * @param $atts
+ * @return string
+ */
 function _menu_tree( $resource, $atts )
 {
     $resource = remove_level($resource);
@@ -258,7 +261,7 @@ function _menu_tree_old( $resource, $atts, $parent_id = 0, $level = 0 )
         $html .= $title;
         if ( isset($resource[$parent[$atts['id']]]) ) {
             $html .= $sub_before;
-            $html .= _menu_tree($resource, $atts, $parent[$atts['id']], $level + 1);
+            $html .= _menu_tree_old($resource, $atts, $parent[$atts['id']], $level + 1);
             $html .= $sub_after;
         }
         $html .= $after;
@@ -338,7 +341,7 @@ function ovic_parse_str( $string, &$array )
  * to be merged into another array.
  *
  * @param  string|array|object  $args  Value to merge with $defaults.
- * @param  array  $defaults  Optional. Array that serves as the defaults. Default empty.
+ * @param  string  $defaults  Optional. Array that serves as the defaults. Default empty.
  *
  * @return array Merged user defined values with defaults.
  * @since 2.3.0 `$args` can now also be an object.

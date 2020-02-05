@@ -6,7 +6,7 @@
      * @package Ovic
      * @subpackage Framework
      *
-     * @version 1.0
+     * @version 1.0.1
      */
     $name       = Route::currentRouteName();
     $name       = explode('.', $name, 2);
@@ -51,10 +51,17 @@
                         if ( $name == $parent['slug'] ){
                             $active = 'active';
                         }
-                        if ( $childrens ){
+                        if ( !empty($childrens) ){
                             foreach ( $childrens as $children ) {
                                 if ( $name == $children['slug'] ){
                                     $active = 'active';
+                                }
+                                if ( !empty($children['children']) ){
+                                    foreach ( $children['children'] as $children_2 ) {
+                                        if ( $name == $children_2['slug'] ){
+                                            $active = 'active';
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -75,13 +82,46 @@
 
                             <ul class="nav nav-second-level collapse">
                                 @foreach ( $childrens as $children )
-                                    <li @if ( $name == $children['slug'] ) class="active" @endif>
+
+                                    @php
+                                        $active_child   = '';
+                                        $childrens_2    = !empty( $children['children'] ) ? $children['children'] : [];
+                                        if ( $name == $children['slug'] ){
+                                            $active_child = 'active';
+                                        }
+                                        if ( !empty($childrens_2) ){
+                                            foreach ( $childrens_2 as $children_2 ) {
+                                                if ( $name == $children_2['slug'] ){
+                                                    $active_child = 'active';
+                                                }
+                                            }
+                                        }
+                                    @endphp
+
+                                    <li class="{{ $active_child }}">
                                         <a href="{{ $children['url'] }}">
                                             @if( !empty($children['route']['icon']) )
                                                 <i class="{{ $children['route']['icon'] }}"></i>
                                             @endif
                                             <span class="nav-label">{{ $children['title'] }}</span>
+                                            @if( !empty( $children['children'] ) )
+                                                <span class="fa arrow"></span>
+                                            @endif
                                         </a>
+                                        @if( !empty( $children['children'] ) )
+                                            <ul class="nav nav-third-level">
+                                                @foreach ( $children['children'] as $children )
+                                                    <li @if ( $name == $children['slug'] ) class="active" @endif>
+                                                        <a href="{{ $children['url'] }}">
+                                                            @if( !empty($children['route']['icon']) )
+                                                                <i class="{{ $children['route']['icon'] }}"></i>
+                                                            @endif
+                                                            <span class="nav-label">{{ $children['title'] }}</span>
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
                                     </li>
                                 @endforeach
                             </ul>

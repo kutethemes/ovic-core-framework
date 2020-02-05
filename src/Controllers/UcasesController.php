@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Artisan;
@@ -80,9 +79,26 @@ class UcasesController extends Controller
         );
     }
 
+    public function update_menu( $data, $position, $parent_id = 0 )
+    {
+        if ( !empty($data) ) {
+            foreach ( $data as $order => $datum ) {
+                Ucases::where('id', $datum['id'])->update([
+                    'ordering'  => $order,
+                    'parent_id' => $parent_id,
+                    'position'  => $position
+                ]);
+                if ( !empty($datum['children']) ) {
+                    $this->update_menu($datum['children'], $position, $datum['id']);
+                }
+            }
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function create( Request $request )
@@ -98,25 +114,7 @@ class UcasesController extends Controller
         $position = !empty($request['position']) ? $request['position'] : 'left';
 
         if ( !empty($request['data']) ) {
-            foreach ( $request['data'] as $order_parent => $parent ) {
-                $update = [
-                    'ordering'  => $order_parent,
-                    'parent_id' => 0,
-                    'position'  => $position
-                ];
-                Ucases::where('id', $parent['id'])->update($update);
-
-                if ( !empty($parent['children']) ) {
-                    foreach ( $parent['children'] as $order_child => $children ) {
-                        $update = [
-                            'ordering'  => $order_child,
-                            'parent_id' => $parent['id'],
-                            'position'  => $position
-                        ];
-                        Ucases::where('id', $children['id'])->update($update);
-                    }
-                }
-            }
+            $this->update_menu($request['data'], $position);
         }
 
         Artisan::call('cache:clear');
