@@ -341,6 +341,11 @@ class UsersController extends Controller
                 'data'    => [],
             ]);
         }
+
+        if ( $request->has('password') ) {
+            $request->request->set('password_confirmation', $request->input('password'));
+        }
+        
         $dataTable = [];
         $validator = Validator::make($request->all(), $this->rules($id, $request), $this->messages());
         $data      = $request->except([ '_token', 'id', 'dataTable' ]);
